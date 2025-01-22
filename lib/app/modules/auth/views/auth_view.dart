@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/common_widget/common_textfileddart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
@@ -45,17 +46,7 @@ class AuthView extends GetView<AuthController> {
                   style: themes.fontSize18_600
                       .copyWith(color: themes.darkCyanBlue),
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Enter your Phone Number',
-                    hintStyle:
-                        themes.fontSize16_400.copyWith(color: themes.grayColor),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
+                // CommomTextfiled(),
                 TextFormField(
                   obscureText: true,
                   decoration: InputDecoration(
