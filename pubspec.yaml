@@ -37,6 +37,7 @@ dependencies:
   get: ^4.6.6
   google_fonts: ^6.2.1
   flutter_screenutil: ^5.9.3
+  fvm: ^3.2.1
 
 dev_dependencies:
   flutter_test:

@@ -1,23 +1,30 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   //TODO: Implement AuthController
+  final formKey = GlobalKey<FormState>();
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  RxBool isObsecureText = true.obs;
+
+  TextEditingController mobileController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  String? validatePhoneNumber(String? value) {
+    final phoneRegex = RegExp(r'^\+91[0-9]{10}$'); // +91 followed by 10 digits
+    if (value == null || value.isEmpty) {
+      return 'Please enter your phone number';
+    } else if (!phoneRegex.hasMatch(value)) {
+      return 'Enter a valid phone number';
+    }
+    return null;
   }
 
   @override
-  void onReady() {
-    super.onReady();
+  void dispose() {
+    // TODO: implement dispose
+    mobileController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }
