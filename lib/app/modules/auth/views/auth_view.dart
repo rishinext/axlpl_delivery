@@ -97,7 +97,7 @@ class AuthView extends GetView<AuthController> {
                       ),
                       onPressed: () {
                         if (authController.formKey.currentState!.validate()) {
-                          Get.offAllNamed(Routes.HOME);
+                          Get.offAllNamed(Routes.BOTTOMBAR);
                         } else {
                           Get.snackbar('Error', 'Please fill all the fields',
                               backgroundColor: themes.redColor);
