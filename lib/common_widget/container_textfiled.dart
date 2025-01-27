@@ -25,8 +25,9 @@ class ContainerTextfiled extends StatelessWidget {
       // padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: TextFormField(
         controller: controller,
+        cursorWidth: 2,
         decoration: InputDecoration(
-            hintText: hintText,
+            hintText: "$hintText",
             hintStyle: themes.fontSize16_400,
             border: InputBorder.none, // Remove the default underline border
             prefixIcon: prefixIcon,

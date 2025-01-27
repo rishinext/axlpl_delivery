@@ -1,6 +1,7 @@
 final splashIMG = 'assets/splash.jpg';
 final authLogo = 'assets/logo.png';
 final loginIMG = 'assets/login.jpg';
+final gpsIcon = 'assets/gpsicon.png';
 final homeIcon = 'assets/homeicon.png';
 final trackingIcon = 'assets/tracking.png';
 final shipIcon = 'assets/shipicon.png';
@@ -11,3 +12,4 @@ final deliveryIcon = 'assets/deliveryicon.png';
 final folderIcon = 'assets/foldericon.png';
 final containerIcon = 'assets/containericon.png';
 final history = 'assets/clockicon.png';
+final uploadIcon = 'assets/uploadicon.png';

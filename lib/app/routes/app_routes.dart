@@ -10,6 +10,9 @@ abstract class Routes {
   static const TRACKING = _Paths.TRACKING;
   static const SHIPNOW = _Paths.SHIPNOW;
   static const HISTORY = _Paths.HISTORY;
+  static const PICKUP = _Paths.PICKUP;
+  static const POD = _Paths.POD;
+  static const PROFILE = _Paths.PROFILE;
 }
 
 abstract class _Paths {
@@ -21,4 +24,7 @@ abstract class _Paths {
   static const TRACKING = '/tracking';
   static const SHIPNOW = '/shipnow';
   static const HISTORY = '/history';
+  static const PICKUP = '/pickup';
+  static const POD = '/pod';
+  static const PROFILE = '/profile';
 }

@@ -8,6 +8,12 @@ import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/pickup/bindings/pickup_binding.dart';
+import '../modules/pickup/views/pickup_view.dart';
+import '../modules/pod/bindings/pod_binding.dart';
+import '../modules/pod/views/pod_view.dart';
+import '../modules/profile/bindings/profile_binding.dart';
+import '../modules/profile/views/profile_view.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
 import '../modules/shipnow/views/shipnow_view.dart';
@@ -22,7 +28,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.BOTTOMBAR;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -66,6 +72,21 @@ class AppPages {
       name: _Paths.HISTORY,
       page: () => const HistoryView(),
       binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.PICKUP,
+      page: () => const PickupView(),
+      binding: PickupBinding(),
+    ),
+    GetPage(
+      name: _Paths.POD,
+      page: () => const PodView(),
+      binding: PodBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE,
+      page: () => const ProfileView(),
+      binding: ProfileBinding(),
     ),
   ];
 }

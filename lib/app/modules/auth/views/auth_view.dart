@@ -1,8 +1,10 @@
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
+import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
+import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -84,26 +86,16 @@ class AuthView extends GetView<AuthController> {
                           ));
                     },
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: CupertinoButton(
-                      color: themes.darkCyanBlue,
-                      focusColor: themes.whiteColor,
-                      borderRadius: BorderRadius.circular(20.r),
-                      child: Text(
-                        login,
-                        style: themes.fontReboto16_600
-                            .copyWith(color: themes.whiteColor),
-                      ),
-                      onPressed: () {
-                        if (authController.formKey.currentState!.validate()) {
-                          Get.offAllNamed(Routes.BOTTOMBAR);
-                        } else {
-                          Get.snackbar('Error', 'Please fill all the fields',
-                              backgroundColor: themes.redColor);
-                        }
-                      },
-                    ),
+                  CommonButton(
+                    title: login,
+                    onPressed: () {
+                      if (authController.formKey.currentState!.validate()) {
+                        Get.offAllNamed(Routes.BOTTOMBAR);
+                      } else {
+                        Get.snackbar('Error', 'Please fill all the fields',
+                            backgroundColor: themes.redColor);
+                      }
+                    },
                   ),
                   Align(
                       alignment: Alignment.centerRight,
