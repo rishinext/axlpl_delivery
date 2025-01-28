@@ -114,7 +114,7 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Expanded(
                         child: HomeIconContainer(
-                      title: 'Add Ship',
+                      title: 'Add Shipment',
                       Img: trackingIcon,
                     )),
                     SizedBox(

@@ -4,6 +4,8 @@ import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/auth_view.dart';
 import '../modules/bottombar/bindings/bottombar_binding.dart';
 import '../modules/bottombar/views/bottombar_view.dart';
+import '../modules/consignment/bindings/consignment_binding.dart';
+import '../modules/consignment/views/consignment_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -28,7 +30,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH;
+  static const INITIAL = Routes.CONSIGNMENT;
 
   static final routes = [
     GetPage(
@@ -87,6 +89,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONSIGNMENT,
+      page: () => const ConsignmentView(),
+      binding: ConsignmentBinding(),
     ),
   ];
 }
