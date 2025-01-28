@@ -1,6 +1,7 @@
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 Widget dropdownText(String text) {
   return Padding(
@@ -14,11 +15,11 @@ Widget dropdownText(String text) {
 
 Widget commomDropdown(
     {required String hint,
-    required selectedValue,
+    required Rxn<String> selectedValue,
     required Function(String?) onChanged,
-    required items}) {
+    required List<String> items}) {
   return Container(
-    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
     decoration: BoxDecoration(
       border: Border.all(color: themes.grayColor),
       borderRadius: BorderRadius.circular(8),
@@ -28,9 +29,18 @@ Widget commomDropdown(
         isExpanded: true,
         hint: Text(hint),
         value: selectedValue.value,
-        items: items,
+        items: items
+            .map((item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(item),
+                ))
+            .toList(),
         onChanged: onChanged,
-        icon: Icon(Icons.keyboard_arrow_down),
+        icon: Icon(
+          Icons.keyboard_arrow_down_outlined,
+          size: 35,
+          color: themes.grayColor,
+        ),
       ),
     ),
   );

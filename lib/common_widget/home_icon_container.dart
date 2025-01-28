@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class HomeIconContainer extends StatelessWidget {
   String? title;
   final Img;
-  final OnTap;
+  final VoidCallback? OnTap;
   HomeIconContainer({
     super.key,
     this.title,

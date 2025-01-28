@@ -124,6 +124,7 @@ class HomeView extends GetView<HomeController> {
                         child: HomeIconContainer(
                       title: 'Consigment',
                       Img: containerIcon,
+                      OnTap: () => Get.toNamed(Routes.CONSIGNMENT),
                     )),
                     SizedBox(
                       width: 10.w,

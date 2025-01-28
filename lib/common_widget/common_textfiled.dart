@@ -13,6 +13,7 @@ class CommomTextfiled extends StatelessWidget {
   final prefixText;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChange;
+  final isReadOnly;
 
   CommomTextfiled({
     super.key,
@@ -24,6 +25,7 @@ class CommomTextfiled extends StatelessWidget {
     this.prefixText,
     this.validator,
     this.onChange,
+    this.isReadOnly = false,
   });
 
   @override
@@ -35,6 +37,7 @@ class CommomTextfiled extends StatelessWidget {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
       onChanged: onChange,
+      readOnly: isReadOnly,
       decoration: InputDecoration(
         prefixText: prefixText,
         hintText: hintTxt,

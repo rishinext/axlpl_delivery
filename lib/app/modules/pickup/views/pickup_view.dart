@@ -54,8 +54,11 @@ class PickupView extends GetView<PickupController> {
                           width: 18.w,
                         ),
                       ),
-                      title: Text('Sakinaka : 4000072'),
-                      subtitle: Text('Lorem Ipsum is simply dummy text'),
+                      title: Text('Company name'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [Text('+91900000000'), Text('400089')],
+                      ),
                       trailing: CircleAvatar(
                         backgroundColor: themes.lightCream,
                         // radius: 15,
