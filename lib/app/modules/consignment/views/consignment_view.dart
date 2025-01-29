@@ -26,6 +26,9 @@ class ConsignmentView extends GetView<ConsignmentController> {
               () => Column(
                 spacing: 20.h,
                 children: [
+                  SizedBox(
+                    height: 1.h,
+                  ),
                   Row(
                     spacing: 10.w,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -96,7 +99,6 @@ class ConsignmentView extends GetView<ConsignmentController> {
                       ),
                     ],
                   ),
-             
                   controller.isSelected.value == 0
                       ? Container(
                           width: double.infinity,

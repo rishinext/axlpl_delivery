@@ -13,3 +13,5 @@ final folderIcon = 'assets/foldericon.png';
 final containerIcon = 'assets/containericon.png';
 final history = 'assets/clockicon.png';
 final uploadIcon = 'assets/uploadicon.png';
+final truckBlueIcon = 'assets/truckblueicon.png';
+final shopingIcon = 'assets/shopingicon.png';

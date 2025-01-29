@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../controllers/history_controller.dart';
 
@@ -14,157 +15,163 @@ class HistoryView extends GetView<HistoryController> {
   @override
   Widget build(BuildContext context) {
     final historyController = Get.put(HistoryController());
+
+   
     return CommonScaffold(
         appBar: commonAppbar('History'),
         body: Obx(
           () => Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              spacing: 20,
-              children: [
-                Row(
-                  spacing: 10,
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          historyController.selectedContainer(0);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: historyController.isSelected.value == 0
-                                  ? themes.darkCyanBlue
-                                  : themes.whiteColor,
-                              borderRadius: BorderRadius.circular(
-                                15.r,
-                              ),
-                              border: Border.all(
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 20,
+                children: [
+                  Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            historyController.selectedContainer(0);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
                                 color: historyController.isSelected.value == 0
-                                    ? themes.whiteColor
-                                    : themes.grayColor,
-                              )),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              "Delivery",
-                              textAlign: TextAlign.center,
-                              style: themes.fontSize14_500.copyWith(
+                                    ? themes.darkCyanBlue
+                                    : themes.whiteColor,
+                                borderRadius: BorderRadius.circular(
+                                  15.r,
+                                ),
+                                border: Border.all(
                                   color: historyController.isSelected.value == 0
                                       ? themes.whiteColor
-                                      : themes.grayColor),
+                                      : themes.grayColor,
+                                )),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                "Delivery",
+                                textAlign: TextAlign.center,
+                                style: themes.fontSize14_500.copyWith(
+                                    color:
+                                        historyController.isSelected.value == 0
+                                            ? themes.whiteColor
+                                            : themes.grayColor),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          historyController.selectedContainer(1);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: historyController.isSelected.value == 1
-                                  ? themes.darkCyanBlue
-                                  : themes.whiteColor,
-                              borderRadius: BorderRadius.circular(
-                                15.r,
-                              ),
-                              border: Border.all(
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            historyController.selectedContainer(1);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
                                 color: historyController.isSelected.value == 1
-                                    ? themes.whiteColor
-                                    : themes.grayColor,
-                              )),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              'Pickup',
-                              textAlign: TextAlign.center,
-                              style: themes.fontSize14_500.copyWith(
+                                    ? themes.darkCyanBlue
+                                    : themes.whiteColor,
+                                borderRadius: BorderRadius.circular(
+                                  15.r,
+                                ),
+                                border: Border.all(
                                   color: historyController.isSelected.value == 1
                                       ? themes.whiteColor
-                                      : themes.grayColor),
+                                      : themes.grayColor,
+                                )),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                'Pickup',
+                                textAlign: TextAlign.center,
+                                style: themes.fontSize14_500.copyWith(
+                                    color:
+                                        historyController.isSelected.value == 1
+                                            ? themes.whiteColor
+                                            : themes.grayColor),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                historyController.isSelected.value == 0
-                    ? SizedBox(
-                        height: 505.h,
-                        child: ListView.separated(
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 1.h,
+                    ],
+                  ),
+                  historyController.isSelected.value == 0
+                      ? SizedBox(
+                          height: 490.h,
+                          child: ListView.separated(
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: 1.h,
+                            ),
+                            itemCount: 10,
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) => ListTile(
+                                tileColor: themes.whiteColor,
+                                dense: false,
+                                leading: CircleAvatar(
+                                  backgroundColor: themes.blueGray,
+                                  child: Image.asset(
+                                    gpsIcon,
+                                    width: 18.w,
+                                  ),
+                                ),
+                                title: Text('Sakinaka : 4000072'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Lorem Ipsum is simply dummy text ')
+                                  ],
+                                ),
+                                trailing: CircleAvatar(
+                                  backgroundColor: themes.lightCream,
+                                  // radius: 15,
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    size: 20.w,
+                                  ),
+                                )),
                           ),
-                          itemCount: 10,
-                          // shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) => ListTile(
-                              tileColor: themes.whiteColor,
-                              dense: false,
-                              leading: CircleAvatar(
-                                backgroundColor: themes.blueGray,
-                                child: Image.asset(
-                                  gpsIcon,
-                                  width: 18.w,
+                        )
+                      : SizedBox(
+                          height: 490.h,
+                          child: ListView.separated(
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: 1.h,
+                            ),
+                            itemCount: 10,
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) => ListTile(
+                                tileColor: themes.whiteColor,
+                                dense: false,
+                                leading: CircleAvatar(
+                                  backgroundColor: themes.blueGray,
+                                  child: Image.asset(
+                                    truckBlueIcon,
+                                    width: 18.w,
+                                  ),
                                 ),
-                              ),
-                              title: Text('Sakinaka : 4000072'),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Lorem Ipsum is simply dummy text ')
-                                ],
-                              ),
-                              trailing: CircleAvatar(
-                                backgroundColor: themes.lightCream,
-                                // radius: 15,
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  size: 20.w,
+                                title: Text('Sakinaka : 4000072'),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Lorem Ipsum is simply dummy text ')
+                                  ],
                                 ),
-                              )),
-                        ),
-                      )
-                    : SizedBox(
-                        height: 505.h,
-                        child: ListView.separated(
-                          separatorBuilder: (context, index) => SizedBox(
-                            height: 1.h,
+                                trailing: CircleAvatar(
+                                  backgroundColor: themes.lightCream,
+                                  // radius: 15,
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    size: 20.w,
+                                  ),
+                                )),
                           ),
-                          itemCount: 10,
-                          shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
-                          itemBuilder: (context, index) => ListTile(
-                              tileColor: themes.whiteColor,
-                              dense: false,
-                              leading: CircleAvatar(
-                                backgroundColor: themes.blueGray,
-                                child: Image.asset(
-                                  gpsIcon,
-                                  width: 18.w,
-                                ),
-                              ),
-                              title: Text('Sakinaka : 4000072'),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Lorem Ipsum is simply dummy text ')
-                                ],
-                              ),
-                              trailing: CircleAvatar(
-                                backgroundColor: themes.lightCream,
-                                // radius: 15,
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  size: 20.w,
-                                ),
-                              )),
-                        ),
-                      )
-              ],
+                        )
+                ],
+              ),
             ),
           ),
         ));

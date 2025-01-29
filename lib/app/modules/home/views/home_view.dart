@@ -2,6 +2,7 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
+import 'package:axlpl_delivery/common_widget/qr_scan_screen.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -18,6 +20,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
+    final MobileScannerController QRController = MobileScannerController();
     return Scaffold(
         backgroundColor: themes.lightWhite,
         appBar: AppBar(
@@ -59,7 +62,13 @@ class HomeView extends GetView<HomeController> {
                     CupertinoIcons.search,
                     color: themes.grayColor,
                   ),
-                  suffixIcon: Icon(CupertinoIcons.qrcode_viewfinder),
+                  suffixIcon: InkWell(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QrScanScreen(),
+                          )),
+                      child: Icon(CupertinoIcons.qrcode_viewfinder)),
                   hintText: 'Enter Your Package Number',
                   controller: controller.searchController,
                 ),
@@ -67,6 +76,8 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Expanded(
                       child: HomeContainer(
+                        OnTap: () =>
+                            Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS),
                         color: themes.blueGray,
                         title: runningDeliveryTxt,
                         subTitle: '10',

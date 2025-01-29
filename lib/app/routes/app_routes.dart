@@ -14,6 +14,7 @@ abstract class Routes {
   static const POD = _Paths.POD;
   static const PROFILE = _Paths.PROFILE;
   static const CONSIGNMENT = _Paths.CONSIGNMENT;
+  static const RUNNING_DELIVERY_DETAILS = _Paths.RUNNING_DELIVERY_DETAILS;
 }
 
 abstract class _Paths {
@@ -29,4 +30,5 @@ abstract class _Paths {
   static const POD = '/pod';
   static const PROFILE = '/profile';
   static const CONSIGNMENT = '/consignment';
+  static const RUNNING_DELIVERY_DETAILS = '/running-delivery-details';
 }

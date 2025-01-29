@@ -16,6 +16,8 @@ import '../modules/pod/bindings/pod_binding.dart';
 import '../modules/pod/views/pod_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+import '../modules/running_delivery_details/bindings/running_delivery_details_binding.dart';
+import '../modules/running_delivery_details/views/running_delivery_details_view.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
 import '../modules/shipnow/views/shipnow_view.dart';
@@ -30,7 +32,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.SPLASH;
+  static const INITIAL = Routes.BOTTOMBAR;
 
   static final routes = [
     GetPage(
@@ -94,6 +96,11 @@ class AppPages {
       name: _Paths.CONSIGNMENT,
       page: () => const ConsignmentView(),
       binding: ConsignmentBinding(),
+    ),
+    GetPage(
+      name: _Paths.RUNNING_DELIVERY_DETAILS,
+      page: () => const RunningDeliveryDetailsView(),
+      binding: RunningDeliveryDetailsBinding(),
     ),
   ];
 }
