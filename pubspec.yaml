@@ -41,6 +41,7 @@ dependencies:
   dotted_border: ^2.1.0
   easy_stepper: ^0.8.5+1
   mobile_scanner: ^6.0.5
+  enhance_stepper: ^1.0.1
 
 dev_dependencies:
   flutter_test:

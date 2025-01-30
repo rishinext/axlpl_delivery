@@ -27,7 +27,7 @@ class HistoryView extends GetView<HistoryController> {
                 spacing: 20,
                 children: [
                   Row(
-                    spacing: 10,
+                    spacing : 10,
                     children: [
                       Expanded(
                         child: GestureDetector(

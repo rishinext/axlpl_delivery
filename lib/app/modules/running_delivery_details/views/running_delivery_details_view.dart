@@ -1,9 +1,14 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/stepper_widget.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:easy_stepper/easy_stepper.dart';
+import 'package:enhance_stepper/enhance_stepper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,215 +21,253 @@ class RunningDeliveryDetailsView
   const RunningDeliveryDetailsView({super.key});
   @override
   Widget build(BuildContext context) {
+    StepperType type = StepperType.horizontal;
     return CommonScaffold(
         appBar: commonAppbar('Running Delivery Detail'),
         body: Padding(
           padding: const EdgeInsets.all(15.0),
-          child: Column(
-            spacing: 20,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: themes.whiteColor,
-                    borderRadius: BorderRadius.circular(5.r)),
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Column(
-                    spacing: 10,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CircleAvatar(
-                              backgroundColor: themes.blueGray,
-                              child: Image.asset(shopingIcon, width: 18.w),
-                            ),
-                          ),
-                          Text(
-                            'Order No: 1203245',
-                            style: themes.fontSize14_500,
-                          ),
-                          Spacer(),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: themes.blueGray,
-                                borderRadius: BorderRadius.circular(15.r)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 8.0,
-                                    height: 8.0,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: themes.darkCyanBlue),
-                                  ),
-                                  Text(
-                                    ' On Delivery',
-                                    style: themes.fontSize14_500
-                                        .copyWith(color: themes.darkCyanBlue),
-                                  )
-                                ],
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 20,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: themes.whiteColor,
+                      borderRadius: BorderRadius.circular(5.r)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CircleAvatar(
+                                backgroundColor: themes.blueGray,
+                                child: Image.asset(shopingIcon, width: 18.w),
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              spacing: 10,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Shipper Name',
-                                  style: themes.fontSize14_500
-                                      .copyWith(color: themes.grayColor),
-                                ),
-                                Text('Mr. Biju Dahal',
-                                    style: themes.fontSize14_500),
-                                Text(
-                                  'From',
-                                  style: themes.fontSize14_500
-                                      .copyWith(color: themes.grayColor),
-                                ),
-                                Text('Lorem Ipsum is simply\ndummy text ',
-                                    style: themes.fontSize14_500),
-                                Text('Shipping Type',
-                                    style: themes.fontSize14_500
-                                        .copyWith(color: themes.grayColor)),
-                                Text('Standrd', style: themes.fontSize14_500),
-                              ],
+                            Text(
+                              'Order No: 1203245',
+                              style: themes.fontSize14_500,
                             ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              spacing: 10,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Shipper Name',
-                                  style: themes.fontSize14_500
-                                      .copyWith(color: themes.grayColor),
-                                ),
-                                Text('Mr. Biju Dahal',
-                                    style: themes.fontSize14_500),
-                                Text(
-                                  'To',
-                                  style: themes.fontSize14_500
-                                      .copyWith(color: themes.grayColor),
-                                ),
-                                Text('Lorem Ipsum is simply\ndummy text ',
-                                    style: themes.fontSize14_500),
-                                Text('Wight',
-                                    style: themes.fontSize14_500
-                                        .copyWith(color: themes.grayColor)),
-                                Text('1.3kg', style: themes.fontSize14_500),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  color: themes.whiteColor,
-                  borderRadius: BorderRadius.circular(5.r),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    EasyStepper(
-                      alignment: Alignment.topLeft,
-                      direction: Axis.vertical,
-                      activeStep: controller.activeStep.value,
-                      stepShape: StepShape.circle,
-                      stepBorderRadius: 15,
-                      borderThickness: 2,
-                      stepRadius: 18,
-                      finishedStepBorderColor: Colors.blue,
-                      finishedStepTextColor: Colors.black,
-                      finishedStepBackgroundColor: Colors.blue,
-                      activeStepBorderColor: Colors.blue,
-                      activeStepTextColor: Colors.black,
-                      activeStepBackgroundColor: Colors.blue,
-                      unreachedStepBorderColor: Colors.grey,
-                      unreachedStepTextColor: Colors.grey,
-                      unreachedStepBackgroundColor: Colors.white,
-                      showLoadingAnimation: false,
-                      steps:
-                          List.generate(controller.stepTitles.length, (index) {
-                        return EasyStep(
-                          customStep: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Stepper Icon
-                              Container(
-                                width: 36, // Adjust width as needed
-                                height: 36, // Adjust height as needed
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: index == controller.activeStep.value
-                                      ? Colors.blue
-                                      : Colors.grey,
-                                ),
-                                child: Icon(
-                                  index == controller.activeStep.value
-                                      ? Icons.location_on
-                                      : Icons.circle,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                              ),
-                              SizedBox(
-                                  width: 16), // Spacing between icon and text
-                              // Step Details (Title and Date)
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            Spacer(),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: themes.blueGray,
+                                  borderRadius: BorderRadius.circular(15.r)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      controller.stepTitles[index],
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight:
-                                            index == controller.activeStep.value
-                                                ? FontWeight.bold
-                                                : FontWeight.normal,
-                                        color:
-                                            index == controller.activeStep.value
-                                                ? Colors.blue
-                                                : Colors.black,
-                                      ),
+                                    Container(
+                                      width: 8.0,
+                                      height: 8.0,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: themes.darkCyanBlue),
                                     ),
-                                    SizedBox(height: 4),
                                     Text(
-                                      controller.stepDates[index],
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
+                                      ' On Delivery',
+                                      style: themes.fontSize14_500
+                                          .copyWith(color: themes.darkCyanBlue),
+                                    )
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      }),
-                      onStepReached: (index) =>
-                          controller.activeStep.value = index,
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                spacing: 10,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Shipper Name',
+                                    style: themes.fontSize14_500
+                                        .copyWith(color: themes.grayColor),
+                                  ),
+                                  Text('Mr. Biju Dahal',
+                                      style: themes.fontSize14_500),
+                                  Text(
+                                    'From',
+                                    style: themes.fontSize14_500
+                                        .copyWith(color: themes.grayColor),
+                                  ),
+                                  Text('Lorem Ipsum is simply\ndummy text ',
+                                      style: themes.fontSize14_500),
+                                  Text('Shipping Type',
+                                      style: themes.fontSize14_500
+                                          .copyWith(color: themes.grayColor)),
+                                  Text('Standrd', style: themes.fontSize14_500),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                spacing: 10,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Shipper Name',
+                                    style: themes.fontSize14_500
+                                        .copyWith(color: themes.grayColor),
+                                  ),
+                                  Text('Mr. Biju Dahal',
+                                      style: themes.fontSize14_500),
+                                  Text(
+                                    'To',
+                                    style: themes.fontSize14_500
+                                        .copyWith(color: themes.grayColor),
+                                  ),
+                                  Text('Lorem Ipsum is simply\ndummy text ',
+                                      style: themes.fontSize14_500),
+                                  Text('Wight',
+                                      style: themes.fontSize14_500
+                                          .copyWith(color: themes.grayColor)),
+                                  Text('1.3kg', style: themes.fontSize14_500),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              )
-            ],
+                Container(
+                  decoration: BoxDecoration(
+                    color: themes.whiteColor,
+                    borderRadius: BorderRadius.circular(5.r),
+                  ),
+                  child: Obx(() => EnhanceStepper(
+                            physics: ClampingScrollPhysics(),
+                            stepIconSize: 40, // Adjust size if needed
+                            stepIconBuilder: (stepIndex, stepState) =>
+                                Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: stepState == StepState.complete
+                                    ? themes
+                                        .blueGray // ✅ Change completed step color
+                                    : Colors.grey[
+                                        300], // ✅ Change pending step color
+                              ),
+                              padding: EdgeInsets.all(
+                                  10), // Adjust spacing inside circle
+                              child: Icon(
+                                Icons.gps_fixed,
+                                color: themes
+                                    .darkCyanBlue, // ✅ Ensure icon contrasts with background
+                                size: 20,
+                              ),
+                            ),
+                            type: StepperType.vertical,
+                            currentStep: controller.currentStep.value,
+                            onStepTapped: (index) =>
+                                controller.currentStep.value = index,
+                            steps: controller.stepsData.map((step) {
+                              return EnhanceStep(
+                                isActive: true,
+                                state: StepState.complete,
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        step["title"],
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Text(
+                                      step["date"],
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.grey),
+                                    ),
+                                  ],
+                                ),
+                                content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      step["subtitle"],
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    if (step["hasDriver"] == true) ...[
+                                      SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundImage:
+                                                AssetImage(step["driverImage"]),
+                                            radius: 20,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Driver",
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              ),
+                                              Text(
+                                                step["driverName"],
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Spacer(),
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 12.w,
+                                                vertical: 5.h),
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue[100],
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  phoneIcon,
+                                                  width: 15.w,
+                                                ),
+                                                SizedBox(width: 5),
+                                                Text(step["phone"],
+                                                    style: themes.fontSize14_500
+                                                        .copyWith(
+                                                            fontSize: 14.sp,
+                                                            color: themes
+                                                                .darkCyanBlue)),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            controlsBuilder: (context, details) =>
+                                SizedBox(), // Hide buttons
+                          )
+
+                      // Hide buttons
+                      ),
+                ),
+              ],
+            ),
           ),
         ));
   }
