@@ -112,7 +112,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 dropdownText('Source Branch'),
-                                commomDropdown(
+                                /*  commomDropdown(
                                     hint: 'Mumbai',
                                     selectedValue:
                                         controller.selectedSourceBranch,
@@ -126,7 +126,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                         controller.selectedSourceBranch,
                                     onChanged: (value) => controller
                                         .selectedSourceBranch.value = value!,
-                                    items: controller.branches),
+                                    items: controller.branches),*/
                                 SizedBox(
                                   height: 5,
                                 ),

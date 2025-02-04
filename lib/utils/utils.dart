@@ -11,6 +11,7 @@ class StepDetailCard extends StatelessWidget {
   final bool showDriver;
 
   const StepDetailCard({
+    super.key,
     required this.title,
     required this.subtitle,
     required this.date,
@@ -29,7 +30,8 @@ class StepDetailCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(title,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.grey)),
             SizedBox(height: 10),
             Text(date, style: TextStyle(fontSize: 12, color: Colors.grey)),
@@ -47,8 +49,11 @@ class StepDetailCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Driver", style: TextStyle(fontSize: 12, color: Colors.grey)),
-                      Text("Mr. Biju Dahal", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      Text("Driver",
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text("Mr. Biju Dahal",
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold)),
                     ],
                   ),
                   Spacer(),
@@ -73,4 +78,5 @@ class StepDetailCard extends StatelessWidget {
         ),
       ),
     );
-  }}
+  }
+}

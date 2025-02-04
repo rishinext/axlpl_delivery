@@ -22,6 +22,8 @@ class Themes {
 
   final fontSize16_400 =
       GoogleFonts.workSans(fontSize: 16.sp, fontWeight: FontWeight.w400);
+  final fontSize14_400 =
+      GoogleFonts.workSans(fontSize: 14.sp, fontWeight: FontWeight.w400);
 
   final fontSize14_500 =
       GoogleFonts.workSans(fontSize: 14.sp, fontWeight: FontWeight.w500);

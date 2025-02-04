@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/add_shipment/bindings/add_shipment_binding.dart';
+import '../modules/add_shipment/views/add_shipment_view.dart';
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/auth_view.dart';
 import '../modules/bottombar/bindings/bottombar_binding.dart';
@@ -101,6 +103,11 @@ class AppPages {
       name: _Paths.RUNNING_DELIVERY_DETAILS,
       page: () => const RunningDeliveryDetailsView(),
       binding: RunningDeliveryDetailsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_SHIPMENT,
+      page: () => const AddShipmentView(),
+      binding: AddShipmentBinding(),
     ),
   ];
 }

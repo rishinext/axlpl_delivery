@@ -125,6 +125,7 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Expanded(
                         child: HomeIconContainer(
+                      OnTap: () => Get.toNamed(Routes.ADD_SHIPMENT),
                       title: 'Add Shipment',
                       Img: trackingIcon,
                     )),
