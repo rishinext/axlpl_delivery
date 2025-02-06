@@ -16,3 +16,5 @@ final uploadIcon = 'assets/uploadicon.png';
 final truckBlueIcon = 'assets/truckblueicon.png';
 final shopingIcon = 'assets/shopingicon.png';
 final phoneIcon = 'assets/phoneicon.png';
+final arrowImg = 'assets/arrowimg.png';
+final lolipopImg = 'assets/lolipopimg.png';

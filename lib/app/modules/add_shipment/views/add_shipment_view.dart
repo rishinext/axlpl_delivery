@@ -1,4 +1,6 @@
+import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
+import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -16,104 +18,138 @@ class AddShipmentView extends GetView<AddShipmentController> {
   @override
   Widget build(BuildContext context) {
     return CommonScaffold(
-        appBar: commonAppbar('Add Shipment'),
-        body: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            spacing: 15,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Add Details',
-                        style: themes.fontSize14_500,
-                      ),
-                      Text(
-                        'Lorem Ipsum is simply dummy text ',
-                        style: themes.fontSize14_500
-                            .copyWith(color: themes.grayColor, fontSize: 12.sp),
-                      )
-                    ],
-                  ),
-                  CircleAvatar()
-                ],
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    color: themes.whiteColor,
-                    borderRadius: BorderRadius.circular(5.r)),
-                child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                  child: Column(
-                    spacing: 15,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select Date',
-                        style: themes.fontSize14_400,
-                      ),
-                      CommomTextfiled(
-                        isReadOnly: true,
-                        sufixIcon: Icon(CupertinoIcons.calendar),
-                        hintTxt: '01/05/0224',
-                      ),
-                      dropdownText('Customer'),
-                      commomDropdown(
-                          hint: 'select customer',
-                          selectedValue: controller.selectedCustomer,
-                          onChanged: (p0) {},
-                          items: []),
-                      dropdownText('Category'),
-                      commomDropdown(
-                          hint: 'select customer',
-                          selectedValue: controller.selectedCustomer,
-                          onChanged: (p0) {},
-                          items: []),
-                      dropdownText('Commodity'),
-                      commomDropdown(
-                          hint: 'select customer',
-                          selectedValue: controller.selectedCustomer,
-                          onChanged: (p0) {},
-                          items: []),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          dropdownText('Net Weight (GM)'),
-                          dropdownText('Gross Weight (GM)')
-                        ],
-                      ),
-                      Row(
-                        spacing: 10,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: CommomTextfiled(
-                              hintTxt: 'Enter Net Weight',
-                              sufixIcon: InkWell(
-                                  child: Icon(CupertinoIcons.calendar_today)),
-                            ),
-                          ),
-                          Expanded(
-                            child: CommomTextfiled(
-                              hintTxt: "Enter Gross weight",
-                              sufixIcon: InkWell(
-                                  child: Icon(CupertinoIcons.calendar_today)),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
+        body: SingleChildScrollView(
+      child: Container(
+        decoration: BoxDecoration(
+            color: themes.whiteColor,
+            borderRadius: BorderRadius.circular(10.r)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+          child: Obx(
+            () => Column(
+              spacing: 15,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Select Date',
+                  style: themes.fontSize14_400,
                 ),
-              )
-            ],
+                CommomTextfiled(
+                  isReadOnly: true,
+                  sufixIcon: Icon(CupertinoIcons.calendar),
+                  hintTxt: '01/05/0224',
+                ),
+                dropdownText('Customer'),
+                commomDropdown(
+                    hint: 'select customer',
+                    selectedValue: controller.selectedCustomer,
+                    onChanged: (p0) {},
+                    items: []),
+                dropdownText('Category'),
+                commomDropdown(
+                    hint: 'select customer',
+                    selectedValue: controller.selectedCustomer,
+                    onChanged: (p0) {},
+                    items: []),
+                dropdownText('Commodity'),
+                commomDropdown(
+                    hint: 'select customer',
+                    selectedValue: controller.selectedCustomer,
+                    onChanged: (p0) {},
+                    items: []),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    dropdownText('Net Weight (GM)'),
+                    dropdownText('Gross Weight (GM)')
+                  ],
+                ),
+                Row(
+                  spacing: 10,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: CommomTextfiled(
+                        hintTxt: 'Enter Net Weight',
+                        sufixIcon:
+                            InkWell(child: Icon(CupertinoIcons.calendar_today)),
+                      ),
+                    ),
+                    Expanded(
+                      child: CommomTextfiled(
+                        hintTxt: "Enter Gross weight",
+                        sufixIcon:
+                            InkWell(child: Icon(CupertinoIcons.calendar_today)),
+                      ),
+                    )
+                  ],
+                ),
+                dropdownText('Payment Mode'),
+                commomDropdown(
+                    hint: 'Select Payment Mode',
+                    selectedValue: controller.selectedCustomer,
+                    onChanged: (p0) {},
+                    items: []),
+                dropdownText('Customer'),
+                commomDropdown(
+                    hint: 'select customer',
+                    selectedValue: controller.selectedCustomer,
+                    onChanged: (p0) {},
+                    items: []),
+                Row(
+                  children: [
+                    dropdownText('Insurance by AXLPL : '),
+                    Spacer(),
+                    Expanded(
+                      child: Radio<String>(
+                        value: "YES",
+                        groupValue: controller.insuranceType.value,
+                        activeColor: themes.orangeColor,
+                        onChanged: (value) {
+                          controller.insuranceType.value = value!;
+                        },
+                      ),
+                    ),
+                    Expanded(child: Text("YES")),
+                    Expanded(
+                      child: Radio<String>(
+                        value: "NO",
+                        groupValue: controller.insuranceType.value,
+                        activeColor: themes.grayColor,
+                        onChanged: (value) {
+                          controller.insuranceType.value = value!;
+                        },
+                      ),
+                    ),
+                    Expanded(child: Text("NO")),
+                  ],
+                ),
+                Text(
+                  'Policy No',
+                  style: themes.fontSize14_400,
+                ),
+                CommomTextfiled(
+                  hintTxt: 'Enter Policy No',
+                ),
+                Text(
+                  'Insurance Value (₹)',
+                  style: themes.fontSize14_400,
+                ),
+                CommomTextfiled(
+                  hintTxt: 'Enter Insurance Value',
+                ),
+                Text(
+                  'Remark',
+                  style: themes.fontSize14_400,
+                ),
+                CommomTextfiled(
+                  hintTxt: 'Enter Insurance Remark',
+                ),
+              ],
+            ),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 }

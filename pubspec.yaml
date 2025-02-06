@@ -42,6 +42,7 @@ dependencies:
   easy_stepper: ^0.8.5+1
   mobile_scanner: ^6.0.5
   enhance_stepper: ^1.0.1
+  percent_indicator: ^4.2.4
 
 dev_dependencies:
   flutter_test:

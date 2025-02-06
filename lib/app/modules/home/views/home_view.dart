@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
@@ -107,9 +108,10 @@ class HomeView extends GetView<HomeController> {
                     ),
                     Expanded(
                         child: HomeIconContainer(
-                      title: 'Delivery',
-                      Img: deliveryIcon,
-                    )),
+                            title: 'Delivery',
+                            Img: deliveryIcon,
+                            OnTap: () =>
+                                Get.toNamed(Routes.PICKUP, arguments: ''))),
                     SizedBox(
                       width: 10.w,
                     ),
@@ -125,7 +127,7 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Expanded(
                         child: HomeIconContainer(
-                      OnTap: () => Get.toNamed(Routes.ADD_SHIPMENT),
+                      OnTap: () => Get.to(PageviewView()),
                       title: 'Add Shipment',
                       Img: trackingIcon,
                     )),

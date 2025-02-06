@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/common_widget/common_datepicker.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
+import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -188,7 +189,100 @@ class ConsignmentView extends GetView<ConsignmentController> {
                             ),
                           ),
                         )
-                      : Text(controller.showConsiment.value)
+                      : SizedBox(
+                          height: 500.h,
+                          child: ListView.separated(
+                            itemCount: 10,
+                            shrinkWrap: true,
+                            physics: ScrollPhysics(),
+                            separatorBuilder: (context, index) => SizedBox(
+                              height: 1.h,
+                            ),
+                            itemBuilder: (context, index) => Container(
+                              decoration: BoxDecoration(
+                                  color: themes.whiteColor,
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  spacing: 10,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      spacing: 10,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: themes.blueGray,
+                                          child: Icon(Icons.gps_fixed),
+                                        ),
+                                        Image.asset(
+                                          arrowImg,
+                                          height: 45.h,
+                                        ),
+                                        CircleAvatar(
+                                          backgroundColor: themes.blueGray,
+                                          child: Image.asset(
+                                            lolipopImg,
+                                            width: 10.w,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10.w),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Mumbai : 20/4/2024',
+                                            style: themes.fontSize14_400,
+                                          ),
+                                          SizedBox(
+                                            width: 150.w,
+                                            child: Text(
+                                              'Lorem Ipsum is simply dummy text ',
+                                              style: themes.fontSize14_400
+                                                  .copyWith(
+                                                      color: themes.grayColor),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 35.h,
+                                          ),
+                                          Text(
+                                            'Delhi : 20/4/2024',
+                                            style: themes.fontSize14_400,
+                                          ),
+                                          SizedBox(
+                                            width: 150.w,
+                                            child: Text(
+                                              'Lorem Ipsum is simply dummy text ',
+                                              style: themes.fontSize14_400
+                                                  .copyWith(
+                                                      color: themes.grayColor),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextButton(
+                                          style: TextButton.styleFrom(
+                                              backgroundColor:
+                                                  themes.lightGrayColor,
+                                              foregroundColor:
+                                                  themes.darkCyanBlue),
+                                          onPressed: () {},
+                                          child: Text('Choose')),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
                 ],
               ),
             ),
