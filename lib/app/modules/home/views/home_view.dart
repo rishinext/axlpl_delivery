@@ -145,6 +145,7 @@ class HomeView extends GetView<HomeController> {
                     ),
                     Expanded(
                         child: HomeIconContainer(
+                      OnTap: () => Get.toNamed(Routes.HISTORY),
                       title: 'History',
                       Img: history,
                     )),

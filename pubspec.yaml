@@ -43,6 +43,7 @@ dependencies:
   mobile_scanner: ^6.0.5
   enhance_stepper: ^1.0.1
   percent_indicator: ^4.2.4
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

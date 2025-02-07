@@ -59,22 +59,33 @@ class AddAddressView extends GetView {
               dropdownText('Name'),
               CommomTextfiled(
                 hintTxt: 'Name',
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText('Company Name'),
               CommomTextfiled(
                 hintTxt: 'Company Name',
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText(zip),
               CommomTextfiled(
                 hintTxt: 'Zip Code',
+                textInputAction: TextInputAction.next,
+                validator: validateText,
+                keyboardType: TextInputType.number,
               ),
               dropdownText(state),
               CommomTextfiled(
                 hintTxt: state,
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText(city),
               CommomTextfiled(
                 hintTxt: city,
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText('Select Aera'),
               commomDropdown(
@@ -85,22 +96,34 @@ class AddAddressView extends GetView {
               dropdownText('GST No'),
               CommomTextfiled(
                 hintTxt: 'GST No',
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText('Address Line 1'),
               CommomTextfiled(
                 hintTxt: 'Address Line 1',
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText('Address Line 2'),
               CommomTextfiled(
                 hintTxt: 'Address Line 2',
+                textInputAction: TextInputAction.next,
+                validator: validateText,
               ),
               dropdownText('Mobile'),
               CommomTextfiled(
                 hintTxt: 'Mobile',
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.phone,
+                validator: validatePhone,
               ),
               dropdownText("Email"),
               CommomTextfiled(
                 hintTxt: 'Email',
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.emailAddress,
+                validator: validateText,
               ),
             ],
           ),

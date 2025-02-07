@@ -1,3 +1,5 @@
+import 'package:axlpl_delivery/app/modules/add_shipment/views/add_shipment_view.dart';
+import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/history/views/history_view.dart';
 import 'package:axlpl_delivery/app/modules/home/views/home_view.dart';
 import 'package:axlpl_delivery/app/modules/shipnow/views/shipnow_view.dart';
@@ -11,7 +13,7 @@ class BottombarController extends GetxController {
   List<Widget> bottomList = <Widget>[
     HomeView(),
     TrackingView(),
-    ShipnowView(),
+    PageviewView(),
     HistoryView()
   ];
 

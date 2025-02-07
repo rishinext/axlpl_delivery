@@ -1,23 +1,63 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController {
   //TODO: Implement ProfileController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  RxBool isEdit = false.obs;
+  var imageFile = Rx<File?>(null);
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController branchController = TextEditingController();
+  TextEditingController routeController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController vehicleController = TextEditingController();
+
+  void editProfile() {
+    isEdit.value = !isEdit.value; // Toggle editing state
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  Future<void> showImageSourceDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Image Source'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Camera'),
+              onPressed: () {
+                Get.back();
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            TextButton(
+              child: const Text('Gallery'),
+              onPressed: () {
+                Get.back();
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
 
-  void increment() => count.value++;
+    if (pickedFile != null) {
+      imageFile.value = File(pickedFile.path);
+    }
+  }
 }

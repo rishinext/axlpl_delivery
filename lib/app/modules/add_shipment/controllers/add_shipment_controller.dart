@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_different_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_payment_info_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_shipment_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddShipmentController extends GetxController {
   //TODO: Implement AddShipmentController
@@ -19,9 +22,10 @@ class AddShipmentController extends GetxController {
   RxString insuranceType = 'NO'.obs;
   RxString diffrentAddressType = 'NO'.obs;
   RxString addressType = 'New Address'.obs;
+  var currentPage = 0.obs;
+  RxInt totalPage = 5.obs;
 
   final PageController pageController = PageController();
-  var currentPage = 0.obs;
 
   void nextPage() {
     if (currentPage.value <= 3) {
@@ -30,8 +34,10 @@ class AddShipmentController extends GetxController {
       pageController.animateToPage(
         currentPage.value,
         duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
+        curve: Curves.bounceIn,
       );
+    } else {
+      Get.back();
     }
   }
 
@@ -42,5 +48,21 @@ class AddShipmentController extends GetxController {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    pageController.addListener(() {
+      currentPage.value = pageController.page!.round();
+    });
+  }
+
+  @override
+  void onClose() {
+    // TODO: implement onClose
+    super.onClose();
+    pageController.dispose();
   }
 }

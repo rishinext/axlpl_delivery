@@ -44,7 +44,14 @@ class PageviewView extends GetView {
                         )
                       ],
                     ),
-                    CircleAvatar()
+                    CircleAvatar(
+                      backgroundColor: themes.lightCream,
+                      radius: 25,
+                      child: Text(
+                          '${addshipController.currentPage.value + 1}/${addshipController.totalPage.value}',
+                          style: themes.fontSize18_600
+                              .copyWith(color: themes.darkCyanBlue)),
+                    )
                   ],
                 ),
                 Expanded(

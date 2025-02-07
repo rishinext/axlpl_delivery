@@ -16,7 +16,6 @@ class HistoryView extends GetView<HistoryController> {
   Widget build(BuildContext context) {
     final historyController = Get.put(HistoryController());
 
-   
     return CommonScaffold(
         appBar: commonAppbar('History'),
         body: Obx(
@@ -27,7 +26,7 @@ class HistoryView extends GetView<HistoryController> {
                 spacing: 20,
                 children: [
                   Row(
-                    spacing : 10,
+                    spacing: 10,
                     children: [
                       Expanded(
                         child: GestureDetector(

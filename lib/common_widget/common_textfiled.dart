@@ -1,19 +1,21 @@
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class CommomTextfiled extends StatelessWidget {
   final textFieldFocusNode = FocusNode();
-  InputDetected inputDetected = InputDetected.email;
   String? hintTxt;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   final bool obscureText;
   final sufixIcon;
   final prefixText;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChange;
   final isReadOnly;
+  final isEnable;
 
   CommomTextfiled({
     super.key,
@@ -26,12 +28,16 @@ class CommomTextfiled extends StatelessWidget {
     this.validator,
     this.onChange,
     this.isReadOnly = false,
+    this.textInputAction,
+    this.isEnable = true,
   });
 
   @override
   Widget build(BuildContext context) {
     Themes themes = Themes();
     return TextFormField(
+      enabled: isEnable,
+      textInputAction: textInputAction,
       obscureText: obscureText,
       controller: controller,
       autovalidateMode: AutovalidateMode.onUserInteraction,

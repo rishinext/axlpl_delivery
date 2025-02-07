@@ -53,28 +53,19 @@ class AuthView extends GetView<AuthController> {
                         .copyWith(color: themes.darkCyanBlue),
                   ),
                   CommomTextfiled(
-                      controller: authController.mobileController,
-                      hintTxt: 'Enter your Phone Number',
-                      keyboardType: TextInputType.phone,
-                      prefixText: '+91 | ',
-                      validator: (p0) {
-                        if (p0!.isEmpty || p0.length < 10) {
-                          return 'Please enter your mobile numer';
-                        }
-                        return null;
-                      }),
+                    controller: authController.mobileController,
+                    hintTxt: 'Enter your Phone Number',
+                    keyboardType: TextInputType.phone,
+                    prefixText: '+91 | ',
+                    validator: validatePhone,
+                  ),
                   Obx(
                     () {
                       return CommomTextfiled(
                           obscureText: authController.isObsecureText.value,
                           controller: authController.passwordController,
                           hintTxt: 'Enter your password',
-                          validator: (p0) {
-                            if (p0!.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
+                          validator: validatePassword,
                           sufixIcon: InkWell(
                             onTap: () {
                               authController.isObsecureText.value =
@@ -110,6 +101,7 @@ class AuthView extends GetView<AuthController> {
                     style: themes.fontReboto16_600
                         .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
                   )),
+                  /*
                   Row(
                     children: [
                       Expanded(child: Divider()),
@@ -128,7 +120,7 @@ class AuthView extends GetView<AuthController> {
                       ),
                       Expanded(child: Divider()),
                     ],
-                  ),
+                  ),*/
                 ],
               ),
             ),

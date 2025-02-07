@@ -1,82 +1,42 @@
 import 'package:axlpl_delivery/utils/theme.dart';
-import 'package:flutter/material.dart';
 
 Themes themes = Themes();
 
-class StepDetailCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String date;
-  final bool isActive;
-  final bool showDriver;
-
-  const StepDetailCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.date,
-    required this.isActive,
-    this.showDriver = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: isActive ? 4 : 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Text(subtitle, style: TextStyle(fontSize: 14, color: Colors.grey)),
-            SizedBox(height: 10),
-            Text(date, style: TextStyle(fontSize: 12, color: Colors.grey)),
-
-            // Show driver info if applicable
-            if (showDriver) ...[
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: NetworkImage("https://i.pravatar.cc/100"),
-                    radius: 20,
-                  ),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Driver",
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
-                      Text("Mr. Biju Dahal",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[100],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.phone, size: 14, color: Colors.blue),
-                        SizedBox(width: 4),
-                        Text("1234567890", style: TextStyle(fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
+String? validatePhone(String? value) {
+  // Regex for phone number validation (example for US numbers)
+  final RegExp phoneExp = RegExp(r'^\+?[1-9]\d{1,14}$');
+  if (value == null || value.isEmpty) {
+    return 'Phone number is required';
+  } else if (!phoneExp.hasMatch(value)) {
+    return 'Enter a valid phone number';
   }
+  return null;
+}
+
+String? validateEmail(String? value) {
+  // Regex for phone number validation (example for US numbers)
+  final RegExp emailExp = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  if (value == null || value.isEmpty) {
+    return 'Email ID is required';
+  } else if (!emailExp.hasMatch(value)) {
+    return 'Enter a valid Email ID';
+  }
+  return null;
+}
+
+String? validatePassword(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Password is required';
+  } else if (value.length < 6) {
+    return 'Password must be at least 6 characters';
+  }
+  return null;
+}
+
+String? validateText(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Value is required';
+  }
+  return null;
 }
