@@ -19,6 +19,7 @@ class AuthView extends GetView<AuthController> {
   Widget build(BuildContext context) {
     final authController = Get.put(AuthController());
     Themes themes = Themes();
+    final Utils utils = Utils();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -56,16 +57,18 @@ class AuthView extends GetView<AuthController> {
                     controller: authController.mobileController,
                     hintTxt: 'Enter your Phone Number',
                     keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.next,
                     prefixText: '+91 | ',
-                    validator: validatePhone,
+                    validator: utils.validatePhone,
                   ),
                   Obx(
                     () {
                       return CommomTextfiled(
                           obscureText: authController.isObsecureText.value,
                           controller: authController.passwordController,
+                          textInputAction: TextInputAction.done,
                           hintTxt: 'Enter your password',
-                          validator: validatePassword,
+                          validator: utils.validatePassword,
                           sufixIcon: InkWell(
                             onTap: () {
                               authController.isObsecureText.value =
@@ -77,17 +80,18 @@ class AuthView extends GetView<AuthController> {
                           ));
                     },
                   ),
-                  CommonButton(
-                    title: login,
-                    onPressed: () {
-                      if (authController.formKey.currentState!.validate()) {
-                        Get.offAllNamed(Routes.BOTTOMBAR);
-                      } else {
-                        Get.snackbar('Error', 'Please fill all the fields',
-                            backgroundColor: themes.redColor);
-                      }
-                    },
-                  ),
+                  Obx(() {
+                    return CommonButton(
+                      title: login,
+                      isLoading: controller.isLoading.value,
+                      onPressed: () {
+                        authController.loginUser(
+                          controller.mobileController.text,
+                          controller.passwordController.text,
+                        );
+                      },
+                    );
+                  }),
                   Align(
                       alignment: Alignment.centerRight,
                       child: Text(

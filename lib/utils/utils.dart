@@ -1,42 +1,98 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/utils/theme.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 Themes themes = Themes();
 
-String? validatePhone(String? value) {
-  // Regex for phone number validation (example for US numbers)
-  final RegExp phoneExp = RegExp(r'^\+?[1-9]\d{1,14}$');
-  if (value == null || value.isEmpty) {
-    return 'Phone number is required';
-  } else if (!phoneExp.hasMatch(value)) {
-    return 'Enter a valid phone number';
-  }
-  return null;
-}
+class Utils {
+  Utils._privateConstructor();
+  static final Utils instance = Utils._privateConstructor();
 
-String? validateEmail(String? value) {
-  // Regex for phone number validation (example for US numbers)
-  final RegExp emailExp = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-  if (value == null || value.isEmpty) {
-    return 'Email ID is required';
-  } else if (!emailExp.hasMatch(value)) {
-    return 'Enter a valid Email ID';
-  }
-  return null;
-}
+  Utils._internal();
+  static final Utils _instance = Utils._internal();
 
-String? validatePassword(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Password is required';
-  } else if (value.length < 6) {
-    return 'Password must be at least 6 characters';
+  factory Utils() {
+    return _instance;
   }
-  return null;
-}
 
-String? validateText(String? value) {
-  if (value == null || value.isEmpty) {
-    return 'Value is required';
+  final fcmToken =
+      'dYPw_9uuoYE:APA91bExO-MoUCYPclUiEn8LXtJYI3MVZX4A9x7tozQx3tEIi7AOOYdHKoCAGkoqjKFwYC-Yl5SGhnYN3qQ8t1GwZ5dWsD_yfaRbQQkcme919T5VxRDLey8';
+
+  String? validatePhone(String? value) {
+    // Regex for phone number validation (example for US numbers)
+    final RegExp phoneExp = RegExp(r'^\+?[1-9]\d{1,14}$');
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    } else if (!phoneExp.hasMatch(value)) {
+      return 'Enter a valid phone number';
+    }
+    return null;
   }
-  return null;
+
+  String? validateEmail(String? value) {
+    // Regex for phone number validation (example for US numbers)
+    final RegExp emailExp = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    if (value == null || value.isEmpty) {
+      return 'Email ID is required';
+    } else if (!emailExp.hasMatch(value)) {
+      return 'Enter a valid Email ID';
+    }
+    return null;
+  }
+
+  String? validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    } else if (value.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+    return null;
+  }
+
+  String? validateText(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Value is required';
+    }
+    return null;
+  }
+
+  Future<Position> determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  }
+
+  Future<String> getUserLocation() async {
+    final position = await determinePosition();
+    log("${position.latitude} ${position.longitude}");
+    List<Placemark> placeMarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placeMarks.first;
+    final location =
+        "${place.name} ${place.street} ${place.postalCode} ${place.locality} ${place.country}";
+    log(location);
+    return location.toString();
+  }
 }

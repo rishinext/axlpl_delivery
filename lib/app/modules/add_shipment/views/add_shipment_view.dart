@@ -18,6 +18,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
   @override
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
+    final Utils utils = Utils();
     return SafeArea(
       child: CommonScaffold(
           body: SingleChildScrollView(
@@ -75,7 +76,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                           hintTxt: 'Enter Net Weight',
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
-                          validator: validateText,
+                          validator: utils.validateText,
                           sufixIcon: InkWell(
                               child: Icon(CupertinoIcons.calendar_today)),
                         ),
@@ -87,7 +88,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                           textInputAction: TextInputAction.next,
                           sufixIcon: InkWell(
                               child: Icon(CupertinoIcons.calendar_today)),
-                          validator: validateText,
+                          validator: utils.validateText,
                         ),
                       )
                     ],
@@ -140,7 +141,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     hintTxt: 'Enter Policy No',
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
-                    validator: validateText,
+                    validator: utils.validateText,
                   ),
                   Text(
                     'Insurance Value (₹)',
@@ -150,7 +151,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     hintTxt: 'Enter Insurance Value',
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
-                    validator: validateText,
+                    validator: utils.validateText,
                   ),
                   Text(
                     'Remark',
@@ -159,7 +160,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   CommomTextfiled(
                     hintTxt: 'Enter Insurance Remark',
                     textInputAction: TextInputAction.done,
-                    validator: validateEmail,
+                    validator: utils.validateEmail,
                   ),
                 ],
               ),

@@ -16,6 +16,7 @@ class AddAddressView extends GetView {
   @override
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
+    final Utils utils = Utils();
     return CommonScaffold(
         body: SingleChildScrollView(
       child: Container(
@@ -60,32 +61,32 @@ class AddAddressView extends GetView {
               CommomTextfiled(
                 hintTxt: 'Name',
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText('Company Name'),
               CommomTextfiled(
                 hintTxt: 'Company Name',
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText(zip),
               CommomTextfiled(
                 hintTxt: 'Zip Code',
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
                 keyboardType: TextInputType.number,
               ),
               dropdownText(state),
               CommomTextfiled(
                 hintTxt: state,
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText(city),
               CommomTextfiled(
                 hintTxt: city,
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText('Select Aera'),
               commomDropdown(
@@ -97,33 +98,33 @@ class AddAddressView extends GetView {
               CommomTextfiled(
                 hintTxt: 'GST No',
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText('Address Line 1'),
               CommomTextfiled(
                 hintTxt: 'Address Line 1',
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText('Address Line 2'),
               CommomTextfiled(
                 hintTxt: 'Address Line 2',
                 textInputAction: TextInputAction.next,
-                validator: validateText,
+                validator: utils.validateText,
               ),
               dropdownText('Mobile'),
               CommomTextfiled(
                 hintTxt: 'Mobile',
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
-                validator: validatePhone,
+                validator: utils.validatePhone,
               ),
               dropdownText("Email"),
               CommomTextfiled(
                 hintTxt: 'Email',
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.emailAddress,
-                validator: validateText,
+                validator: utils.validateText,
               ),
             ],
           ),

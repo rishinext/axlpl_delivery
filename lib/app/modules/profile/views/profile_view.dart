@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -38,7 +39,7 @@ class ProfileView extends GetView<ProfileController> {
                               : null,
                           child: controller.imageFile.value == null
                               ? Icon(Icons.camera_alt,
-                                  color: Colors.white, size: 50)
+                                  color: themes.whiteColor, size: 50)
                               : null,
                         );
                       }),
@@ -284,24 +285,27 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: ListTile(
-                      tileColor: themes.whiteColor,
-                      dense: false,
-                      leading: CircleAvatar(
-                          backgroundColor: themes.blueGray,
+                  child: InkWell(
+                    onTap: () => Get.offAllNamed(Routes.AUTH),
+                    child: ListTile(
+                        tileColor: themes.whiteColor,
+                        dense: false,
+                        leading: CircleAvatar(
+                            backgroundColor: themes.blueGray,
+                            child: Icon(
+                              Icons.logout_sharp,
+                              color: themes.blackColor,
+                            )),
+                        title: Text('Logout'),
+                        trailing: CircleAvatar(
+                          backgroundColor: themes.lightCream,
+                          // radius: 15,
                           child: Icon(
-                            Icons.logout_sharp,
-                            color: themes.blackColor,
-                          )),
-                      title: Text('Logout'),
-                      trailing: CircleAvatar(
-                        backgroundColor: themes.lightCream,
-                        // radius: 15,
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 20.w,
-                        ),
-                      )),
+                            Icons.arrow_forward,
+                            size: 20.w,
+                          ),
+                        )),
+                  ),
                 ),
               ],
             ),
