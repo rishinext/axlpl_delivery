@@ -22,6 +22,7 @@ class AuthView extends GetView<AuthController> {
     final Utils utils = Utils();
     return Scaffold(
       body: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Container(
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
@@ -59,6 +60,7 @@ class AuthView extends GetView<AuthController> {
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
                     prefixText: '+91 | ',
+                    lableText: '+91 | ',
                     validator: utils.validatePhone,
                   ),
                   Obx(
@@ -69,6 +71,7 @@ class AuthView extends GetView<AuthController> {
                           textInputAction: TextInputAction.done,
                           hintTxt: 'Enter your password',
                           validator: utils.validatePassword,
+                          onSubmit: (value) => FocusScope.of(context).unfocus(),
                           sufixIcon: InkWell(
                             onTap: () {
                               authController.isObsecureText.value =
@@ -85,6 +88,7 @@ class AuthView extends GetView<AuthController> {
                       title: login,
                       isLoading: controller.isLoading.value,
                       onPressed: () {
+                        FocusScope.of(context).unfocus();
                         authController.loginUser(
                           controller.mobileController.text,
                           controller.passwordController.text,

@@ -14,6 +14,7 @@ class AuthRepo {
   final ApiServices _apiServices = ApiServices();
   final Utils _utils = Utils();
   final LocalStorage _localStorage = LocalStorage();
+
   Future<bool> loginRepo(
     String mobile,
     String password,
@@ -45,8 +46,13 @@ class AuthRepo {
         if (loginData.status != "success") {
           throw Exception(loginData.message ?? "Login Failed: Unknown Error");
         }
+        if (loginData.messangerdetail!.token != null) {
+          await _localStorage
+              .saveToken(loginData.messangerdetail!.token.toString());
+        }
         await storage.write(
             key: _localStorage.userRole, value: loginData.role.toString());
+
         await storage.write(
             key: _localStorage.loginKey, value: loginData.toJson().toString());
 

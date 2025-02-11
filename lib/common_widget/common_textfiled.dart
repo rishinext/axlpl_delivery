@@ -12,8 +12,12 @@ class CommomTextfiled extends StatelessWidget {
   final bool obscureText;
   final sufixIcon;
   final prefixText;
+  final lableText;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChange;
+
+  final void Function(String?)? onSubmit;
+
   final isReadOnly;
   final isEnable;
 
@@ -30,6 +34,8 @@ class CommomTextfiled extends StatelessWidget {
     this.isReadOnly = false,
     this.textInputAction,
     this.isEnable = true,
+    this.onSubmit,
+    this.lableText,
   });
 
   @override
@@ -44,7 +50,9 @@ class CommomTextfiled extends StatelessWidget {
       validator: validator,
       onChanged: onChange,
       readOnly: isReadOnly,
+      onFieldSubmitted: onSubmit,
       decoration: InputDecoration(
+        labelText: lableText,
         prefixText: prefixText,
         hintText: hintTxt,
         hintStyle: themes.fontSize16_400.copyWith(color: themes.grayColor),

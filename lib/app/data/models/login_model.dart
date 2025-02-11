@@ -62,6 +62,7 @@ class Messangerdetail {
   String? aadharCard;
   String? drivingLicence;
   String? active;
+  String? token;
 
   Messangerdetail({
     this.id,
@@ -86,6 +87,7 @@ class Messangerdetail {
     this.aadharCard,
     this.drivingLicence,
     this.active,
+    this.token,
   });
 
   factory Messangerdetail.fromJson(Map<String, dynamic> json) =>
@@ -112,6 +114,7 @@ class Messangerdetail {
         aadharCard: json["aadhar_card"],
         drivingLicence: json["driving_licence"],
         active: json["active"],
+        token: json["token"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -137,5 +140,6 @@ class Messangerdetail {
         "aadhar_card": aadharCard,
         "driving_licence": drivingLicence,
         "active": active,
+        "token": token,
       };
 }
