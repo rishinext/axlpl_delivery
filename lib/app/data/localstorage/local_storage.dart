@@ -3,6 +3,16 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final FlutterSecureStorage storage = FlutterSecureStorage();
 
 class LocalStorage {
+  LocalStorage._privateConstructor();
+  static final LocalStorage instance = LocalStorage._privateConstructor();
+
+  LocalStorage._internal();
+  static final LocalStorage _instance = LocalStorage._internal();
+
+  factory LocalStorage() {
+    return _instance;
+  }
+
   final String tokenKey = 'token';
   final String loginKey = 'Messangerdetail';
   final String userRole = 'role';
@@ -13,8 +23,9 @@ class LocalStorage {
   }
 
   // Read token
-  Future<String?> readToken() async {
-    return await storage.read(key: tokenKey);
+  Future<bool> readToken() async {
+    String? token = await storage.read(key: tokenKey);
+    return token != null && token.isNotEmpty;
   }
 
   // Delete token

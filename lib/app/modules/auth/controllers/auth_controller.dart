@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/auth_repo.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -9,6 +10,8 @@ class AuthController extends GetxController {
   final AuthRepo _authRepo = AuthRepo();
 
   final formKey = GlobalKey<FormState>();
+
+  LocalStorage localStorage = LocalStorage();
 
   RxBool isObsecureText = true.obs;
   var isLoading = false.obs;
@@ -25,7 +28,8 @@ class AuthController extends GetxController {
     try {
       final isLoggedIn = await _authRepo.loginRepo(mobile, password);
       if (isLoggedIn) {
-        Get.offAllNamed(Routes.BOTTOMBAR);
+        final usersData = await _authRepo.getUserLocalData();
+        Get.offAllNamed(Routes.BOTTOMBAR, arguments: usersData);
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -33,8 +37,16 @@ class AuthController extends GetxController {
           colorText: themes.whiteColor,
           backgroundColor: themes.redColor,
           snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+
+    super.onInit();
   }
 
   @override

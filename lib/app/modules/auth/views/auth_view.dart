@@ -20,116 +20,120 @@ class AuthView extends GetView<AuthController> {
     final authController = Get.put(AuthController());
     Themes themes = Themes();
     final Utils utils = Utils();
-    return Scaffold(
-      body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-            fit: BoxFit.cover,
-            image: AssetImage(
-              loginIMG,
-            ),
-          )),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Form(
-              key: authController.formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 30,
-                children: [
-                  SizedBox(
-                    height: 40.h,
-                  ),
-                  Center(
-                    child: Image.asset(
-                      authLogo,
-                      width: 210.w,
+
+    return SafeArea(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage(
+                loginIMG,
+              ),
+            )),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Form(
+                key: authController.formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 30,
+                  children: [
+                    SizedBox(
+                      height: 40.h,
                     ),
-                  ),
-                  Text(
-                    'Log into your Account',
-                    style: themes.fontSize18_600
-                        .copyWith(color: themes.darkCyanBlue),
-                  ),
-                  CommomTextfiled(
-                    controller: authController.mobileController,
-                    hintTxt: 'Enter your Phone Number',
-                    keyboardType: TextInputType.phone,
-                    textInputAction: TextInputAction.next,
-                    prefixText: '+91 | ',
-                    lableText: '+91 | ',
-                    validator: utils.validatePhone,
-                  ),
-                  Obx(
-                    () {
-                      return CommomTextfiled(
-                          obscureText: authController.isObsecureText.value,
-                          controller: authController.passwordController,
-                          textInputAction: TextInputAction.done,
-                          hintTxt: 'Enter your password',
-                          validator: utils.validatePassword,
-                          onSubmit: (value) => FocusScope.of(context).unfocus(),
-                          sufixIcon: InkWell(
-                            onTap: () {
-                              authController.isObsecureText.value =
-                                  !authController.isObsecureText.value;
-                            },
-                            child: Icon(authController.isObsecureText.value
-                                ? CupertinoIcons.eye_slash
-                                : CupertinoIcons.eye),
-                          ));
-                    },
-                  ),
-                  Obx(() {
-                    return CommonButton(
-                      title: login,
-                      isLoading: controller.isLoading.value,
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        authController.loginUser(
-                          controller.mobileController.text,
-                          controller.passwordController.text,
-                        );
-                      },
-                    );
-                  }),
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Forgot Password ?',
-                        style:
-                            TextStyle(color: themes.shineBlue, fontSize: 14.sp),
-                      )),
-                  Center(
-                      child: Text(
-                    'New to AMBEX Express.?',
-                    style: themes.fontReboto16_600
-                        .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
-                  )),
-                  /*
-                  Row(
-                    children: [
-                      Expanded(child: Divider()),
-                      Center(
-                        child: CupertinoButton(
-                          color: themes.orangeColor,
-                          focusColor: themes.whiteColor,
-                          borderRadius: BorderRadius.circular(5.r),
-                          child: Text(
-                            registerNow,
-                            style: themes.fontReboto16_600
-                                .copyWith(color: themes.whiteColor),
-                          ),
-                          onPressed: () {},
-                        ),
+                    Center(
+                      child: Image.asset(
+                        authLogo,
+                        width: 210.w,
                       ),
-                      Expanded(child: Divider()),
-                    ],
-                  ),*/
-                ],
+                    ),
+                    Text(
+                      'Log into your Account',
+                      style: themes.fontSize18_600
+                          .copyWith(color: themes.darkCyanBlue),
+                    ),
+                    CommomTextfiled(
+                      controller: authController.mobileController,
+                      hintTxt: 'Enter your Phone Number',
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
+                      prefixText: '+91 | ',
+                      lableText: '+91 | ',
+                      validator: utils.validatePhone,
+                    ),
+                    Obx(
+                      () {
+                        return CommomTextfiled(
+                            obscureText: authController.isObsecureText.value,
+                            controller: authController.passwordController,
+                            textInputAction: TextInputAction.done,
+                            hintTxt: 'Enter your password',
+                            validator: utils.validatePassword,
+                            onSubmit: (value) =>
+                                FocusScope.of(context).unfocus(),
+                            sufixIcon: InkWell(
+                              onTap: () {
+                                authController.isObsecureText.value =
+                                    !authController.isObsecureText.value;
+                              },
+                              child: Icon(authController.isObsecureText.value
+                                  ? CupertinoIcons.eye_slash
+                                  : CupertinoIcons.eye),
+                            ));
+                      },
+                    ),
+                    Obx(() {
+                      return CommonButton(
+                        title: login,
+                        isLoading: controller.isLoading.value,
+                        onPressed: () {
+                          FocusScope.of(context).unfocus();
+                          authController.loginUser(
+                            controller.mobileController.text,
+                            controller.passwordController.text,
+                          );
+                        },
+                      );
+                    }),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'Forgot Password ?',
+                          style: TextStyle(
+                              color: themes.shineBlue, fontSize: 14.sp),
+                        )),
+                    Center(
+                        child: Text(
+                      'New to AMBEX Express.?',
+                      style: themes.fontReboto16_600.copyWith(
+                          fontSize: 14.sp, fontWeight: FontWeight.w400),
+                    )),
+                    /*
+                    Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Center(
+                          child: CupertinoButton(
+                            color: themes.orangeColor,
+                            focusColor: themes.whiteColor,
+                            borderRadius: BorderRadius.circular(5.r),
+                            child: Text(
+                              registerNow,
+                              style: themes.fontReboto16_600
+                                  .copyWith(color: themes.whiteColor),
+                            ),
+                            onPressed: () {},
+                          ),
+                        ),
+                        Expanded(child: Divider()),
+                      ],
+                    ),*/
+                  ],
+                ),
               ),
             ),
           ),

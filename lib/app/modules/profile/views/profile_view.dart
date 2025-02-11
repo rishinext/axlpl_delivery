@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -17,6 +18,7 @@ class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
   @override
   Widget build(BuildContext context) {
+    var data = Get.arguments;
     return CommonScaffold(
         appBar: commonAppbar('Profile'),
         body: SingleChildScrollView(
@@ -286,7 +288,10 @@ class ProfileView extends GetView<ProfileController> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: InkWell(
-                    onTap: () => Get.offAllNamed(Routes.AUTH),
+                    onTap: () {
+                      LocalStorage().clearAll();
+                      Get.offAllNamed(Routes.AUTH);
+                    },
                     child: ListTile(
                         tileColor: themes.whiteColor,
                         dense: false,
