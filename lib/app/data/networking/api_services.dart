@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/networking/api_client.dart';
+import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 
 import 'api_response.dart';
 
@@ -27,6 +28,6 @@ class ApiServices {
       'device_id': deviceId,
     };
 
-    return _api.post('login', body);
+    return _api.post(loginPoint, body);
   }
 }

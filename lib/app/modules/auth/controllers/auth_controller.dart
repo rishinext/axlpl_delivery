@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/data/models/login_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/auth_repo.dart';
+import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +33,9 @@ class AuthController extends GetxController {
     try {
       final isLoggedIn = await _authRepo.loginRepo(mobile, password);
       if (isLoggedIn) {
-        final usersData = await _authRepo.getUserLocalData();
-        Get.offAllNamed(Routes.BOTTOMBAR, arguments: usersData);
+        Get.offAllNamed(
+          Routes.BOTTOMBAR,
+        );
       }
     } catch (e) {
       errorMessage.value = e.toString();

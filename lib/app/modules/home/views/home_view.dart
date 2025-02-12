@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
+import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../auth/controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -21,6 +23,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
+    final bottomController = Get.put(BottombarController());
     final MobileScannerController QRController = MobileScannerController();
     return Scaffold(
         backgroundColor: themes.lightWhite,
@@ -170,10 +173,15 @@ class HomeView extends GetView<HomeController> {
                               backgroundImage: AssetImage('assets/manimg.png'),
                             ),
                             SizedBox(height: 8.h),
-                            Text(
-                              'Biju Dahal',
-                              style: themes.fontSize14_500,
-                            ),
+                            Obx(() {
+                              final user = bottomController.userData.value;
+                              return user != null
+                                  ? Text(
+                                      user.messangerdetail?.name ?? 'N/A',
+                                      style: themes.fontSize14_500,
+                                    )
+                                  : Text('N/A');
+                            }),
                           ],
                         ),
                         SizedBox(width: 20.w),

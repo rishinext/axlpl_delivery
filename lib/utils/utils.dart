@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:logger/logger.dart';
 
 Themes themes = Themes();
 
@@ -19,6 +20,34 @@ class Utils {
 
   final fcmToken =
       'dYPw_9uuoYE:APA91bExO-MoUCYPclUiEn8LXtJYI3MVZX4A9x7tozQx3tEIi7AOOYdHKoCAGkoqjKFwYC-Yl5SGhnYN3qQ8t1GwZ5dWsD_yfaRbQQkcme919T5VxRDLey8';
+
+  var logger = Logger(
+    printer: PrettyPrinter(
+      methodCount: 6, // Number of method calls to be displayed
+      errorMethodCount: 10, // Number of method calls if stacktrace is provided
+      lineLength: 500, // Width of the output
+      colors: true, // Colorful log messages
+      printEmojis: true, // Print an emoji for each log message
+      // Should each log print contain a timestamp
+    ),
+  );
+
+  void logError(dynamic error, dynamic stackTrace, {String msg = ""}) {
+    if (msg != "") {
+      logger.e(msg);
+    }
+    logger.e(error, stackTrace: stackTrace);
+  }
+
+  void logInfo(dynamic info) {
+    logger.i(info);
+  }
+
+  void log(
+    dynamic info,
+  ) {
+    logger.d(info);
+  }
 
   String? validatePhone(String? value) {
     // Regex for phone number validation (example for US numbers)

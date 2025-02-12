@@ -47,38 +47,26 @@ class AuthRepo {
         if (loginData.status != "success") {
           throw Exception(loginData.message ?? "Login Failed: Unknown Error");
         }
-        if (loginData.messangerdetail!.token != null) {
+
+        /*   if (loginData.messangerdetail!.token != null) {
           await _localStorage
               .saveToken(loginData.messangerdetail!.token.toString());
         }
+        await _localStorage
+            .saveUserId(loginData.messangerdetail!.id.toString());
+            */
         await storage.write(
             key: _localStorage.userRole, value: loginData.role.toString());
 
         await storage.write(
-            key: _localStorage.loginKey, value: loginData.toJson().toString());
-        await getUserLocalData();
+            key: _localStorage.usersDataKey,
+            value: json.encode(loginData.toJson()));
+
         return true;
       },
       error: (error) {
         throw Exception("Login Failed: ${error.toString()}");
       },
     );
-  }
-
-  Future<LoginModel?> getUserLocalData() async {
-    String? usersData = await storage.read(key: _localStorage.loginKey);
-    if (usersData != null) {
-      try {
-        final jsonData = json.decode(usersData); // Parse the JSON string
-        final loginModel = LoginModel.fromJson(jsonData); // Convert to model
-        return loginModel; // Return the parsed data
-      } catch (e) {
-        log("Error parsing user data: $e");
-        return null;
-      }
-    } else {
-      log("No Localstore UsersData Found!");
-      return null;
-    }
   }
 }

@@ -20,3 +20,4 @@ final arrowImg = 'assets/arrowimg.png';
 final lolipopImg = 'assets/lolipopimg.png';
 final keyIcon = 'assets/keyicon.png';
 final privacyIcon = 'assets/privacyicon.png';
+final errorImg = 'assets/error.png';

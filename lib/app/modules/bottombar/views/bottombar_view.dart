@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/data/models/login_model.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,7 @@ class BottombarView extends GetView<BottombarController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BottombarController());
+    final LoginModel? usersData = Get.arguments;
     return Scaffold(
       body: Obx(() =>
           controller.bottomList.elementAt(controller.selectedIndex.value)),
@@ -27,7 +29,7 @@ class BottombarView extends GetView<BottombarController> {
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage(homeIcon)),
-              label: 'Home',
+              label: usersData?.messangerdetail?.name ?? 'User',
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage(trackingIcon)),
