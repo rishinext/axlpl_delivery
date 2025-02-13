@@ -176,9 +176,12 @@ class HomeView extends GetView<HomeController> {
                             Obx(() {
                               final user = bottomController.userData.value;
                               return user != null
-                                  ? Text(
-                                      user.messangerdetail?.name ?? 'N/A',
-                                      style: themes.fontSize14_500,
+                                  ? SizedBox(
+                                      width: 80.w,
+                                      child: Text(
+                                        user.messangerdetail?.name ?? 'N/A',
+                                        style: themes.fontSize14_500,
+                                      ),
                                     )
                                   : Text('N/A');
                             }),

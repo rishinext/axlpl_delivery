@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/modules/auth/controllers/auth_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -12,13 +13,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
+import '../../bottombar/controllers/bottombar_controller.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
   @override
   Widget build(BuildContext context) {
-    var data = Get.arguments;
+    final bottomController = Get.put(BottombarController());
+    final authController = Get.put(AuthController());
     return CommonScaffold(
         appBar: commonAppbar('Profile'),
         body: SingleChildScrollView(
@@ -35,14 +38,15 @@ class ProfileView extends GetView<ProfileController> {
                     Center(
                       child: Obx(() {
                         return CircleAvatar(
-                          radius: 60,
-                          backgroundImage: controller.imageFile.value != null
-                              ? FileImage(controller.imageFile.value!)
-                              : null,
-                          child: controller.imageFile.value == null
-                              ? Icon(Icons.camera_alt,
-                                  color: themes.whiteColor, size: 50)
-                              : null,
+                          radius: 64,
+                          backgroundColor: themes.darkCyanBlue,
+                          child: CircleAvatar(
+                              backgroundColor: themes.redColor,
+                              radius: 60,
+                              backgroundImage:
+                                  controller.imageFile.value != null
+                                      ? FileImage(controller.imageFile.value!)
+                                      : AssetImage(noImg)),
                         );
                       }),
                     ),
@@ -61,10 +65,15 @@ class ProfileView extends GetView<ProfileController> {
                   ],
                 ),
                 Center(
-                  child: Text(
-                    'Biju Dahal',
-                    style: themes.fontReboto16_600,
-                  ),
+                  child: Obx(() {
+                    final user = bottomController.userData.value;
+                    return user != null
+                        ? Text(
+                            user.messangerdetail?.name ?? 'N/A',
+                            style: themes.fontSize14_500,
+                          )
+                        : Text('N/A');
+                  }),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -127,8 +136,9 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
+                            final user = bottomController.userData.value;
                             return CommomTextfiled(
-                              hintTxt: yourName,
+                              hintTxt: user?.messangerdetail?.name ?? 'N/A',
                               isEnable: controller.isEdit.value,
                               controller: controller.nameController,
                             );
@@ -288,10 +298,7 @@ class ProfileView extends GetView<ProfileController> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: InkWell(
-                    onTap: () {
-                      LocalStorage().clearAll();
-                      Get.offAllNamed(Routes.AUTH);
-                    },
+                    onTap: () => authController.logoutUser(),
                     child: ListTile(
                         tileColor: themes.whiteColor,
                         dense: false,

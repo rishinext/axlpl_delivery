@@ -48,6 +48,24 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> logoutUser() async {
+    isLoading.value = true;
+    try {
+      final isLogout = await _authRepo.logoutRepo();
+      if (isLogout) {
+        Get.offAllNamed(Routes.AUTH);
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+      Get.snackbar('Error', errorMessage.value,
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+          snackPosition: SnackPosition.BOTTOM);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   @override
   void onInit() {
     // TODO: implement onInit

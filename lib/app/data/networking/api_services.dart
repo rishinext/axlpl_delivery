@@ -30,4 +30,29 @@ class ApiServices {
 
     return _api.post(loginPoint, body);
   }
+
+  Future<APIResponse> logout(String userID, String role, String latitude,
+      String longitude, final token) {
+    final body = {
+      'm_id': userID,
+      'role': role,
+      'latitude': latitude,
+      'longitude': longitude
+    };
+    return _api.post(logoutPoint, body, token: token);
+  }
+
+  Future<APIResponse> getDeliveryHistory(
+    String userID,
+    String branchID,
+    String zipcode,
+    String token,
+  ) async {
+    final body = {
+      'messanger_id': userID,
+      'zipcode': zipcode,
+      'branch_id': branchID
+    };
+    return _api.get(deliveryHistoryPoint, query: body, token: token);
+  }
 }

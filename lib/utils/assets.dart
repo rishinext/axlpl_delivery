@@ -21,3 +21,4 @@ final lolipopImg = 'assets/lolipopimg.png';
 final keyIcon = 'assets/keyicon.png';
 final privacyIcon = 'assets/privacyicon.png';
 final errorImg = 'assets/error.png';
+final noImg = 'assets/noimg.jpg';
