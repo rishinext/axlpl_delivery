@@ -1,3 +1,4 @@
+const String success = 'success';
 String login = 'Login';
 String registerNow = 'Or Register Now';
 String runningDeliveryTxt = 'Running Delivery';

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../controllers/history_controller.dart';
 
@@ -99,75 +98,111 @@ class HistoryView extends GetView<HistoryController> {
                   historyController.isSelected.value == 0
                       ? SizedBox(
                           height: 490.h,
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) => SizedBox(
-                              height: 1.h,
-                            ),
-                            itemCount: 10,
-                            shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
-                            itemBuilder: (context, index) => ListTile(
-                                tileColor: themes.whiteColor,
-                                dense: false,
-                                leading: CircleAvatar(
-                                  backgroundColor: themes.blueGray,
-                                  child: Image.asset(
-                                    gpsIcon,
-                                    width: 18.w,
-                                  ),
-                                ),
-                                title: Text('Sakinaka : 4000072'),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Lorem Ipsum is simply dummy text ')
-                                  ],
-                                ),
-                                trailing: CircleAvatar(
-                                  backgroundColor: themes.lightCream,
-                                  // radius: 15,
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    size: 20.w,
-                                  ),
-                                )),
-                          ),
+                          child: Obx(() {
+                            if (historyController.isLoading.value) {
+                              return const Center(
+                                  child: CircularProgressIndicator.adaptive());
+                            }
+                            if (historyController.historyList.isEmpty) {
+                              return Center(
+                                  child: Text(
+                                'No History Data Found!',
+                                style: themes.fontReboto16_600,
+                              ));
+                            }
+                            return ListView.separated(
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 1.h,
+                              ),
+                              itemCount: historyController.historyList.length,
+                              shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final history =
+                                    historyController.historyList[index];
+                                return ListTile(
+                                    tileColor: themes.whiteColor,
+                                    dense: false,
+                                    leading: CircleAvatar(
+                                      backgroundColor: themes.blueGray,
+                                      child: Image.asset(
+                                        gpsIcon,
+                                        width: 18.w,
+                                      ),
+                                    ),
+                                    title: Text(
+                                        "${history.cityName.toString()} : ${history.pincode}"),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(history.companyName.toString())
+                                      ],
+                                    ),
+                                    trailing: CircleAvatar(
+                                      backgroundColor: themes.lightCream,
+                                      // radius: 15,
+                                      child: Icon(
+                                        Icons.arrow_forward,
+                                        size: 20.w,
+                                      ),
+                                    ));
+                              },
+                            );
+                          }),
                         )
                       : SizedBox(
                           height: 490.h,
-                          child: ListView.separated(
-                            separatorBuilder: (context, index) => SizedBox(
-                              height: 1.h,
-                            ),
-                            itemCount: 10,
-                            shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
-                            itemBuilder: (context, index) => ListTile(
-                                tileColor: themes.whiteColor,
-                                dense: false,
-                                leading: CircleAvatar(
-                                  backgroundColor: themes.blueGray,
-                                  child: Image.asset(
-                                    truckBlueIcon,
-                                    width: 18.w,
-                                  ),
-                                ),
-                                title: Text('Sakinaka : 4000072'),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Lorem Ipsum is simply dummy text ')
-                                  ],
-                                ),
-                                trailing: CircleAvatar(
-                                  backgroundColor: themes.lightCream,
-                                  // radius: 15,
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    size: 20.w,
-                                  ),
-                                )),
-                          ),
+                          child: Obx(() {
+                            if (historyController.isLoading.value) {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                            if (historyController.pickUpHistoryList.isEmpty) {
+                              return Center(
+                                  child: Text(
+                                'No Pickup History Data Found!',
+                                style: themes.fontReboto16_600,
+                              ));
+                            }
+                            return ListView.separated(
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 1.h,
+                              ),
+                              itemCount:
+                                  historyController.pickUpHistoryList.length,
+                              shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                    tileColor: themes.whiteColor,
+                                    dense: false,
+                                    leading: CircleAvatar(
+                                      backgroundColor: themes.blueGray,
+                                      child: Image.asset(
+                                        truckBlueIcon,
+                                        width: 18.w,
+                                      ),
+                                    ),
+                                    title: Text('Sakinaka : 4000072'),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            'Lorem Ipsum is simply dummy text ')
+                                      ],
+                                    ),
+                                    trailing: CircleAvatar(
+                                      backgroundColor: themes.lightCream,
+                                      // radius: 15,
+                                      child: Icon(
+                                        Icons.arrow_forward,
+                                        size: 20.w,
+                                      ),
+                                    ));
+                              },
+                            );
+                          }),
                         )
                 ],
               ),

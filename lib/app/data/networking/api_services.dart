@@ -45,14 +45,47 @@ class ApiServices {
   Future<APIResponse> getDeliveryHistory(
     String userID,
     String branchID,
-    String zipcode,
+    // String zipcode,
     String token,
   ) async {
     final body = {
       'messanger_id': userID,
-      'zipcode': zipcode,
+      // 'zipcode': zipcode,
       'branch_id': branchID
     };
     return _api.get(deliveryHistoryPoint, query: body, token: token);
+  }
+
+  Future<APIResponse> getPickupHistory(
+    String userID,
+    String branchID,
+    // String zipcode,
+    String token,
+  ) async {
+    final body = {
+      'messanger_id': userID,
+      // 'zipcode': zipcode,
+      'branch_id': branchID
+    };
+    return _api.get(historyPickupPoint, query: body, token: token);
+  }
+
+  Future<APIResponse> getDashboardData(
+    String userID,
+    String branchID,
+    // String zipcode,
+    String token,
+    String fcmToken,
+    String version,
+    String deviceID,
+  ) async {
+    final body = {
+      'messanger_id': userID,
+      'branch_id': branchID,
+      'fcm_token': fcmToken,
+      'version': version,
+      'device_id': deviceID
+    };
+    return _api.post(dashboardDataPoint, body, token: token);
   }
 }

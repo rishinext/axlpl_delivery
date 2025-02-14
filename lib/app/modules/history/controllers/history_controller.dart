@@ -1,11 +1,70 @@
+import 'package:axlpl_delivery/app/data/models/history_model.dart';
+import 'package:axlpl_delivery/app/data/networking/repostiory/history_repo.dart';
+import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:get/get.dart';
 
 class HistoryController extends GetxController {
   //TODO: Implement HistoryController
 
+  final historyRepo =
+      HistoryRepository(); // assuming you have a repository class
+  final historyList = <HistoryDelivery>[].obs;
+  final pickUpHistoryList = <HistoryDelivery>[].obs;
+
   RxInt isSelected = 0.obs;
+  RxBool isLoading = false.obs;
 
   void selectedContainer(int index) {
     isSelected.value = index;
+  }
+
+  Future<void> getHistory() async {
+    isLoading.value = true;
+
+    try {
+      final success = await historyRepo.historyRepo();
+
+      if (success != null) {
+        historyList.value = success;
+        isLoading.value = false;
+      } else {
+        Utils().logInfo('No History Data Found');
+        isLoading.value = false;
+      }
+    } catch (error) {
+      Utils().logError('Error getting history', error);
+      historyList.value = [];
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> getPickupHistory() async {
+    isLoading.value = true;
+
+    try {
+      final success = await historyRepo.pickupHistoryRepo();
+
+      if (success != null) {
+        pickUpHistoryList.value = success;
+        isLoading.value = false;
+      } else {
+        Utils().logInfo('No Pickup History Data Found');
+        isLoading.value = false;
+      }
+    } catch (error) {
+      Utils().logError('Error getting pickup history', error);
+      pickUpHistoryList.value = [];
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    getHistory();
+    getPickupHistory();
+    super.onInit();
   }
 }

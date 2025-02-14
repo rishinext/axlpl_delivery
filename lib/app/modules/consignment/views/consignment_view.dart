@@ -151,11 +151,28 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                                 .split(" ")[0],
                                         isReadOnly: true,
                                         sufixIcon: InkWell(
-                                            onTap: () =>
-                                                showPicker(context, (value) {
-                                                  controller.selectedStartDate
-                                                      .value = value;
-                                                }, []),
+                                            onTap: () async {
+                                              final selectedDate =
+                                                  await holoDatePicker(
+                                                      context,
+                                                      initialDate:
+                                                          controller
+                                                                  .selectedStartDate
+                                                                  .value ??
+                                                              DateTime.now(),
+                                                      firstDate:
+                                                          controller
+                                                              .selectedStartDate
+                                                              .value,
+                                                      lastDate: DateTime(2090),
+                                                      hintText:
+                                                          "Choose Start Date");
+
+                                              if (selectedDate != null) {
+                                                controller.selectedEndDate
+                                                    .value = selectedDate;
+                                              }
+                                            },
                                             child: Icon(
                                                 CupertinoIcons.calendar_today)),
                                       ),
@@ -167,11 +184,29 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                                 .split(" ")[0],
                                         isReadOnly: true,
                                         sufixIcon: InkWell(
-                                            onTap: () =>
-                                                showPicker(context, (value) {
-                                                  controller.selectedEndDate
-                                                      .value = value;
-                                                }, []),
+                                            onTap: () async {
+                                              final selectedDate =
+                                                  await holoDatePicker(context,
+                                                      initialDate: controller
+                                                              .selectedEndDate
+                                                              .value ??
+                                                          DateTime.now(),
+                                                      firstDate: controller
+                                                          .selectedStartDate
+                                                          .value,
+                                                      lastDate: DateTime(2090),
+                                                      hintText:
+                                                          "Choose End Date");
+
+                                              if (selectedDate != null) {
+                                                controller.selectedEndDate
+                                                    .value = selectedDate;
+                                              }
+                                            },
+                                            // showPicker(context, (value) {
+                                            //   controller.selectedEndDate
+                                            //       .value = value;
+                                            // }, []),
                                             child: Icon(
                                                 CupertinoIcons.calendar_today)),
                                       ),
