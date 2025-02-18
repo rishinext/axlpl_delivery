@@ -3,13 +3,15 @@ import 'package:axlpl_delivery/app/data/networking/repostiory/history_repo.dart'
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:get/get.dart';
 
+import '../../../data/models/history_pickup_model.dart';
+
 class HistoryController extends GetxController {
   //TODO: Implement HistoryController
 
   final historyRepo =
       HistoryRepository(); // assuming you have a repository class
   final historyList = <HistoryDelivery>[].obs;
-  final pickUpHistoryList = <HistoryDelivery>[].obs;
+  final pickUpHistoryList = <HistoryPickup>[].obs;
 
   RxInt isSelected = 0.obs;
   RxBool isLoading = false.obs;

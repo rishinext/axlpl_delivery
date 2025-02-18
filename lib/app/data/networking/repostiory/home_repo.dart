@@ -11,7 +11,7 @@ class HomeRepository {
   final Utils _utils = Utils();
   final deviceId = MobileDeviceIdentifier().getDeviceId();
 
-  Future<DashboardDataModel> dashboardDataRepo() async {
+  Future<DashboardDataModel?> dashboardDataRepo() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString();
@@ -20,14 +20,17 @@ class HomeRepository {
       final fcmToken = _utils.fcmToken;
       final packageInfo = await PackageInfo.fromPlatform();
       final appVersion = "${packageInfo.version}-${packageInfo.buildNumber}";
-      if (userID?.isNotEmpty == true || userID != null) {
+      if (userID != null && userID.isNotEmpty) {
+        Utils().logInfo(
+            "Calling API with: userID=$userID, branchID=$branchID, token=$token");
         final response = await _apiServices.getDashboardData(
-            userID.toString(),
-            branchID.toString(),
-            token.toString(),
-            fcmToken.toString(),
-            appVersion,
-            deviceId.toString());
+          userID,
+          branchID.toString(),
+          token ?? "",
+          fcmToken ?? "",
+          appVersion,
+          deviceId.toString(),
+        );
         response.when(
           success: (data) {
             final dashboardData = DashboardDataModel.fromJson(data);
@@ -36,17 +39,21 @@ class HomeRepository {
             } else {
               Utils().logInfo(
                   'API call successful but status is not "success" : ${dashboardData.status}');
+              return null;
             }
-            return dashboardData;
           },
           error: (error) {
-            throw Exception("Dasboard Data Failed: ${error.toString()}");
+            Utils()
+                .logError(error.toString(), 'Dashboard Data API Call Failed!');
+            return null;
           },
         );
+      } else {
+        Utils().logError("Error", 'UserID Not Found!');
       }
     } catch (e) {
       Utils().logError("$e", 'API Logout Error');
     }
-    return DashboardDataModel();
+    return null;
   }
 }

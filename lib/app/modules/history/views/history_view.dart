@@ -173,6 +173,8 @@ class HistoryView extends GetView<HistoryController> {
                               shrinkWrap: true,
                               physics: BouncingScrollPhysics(),
                               itemBuilder: (context, index) {
+                                var pickup =
+                                    historyController.pickUpHistoryList[index];
                                 return ListTile(
                                     tileColor: themes.whiteColor,
                                     dense: false,
@@ -183,13 +185,13 @@ class HistoryView extends GetView<HistoryController> {
                                         width: 18.w,
                                       ),
                                     ),
-                                    title: Text('Sakinaka : 4000072'),
+                                    title: Text(
+                                        '${pickup.cityName.toString()} : ${pickup.pincode}'),
                                     subtitle: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                            'Lorem Ipsum is simply dummy text ')
+                                        Text(pickup.address1.toString())
                                       ],
                                     ),
                                     trailing: CircleAvatar(

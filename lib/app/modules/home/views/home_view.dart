@@ -84,7 +84,9 @@ class HomeView extends GetView<HomeController> {
                             Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS),
                         color: themes.blueGray,
                         title: runningDeliveryTxt,
-                        subTitle: '10',
+                        subTitle: controller.isLoading.value
+                            ? controller.dashboardDataModel.totalDelivery
+                            : 'n/a'.toUpperCase(),
                       ),
                     ),
                     SizedBox(

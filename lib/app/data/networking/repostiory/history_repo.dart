@@ -1,5 +1,6 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/history_model.dart';
+import 'package:axlpl_delivery/app/data/models/history_pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -38,7 +39,7 @@ class HistoryRepository {
     return null;
   }
 
-  Future<List<HistoryDelivery>?> pickupHistoryRepo() async {
+  Future<List<HistoryPickup>?> pickupHistoryRepo() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString();
@@ -49,9 +50,9 @@ class HistoryRepository {
             userID.toString(), branchID.toString(), token.toString());
         return response.when(
           success: (body) {
-            final historyData = HistoryModel.fromJson(body);
+            final historyData = HistoryPickupModel.fromJson(body);
             if (historyData.status == success) {
-              return historyData.historyDelivery;
+              return historyData.historyPickup;
             } else {
               Utils().logInfo(
                   'API call successful but status is not "success" : ${historyData.status}');

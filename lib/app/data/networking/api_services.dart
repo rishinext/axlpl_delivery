@@ -77,7 +77,7 @@ class ApiServices {
     String token,
     String fcmToken,
     String version,
-    String deviceID,
+    final deviceID,
   ) async {
     final body = {
       'messanger_id': userID,
@@ -86,6 +86,6 @@ class ApiServices {
       'version': version,
       'device_id': deviceID
     };
-    return _api.post(dashboardDataPoint, body, token: token);
+    return _api.get(dashboardDataPoint, query: body, token: token);
   }
 }
