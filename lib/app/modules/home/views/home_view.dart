@@ -15,7 +15,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-import '../../auth/controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -79,25 +78,35 @@ class HomeView extends GetView<HomeController> {
                 Row(
                   children: [
                     Expanded(
-                      child: HomeContainer(
-                        OnTap: () =>
-                            Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS),
-                        color: themes.blueGray,
-                        title: runningDeliveryTxt,
-                        subTitle: controller.isLoading.value
-                            ? controller.dashboardDataModel.totalDelivery
-                            : 'n/a'.toUpperCase(),
-                      ),
+                      child: Obx(() {
+                        return HomeContainer(
+                          onTap: () {
+                            Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS);
+                          },
+                          color: themes.blueGray,
+                          title: runningDeliveryTxt,
+                          subTitle: controller.isLoading.value
+                              ? controller
+                                  .dashboardDataModel.value?.totalDelivery
+                                  .toString()
+                              : '0'.toUpperCase(),
+                        );
+                      }),
                     ),
                     SizedBox(
                       width: 10.w,
                     ),
                     Expanded(
-                      child: HomeContainer(
-                        color: themes.lightCream,
-                        title: runningPickupTxt,
-                        subTitle: '10',
-                      ),
+                      child: Obx(() {
+                        return HomeContainer(
+                          color: themes.lightCream,
+                          title: runningPickupTxt,
+                          subTitle: controller.isLoading.value
+                              ? controller.dashboardDataModel.value?.totalPickup
+                                  .toString()
+                              : '0'.toUpperCase(),
+                        );
+                      }),
                     ),
                   ],
                 ),

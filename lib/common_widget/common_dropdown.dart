@@ -17,6 +17,7 @@ Widget commomDropdown(
     {required String hint,
     required Rxn<String> selectedValue,
     required Function(String?) onChanged,
+    VoidCallback? onTap,
     required List<String> items}) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
@@ -36,6 +37,7 @@ Widget commomDropdown(
                 ))
             .toList(),
         onChanged: onChanged,
+        onTap: onTap,
         icon: Icon(
           Icons.keyboard_arrow_down_outlined,
           size: 35,

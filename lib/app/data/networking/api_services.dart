@@ -88,4 +88,19 @@ class ApiServices {
     };
     return _api.get(dashboardDataPoint, query: body, token: token);
   }
+
+  Future<APIResponse> getCustomersList(
+    String userID,
+    String branchID,
+    String search,
+    String nextID,
+  ) async {
+    final body = {
+      'messanger_id': userID,
+      'branch_id': branchID,
+      'search_query': search,
+      'next_id': nextID
+    };
+    return _api.post(getCustomersListPoint, body);
+  }
 }

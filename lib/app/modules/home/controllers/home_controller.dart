@@ -8,7 +8,7 @@ class HomeController extends GetxController {
   final homeRepo = HomeRepository();
 
   TextEditingController searchController = TextEditingController();
-  DashboardDataModel dashboardDataModel = DashboardDataModel();
+  Rxn<DashboardDataModel> dashboardDataModel = Rxn<DashboardDataModel>();
   RxBool isLoading = false.obs;
 
   Future<void> getDashborad() async {
@@ -16,13 +16,15 @@ class HomeController extends GetxController {
     try {
       final data = await homeRepo.dashboardDataRepo();
       if (data != null) {
-        dashboardDataModel = data;
-        Utils().logInfo("Dashboard data retrive successfully");
+        dashboardDataModel.value = data;
+        Utils().logInfo("Dashboard data retrieved successfully");
       } else {
         Utils().logError("Dashboard data is null", '');
       }
-    } catch (error) {
-      Utils().logError('Error getting dashborad', error);
+    } catch (error, stackTrace) {
+      Utils().logError('Error getting dashboard', error.toString());
+      Utils().logError(
+          'Stack Trace', stackTrace.toString()); // Log the stack trace
     } finally {
       isLoading.value = false;
     }
@@ -31,7 +33,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    super.onInit();
     getDashborad();
+    super.onInit();
   }
 }

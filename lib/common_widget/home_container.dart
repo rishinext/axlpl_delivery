@@ -6,19 +6,19 @@ class HomeContainer extends StatelessWidget {
   Color? color;
   String? title;
   String? subTitle;
-  final VoidCallback? OnTap;
+  final VoidCallback? onTap;
   HomeContainer({
     super.key,
     this.color,
     this.title,
     this.subTitle,
-    this.OnTap,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: OnTap,
+      onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
             color: color, borderRadius: BorderRadius.circular(5.r)),

@@ -22,6 +22,7 @@ class ProfileView extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     final bottomController = Get.put(BottombarController());
     final authController = Get.put(AuthController());
+    final user = bottomController.userData.value;
     return CommonScaffold(
         appBar: commonAppbar('Profile'),
         body: SingleChildScrollView(
@@ -136,9 +137,8 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            final user = bottomController.userData.value;
                             return CommomTextfiled(
-                              hintTxt: user?.messangerdetail?.name ?? 'N/A',
+                              hintTxt: user?.messangerdetail?.name ?? 'Name',
                               isEnable: controller.isEdit.value,
                               controller: controller.nameController,
                             );
@@ -150,7 +150,7 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: 'AXL- 033',
+                              hintTxt: user?.messangerdetail?.code ?? 'code',
                               isEnable: controller.isEdit.value,
                               controller: controller.codeController,
                             );
@@ -162,7 +162,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: state,
+                              hintTxt:
+                                  user?.messangerdetail?.stateName ?? state,
                               isEnable: controller.isEdit.value,
                               controller: controller.stateController,
                             );
@@ -174,7 +175,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: city,
+                              hintTxt:
+                                  user?.messangerdetail?.cityName ?? 'city',
                               isEnable: controller.isEdit.value,
                               controller: controller.cityController,
                             );
@@ -186,7 +188,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: branch,
+                              hintTxt:
+                                  user?.messangerdetail?.branchName ?? branch,
                               isEnable: controller.isEdit.value,
                               controller: controller.branchController,
                             );
@@ -198,7 +201,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: 'AXL- 033',
+                              hintTxt: user?.messangerdetail?.routeCode ??
+                                  'AXL- 033',
                               isEnable: controller.isEdit.value,
                               controller: controller.routeController,
                             );
@@ -211,7 +215,8 @@ class ProfileView extends GetView<ProfileController> {
                           Obx(() {
                             return CommomTextfiled(
                               isEnable: controller.isEdit.value,
-                              hintTxt: '98888888',
+                              hintTxt:
+                                  user?.messangerdetail?.phone ?? '98888888',
                               controller: controller.phoneController,
                             );
                           }),
@@ -222,7 +227,7 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: email,
+                              hintTxt: user?.messangerdetail?.email ?? email,
                               isEnable: controller.isEdit.value,
                               controller: controller.emailController,
                             );
@@ -234,7 +239,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommomTextfiled(
-                              hintTxt: '0555',
+                              hintTxt:
+                                  user?.messangerdetail?.vehicleNo ?? '0555',
                               isEnable: controller.isEdit.value,
                               controller: controller.vehicleController,
                             );

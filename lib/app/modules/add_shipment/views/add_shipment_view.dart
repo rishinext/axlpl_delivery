@@ -1,6 +1,3 @@
-import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
-import 'package:axlpl_delivery/common_widget/common_appbar.dart';
-import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -8,7 +5,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 import '../controllers/add_shipment_controller.dart';
@@ -19,6 +16,10 @@ class AddShipmentView extends GetView<AddShipmentController> {
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
     final Utils utils = Utils();
+    String formatDate(DateTime date) {
+      return DateFormat('dd/MM/yyyy').format(date); // Format the date
+    }
+
     return SafeArea(
       child: CommonScaffold(
           body: SingleChildScrollView(
@@ -39,15 +40,23 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   ),
                   CommomTextfiled(
                     isReadOnly: true,
-                    sufixIcon: Icon(CupertinoIcons.calendar),
-                    hintTxt: '01/05/0224',
+                    sufixIcon: IconButton(
+                        onPressed: () async {
+                          await addshipController.pickDate(context);
+                        },
+                        icon: Icon(CupertinoIcons.calendar_today)),
+                    hintTxt: formatDate(addshipController.selectedDate.value),
                   ),
                   dropdownText('Customer'),
-                  commomDropdown(
-                      hint: 'select customer',
-                      selectedValue: addshipController.selectedCustomer,
-                      onChanged: (p0) {},
-                      items: []),
+                  Obx(
+                    () => commomDropdown(
+                        hint: 'select customer',
+                        selectedValue: addshipController.selectedCustomer,
+                        onChanged: (p0) {},
+                        items: addshipController.customerList
+                            .map((customer) => customer.companyName.toString())
+                            .toList()),
+                  ),
                   dropdownText('Category'),
                   commomDropdown(
                       hint: 'select customer',

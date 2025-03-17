@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a34695b8-f86e-4fe4-82b5-decc75c7aeb4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/localstorage/local_storage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/localstorage/local_storage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/auth/controllers/auth_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/auth/controllers/auth_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-    </list>
+    <list default="true" id="a34695b8-f86e-4fe4-82b5-decc75c7aeb4" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,16 +89,5 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="token store" />
     <option name="LAST_COMMIT_MESSAGE" value="token store" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/lib/app/modules/auth/controllers/auth_controller.dart</url>
-          <line>24</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
