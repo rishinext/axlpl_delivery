@@ -79,28 +79,48 @@ class ApiServices {
     String version,
     final deviceID,
   ) async {
-    final body = {
+    final query = {
       'messanger_id': userID,
       'branch_id': branchID,
       'fcm_token': fcmToken,
       'version': version,
       'device_id': deviceID
     };
-    return _api.get(dashboardDataPoint, query: body, token: token);
+    return _api.get(dashboardDataPoint, query: query, token: token);
   }
 
   Future<APIResponse> getCustomersList(
     String userID,
     String branchID,
-    String search,
+    String? search,
     String nextID,
+    String token,
   ) async {
-    final body = {
-      'messanger_id': userID,
+    final query = {
+      'm_id': userID,
       'branch_id': branchID,
-      'search_query': search,
+      'search_query': search ?? "",
       'next_id': nextID
     };
-    return _api.post(getCustomersListPoint, body);
+    return _api.get(getCustomersListPoint, query: query, token: token);
+  }
+
+  Future<APIResponse> getCategoryList(
+    String? search,
+    String token,
+  ) async {
+    final query = {
+      'search_query': search ?? "",
+    };
+    return _api.get(getCategoryListPoint, query: query, token: token);
+  }
+
+  Future<APIResponse> getCommodityList(
+    String? search,
+    String? categoryID,
+    String token,
+  ) async {
+    final body = {'search_query': search ?? "", 'category_id': categoryID};
+    return _api.post(getCommodityListPoint, body, token: token);
   }
 }

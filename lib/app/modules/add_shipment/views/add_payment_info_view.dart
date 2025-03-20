@@ -30,11 +30,24 @@ class AddPaymentInfoView extends GetView {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     dropdownText('Payment Information'),
-                    commomDropdown(
-                        hint: 'select customer',
-                        selectedValue: addshipController.selectedCustomer,
-                        onChanged: (p0) {},
-                        items: []),
+                    // Obx(
+                    //   () => CommonDropdown(
+                    //     hint: 'Select Customer',
+                    //     selectedValue: addshipController.selectedCustomer.value,
+                    //     onChanged: (newValue) {
+                    //       addshipController.setSelectedCustomer(
+                    //           newValue); // Update selection
+                    //     },
+                    //     items: addshipController.customerList
+                    //         .map((customer) => DropdownMenuItem(
+                    //               value:
+                    //                   customer, // Pass the whole customer object
+                    //               child: Text(customer.customers.toString() ??
+                    //                   "Unknown Customer"), // Display customer name
+                    //             ))
+                    //         .toList(),
+                    //   ),
+                    // ),
                     dropdownText(zip),
                     CommomTextfiled(
                       hintTxt: zip,

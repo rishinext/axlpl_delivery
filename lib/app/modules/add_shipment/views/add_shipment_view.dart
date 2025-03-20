@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -49,24 +52,32 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   ),
                   dropdownText('Customer'),
                   Obx(
-                    () => commomDropdown(
+                    () => CommonDropdown(
                         hint: 'select customer',
-                        selectedValue: addshipController.selectedCustomer,
-                        onChanged: (p0) {},
+                        selectedValue: addshipController.selectedCustomer.value,
+                        onChanged: (val) {
+                          addshipController.selectedCustomer.value = val;
+                        },
                         items: addshipController.customerList
                             .map((customer) => customer.companyName.toString())
                             .toList()),
                   ),
                   dropdownText('Category'),
-                  commomDropdown(
-                      hint: 'select customer',
-                      selectedValue: addshipController.selectedCustomer,
-                      onChanged: (p0) {},
-                      items: []),
+                  Obx(
+                    () => CommonDropdown(
+                        hint: 'select category',
+                        selectedValue: addshipController.selectedCategory.value,
+                        onChanged: (val) {
+                          addshipController.selectedCategory.value = val;
+                        },
+                        items: addshipController.categoryList
+                            .map((category) => category.name.toString())
+                            .toList()),
+                  ),
                   dropdownText('Commodity'),
-                  commomDropdown(
+                  CommonDropdown(
                       hint: 'select customer',
-                      selectedValue: addshipController.selectedCustomer,
+                      selectedValue: addshipController.selectedCustomer.value,
                       onChanged: (p0) {},
                       items: []),
                   Row(
@@ -103,15 +114,15 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     ],
                   ),
                   dropdownText('Payment Mode'),
-                  commomDropdown(
+                  CommonDropdown(
                       hint: 'Select Payment Mode',
-                      selectedValue: addshipController.selectedCustomer,
+                      selectedValue: addshipController.selectedCustomer.value,
                       onChanged: (p0) {},
                       items: []),
                   dropdownText('Customer'),
-                  commomDropdown(
+                  CommonDropdown(
                       hint: 'select customer',
-                      selectedValue: addshipController.selectedCustomer,
+                      selectedValue: addshipController.selectedCustomer.value,
                       onChanged: (p0) {},
                       items: []),
                   Row(

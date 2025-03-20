@@ -33,7 +33,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    getDashborad();
     super.onInit();
+    getDashborad();
   }
 }

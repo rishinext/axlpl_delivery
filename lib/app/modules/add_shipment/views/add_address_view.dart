@@ -89,11 +89,11 @@ class AddAddressView extends GetView {
                 validator: utils.validateText,
               ),
               dropdownText('Select Aera'),
-              commomDropdown(
-                  hint: 'select customer',
-                  selectedValue: addshipController.selectedCustomer,
-                  onChanged: (p0) {},
-                  items: []),
+              // CommonDropdown(
+              //     hint: 'select customer',
+              //     selectedValue: addshipController.selectedCustomer,
+              //     onChanged: (p0) {},
+              //     items: []),
               dropdownText('GST No'),
               CommomTextfiled(
                 hintTxt: 'GST No',
