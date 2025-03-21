@@ -1,11 +1,14 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
+import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -51,35 +54,44 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     hintTxt: formatDate(addshipController.selectedDate.value),
                   ),
                   dropdownText('Customer'),
-                  Obx(
-                    () => CommonDropdown(
-                        hint: 'select customer',
-                        selectedValue: addshipController.selectedCustomer.value,
-                        onChanged: (val) {
-                          addshipController.selectedCustomer.value = val;
-                        },
-                        items: addshipController.customerList
-                            .map((customer) => customer.companyName.toString())
-                            .toList()),
-                  ),
+                  Obx(() => CommonDropdown<CustomersList>(
+                        hint: 'Select Customer',
+                        selectedValue: controller.selectedCustomer.value,
+                        isLoading: addshipController.isLoadingCustomers.value,
+                        items: controller.customerList,
+                        itemLabel: (c) => c.companyName ?? 'Unknown',
+                        itemValue: (c) => c.id.toString(),
+                        onChanged: (val) =>
+                            controller.selectedCustomer.value = val,
+                      )),
                   dropdownText('Category'),
-                  Obx(
-                    () => CommonDropdown(
-                        hint: 'select category',
-                        selectedValue: addshipController.selectedCategory.value,
+                  Obx(() => CommonDropdown<CategoryList>(
+                        hint: 'Select Category',
+                        selectedValue: controller.selectedCategory.value,
+                        isLoading: addshipController.isLoadingCate.value,
+                        items: controller.categoryList,
+                        itemLabel: (c) => c.name ?? 'Unknown',
+                        itemValue: (c) => c.id.toString(),
                         onChanged: (val) {
-                          addshipController.selectedCategory.value = val;
+                          controller.selectedCategory.value = val;
+                          if (val != null) {
+                            controller.selectedCommodity.value = null;
+
+                            addshipController.commodityListData(val.toString());
+                          }
                         },
-                        items: addshipController.categoryList
-                            .map((category) => category.name.toString())
-                            .toList()),
-                  ),
+                      )),
                   dropdownText('Commodity'),
-                  CommonDropdown(
-                      hint: 'select customer',
-                      selectedValue: addshipController.selectedCustomer.value,
-                      onChanged: (p0) {},
-                      items: []),
+                  Obx(() => CommonDropdown<CommodityList>(
+                        hint: 'Select Comodity',
+                        selectedValue: controller.selectedCommodity.value,
+                        isLoading: addshipController.isLoadingCommodity.value,
+                        items: controller.commodityList,
+                        itemLabel: (c) => c.name ?? 'Unknown',
+                        itemValue: (c) => c.id.toString(),
+                        onChanged: (val) =>
+                            controller.selectedCommodity.value = val,
+                      )),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -114,17 +126,30 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     ],
                   ),
                   dropdownText('Payment Mode'),
-                  CommonDropdown(
-                      hint: 'Select Payment Mode',
-                      selectedValue: addshipController.selectedCustomer.value,
-                      onChanged: (p0) {},
-                      items: []),
+                  Obx(() => CommonDropdown<Map>(
+                        hint: 'Select Payment',
+                        selectedValue:
+                            addshipController.selectedPaymentModeId.value,
+                        isLoading: false,
+                        items: addshipController.paymentModes,
+                        itemLabel: (m) => m['name'] ?? '',
+                        itemValue: (m) => m['id'],
+                        onChanged: (val) {
+                          log(val.toString());
+                          addshipController.selectedPaymentModeId.value = val;
+                        },
+                      )),
+                  Text(
+                    'No of Parcel',
+                    style: themes.fontSize14_400,
+                  ),
+                  CommomTextfiled(
+                    hintTxt: 'Enter No of Parcel',
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    validator: utils.validateText,
+                  ),
                   dropdownText('Customer'),
-                  CommonDropdown(
-                      hint: 'select customer',
-                      selectedValue: addshipController.selectedCustomer.value,
-                      onChanged: (p0) {},
-                      items: []),
                   Row(
                     children: [
                       dropdownText('Insurance by AXLPL : '),

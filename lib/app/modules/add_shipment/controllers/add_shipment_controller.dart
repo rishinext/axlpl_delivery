@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
+import 'package:axlpl_delivery/app/data/networking/datat_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_different_address_view.dart';
@@ -11,7 +12,6 @@ import 'package:axlpl_delivery/common_widget/common_datepicker.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 
 class AddShipmentController extends GetxController {
   //TODO: Implement AddShipmentController
@@ -21,6 +21,10 @@ class AddShipmentController extends GetxController {
   final customerList = <CustomersList>[].obs;
   final categoryList = <CategoryList>[].obs;
   final commodityList = <CommodityList>[].obs;
+  final paymentModes = [
+    {'id': '1', 'name': 'Prepaid'},
+    {'id': '2', 'name': 'To Pay'},
+  ].obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
   final PageController pageController = PageController();
@@ -33,77 +37,65 @@ class AddShipmentController extends GetxController {
     AddPaymentInfoView()
   ];
 
-  RxBool isLoading = false.obs;
-  RxBool isLoadingCate = false.obs;
-  var isLoadingMore = false.obs;
-  var nextID = "0".obs;
+  final isLoadingCustomers = false.obs;
+  final isLoadingCate = false.obs;
+  final isLoadingCommodity = false.obs;
+  final isServiceType = false.obs;
+
   var selectedCustomer = Rxn<String>();
+
   var selectedCategory = Rxn<String>();
+
+  var selectedCommodity = Rxn<String>();
+
+  var selectedServiceType = Rxn<String>();
+
+  var selectedPaymentModeId = Rxn<String>();
+
   RxString insuranceType = 'NO'.obs;
   RxString diffrentAddressType = 'NO'.obs;
   RxString addressType = 'New Address'.obs;
   var currentPage = 0.obs;
   RxInt totalPage = 5.obs;
-  Future customersListData(final nextID) async {
-    isLoading.value = true;
-
+  Future<void> fetchCustomers([String nextID = '']) async {
     try {
-      final success = await addShipmentRepo.customerListRepo('', nextID);
-
-      if (success != null) {
-        customerList.value = success;
-        isLoading.value = false;
-      } else {
-        Utils().logInfo('No Customers Data Found');
-        isLoading.value = false;
-      }
-    } catch (error) {
-      Utils().logError('Error getting customers', error);
+      isLoadingCustomers(true);
+      final data = await addShipmentRepo.customerListRepo('', nextID);
+      customerList.value = data ?? [];
+    } catch (e) {
       customerList.value = [];
+      Utils().logError('Customer fetch failed', e);
     } finally {
-      isLoading.value = false;
+      isLoadingCustomers(false);
     }
   }
 
   Future categoryListData() async {
-    isLoadingCate.value = true;
-
     try {
-      final success = await addShipmentRepo.categoryListRepo('');
-
-      if (success != null) {
-        categoryList.value = success;
-        isLoadingCate.value = false;
-      } else {
-        Utils().logInfo('No Customers Data Found');
-        isLoadingCate.value = false;
-      }
+      isLoadingCate(true);
+      final data = await addShipmentRepo.categoryListRepo('');
+      categoryList.value = data ?? [];
     } catch (error) {
-      Utils().logError('Error getting customers', error);
       categoryList.value = [];
+      Utils().logError('Error getting customers', error);
     } finally {
-      isLoadingCate.value = false;
+      isLoadingCate(false);
     }
   }
 
   Future commodityListData(final cateID) async {
-    isLoading.value = true;
-
+    if (cateID == null) return;
     try {
-      final success = await addShipmentRepo.commodityListRepo('', cateID);
-
-      if (success != null) {
-        commodityList.value = success;
-        isLoading.value = false;
-      } else {
-        Utils().logInfo('No Customers Data Found');
-        isLoading.value = false;
-      }
-    } catch (error) {
-      Utils().logError('Error getting customers', error);
+      isLoadingCommodity(true);
+      selectedCommodity.value = null;
       commodityList.value = [];
+      final data = await addShipmentRepo.commodityListRepo('', cateID);
+      commodityList.value = data ?? [];
+    } catch (error) {
+      commodityList.value = [];
+      Utils().logError('Error getting customers', error);
     } finally {
-      isLoading.value = false;
+      isLoadingCommodity(false);
     }
   }
 
@@ -148,8 +140,9 @@ class AddShipmentController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    customersListData('0');
+    fetchCustomers('0');
     categoryListData();
+    paymentModes.refresh();
     pageController.addListener(() {
       currentPage.value = pageController.page!.round();
     });

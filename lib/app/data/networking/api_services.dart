@@ -123,4 +123,11 @@ class ApiServices {
     final body = {'search_query': search ?? "", 'category_id': categoryID};
     return _api.post(getCommodityListPoint, body, token: token);
   }
+
+  Future<APIResponse> getServiceTypeList(
+    String token,
+  ) async {
+    final body = {};
+    return _api.post(getServiceTypePoint, body, token: token);
+  }
 }

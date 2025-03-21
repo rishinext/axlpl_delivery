@@ -15,12 +15,14 @@ class CategoryListModel {
   String? message;
   List<CategoryList>? category;
   List<CommodityList>? comodityList;
+  List<ServiceTypeList>? servicesList;
 
   CategoryListModel({
     this.status,
     this.message,
     this.category,
     this.comodityList,
+    this.servicesList,
   });
 
   factory CategoryListModel.fromJson(Map<String, dynamic> json) =>
@@ -34,11 +36,11 @@ class CategoryListModel {
                   (x) => CategoryList.fromJson(x),
                 ),
               ),
-        comodityList: json["Commodity"] == null
+        servicesList: json["Services"] == null
             ? []
-            : List<CommodityList>.from(
-                json["Commodity"]!.map(
-                  (x) => CommodityList.fromJson(x),
+            : List<ServiceTypeList>.from(
+                json["Services"]!.map(
+                  (x) => ServiceTypeList.fromJson(x),
                 ),
               ),
       );
@@ -52,6 +54,9 @@ class CategoryListModel {
         "Commodity": comodityList == null
             ? []
             : List<dynamic>.from(comodityList!.map((x) => x.toJson())),
+        "Services": servicesList == null
+            ? []
+            : List<dynamic>.from(servicesList!.map((x) => x.toJson())),
       };
 }
 
@@ -100,5 +105,34 @@ class CommodityList {
         "id": id,
         "name": name,
         "category_id": categoryId,
+      };
+}
+
+class ServiceTypeList {
+  String? id;
+  String? name;
+  String? price;
+  String? hsnSacValue;
+
+  ServiceTypeList({
+    this.id,
+    this.name,
+    this.price,
+    this.hsnSacValue,
+  });
+
+  factory ServiceTypeList.fromJson(Map<String, dynamic> json) =>
+      ServiceTypeList(
+        id: json["id"],
+        name: json["name"],
+        price: json["price"],
+        hsnSacValue: json["hsn_sac_value"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "price": price,
+        "hsn_sac_value": hsnSacValue,
       };
 }

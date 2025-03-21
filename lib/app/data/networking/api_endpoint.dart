@@ -6,3 +6,4 @@ const String dashboardDataPoint = 'getDashoboardData';
 const String getCustomersListPoint = 'getCustomers';
 const String getCategoryListPoint = 'getCategory';
 const String getCommodityListPoint = 'getCommodity';
+const String getServiceTypePoint = 'getServices';

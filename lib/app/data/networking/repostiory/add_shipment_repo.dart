@@ -102,4 +102,32 @@ class AddShipmentRepo {
     }
     return null;
   }
+
+  Future<List<ServiceTypeList>?> serviceTypeListRepo() async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+
+      final token = userData?.messangerdetail?.token;
+
+      final response = await _apiServices.getServiceTypeList(token.toString());
+      return response.when(
+        success: (body) {
+          final serviceTypeData = CategoryListModel.fromJson(body);
+          if (serviceTypeData.status == success) {
+            return serviceTypeData.servicesList;
+          } else {
+            Utils().logInfo(
+                'API call successful but status is not "success" : ${serviceTypeData.status}');
+          }
+          return [];
+        },
+        error: (error) {
+          throw Exception("ServiceTypeList Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      Utils().logError("$e", 'ServiceTypeList Failed: $e');
+    }
+    return null;
+  }
 }

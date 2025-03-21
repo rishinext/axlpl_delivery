@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 Widget dropdownText(String text) {
   return Padding(
@@ -24,20 +24,24 @@ Widget dropdownText(String text) {
 //   return
 
 // }
-class CommonDropdown extends StatelessWidget {
+class CommonDropdown<T> extends StatelessWidget {
   final String hint;
-  final String? selectedValue; // ✅ Use nullable String instead of Rxn<String>
+  final String? selectedValue; // ✅ Store ID, not name
   final Function(String?) onChanged;
-  final VoidCallback? onTap;
-  final List<String> items;
+  bool isLoading;
+  final List<T> items;
+  final String Function(T) itemLabel; // ✅ Extract Name
+  final String Function(T) itemValue; // ✅ Extract ID
 
-  const CommonDropdown({
+  CommonDropdown({
     Key? key,
     required this.hint,
-    required this.selectedValue, // ✅ Now just a normal value
+    required this.selectedValue,
     required this.onChanged,
-    this.onTap,
+    required this.isLoading,
     required this.items,
+    required this.itemLabel, // ✅ Function to get name
+    required this.itemValue, // ✅ Function to get ID
   }) : super(key: key);
 
   @override
@@ -45,27 +49,23 @@ class CommonDropdown extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       decoration: BoxDecoration(
-        border: Border.all(color: themes.grayColor),
+        border: Border.all(color: Colors.grey),
         borderRadius: BorderRadius.circular(8),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           isExpanded: true,
           hint: Text(hint),
-          value: selectedValue, // ✅ Now just a normal value
+          value: selectedValue, // ✅ Stores ID
           items: items.map((item) {
             return DropdownMenuItem<String>(
-              value: item,
-              child: Text(item),
+              value: itemValue(item), // ✅ Stores ID
+              child: Text(itemLabel(item)), // ✅ Displays Name
             );
           }).toList(),
           onChanged: onChanged,
-          onTap: onTap,
-          icon: Icon(
-            Icons.keyboard_arrow_down_outlined,
-            size: 35,
-            color: themes.grayColor,
-          ),
+          icon: Icon(Icons.keyboard_arrow_down_outlined,
+              size: 30, color: Colors.black),
         ),
       ),
     );
