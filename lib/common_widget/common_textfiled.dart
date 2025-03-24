@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 
-class CommomTextfiled extends StatelessWidget {
+class CommonTextfiled extends StatelessWidget {
   final textFieldFocusNode = FocusNode();
   String? hintTxt;
   final TextEditingController? controller;
@@ -14,14 +14,14 @@ class CommomTextfiled extends StatelessWidget {
   final prefixText;
   final lableText;
   final String? Function(String?)? validator;
-  final String? Function(String?)? onChange;
+  final String? Function(String?)? onChanged;
 
   final void Function(String?)? onSubmit;
 
   final isReadOnly;
   final isEnable;
 
-  CommomTextfiled({
+  CommonTextfiled({
     super.key,
     this.hintTxt,
     this.controller,
@@ -30,7 +30,7 @@ class CommomTextfiled extends StatelessWidget {
     this.sufixIcon,
     this.prefixText,
     this.validator,
-    this.onChange,
+    this.onChanged,
     this.isReadOnly = false,
     this.textInputAction,
     this.isEnable = true,
@@ -48,7 +48,7 @@ class CommomTextfiled extends StatelessWidget {
       controller: controller,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
-      onChanged: onChange,
+      onChanged: onChanged,
       readOnly: isReadOnly,
       onFieldSubmitted: onSubmit,
       decoration: InputDecoration(

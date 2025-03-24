@@ -44,11 +44,12 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     'Select Date',
                     style: themes.fontSize14_400,
                   ),
-                  CommomTextfiled(
+                  CommonTextfiled(
                     isReadOnly: true,
                     sufixIcon: IconButton(
                         onPressed: () async {
-                          await addshipController.pickDate(context);
+                          await addshipController.pickDate(
+                              context, addshipController.selectedDate);
                         },
                         icon: Icon(CupertinoIcons.calendar_today)),
                     hintTxt: formatDate(addshipController.selectedDate.value),
@@ -82,16 +83,18 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         },
                       )),
                   dropdownText('Commodity'),
-                  Obx(() => CommonDropdown<CommodityList>(
-                        hint: 'Select Comodity',
-                        selectedValue: controller.selectedCommodity.value,
-                        isLoading: addshipController.isLoadingCommodity.value,
-                        items: controller.commodityList,
-                        itemLabel: (c) => c.name ?? 'Unknown',
-                        itemValue: (c) => c.id.toString(),
-                        onChanged: (val) =>
-                            controller.selectedCommodity.value = val,
-                      )),
+                  Obx(
+                    () => CommonDropdown<CommodityList>(
+                      hint: 'Select Commodity',
+                      selectedValue: addshipController.selectedCommodity.value,
+                      isLoading: addshipController.isLoadingCommodity.value,
+                      items: addshipController.commodityList,
+                      itemLabel: (c) => c.name ?? 'Unknown',
+                      itemValue: (c) => c.id.toString(),
+                      onChanged: (val) =>
+                          addshipController.selectedCommodity.value = val,
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -104,7 +107,8 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Expanded(
-                        child: CommomTextfiled(
+                        child: CommonTextfiled(
+                          controller: addshipController.netWeightController,
                           hintTxt: 'Enter Net Weight',
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
@@ -114,7 +118,8 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         ),
                       ),
                       Expanded(
-                        child: CommomTextfiled(
+                        child: CommonTextfiled(
+                          controller: addshipController.grossWeightController,
                           hintTxt: "Enter Gross weight",
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
@@ -143,13 +148,24 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     'No of Parcel',
                     style: themes.fontSize14_400,
                   ),
-                  CommomTextfiled(
+                  CommonTextfiled(
+                    controller: addshipController.noOfParcelController,
                     hintTxt: 'Enter No of Parcel',
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: utils.validateText,
                   ),
-                  dropdownText('Customer'),
+                  dropdownText('Service Type'),
+                  Obx(() => CommonDropdown<ServiceTypeList>(
+                        hint: 'Select Service',
+                        selectedValue: controller.selectedServiceType.value,
+                        isLoading: addshipController.isServiceType.value,
+                        items: controller.serviceTypeList,
+                        itemLabel: (c) => c.name ?? 'Unknown',
+                        itemValue: (c) => c.id.toString(),
+                        onChanged: (val) =>
+                            controller.selectedServiceType.value = val,
+                      )),
                   Row(
                     children: [
                       dropdownText('Insurance by AXLPL : '),
@@ -182,18 +198,47 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     'Policy No',
                     style: themes.fontSize14_400,
                   ),
-                  CommomTextfiled(
+                  CommonTextfiled(
                     hintTxt: 'Enter Policy No',
+                    controller: addshipController.policyNoController,
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: utils.validateText,
                   ),
                   Text(
+                    'Expire Date',
+                    style: themes.fontSize14_400,
+                  ),
+                  Obx(
+                    () => CommonTextfiled(
+                      isReadOnly: true,
+                      sufixIcon: IconButton(
+                          onPressed: () async {
+                            await addshipController.pickDate(
+                                context, addshipController.expireDate);
+                          },
+                          icon: Icon(CupertinoIcons.calendar_today)),
+                      hintTxt: formatDate(addshipController.expireDate.value),
+                    ),
+                  ),
+                  Text(
                     'Insurance Value (₹)',
                     style: themes.fontSize14_400,
                   ),
-                  CommomTextfiled(
+                  CommonTextfiled(
+                    controller: addshipController.insuranceValueController,
                     hintTxt: 'Enter Insurance Value',
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    validator: utils.validateText,
+                  ),
+                  Text(
+                    'Invoice No',
+                    style: themes.fontSize14_400,
+                  ),
+                  CommonTextfiled(
+                    controller: addshipController.invoiceNoController,
+                    hintTxt: 'Enter Invoice No',
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: utils.validateText,
@@ -202,10 +247,11 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     'Remark',
                     style: themes.fontSize14_400,
                   ),
-                  CommomTextfiled(
+                  CommonTextfiled(
+                    controller: addshipController.remarkController,
                     hintTxt: 'Enter Insurance Remark',
                     textInputAction: TextInputAction.done,
-                    validator: utils.validateEmail,
+                    // validator: utils.validateText(value),
                   ),
                 ],
               ),

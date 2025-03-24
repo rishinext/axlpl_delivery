@@ -16,14 +16,15 @@ class CategoryListModel {
   List<CategoryList>? category;
   List<CommodityList>? comodityList;
   List<ServiceTypeList>? servicesList;
+  List<AreaList>? areaList;
 
-  CategoryListModel({
-    this.status,
-    this.message,
-    this.category,
-    this.comodityList,
-    this.servicesList,
-  });
+  CategoryListModel(
+      {this.status,
+      this.message,
+      this.category,
+      this.comodityList,
+      this.servicesList,
+      this.areaList});
 
   factory CategoryListModel.fromJson(Map<String, dynamic> json) =>
       CategoryListModel(
@@ -43,6 +44,20 @@ class CategoryListModel {
                   (x) => ServiceTypeList.fromJson(x),
                 ),
               ),
+        comodityList: json["Commodity"] == null
+            ? []
+            : List<CommodityList>.from(
+                json["Commodity"]!.map(
+                  (x) => CommodityList.fromJson(x),
+                ),
+              ),
+        areaList: json["Area"] == null
+            ? []
+            : List<AreaList>.from(
+                json["Area"]!.map(
+                  (x) => AreaList.fromJson(x),
+                ),
+              ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,6 +72,9 @@ class CategoryListModel {
         "Services": servicesList == null
             ? []
             : List<dynamic>.from(servicesList!.map((x) => x.toJson())),
+        "Area": areaList == null
+            ? []
+            : List<dynamic>.from(areaList!.map((x) => x.toJson())),
       };
 }
 
@@ -134,5 +152,33 @@ class ServiceTypeList {
         "name": name,
         "price": price,
         "hsn_sac_value": hsnSacValue,
+      };
+}
+
+class AreaList {
+  String? id;
+  String? name;
+  String? cityId;
+  String? pincode;
+
+  AreaList({
+    this.id,
+    this.name,
+    this.cityId,
+    this.pincode,
+  });
+
+  factory AreaList.fromJson(Map<String, dynamic> json) => AreaList(
+        id: json["id"],
+        name: json["name"],
+        cityId: json["city_id"],
+        pincode: json["pincode"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "city_id": cityId,
+        "pincode": pincode,
       };
 }

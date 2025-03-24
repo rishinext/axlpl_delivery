@@ -55,7 +55,7 @@ class AuthView extends GetView<AuthController> {
                     style: themes.fontSize18_600
                         .copyWith(color: themes.darkCyanBlue),
                   ),
-                  CommomTextfiled(
+                  CommonTextfiled(
                     controller: authController.mobileController,
                     hintTxt: 'Enter your Phone Number',
                     keyboardType: TextInputType.phone,
@@ -66,7 +66,7 @@ class AuthView extends GetView<AuthController> {
                   ),
                   Obx(
                     () {
-                      return CommomTextfiled(
+                      return CommonTextfiled(
                           obscureText: authController.isObsecureText.value,
                           controller: authController.passwordController,
                           textInputAction: TextInputAction.done,

@@ -120,7 +120,10 @@ class ApiServices {
     String? categoryID,
     String token,
   ) async {
-    final body = {'search_query': search ?? "", 'category_id': categoryID};
+    final body = {
+      'search_query': search ?? "",
+      'category_id': categoryID,
+    };
     return _api.post(getCommodityListPoint, body, token: token);
   }
 
@@ -129,5 +132,19 @@ class ApiServices {
   ) async {
     final body = {};
     return _api.post(getServiceTypePoint, body, token: token);
+  }
+
+  Future<APIResponse> getPincodeDetails(String token, String pincode) async {
+    final body = {
+      'pincode': pincode,
+    };
+    return _api.post(getPincodeDetailsPoint, body, token: token);
+  }
+
+  Future<APIResponse> getAllAeraByZip(String token, String pincode) async {
+    final body = {
+      'pincode': pincode,
+    };
+    return _api.post(getAllAreaByZipcodePoint, body, token: token);
   }
 }

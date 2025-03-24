@@ -1,6 +1,7 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
+import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -127,6 +128,64 @@ class AddShipmentRepo {
       );
     } catch (e) {
       Utils().logError("$e", 'ServiceTypeList Failed: $e');
+    }
+    return null;
+  }
+
+  Future<GetPincodeDetailsModel?> pincodeDetailsRepo(String pincode) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+
+      final token = userData?.messangerdetail?.token;
+
+      final response =
+          await _apiServices.getPincodeDetails(token.toString(), pincode);
+      return response.when(
+        success: (body) {
+          final pincodeDetailsData = GetPincodeDetailsModel.fromJson(body);
+          if (pincodeDetailsData.status == success) {
+            return pincodeDetailsData;
+          } else {
+            Utils().logInfo(
+                'API call successful but status is not "success" : ${pincodeDetailsData.status}');
+          }
+          return null;
+        },
+        error: (error) {
+          throw Exception("Pincode Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      Utils().logError("$e", 'Pincode Failed: $e');
+    }
+    return null;
+  }
+
+  Future<List<AreaList>?> allAeraByZipRepo(final pincode) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+
+      final token = userData?.messangerdetail?.token;
+
+      final response =
+          await _apiServices.getAllAeraByZip(token.toString(), pincode);
+      return response.when(
+        success: (body) {
+          final aeraData = CategoryListModel.fromJson(body);
+          if (aeraData.status == success) {
+            return aeraData.areaList;
+          } else {
+            Utils().logInfo(
+                'API call successful but status is not "success" : ${aeraData.status}');
+          }
+          return [];
+        },
+        error: (error) {
+          throw Exception("Aera Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      Utils().logError("$e", 'Area Failed: $e');
     }
     return null;
   }

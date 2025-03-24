@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -58,38 +59,92 @@ class AddDifferentAddressView extends GetView {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             dropdownText(zip),
-                            CommomTextfiled(
+                            CommonTextfiled(
                               hintTxt: zip,
-                              keyboardType: TextInputType.number,
+                              controller:
+                                  addshipController.diffrentZipController,
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                if (value?.length == 6) {
+                                  addshipController.fetchPincodeDetails(value!);
+                                  addshipController.fetchAeraByZipData(value);
+                                } else {
+                                  // Optional: clear state/city if length < 6 again
+                                  addshipController.pincodeDetailsData.value =
+                                      null;
+                                }
+                                return null;
+                              },
                             ),
                             dropdownText(city),
-                            CommomTextfiled(
-                              hintTxt: city,
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                            ),
+                            Obx(() {
+                              final isLoading =
+                                  addshipController.isLoadingPincode.value;
+                              final data =
+                                  addshipController.pincodeDetailsData.value;
+                              final error =
+                                  addshipController.errorMessage.value;
+
+                              if (isLoading) {
+                                Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              }
+
+                              return CommonTextfiled(
+                                isEnable: false,
+                                hintTxt: data?.cityName ??
+                                    (error.isNotEmpty ? error : 'City'),
+                                textInputAction: TextInputAction.next,
+                                validator: utils.validateText,
+                              );
+                            }),
                             dropdownText(state),
-                            CommomTextfiled(
-                              hintTxt: state,
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                            ),
+                            Obx(() {
+                              final isLoading =
+                                  addshipController.isLoadingPincode.value;
+                              final data =
+                                  addshipController.pincodeDetailsData.value;
+                              final error =
+                                  addshipController.errorMessage.value;
+
+                              if (isLoading) {
+                                Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              }
+
+                              return CommonTextfiled(
+                                isEnable: false,
+                                hintTxt: data?.stateName ??
+                                    (error.isNotEmpty ? error : 'State'),
+                                textInputAction: TextInputAction.next,
+                                validator: utils.validateText,
+                              );
+                            }),
                             dropdownText('Area'),
-                            CommomTextfiled(
-                              hintTxt: 'Area',
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                            ),
+                            Obx(() => CommonDropdown<AreaList>(
+                                  hint: 'Select Area',
+                                  selectedValue: addshipController
+                                      .selectedDiffrentArea.value,
+                                  isLoading:
+                                      addshipController.isLoadingArea.value,
+                                  items: addshipController.areaList,
+                                  itemLabel: (c) => c.name ?? 'Unknown',
+                                  itemValue: (c) => c.id.toString(),
+                                  onChanged: (val) => addshipController
+                                      .selectedDiffrentArea.value = val,
+                                )),
                             dropdownText('Address Line 1'),
-                            CommomTextfiled(
+                            CommonTextfiled(
                               hintTxt: 'Address Line 1',
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
                             ),
                             dropdownText('Address Line 2'),
-                            CommomTextfiled(
+                            CommonTextfiled(
                               hintTxt: 'Address Line 2',
                               textInputAction: TextInputAction.done,
                               validator: utils.validateText,

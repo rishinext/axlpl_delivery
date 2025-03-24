@@ -137,7 +137,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt: user?.messangerdetail?.name ?? 'Name',
                               isEnable: controller.isEdit.value,
                               controller: controller.nameController,
@@ -149,7 +149,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt: user?.messangerdetail?.code ?? 'code',
                               isEnable: controller.isEdit.value,
                               controller: controller.codeController,
@@ -161,7 +161,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt:
                                   user?.messangerdetail?.stateName ?? state,
                               isEnable: controller.isEdit.value,
@@ -174,7 +174,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt:
                                   user?.messangerdetail?.cityName ?? 'city',
                               isEnable: controller.isEdit.value,
@@ -187,7 +187,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt:
                                   user?.messangerdetail?.branchName ?? branch,
                               isEnable: controller.isEdit.value,
@@ -200,7 +200,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt: user?.messangerdetail?.routeCode ??
                                   'AXL- 033',
                               isEnable: controller.isEdit.value,
@@ -213,7 +213,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               isEnable: controller.isEdit.value,
                               hintTxt:
                                   user?.messangerdetail?.phone ?? '98888888',
@@ -226,7 +226,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt: user?.messangerdetail?.email ?? email,
                               isEnable: controller.isEdit.value,
                               controller: controller.emailController,
@@ -238,7 +238,7 @@ class ProfileView extends GetView<ProfileController> {
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
-                            return CommomTextfiled(
+                            return CommonTextfiled(
                               hintTxt:
                                   user?.messangerdetail?.vehicleNo ?? '0555',
                               isEnable: controller.isEdit.value,

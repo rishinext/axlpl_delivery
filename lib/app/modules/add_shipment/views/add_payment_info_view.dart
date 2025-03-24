@@ -48,29 +48,33 @@ class AddPaymentInfoView extends GetView {
                     //         .toList(),
                     //   ),
                     // ),
-                    dropdownText(zip),
-                    CommomTextfiled(
-                      hintTxt: zip,
+                    dropdownText('Shipment Charges'),
+                    CommonTextfiled(
+                      hintTxt: 'Shipment Charges',
                     ),
-                    dropdownText(city),
-                    CommomTextfiled(
-                      hintTxt: city,
+                    dropdownText('Insurance Charges'),
+                    CommonTextfiled(
+                      hintTxt: 'Insurance Charges',
                     ),
-                    dropdownText(state),
-                    CommomTextfiled(
-                      hintTxt: state,
+                    dropdownText('ODA Charges'),
+                    CommonTextfiled(
+                      hintTxt: 'ODA Charges',
                     ),
-                    dropdownText('Area'),
-                    CommomTextfiled(
-                      hintTxt: 'Area',
+                    dropdownText('Holiday Charges'),
+                    CommonTextfiled(
+                      hintTxt: 'Holiday Charges',
                     ),
-                    dropdownText('Address Line 1'),
-                    CommomTextfiled(
+                    dropdownText('Handling Charges'),
+                    CommonTextfiled(
                       hintTxt: 'Address Line 1',
                     ),
-                    dropdownText('Address Line 2'),
-                    CommomTextfiled(
-                      hintTxt: 'Address Line 2',
+                    dropdownText('Total Charges'),
+                    CommonTextfiled(
+                      hintTxt: 'Total Charges',
+                    ),
+                    dropdownText('GST 18%'),
+                    CommonTextfiled(
+                      hintTxt: 'GST',
                     ),
                   ],
                 ),

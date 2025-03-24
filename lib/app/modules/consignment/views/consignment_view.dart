@@ -145,7 +145,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: CommomTextfiled(
+                                      child: CommonTextfiled(
                                         hintTxt:
                                             "${controller.selectedStartDate.value.toLocal()}"
                                                 .split(" ")[0],
@@ -178,7 +178,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                       ),
                                     ),
                                     Expanded(
-                                      child: CommomTextfiled(
+                                      child: CommonTextfiled(
                                         hintTxt:
                                             "${controller.selectedEndDate.value.toLocal()}"
                                                 .split(" ")[0],

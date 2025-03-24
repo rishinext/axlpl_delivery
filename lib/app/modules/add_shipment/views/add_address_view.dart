@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../controllers/add_shipment_controller.dart';
 
@@ -58,69 +60,109 @@ class AddAddressView extends GetView {
                 ],
               ),
               dropdownText('Name'),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'Name',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
               ),
               dropdownText('Company Name'),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'Company Name',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
               ),
               dropdownText(zip),
-              CommomTextfiled(
-                hintTxt: 'Zip Code',
+              CommonTextfiled(
+                hintTxt: zip,
+                controller: addshipController.senderInfoZipController,
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
                 keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  if (value?.length == 6) {
+                    addshipController.fetchPincodeDetails(value!);
+                    addshipController.fetchAeraByZipData(value);
+                  } else {
+                    // Optional: clear state/city if length < 6 again
+                    addshipController.pincodeDetailsData.value = null;
+                  }
+                  return null;
+                },
               ),
               dropdownText(state),
-              CommomTextfiled(
-                hintTxt: state,
-                textInputAction: TextInputAction.next,
-                validator: utils.validateText,
-              ),
+              Obx(() {
+                final isLoading = addshipController.isLoadingPincode.value;
+                final data = addshipController.pincodeDetailsData.value;
+                final error = addshipController.errorMessage.value;
+
+                if (isLoading) {
+                  Center(child: CircularProgressIndicator.adaptive());
+                }
+
+                return CommonTextfiled(
+                  isEnable: false,
+                  hintTxt:
+                      data?.stateName ?? (error.isNotEmpty ? error : 'State'),
+                  textInputAction: TextInputAction.next,
+                  validator: utils.validateText,
+                );
+              }),
               dropdownText(city),
-              CommomTextfiled(
-                hintTxt: city,
-                textInputAction: TextInputAction.next,
-                validator: utils.validateText,
-              ),
+              Obx(() {
+                final isLoading = addshipController.isLoadingPincode.value;
+                final data = addshipController.pincodeDetailsData.value;
+                final error = addshipController.errorMessage.value;
+
+                if (isLoading) {
+                  Center(child: CircularProgressIndicator.adaptive());
+                }
+
+                return CommonTextfiled(
+                  isEnable: false,
+                  hintTxt:
+                      data?.cityName ?? (error.isNotEmpty ? error : 'City'),
+                  textInputAction: TextInputAction.next,
+                  validator: utils.validateText,
+                );
+              }),
               dropdownText('Select Aera'),
-              // CommonDropdown(
-              //     hint: 'select customer',
-              //     selectedValue: addshipController.selectedCustomer,
-              //     onChanged: (p0) {},
-              //     items: []),
+              Obx(() => CommonDropdown<AreaList>(
+                    hint: 'Select Area',
+                    selectedValue: addshipController.selectedArea.value,
+                    isLoading: addshipController.isLoadingArea.value,
+                    items: addshipController.areaList,
+                    itemLabel: (c) => c.name ?? 'Unknown',
+                    itemValue: (c) => c.id.toString(),
+                    onChanged: (val) =>
+                        addshipController.selectedArea.value = val,
+                  )),
               dropdownText('GST No'),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'GST No',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
               ),
               dropdownText('Address Line 1'),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'Address Line 1',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
               ),
               dropdownText('Address Line 2'),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'Address Line 2',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
               ),
               dropdownText('Mobile'),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'Mobile',
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
                 validator: utils.validatePhone,
               ),
               dropdownText("Email"),
-              CommomTextfiled(
+              CommonTextfiled(
                 hintTxt: 'Email',
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.emailAddress,

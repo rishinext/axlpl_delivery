@@ -7,3 +7,5 @@ const String getCustomersListPoint = 'getCustomers';
 const String getCategoryListPoint = 'getCategory';
 const String getCommodityListPoint = 'getCommodity';
 const String getServiceTypePoint = 'getServices';
+const String getPincodeDetailsPoint = 'getPincodeDetail';
+const String getAllAreaByZipcodePoint = 'getAllAreaByZipcode';
