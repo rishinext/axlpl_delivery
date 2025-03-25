@@ -17,7 +17,7 @@ import '../../../data/localstorage/local_storage.dart';
 
 class BottombarController extends GetxController {
   RxInt selectedIndex = 0.obs;
-  var userData = Rx<LoginModel?>(null);
+  var userData = Rxn<LoginModel>();
 
   List<Widget> bottomList = <Widget>[
     HomeView(),
@@ -30,14 +30,20 @@ class BottombarController extends GetxController {
     selectedIndex.value = index;
   }
 
-  Future<void> loadUserLocalData() async {
-    userData.value = await LocalStorage().getUserLocalData();
+  Future<void> loadUserData() async {
+    final data = await LocalStorage().getUserLocalData();
+    if (data != null) {
+      userData.value = data;
+      Utils().logInfo("User loaded: ${data.customerdetail?.fullName}");
+    } else {
+      Utils().logInfo("No user data loaded.");
+    }
   }
 
   @override
   void onInit() {
     // TODO: implement onInit
-    loadUserLocalData();
+    loadUserData();
     super.onInit();
   }
 }

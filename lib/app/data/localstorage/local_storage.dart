@@ -20,24 +20,48 @@ class LocalStorage {
 
   final String tokenKey = 'token';
   final String userID = 'id';
-  final String usersDataKey = 'Messangerdetail';
+  final String adminDataKey = 'Messangerdetail';
+  final String customerDataKey = 'Customerdetail';
   final String userRole = 'role';
 
 // get users data
 
   Future<LoginModel?> getUserLocalData() async {
     try {
-      String? usersData = await storage.read(key: usersDataKey);
-      if (usersData == null) {
-        Utils().logInfo("No Localstore UsersData Found!");
+      String? role = await storage.read(key: userRole);
+      if (role == null) return null;
+
+      String? rawData;
+
+      if (role == "messanger") {
+        rawData = await storage.read(key: adminDataKey!);
+      } else if (role == "customer") {
+        rawData = await storage.read(key: customerDataKey!);
+      }
+
+      if (rawData == null) {
+        Utils().logInfo("No user data found for role: $role");
         return null;
       }
 
-      return LoginModel.fromJson(json.decode(usersData));
+      final loginData = LoginModel(role: role); // ✅ Optional: keep role
+      final parsedJson = json.decode(rawData);
+
+      if (role == "messanger") {
+        loginData.messangerdetail = Messangerdetail.fromJson(parsedJson);
+      } else if (role == "customer") {
+        loginData.customerdetail = Customerdetail.fromJson(parsedJson);
+      }
+
+      return loginData;
     } catch (e) {
-      Utils().logError("Error retrieving/parsing user data:", '$e');
+      Utils().logError("getUserLocalData error", e.toString());
       return null;
     }
+  }
+
+  Future<String?> getUserRole() async {
+    return await storage.read(key: userRole);
   }
 
   // Save token

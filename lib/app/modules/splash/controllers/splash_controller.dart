@@ -18,19 +18,31 @@ class SplashController extends GetxController {
   void keepLogin() {
     Future.delayed(Duration(seconds: 3), () async {
       final userData = await LocalStorage().getUserLocalData();
+      final role = await storage.read(key: LocalStorage().userRole);
 
-      if (userData == null || userData.messangerdetail == null) {
+      if (userData == null || role == null) {
         Get.offAllNamed(Routes.AUTH);
         return;
       }
 
-      final String? token = userData.messangerdetail!.token;
-      if (token != null && token.isNotEmpty) {
-        Get.offAllNamed(Routes.BOTTOMBAR);
-        log(' 🤩 Login success 🤩 ');
-      } else {
-        Get.offAllNamed(Routes.AUTH);
+      if (role == "messanger") {
+        final token = userData.messangerdetail?.token;
+        if (token != null && token.isNotEmpty) {
+          Get.offAllNamed(Routes.BOTTOMBAR);
+          log('🤩 Messenger Login success 🤩');
+          return;
+        }
+      } else if (role == "customer") {
+        final token = userData.customerdetail?.token;
+        if (token != null && token.isNotEmpty) {
+          Get.offAllNamed(Routes.BOTTOMBAR);
+          log('🤩 Customer Login success 🤩');
+          return;
+        }
       }
+
+      // fallback
+      Get.offAllNamed(Routes.AUTH);
     });
   }
 }

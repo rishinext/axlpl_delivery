@@ -31,11 +31,12 @@ class AuthController extends GetxController {
   ) async {
     isLoading.value = true;
     try {
-      final isLoggedIn = await _authRepo.loginRepo(mobile, password);
-      if (isLoggedIn) {
-        Get.offAllNamed(
-          Routes.BOTTOMBAR,
-        );
+      await _authRepo.loginRepo(mobile, password);
+      final role = await storage.read(key: localStorage.userRole);
+      if (role == 'messanger') {
+        Get.offAllNamed(Routes.BOTTOMBAR);
+      } else if (role == 'customer') {
+        Get.offAllNamed(Routes.BOTTOMBAR);
       }
     } catch (e) {
       errorMessage.value = e.toString();

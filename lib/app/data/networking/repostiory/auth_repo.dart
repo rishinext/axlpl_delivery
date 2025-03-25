@@ -48,19 +48,21 @@ class AuthRepo {
           throw Exception(loginData.message ?? "Login Failed: Unknown Error");
         }
 
-        /*   if (loginData.messangerdetail!.token != null) {
-          await _localStorage
-              .saveToken(loginData.messangerdetail!.token.toString());
-        }
-        await _localStorage
-            .saveUserId(loginData.messangerdetail!.id.toString());
-            */
+        // Utils().logInfo("repo login data : ${loginData.toJson()}");
         await storage.write(
             key: _localStorage.userRole, value: loginData.role.toString());
 
-        await storage.write(
-            key: _localStorage.usersDataKey,
-            value: json.encode(loginData.toJson()));
+        if (loginData.role == "messanger") {
+          await storage.write(
+            key: _localStorage.adminDataKey,
+            value: json.encode(loginData.messangerdetail?.toJson()),
+          );
+        } else if (loginData.role == "customer") {
+          await storage.write(
+            key: _localStorage.customerDataKey,
+            value: json.encode(loginData.customerdetail?.toJson()),
+          );
+        }
 
         return true;
       },
@@ -72,32 +74,32 @@ class AuthRepo {
 
   Future<bool> logoutRepo() async {
     final userData = await LocalStorage().getUserLocalData();
-    final String? mId = userData?.messangerdetail?.id?.toString();
-    final String? role = userData?.role;
+    if (userData == null) return false;
+    final String? role = userData.role;
+    final String? mId = userData.messangerdetail?.id?.toString();
+    final String? custID = userData.customerdetail?.id.toString();
+    final String? token = userData.messangerdetail?.token.toString() ??
+        userData.customerdetail?.token.toString();
+    _utils.logInfo(userData.messangerdetail?.id.toString() ?? custID);
 
-    _utils.logInfo(userData!.messangerdetail?.id.toString() ?? 'No Id found');
-    final userID = userData.messangerdetail?.id.toString();
-    if (userID != null) {
-      try {
-        final response = await _apiServices.logout(
-            mId.toString(),
-            role.toString(),
-            '',
-            '',
-            userData.messangerdetail?.token.toString());
-        response.when(success: (success) {
-          _localStorage.clearAll();
-          return true;
-        }, error: (error) {
-          log("API Logout Error: $error");
-        });
+    final String? userID = mId ?? custID;
+    if (userID == null || role == null || token == null) {
+      Utils().logInfo('Logout skipped - user data incomplete');
+      return false;
+    }
+
+    try {
+      final response = await _apiServices.logout(
+          mId ?? custID.toString(), role.toString(), '', '', token);
+      response.when(success: (success) {
+        _localStorage.clearAll();
         return true;
-      } catch (e) {
-        _utils.logError("$e", 'API Logout Error');
-        return false;
-      }
-    } else {
-      _utils.logInfo('API Logout Error');
+      }, error: (error) {
+        log("API Logout Error: $error");
+      });
+      return true;
+    } catch (e) {
+      _utils.logError("$e", 'API Logout Error');
       return false;
     }
   }

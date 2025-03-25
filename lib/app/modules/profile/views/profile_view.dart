@@ -68,12 +68,12 @@ class ProfileView extends GetView<ProfileController> {
                 Center(
                   child: Obx(() {
                     final user = bottomController.userData.value;
-                    return user != null
-                        ? Text(
-                            user.messangerdetail?.name ?? 'N/A',
-                            style: themes.fontSize14_500,
-                          )
-                        : Text('N/A');
+                    final name = user?.messangerdetail?.name ??
+                        user?.customerdetail?.fullName;
+                    return Text(
+                      name.toString(),
+                      style: themes.fontSize14_500,
+                    );
                   }),
                 ),
                 Padding(
@@ -138,23 +138,45 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.name ?? 'Name',
+                              hintTxt: user?.messangerdetail?.name ??
+                                  user?.customerdetail?.fullName,
                               isEnable: controller.isEdit.value,
                               controller: controller.nameController,
                             );
                           }),
                           Text(
-                            'Code',
+                            user?.role == "messanger" ? 'Code' : 'Company Name',
                             style: themes.fontSize14_500
                                 .copyWith(fontWeight: FontWeight.w400),
                           ),
                           Obx(() {
                             return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.code ?? 'code',
+                              hintTxt: user?.messangerdetail?.code ??
+                                  user?.customerdetail?.companyName,
                               isEnable: controller.isEdit.value,
                               controller: controller.codeController,
                             );
                           }),
+                          if (user?.role != 'messanger')
+                            Column(
+                              spacing: 8,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Category',
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    hintTxt: user?.customerdetail?.category ??
+                                        'Category',
+                                    isEnable: controller.isEdit.value,
+                                    controller: controller.stateController,
+                                  );
+                                }),
+                              ],
+                            ),
                           Text(
                             state,
                             style: themes.fontSize14_500
@@ -162,8 +184,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommonTextfiled(
-                              hintTxt:
-                                  user?.messangerdetail?.stateName ?? state,
+                              hintTxt: user?.messangerdetail?.stateName ??
+                                  user?.customerdetail?.stateName,
                               isEnable: controller.isEdit.value,
                               controller: controller.stateController,
                             );
@@ -175,8 +197,8 @@ class ProfileView extends GetView<ProfileController> {
                           ),
                           Obx(() {
                             return CommonTextfiled(
-                              hintTxt:
-                                  user?.messangerdetail?.cityName ?? 'city',
+                              hintTxt: user?.messangerdetail?.cityName ??
+                                  user?.customerdetail?.cityName,
                               isEnable: controller.isEdit.value,
                               controller: controller.cityController,
                             );

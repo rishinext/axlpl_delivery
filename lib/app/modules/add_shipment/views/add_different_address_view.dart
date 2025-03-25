@@ -125,7 +125,8 @@ class AddDifferentAddressView extends GetView {
                               );
                             }),
                             dropdownText('Area'),
-                            Obx(() => CommonDropdown<AreaList>(
+                            Obx(
+                              () => CommonDropdown<AreaList>(
                                   hint: 'Select Area',
                                   selectedValue: addshipController
                                       .selectedDiffrentArea.value,
@@ -134,9 +135,24 @@ class AddDifferentAddressView extends GetView {
                                   items: addshipController.areaList,
                                   itemLabel: (c) => c.name ?? 'Unknown',
                                   itemValue: (c) => c.id.toString(),
-                                  onChanged: (val) => addshipController
-                                      .selectedDiffrentArea.value = val,
-                                )),
+                                  onChanged: (value) {
+                                    if (value?.length == 6) {
+                                      addshipController
+                                          .fetchPincodeDetails(value!);
+                                      addshipController
+                                          .fetchAeraByZipData(value);
+                                      addshipController
+                                          .selectedDiffrentArea.value = null;
+                                    } else {
+                                      addshipController
+                                          .pincodeDetailsData.value = null;
+                                      addshipController.areaList.clear();
+                                      addshipController
+                                          .selectedDiffrentArea.value = null;
+                                    }
+                                    return null;
+                                  }),
+                            ),
                             dropdownText('Address Line 1'),
                             CommonTextfiled(
                               hintTxt: 'Address Line 1',
