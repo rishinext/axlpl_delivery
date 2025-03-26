@@ -15,6 +15,7 @@ class BottombarView extends GetView<BottombarController> {
   Widget build(BuildContext context) {
     final controller = Get.put(BottombarController());
     final LoginModel? usersData = Get.arguments;
+
     return Scaffold(
       body: Obx(() =>
           controller.bottomList.elementAt(controller.selectedIndex.value)),
@@ -42,7 +43,7 @@ class BottombarView extends GetView<BottombarController> {
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage(historyIcon)),
               label: 'History',
-            ),
+            )
           ],
           currentIndex: controller.selectedIndex.value,
           selectedItemColor: themes.whiteColor,

@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -18,6 +19,7 @@ class AuthView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     final authController = Get.put(AuthController());
+    final bottomController = Get.put(BottombarController());
     Themes themes = Themes();
     final Utils utils = Utils();
 
