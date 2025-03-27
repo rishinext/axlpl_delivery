@@ -9,3 +9,4 @@ const String getCommodityListPoint = 'getCommodity';
 const String getServiceTypePoint = 'getServices';
 const String getPincodeDetailsPoint = 'getPincodeDetail';
 const String getAllAreaByZipcodePoint = 'getAllAreaByZipcode';
+const String getShipmentDataListPoint = 'shipmentactivelist';

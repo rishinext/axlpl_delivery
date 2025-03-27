@@ -147,4 +147,19 @@ class ApiServices {
     };
     return _api.post(getAllAreaByZipcodePoint, body, token: token);
   }
+
+  Future<APIResponse> getShipmentDataList(
+    final userID,
+    final nextID,
+  ) async {
+    final body = {
+      'user_id': userID,
+      'next_id': nextID
+      //more params will come
+    };
+    return _api.post(
+      getShipmentDataListPoint,
+      body,
+    );
+  }
 }

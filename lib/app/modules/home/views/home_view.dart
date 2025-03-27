@@ -24,7 +24,7 @@ class HomeView extends GetView<HomeController> {
     final controller = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
     final MobileScannerController QRController = MobileScannerController();
-    final user = bottomController.userData.value;
+
     return Scaffold(
         backgroundColor: themes.lightWhite,
         appBar: AppBar(

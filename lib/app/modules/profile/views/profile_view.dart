@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
+import 'package:axlpl_delivery/common_widget/common_tow_btn_dialog.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -500,7 +501,15 @@ class ProfileView extends GetView<ProfileController> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: InkWell(
-                    onTap: () => authController.logoutUser(),
+                    onTap: () => commonDialog(
+                      'Logout',
+                      'Are you sure you want to Logout?',
+                      'Logout',
+                      'No',
+                      () {
+                        authController.logoutUser();
+                      },
+                    ),
                     child: ListTile(
                         tileColor: themes.whiteColor,
                         dense: false,
