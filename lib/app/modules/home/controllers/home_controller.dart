@@ -19,12 +19,15 @@ class HomeController extends GetxController {
         dashboardDataModel.value = data;
         Utils().logInfo("Dashboard data retrieved successfully");
       } else {
-        Utils().logError("Dashboard data is null", '');
+        Utils().logError(
+          "Dashboard data is null",
+        );
       }
-    } catch (error, stackTrace) {
-      Utils().logError('Error getting dashboard', error.toString());
+    } catch (error) {
       Utils().logError(
-          'Stack Trace', stackTrace.toString()); // Log the stack trace
+        'Error getting dashboard $error',
+      );
+      // Log the stack trace
     } finally {
       isLoading.value = false;
     }

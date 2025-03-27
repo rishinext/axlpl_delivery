@@ -34,7 +34,9 @@ class HistoryController extends GetxController {
         isLoading.value = false;
       }
     } catch (error) {
-      Utils().logError('Error getting history', error);
+      Utils().logError(
+        'Error getting history $error',
+      );
       historyList.value = [];
     } finally {
       isLoading.value = false;
@@ -55,7 +57,9 @@ class HistoryController extends GetxController {
         isLoading.value = false;
       }
     } catch (error) {
-      Utils().logError('Error getting pickup history', error);
+      Utils().logError(
+        'Error getting pickup history $error',
+      );
       pickUpHistoryList.value = [];
     } finally {
       isLoading.value = false;

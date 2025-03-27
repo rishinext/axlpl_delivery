@@ -111,166 +111,193 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ],
                 ),
-                if (user?.role == 'messanger')
-                  Row(
+                Obx(() {
+                  if (bottomController.isLoading.value) {
+                    return Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  if (bottomController.userData.value?.role == 'messanger') {
+                    return Row(
+                      children: [
+                        Expanded(
+                            child: HomeIconContainer(
+                                title: 'Pickup',
+                                Img: truckIcon,
+                                OnTap: () => Get.toNamed(Routes.PICKUP))),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                        Expanded(
+                            child: HomeIconContainer(
+                                title: 'Delivery',
+                                Img: deliveryIcon,
+                                OnTap: () =>
+                                    Get.toNamed(Routes.PICKUP, arguments: ''))),
+                        SizedBox(
+                          width: 10.w,
+                        ),
+                        Expanded(
+                            child: HomeIconContainer(
+                          title: 'POD',
+                          Img: folderIcon,
+                          OnTap: () => Get.toNamed(Routes.POD),
+                        )),
+                      ],
+                    );
+                  } else {
+                    return Container();
+                  }
+                }),
+                Obx(() {
+                  if (bottomController.isLoading.value) {
+                    return Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  return Row(
                     children: [
                       Expanded(
                           child: HomeIconContainer(
-                              title: 'Pickup',
-                              Img: truckIcon,
-                              OnTap: () => Get.toNamed(Routes.PICKUP))),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Expanded(
-                          child: HomeIconContainer(
-                              title: 'Delivery',
-                              Img: deliveryIcon,
-                              OnTap: () =>
-                                  Get.toNamed(Routes.PICKUP, arguments: ''))),
-                      SizedBox(
-                        width: 10.w,
-                      ),
-                      Expanded(
-                          child: HomeIconContainer(
-                        title: 'POD',
-                        Img: folderIcon,
-                        OnTap: () => Get.toNamed(Routes.POD),
+                        OnTap: () => Get.to(PageviewView()),
+                        title: 'Add Shipment',
+                        Img: trackingIcon,
                       )),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      bottomController.userData.value?.role == 'messanger'
+                          ? Expanded(
+                              child: HomeIconContainer(
+                              title: 'Consigment',
+                              Img: containerIcon,
+                              OnTap: () => Get.toNamed(Routes.CONSIGNMENT),
+                            ))
+                          : Expanded(
+                              child: HomeIconContainer(
+                              title: 'Show Shipment',
+                              Img: containerIcon,
+                              OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                            )),
+                      SizedBox(
+                        width: 10.w,
+                      ),
+                      if (bottomController.userData.value?.role == 'messanger')
+                        Expanded(
+                            child: HomeIconContainer(
+                          OnTap: () => Get.toNamed(Routes.HISTORY),
+                          title: 'History',
+                          Img: history,
+                        )),
                     ],
-                  ),
-                Row(
-                  children: [
-                    Expanded(
-                        child: HomeIconContainer(
-                      OnTap: () => Get.to(PageviewView()),
-                      title: 'Add Shipment',
-                      Img: trackingIcon,
-                    )),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    user?.role == 'messanger'
-                        ? Expanded(
-                            child: HomeIconContainer(
-                            title: 'Consigment',
-                            Img: containerIcon,
-                            OnTap: () => Get.toNamed(Routes.CONSIGNMENT),
-                          ))
-                        : Expanded(
-                            child: HomeIconContainer(
-                            title: 'Show Shipment',
-                            Img: containerIcon,
-                            OnTap: () => Get.toNamed(Routes.CONSIGNMENT),
-                          )),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    if (user?.role == 'messanger')
-                      Expanded(
-                          child: HomeIconContainer(
-                        OnTap: () => Get.toNamed(Routes.HISTORY),
-                        title: 'History',
-                        Img: history,
-                      )),
-                  ],
-                ),
-                if (user?.role == 'messanger')
-                  Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: themes.whiteColor,
-                      borderRadius: BorderRadius.circular(5.r),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundImage:
-                                    AssetImage('assets/manimg.png'),
-                              ),
-                              SizedBox(height: 8.h),
-                              Obx(() {
-                                final user = bottomController.userData.value;
-                                if (user == null) return Text('N/A');
+                  );
+                }),
+                Obx(() {
+                  if (bottomController.isLoading.value) {
+                    return Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  }
+                  if (bottomController.userData.value?.role == 'messanger') {
+                    return Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: themes.whiteColor,
+                        borderRadius: BorderRadius.circular(5.r),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage:
+                                      AssetImage('assets/manimg.png'),
+                                ),
+                                SizedBox(height: 8.h),
+                                Obx(() {
+                                  final user = bottomController.userData.value;
+                                  if (user == null) return Text('N/A');
 
-                                final name = user.messangerdetail?.name ??
-                                    user.customerdetail?.fullName ??
-                                    'N/A';
+                                  final name = user.messangerdetail?.name ??
+                                      user.customerdetail?.fullName ??
+                                      'N/A';
 
-                                return SizedBox(
-                                  width: 80.w,
-                                  child: Text(
-                                    name,
-                                    style: themes.fontSize14_500,
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                          SizedBox(width: 20.w),
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: themes.blueGray,
-                                borderRadius: BorderRadius.circular(5.r),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 12.h, horizontal: 16.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Rating',
-                                        style: themes.fontSize14_500,
-                                      ),
-                                      SizedBox(height: 4.h),
-                                      Text(
-                                        '4.5',
-                                        style: themes.fontSize18_600.copyWith(
-                                          fontSize: 40.sp,
-                                          fontWeight: FontWeight.w700,
+                                  return SizedBox(
+                                    width: 80.w,
+                                    child: Text(
+                                      name,
+                                      style: themes.fontSize14_500,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
+                            SizedBox(width: 20.w),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: themes.blueGray,
+                                  borderRadius: BorderRadius.circular(5.r),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 12.h, horizontal: 16.w),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Rating',
+                                          style: themes.fontSize14_500,
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '''Delivery's''',
-                                        style: themes.fontSize14_500,
-                                      ),
-                                      SizedBox(height: 4.h),
-                                      Text(
-                                        '110',
-                                        style: themes.fontSize18_600.copyWith(
-                                          fontSize: 40.sp,
-                                          fontWeight: FontWeight.w700,
+                                        SizedBox(height: 4.h),
+                                        Text(
+                                          '4.5',
+                                          style: themes.fontSize18_600.copyWith(
+                                            fontSize: 40.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '''Delivery's''',
+                                          style: themes.fontSize14_500,
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        Text(
+                                          '110',
+                                          style: themes.fontSize18_600.copyWith(
+                                            fontSize: 40.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  )
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                })
               ],
             ),
           ),

@@ -55,7 +55,9 @@ class LocalStorage {
 
       return loginData;
     } catch (e) {
-      Utils().logError("getUserLocalData error", e.toString());
+      Utils().logError(
+        "getUserLocalData error ${e.toString()}",
+      );
       return null;
     }
   }

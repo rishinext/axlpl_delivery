@@ -17,7 +17,7 @@ class ApiServices {
 
     // String token
   ) {
-    final body = {
+    final Map<String, dynamic> body = {
       'mobile': mobile,
       'password': password,
       'fcm_token': fcmToken,

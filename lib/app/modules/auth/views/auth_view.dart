@@ -90,7 +90,7 @@ class AuthView extends GetView<AuthController> {
                     return CommonButton(
                       title: login,
                       isLoading: controller.isLoading.value,
-                      onPressed: () {
+                      onPressed: () async {
                         FocusScope.of(context).unfocus();
                         authController.loginUser(
                           controller.mobileController.text,

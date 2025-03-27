@@ -55,6 +55,7 @@ class AuthController extends GetxController {
       final isLogout = await _authRepo.logoutRepo();
       if (isLogout) {
         Get.offAllNamed(Routes.AUTH);
+        // Get.forceAppUpdate();
       }
     } catch (e) {
       errorMessage.value = e.toString();

@@ -92,7 +92,9 @@ class AddShipmentController extends GetxController {
       customerList.value = data ?? [];
     } catch (e) {
       customerList.value = [];
-      Utils().logError('Customer fetch failed', e);
+      Utils().logError(
+        'Customer fetch failed $e',
+      );
     } finally {
       isLoadingCustomers(false);
     }
@@ -105,7 +107,9 @@ class AddShipmentController extends GetxController {
       categoryList.value = data ?? [];
     } catch (error) {
       categoryList.value = [];
-      Utils().logError('Error getting customers', error);
+      Utils().logError(
+        'Error getting customers $error',
+      );
     } finally {
       isLoadingCate(false);
     }
@@ -128,7 +132,9 @@ class AddShipmentController extends GetxController {
       commodityList.value = data;
     } catch (error) {
       commodityList.value = [];
-      Utils().logError('Error getting customers', error);
+      Utils().logError(
+        'Error getting customers $error',
+      );
     } finally {
       isLoadingCommodity(false);
       commodityList.refresh();
@@ -142,7 +148,9 @@ class AddShipmentController extends GetxController {
       serviceTypeList.value = data ?? [];
     } catch (e) {
       serviceTypeList.value = [];
-      Utils().logError('service fetch failed', e);
+      Utils().logError(
+        'service fetch failed $e',
+      );
     } finally {
       isServiceType(false);
     }
@@ -166,7 +174,9 @@ class AddShipmentController extends GetxController {
     } catch (e) {
       pincodeDetailsData.value = null;
       errorMessage.value = 'Pincode fetch failed!';
-      Utils().logError('Pincode Fetch Failed', e.toString());
+      Utils().logError(
+        'Pincode Fetch Failed $e',
+      );
     } finally {
       isLoadingPincode.value = false;
     }
@@ -189,7 +199,9 @@ class AddShipmentController extends GetxController {
       areaList.value = data;
     } catch (error) {
       areaList.value = [];
-      Utils().logError('Error getting customers', error);
+      Utils().logError(
+        'Error getting customers $error',
+      );
     } finally {
       isLoadingArea(false);
     }

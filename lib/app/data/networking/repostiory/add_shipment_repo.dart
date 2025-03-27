@@ -13,9 +13,12 @@ class AddShipmentRepo {
       final search, final nextID) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
-      final userID = userData?.messangerdetail?.id?.toString();
-      final branchID = userData?.messangerdetail?.branchId;
-      final token = userData?.messangerdetail?.token;
+      final userID = userData?.messangerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+      final branchID = userData?.messangerdetail?.branchId ??
+          userData?.customerdetail?.branchId.toString();
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
       if (userID != null && userID.isNotEmpty) {
         final response = await _apiServices.getCustomersList(userID.toString(),
             branchID.toString(), search, nextID, token.toString());
@@ -36,7 +39,9 @@ class AddShipmentRepo {
         );
       }
     } catch (e) {
-      Utils().logError("$e", 'Customers Failed: $e');
+      Utils().logError(
+        "$e",
+      );
     }
     return null;
   }
@@ -47,7 +52,8 @@ class AddShipmentRepo {
     try {
       final userData = await LocalStorage().getUserLocalData();
 
-      final token = userData?.messangerdetail?.token;
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
       final response =
           await _apiServices.getCategoryList(search, token.toString());
@@ -67,7 +73,9 @@ class AddShipmentRepo {
         },
       );
     } catch (e) {
-      Utils().logError("$e", 'CategoryList Failed: $e');
+      Utils().logError(
+        "$e",
+      );
     }
     return null;
   }
@@ -79,7 +87,8 @@ class AddShipmentRepo {
     try {
       final userData = await LocalStorage().getUserLocalData();
 
-      final token = userData?.messangerdetail?.token;
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
       final response = await _apiServices.getCommodityList(
           search, categoryID, token.toString());
@@ -99,7 +108,9 @@ class AddShipmentRepo {
         },
       );
     } catch (e) {
-      Utils().logError("$e", 'CategoryList Failed: $e');
+      Utils().logError(
+        "$e",
+      );
     }
     return null;
   }
@@ -108,7 +119,8 @@ class AddShipmentRepo {
     try {
       final userData = await LocalStorage().getUserLocalData();
 
-      final token = userData?.messangerdetail?.token;
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
       final response = await _apiServices.getServiceTypeList(token.toString());
       return response.when(
@@ -127,7 +139,9 @@ class AddShipmentRepo {
         },
       );
     } catch (e) {
-      Utils().logError("$e", 'ServiceTypeList Failed: $e');
+      Utils().logError(
+        "$e",
+      );
     }
     return null;
   }
@@ -136,7 +150,8 @@ class AddShipmentRepo {
     try {
       final userData = await LocalStorage().getUserLocalData();
 
-      final token = userData?.messangerdetail?.token;
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
       final response =
           await _apiServices.getPincodeDetails(token.toString(), pincode);
@@ -156,7 +171,7 @@ class AddShipmentRepo {
         },
       );
     } catch (e) {
-      Utils().logError("$e", 'Pincode Failed: $e');
+      Utils().logError("$e");
     }
     return null;
   }
@@ -185,7 +200,9 @@ class AddShipmentRepo {
         },
       );
     } catch (e) {
-      Utils().logError("$e", 'Area Failed: $e');
+      Utils().logError(
+        "$e",
+      );
     }
     return null;
   }

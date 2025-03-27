@@ -14,9 +14,12 @@ class HomeRepository {
   Future<DashboardDataModel?> dashboardDataRepo() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
-      final userID = userData?.messangerdetail?.id?.toString();
-      final token = userData?.messangerdetail?.token;
-      final branchID = userData?.messangerdetail?.branchId;
+      final userID = userData?.messangerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+      final branchID = userData?.messangerdetail?.branchId ??
+          userData?.customerdetail?.branchId.toString();
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
       final fcmToken = _utils.fcmToken;
       final packageInfo = await PackageInfo.fromPlatform();
       final appVersion = "${packageInfo.version}-${packageInfo.buildNumber}";
@@ -43,16 +46,21 @@ class HomeRepository {
             }
           },
           error: (error) {
-            Utils()
-                .logError(error.toString(), 'Dashboard Data API Call Failed!');
+            Utils().logError(
+              error.toString(),
+            );
             return null;
           },
         );
       } else {
-        Utils().logError("Error", 'UserID Not Found!');
+        Utils().logError(
+          "Error",
+        );
       }
     } catch (e) {
-      Utils().logError("$e", 'API Logout Error');
+      Utils().logError(
+        "$e",
+      );
     }
     return null;
   }

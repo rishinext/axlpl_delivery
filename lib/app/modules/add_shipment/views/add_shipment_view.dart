@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
+import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -21,6 +22,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
   @override
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
+    final bottomController = Get.put(BottombarController());
     final Utils utils = Utils();
     String formatDate(DateTime date) {
       return DateFormat('dd/MM/yyyy').format(date); // Format the date
@@ -54,8 +56,11 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         icon: Icon(CupertinoIcons.calendar_today)),
                     hintTxt: formatDate(addshipController.selectedDate.value),
                   ),
-                  dropdownText('Customer'),
-                  Obx(() => CommonDropdown<CustomersList>(
+                  if (bottomController.userData.value?.role != 'customer')
+                    dropdownText('Customer'),
+                  if (bottomController.userData.value?.role != 'customer')
+                    Obx(() {
+                      return CommonDropdown<CustomersList>(
                         hint: 'Select Customer',
                         selectedValue: controller.selectedCustomer.value,
                         isLoading: addshipController.isLoadingCustomers.value,
@@ -64,7 +69,8 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         itemValue: (c) => c.id.toString(),
                         onChanged: (val) =>
                             controller.selectedCustomer.value = val,
-                      )),
+                      );
+                    }),
                   dropdownText('Category'),
                   Obx(() => CommonDropdown<CategoryList>(
                         hint: 'Select Category',

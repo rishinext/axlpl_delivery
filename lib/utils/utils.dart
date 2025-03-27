@@ -32,11 +32,12 @@ class Utils {
     ),
   );
 
-  void logError(dynamic error, dynamic stackTrace, {String msg = ""}) {
-    if (msg != "") {
-      logger.e(msg);
+  void logError(String message, [StackTrace? stackTrace]) {
+    // Log the error message
+    log("Error: $message");
+    if (stackTrace != null) {
+      log("StackTrace: $stackTrace");
     }
-    logger.e(error, stackTrace: stackTrace);
   }
 
   void logInfo(dynamic info) {

@@ -99,7 +99,9 @@ class AuthRepo {
       });
       return true;
     } catch (e) {
-      _utils.logError("$e", 'API Logout Error');
+      _utils.logError(
+        "$e",
+      );
       return false;
     }
   }
