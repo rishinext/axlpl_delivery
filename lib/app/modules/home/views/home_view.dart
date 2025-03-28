@@ -14,6 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -70,7 +71,9 @@ class HomeView extends GetView<HomeController> {
                       onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => QrScanScreen(),
+                            builder: (context) => SimpleBarcodeScannerPage(
+                              scanType: ScanType.barcode,
+                            ),
                           )),
                       child: Icon(CupertinoIcons.qrcode_viewfinder)),
                   hintText: 'Enter Your Package Number',

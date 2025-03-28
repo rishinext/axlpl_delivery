@@ -11,6 +11,8 @@ class HomeController extends GetxController {
   Rxn<DashboardDataModel> dashboardDataModel = Rxn<DashboardDataModel>();
   RxBool isLoading = false.obs;
 
+  var scannedCode = ''.obs;
+
   Future<void> getDashborad() async {
     isLoading.value = true;
     try {
@@ -31,6 +33,10 @@ class HomeController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void updateCode(String code) {
+    scannedCode.value = code;
   }
 
   @override

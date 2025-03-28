@@ -30,6 +30,8 @@
 	<string>Main</string>
 	<key>NSCameraUsageDescription</key>
     <string>We need camera access to take pictures.</string>
+	<key>NSCameraUsageDescription</key>
+    <string>This app requires camera access to scan barcodes.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>We need photo library access to choose images.</string>
 	<key>UISupportedInterfaceOrientations</key>

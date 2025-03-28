@@ -14,7 +14,19 @@ class ShipnowController extends GetxController {
   Future<void> fetchShipmentData([String nextID = '']) async {
     try {
       isLoadingShipNow(true);
-      final data = await shipNowRepo.customerListRepo('1');
+      final data = await shipNowRepo.customerListRepo(
+        '1',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      );
       shipmentDataList.value = data ?? [];
     } catch (e) {
       shipmentDataList.value = [];

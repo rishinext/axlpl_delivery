@@ -149,13 +149,31 @@ class ApiServices {
   }
 
   Future<APIResponse> getShipmentDataList(
-    final userID,
-    final nextID,
-  ) async {
+      final userID,
+      final nextID,
+      final shimentStatus,
+      final receiverGSTNo,
+      final senderGSTNo,
+      final receiverAeraName,
+      final senderAeraName,
+      final destination,
+      final orgin,
+      final receiverCompanyName,
+      final senderCompanyName,
+      final shipmentID) async {
     final body = {
       'user_id': userID,
-      'next_id': nextID
-      //more params will come
+      'next_id': nextID,
+      'shipment_status': shimentStatus,
+      'receiver_gst_no': receiverGSTNo,
+      'sender_gst_no': senderGSTNo,
+      'receiver_areaname': receiverAeraName,
+      'sender_areaname': senderAeraName,
+      'destination': destination,
+      'origin': orgin,
+      'receiver_company_name': receiverCompanyName,
+      'sender_company_name': senderCompanyName,
+      'shipment_id': shipmentID,
     };
     return _api.post(
       getShipmentDataListPoint,
