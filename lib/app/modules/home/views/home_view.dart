@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
@@ -68,13 +70,32 @@ class HomeView extends GetView<HomeController> {
                     color: themes.grayColor,
                   ),
                   suffixIcon: InkWell(
-                      onTap: () => Navigator.push(
+                      onTap: () async {
+                        String? res = await SimpleBarcodeScanner.scanBarcode(
+                          scanType: ScanType.defaultMode,
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => SimpleBarcodeScannerPage(
-                              scanType: ScanType.barcode,
-                            ),
-                          )),
+                          barcodeAppBar: const BarcodeAppBar(
+                            appBarTitle: '',
+                            centerTitle: false,
+                            enableBackButton: true,
+                            backButtonIcon: Icon(Icons.arrow_back_ios),
+                          ),
+                          isShowFlashIcon: true,
+                          // delayMillis: 2000,
+                          cameraFace: CameraFace.back,
+                        );
+
+                        final result = res as String;
+                        log(result.toString());
+                      },
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => SimpleBarcodeScannerPage(
+                      //       scanType: ScanType.barcode,
+                      //     ),
+                      //   ));
+
                       child: Icon(CupertinoIcons.qrcode_viewfinder)),
                   hintText: 'Enter Your Package Number',
                   controller: controller.searchController,

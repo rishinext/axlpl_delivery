@@ -180,7 +180,8 @@ class AddShipmentRepo {
     try {
       final userData = await LocalStorage().getUserLocalData();
 
-      final token = userData?.messangerdetail?.token;
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
       final response =
           await _apiServices.getAllAeraByZip(token.toString(), pincode);

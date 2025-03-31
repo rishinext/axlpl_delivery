@@ -14,7 +14,7 @@ class ShipnowView extends GetView<ShipnowController> {
     final theme = Themes();
     return Scaffold(
         appBar: AppBar(
-          actions: [
+          /*   actions: [
             PopupMenuButton(
               itemBuilder: (context) => <PopupMenuEntry<String>>[
                 PopupMenuItem<String>(
@@ -35,7 +35,7 @@ class ShipnowView extends GetView<ShipnowController> {
                 ),
               ],
             )
-          ],
+          ],*/
           title: const Text('All Shipments'),
           centerTitle: true,
         ),

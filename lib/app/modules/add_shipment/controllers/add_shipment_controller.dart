@@ -25,7 +25,7 @@ class AddShipmentController extends GetxController {
   final serviceTypeList = <ServiceTypeList>[].obs;
   final areaList = <AreaList>[].obs;
   var pincodeDetailsData = Rxn<GetPincodeDetailsModel>(null);
-
+  var pincodeDataDiff = Rxn<GetPincodeDetailsModel>(null);
   final paymentModes = [
     {'id': '1', 'name': 'Prepaid'},
     {'id': '2', 'name': 'To Pay'},
@@ -63,7 +63,9 @@ class AddShipmentController extends GetxController {
   final isLoadingCommodity = false.obs;
   final isServiceType = false.obs;
   final isLoadingPincode = false.obs;
+  final isLoadingDiffPincode = false.obs;
   final isLoadingArea = false.obs;
+  final isLoadingDiffArea = false.obs;
 
   var selectedCustomer = Rxn<String>();
 

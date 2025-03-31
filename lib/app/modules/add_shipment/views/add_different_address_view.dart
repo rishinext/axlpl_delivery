@@ -72,41 +72,18 @@ class AddDifferentAddressView extends GetView {
                                   addshipController.fetchAeraByZipData(value);
                                 } else {
                                   // Optional: clear state/city if length < 6 again
-                                  addshipController.pincodeDetailsData.value =
+                                  addshipController.pincodeDataDiff.value =
                                       null;
                                 }
                                 return null;
                               },
                             ),
-                            dropdownText(city),
-                            Obx(() {
-                              final isLoading =
-                                  addshipController.isLoadingPincode.value;
-                              final data =
-                                  addshipController.pincodeDetailsData.value;
-                              final error =
-                                  addshipController.errorMessage.value;
-
-                              if (isLoading) {
-                                Center(
-                                    child:
-                                        CircularProgressIndicator.adaptive());
-                              }
-
-                              return CommonTextfiled(
-                                isEnable: false,
-                                hintTxt: data?.cityName ??
-                                    (error.isNotEmpty ? error : 'City'),
-                                textInputAction: TextInputAction.next,
-                                validator: utils.validateText,
-                              );
-                            }),
                             dropdownText(state),
                             Obx(() {
                               final isLoading =
-                                  addshipController.isLoadingPincode.value;
+                                  addshipController.isLoadingDiffPincode.value;
                               final data =
-                                  addshipController.pincodeDetailsData.value;
+                                  addshipController.pincodeDataDiff.value;
                               final error =
                                   addshipController.errorMessage.value;
 
@@ -124,6 +101,29 @@ class AddDifferentAddressView extends GetView {
                                 validator: utils.validateText,
                               );
                             }),
+                            dropdownText(city),
+                            Obx(() {
+                              final isLoading =
+                                  addshipController.isLoadingDiffPincode.value;
+                              final data =
+                                  addshipController.pincodeDataDiff.value;
+                              final error =
+                                  addshipController.errorMessage.value;
+
+                              if (isLoading) {
+                                Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              }
+
+                              return CommonTextfiled(
+                                isEnable: false,
+                                hintTxt: data?.cityName ??
+                                    (error.isNotEmpty ? error : 'City'),
+                                textInputAction: TextInputAction.next,
+                                validator: utils.validateText,
+                              );
+                            }),
                             dropdownText('Area'),
                             Obx(
                               () => CommonDropdown<AreaList>(
@@ -131,7 +131,7 @@ class AddDifferentAddressView extends GetView {
                                   selectedValue: addshipController
                                       .selectedDiffrentArea.value,
                                   isLoading:
-                                      addshipController.isLoadingArea.value,
+                                      addshipController.isLoadingDiffArea.value,
                                   items: addshipController.areaList,
                                   itemLabel: (c) => c.name ?? 'Unknown',
                                   itemValue: (c) => c.id.toString(),
@@ -144,8 +144,8 @@ class AddDifferentAddressView extends GetView {
                                       addshipController
                                           .selectedDiffrentArea.value = null;
                                     } else {
-                                      addshipController
-                                          .pincodeDetailsData.value = null;
+                                      addshipController.pincodeDataDiff.value =
+                                          null;
                                       addshipController.areaList.clear();
                                       addshipController
                                           .selectedDiffrentArea.value = null;
