@@ -68,8 +68,10 @@ class AddDifferentAddressView extends GetView {
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
                                 if (value?.length == 6) {
-                                  addshipController.fetchPincodeDetails(value!);
-                                  addshipController.fetchAeraByZipData(value);
+                                  addshipController
+                                      .fetchPincodeDetailsDiff(value!);
+                                  addshipController
+                                      .fetchAeraByZipDataDiff(value);
                                 } else {
                                   // Optional: clear state/city if length < 6 again
                                   addshipController.pincodeDataDiff.value =
@@ -127,31 +129,21 @@ class AddDifferentAddressView extends GetView {
                             dropdownText('Area'),
                             Obx(
                               () => CommonDropdown<AreaList>(
-                                  hint: 'Select Area',
-                                  selectedValue: addshipController
-                                      .selectedDiffrentArea.value,
-                                  isLoading:
-                                      addshipController.isLoadingDiffArea.value,
-                                  items: addshipController.areaList,
-                                  itemLabel: (c) => c.name ?? 'Unknown',
-                                  itemValue: (c) => c.id.toString(),
-                                  onChanged: (value) {
-                                    if (value?.length == 6) {
-                                      addshipController
-                                          .fetchPincodeDetails(value!);
-                                      addshipController
-                                          .fetchAeraByZipData(value);
-                                      addshipController
-                                          .selectedDiffrentArea.value = null;
-                                    } else {
-                                      addshipController.pincodeDataDiff.value =
-                                          null;
-                                      addshipController.areaList.clear();
-                                      addshipController
-                                          .selectedDiffrentArea.value = null;
-                                    }
-                                    return null;
-                                  }),
+                                hint: 'Select Area',
+                                selectedValue: addshipController
+                                    .selectedDiffrentArea.value,
+                                isLoading:
+                                    addshipController.isLoadingDiffArea.value,
+                                items: addshipController.areaListDiff,
+                                itemLabel: (c) => c.name ?? 'Unknown',
+                                itemValue: (c) => c.id.toString(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    addshipController
+                                        .selectedDiffrentArea.value = value;
+                                  }
+                                },
+                              ),
                             ),
                             dropdownText('Address Line 1'),
                             CommonTextfiled(

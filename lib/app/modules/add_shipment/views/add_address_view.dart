@@ -80,7 +80,7 @@ class AddAddressView extends GetView {
                 keyboardType: TextInputType.number,
                 onChanged: (value) {
                   if (value?.length == 6) {
-                    addshipController.fetchPincodeDetails(value!);
+                    addshipController.fetchPincodeDetailsSenderInfo(value!);
                     addshipController.fetchAeraByZipData(value);
                   } else {
                     // Optional: clear state/city if length < 6 again

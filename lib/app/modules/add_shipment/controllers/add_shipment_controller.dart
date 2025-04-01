@@ -24,6 +24,7 @@ class AddShipmentController extends GetxController {
   final commodityList = <CommodityList>[].obs;
   final serviceTypeList = <ServiceTypeList>[].obs;
   final areaList = <AreaList>[].obs;
+  final areaListDiff = <AreaList>[].obs;
   var pincodeDetailsData = Rxn<GetPincodeDetailsModel>(null);
   var pincodeDataDiff = Rxn<GetPincodeDetailsModel>(null);
   final paymentModes = [
@@ -158,7 +159,7 @@ class AddShipmentController extends GetxController {
     }
   }
 
-  Future<void> fetchPincodeDetails(String pincode) async {
+  Future<void> fetchPincodeDetailsSenderInfo(String pincode) async {
     errorMessage.value = '';
     try {
       isLoadingPincode.value = true;
@@ -184,6 +185,32 @@ class AddShipmentController extends GetxController {
     }
   }
 
+  Future<void> fetchPincodeDetailsDiff(String pincode) async {
+    errorMessage.value = '';
+    try {
+      isLoadingDiffPincode.value = true;
+
+      final response = await addShipmentRepo.pincodeDetailsRepo(pincode);
+
+      if (response != null &&
+          response.stateName != null &&
+          response.cityName != null) {
+        pincodeDataDiff.value = response;
+      } else {
+        pincodeDataDiff.value = null; // clear invalid data
+        errorMessage.value = 'Invalid pincode!';
+      }
+    } catch (e) {
+      pincodeDataDiff.value = null;
+      errorMessage.value = 'Pincode fetch failed!';
+      Utils().logError(
+        'Pincode Fetch Failed $e',
+      );
+    } finally {
+      isLoadingDiffPincode.value = false;
+    }
+  }
+
   Future fetchAeraByZipData(final zip) async {
     if (senderInfoZipController.text.isEmpty) return;
     try {
@@ -206,6 +233,32 @@ class AddShipmentController extends GetxController {
       );
     } finally {
       isLoadingArea(false);
+    }
+  }
+
+  Future fetchAeraByZipDataDiff(final zip) async {
+    if (diffrentZipController.text.isEmpty) return;
+    try {
+      isLoadingDiffArea(true);
+
+      areaListDiff.value = [];
+      final data = await addShipmentRepo.allAeraByZipRepo(zip);
+      if (data == null || data.isEmpty) {
+        areaListDiff.value = [];
+
+        Utils().logInfo('No Aera found ${diffrentZipController.text}');
+        return;
+      } else {
+        areaListDiff.value = data;
+      }
+      areaListDiff.value = data;
+    } catch (error) {
+      areaListDiff.value = [];
+      Utils().logError(
+        'Error getting customers $error',
+      );
+    } finally {
+      isLoadingDiffArea(false);
     }
   }
 
