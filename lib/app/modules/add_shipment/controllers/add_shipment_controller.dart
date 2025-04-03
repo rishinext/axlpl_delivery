@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
+import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/datat_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
@@ -18,6 +19,7 @@ class AddShipmentController extends GetxController {
   //TODO: Implement AddShipmentController
 
   final addShipmentRepo = AddShipmentRepo();
+  ShipmentRequestModel shipmentData = ShipmentRequestModel();
 
   final customerList = <CustomersList>[].obs;
   final categoryList = <CategoryList>[].obs;
@@ -277,17 +279,36 @@ class AddShipmentController extends GetxController {
   }
 
   void nextPage() {
-    if (currentPage.value <= 3) {
-      // Assuming there are 4 pages (0 to 3)
+    if (currentPage.value < 4) {
       currentPage++;
       pageController.animateToPage(
         currentPage.value,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.bounceIn,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
       );
     } else {
-      Get.back();
+      submitForm();
     }
+  }
+
+  void submitForm() {
+    final payload = shipmentData.toJson(); // 📦 Final collected data
+
+    Utils().log("Final Shipment Data: $payload");
+
+    // Optionally, show it in a dialog/snackbar for now
+    Get.defaultDialog(
+      title: "Shipment Preview",
+      content: SingleChildScrollView(
+        child: Text(payload.toString()),
+      ),
+      textConfirm: "OK",
+      onConfirm: () {
+        Get.back();
+      },
+    );
+
+    // Or navigate to a confirmation screen later if needed
   }
 
   void previousPage() {
@@ -296,6 +317,39 @@ class AddShipmentController extends GetxController {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
+    }
+  }
+
+  ShipmentRequestModel collectFormData(int step) {
+    switch (step) {
+      case 0:
+        return shipmentData.copyWith(
+          shipmentSelectedDate: selectedDate.value.toString().split("T")[0],
+          selectedCate: selectedCategory.value,
+          selectedCommdity: selectedCommodity.value,
+          newWeight: netWeightController.text,
+          grossWeight: grossWeightController.text,
+        );
+      case 1:
+        return shipmentData.copyWith(
+          noOfParcel: noOfParcelController.text,
+          serviceType: selectedServiceType.value,
+        );
+      case 2:
+        return shipmentData.copyWith(
+          insurance: insuranceType.value,
+          policyNo: policyNoController.text,
+          expireDate: expireDate.toString().split("T")[0],
+          insuranceAmt: insuranceValueController.text,
+        );
+      case 3:
+        return shipmentData.copyWith(
+          paymentMode: selectedPaymentModeId.value,
+          invoiceNo: invoiceNoController.text,
+          remark: remarkController.text,
+        );
+      default:
+        return shipmentData;
     }
   }
 

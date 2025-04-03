@@ -90,16 +90,39 @@ class AddShipmentView extends GetView<AddShipmentController> {
                       )),
                   dropdownText('Commodity'),
                   Obx(
-                    () => CommonDropdown<CommodityList>(
-                      hint: 'Select Commodity',
-                      selectedValue: addshipController.selectedCommodity.value,
-                      isLoading: addshipController.isLoadingCommodity.value,
-                      items: addshipController.commodityList,
-                      itemLabel: (c) => c.name ?? 'Unknown',
-                      itemValue: (c) => c.id.toString(),
-                      onChanged: (val) =>
-                          addshipController.selectedCommodity.value = val,
-                    ),
+                    () {
+                      final isCategorySelected =
+                          controller.selectedCategory.value != null;
+                      return GestureDetector(
+                        onTap: () {
+                          if (!isCategorySelected) {
+                            Get.snackbar(
+                              'Select Customer',
+                              'Please select a customer first',
+                              snackPosition: SnackPosition.TOP,
+                              backgroundColor: themes.redColor,
+                              colorText: themes.whiteColor,
+                            );
+                          }
+                        },
+                        behavior: HitTestBehavior.translucent,
+                        child: AbsorbPointer(
+                          absorbing: !isCategorySelected,
+                          child: CommonDropdown<CommodityList>(
+                            hint: 'Select Commodity',
+                            selectedValue:
+                                addshipController.selectedCommodity.value,
+                            isLoading:
+                                addshipController.isLoadingCommodity.value,
+                            items: addshipController.commodityList,
+                            itemLabel: (c) => c.name ?? 'Unknown',
+                            itemValue: (c) => c.id.toString(),
+                            onChanged: (val) =>
+                                addshipController.selectedCommodity.value = val,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

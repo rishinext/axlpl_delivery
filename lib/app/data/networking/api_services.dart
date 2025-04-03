@@ -150,6 +150,7 @@ class ApiServices {
   }
 
   Future<APIResponse> getShipmentDataList(
+      final token,
       final userID,
       final nextID,
       final shimentStatus,
@@ -178,6 +179,7 @@ class ApiServices {
     };
     return _api.post(
       getShipmentDataListPoint,
+      token: token,
       body,
     );
   }

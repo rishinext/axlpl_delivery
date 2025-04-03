@@ -22,10 +22,12 @@ class ShipnowRepo {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??
           userData?.customerdetail?.id.toString();
-
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
       if (userID != null && userID.isNotEmpty) {
         final response = await _apiServices.getShipmentDataList(
-          userID.toString(),
+          token,
+          '15',
           nextID,
           shimentStatus,
           receiverGSTNo,

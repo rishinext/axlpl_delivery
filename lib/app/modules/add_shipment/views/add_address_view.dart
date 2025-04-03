@@ -19,6 +19,8 @@ class AddAddressView extends GetView {
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
     final Utils utils = Utils();
+    final data = addshipController.shipmentData;
+    Utils().logInfo(data?.toJson());
     return CommonScaffold(
         body: SingleChildScrollView(
       child: Container(

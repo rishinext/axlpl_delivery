@@ -87,6 +87,9 @@ class PageviewView extends GetView {
                     Expanded(
                       child: CommonButton(
                           onPressed: () {
+                            addshipController.shipmentData =
+                                addshipController.collectFormData(
+                                    addshipController.currentPage.value);
                             addshipController.nextPage();
                           },
                           title: addshipController.currentPage.value == 4

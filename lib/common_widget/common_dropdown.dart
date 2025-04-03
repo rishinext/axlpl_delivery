@@ -28,6 +28,8 @@ class CommonDropdown<T> extends StatelessWidget {
   final String hint;
   final String? selectedValue; // ✅ Store ID, not name
   final Function(String?) onChanged;
+  final VoidCallback? onTap;
+
   bool isLoading;
   final List<T> items;
   final String Function(T) itemLabel; // ✅ Extract Name
@@ -41,7 +43,8 @@ class CommonDropdown<T> extends StatelessWidget {
     required this.isLoading,
     required this.items,
     required this.itemLabel, // ✅ Function to get name
-    required this.itemValue, // ✅ Function to get ID
+    required this.itemValue,
+    this.onTap, // ✅ Function to get ID
   }) : super(key: key);
 
   @override
@@ -54,6 +57,7 @@ class CommonDropdown<T> extends StatelessWidget {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          onTap: onTap,
           isExpanded: true,
           hint: Text(hint),
           value: selectedValue, // ✅ Stores ID

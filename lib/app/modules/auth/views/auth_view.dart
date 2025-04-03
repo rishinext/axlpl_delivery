@@ -1,5 +1,4 @@
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
-import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -59,12 +58,12 @@ class AuthView extends GetView<AuthController> {
                   ),
                   CommonTextfiled(
                     controller: authController.mobileController,
-                    hintTxt: 'Enter your Phone Number',
-                    keyboardType: TextInputType.phone,
+                    hintTxt: 'Phone number Or Email',
+                    // keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
-                    prefixText: '+91 | ',
-                    lableText: '+91 | ',
-                    validator: utils.validatePhone,
+                    // prefixText: '+91 | ',
+                    // lableText: '+91 | ',
+                    validator: utils.validateText,
                   ),
                   Obx(
                     () {
