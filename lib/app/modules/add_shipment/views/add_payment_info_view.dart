@@ -51,30 +51,37 @@ class AddPaymentInfoView extends GetView {
                     dropdownText('Shipment Charges'),
                     CommonTextfiled(
                       hintTxt: 'Shipment Charges',
+                      controller: addshipController.shipmentChargeController,
                     ),
                     dropdownText('Insurance Charges'),
                     CommonTextfiled(
                       hintTxt: 'Insurance Charges',
+                      controller: addshipController.insuranceChargeController,
                     ),
                     dropdownText('ODA Charges'),
                     CommonTextfiled(
                       hintTxt: 'ODA Charges',
+                      controller: addshipController.odaChargeController,
                     ),
                     dropdownText('Holiday Charges'),
                     CommonTextfiled(
                       hintTxt: 'Holiday Charges',
+                      controller: addshipController.holidayChargeController,
                     ),
                     dropdownText('Handling Charges'),
                     CommonTextfiled(
-                      hintTxt: 'Address Line 1',
+                      hintTxt: 'Handling Charges',
+                      controller: addshipController.headlingChargeController,
                     ),
                     dropdownText('Total Charges'),
                     CommonTextfiled(
                       hintTxt: 'Total Charges',
+                      controller: addshipController.totalChargeController,
                     ),
                     dropdownText('GST 18%'),
                     CommonTextfiled(
                       hintTxt: 'GST',
+                      controller: addshipController.gstChargeController,
                     ),
                   ],
                 ),

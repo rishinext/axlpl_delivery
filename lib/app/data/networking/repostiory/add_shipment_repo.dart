@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
@@ -8,7 +10,8 @@ import 'package:axlpl_delivery/utils/utils.dart';
 
 class AddShipmentRepo {
   final ApiServices _apiServices = ApiServices();
-
+  final Utils _utils = Utils();
+  final LocalStorage _localStorage = LocalStorage();
   Future<List<CustomersList>?> customerListRepo(
       final search, final nextID) async {
     try {
@@ -206,5 +209,175 @@ class AddShipmentRepo {
       );
     }
     return null;
+  }
+
+  Future<bool> addShipment(
+    final cateID,
+    final productID,
+    final netWeight,
+    final grossWeight,
+    final paymentModeID,
+    final serviceTypeID,
+    final policyNo,
+    final expDate,
+    final invoiceAmt,
+    final insurance,
+    final addInsurance,
+    final shipmentStatus,
+    final caculationStatus,
+    final addedBy,
+    final addedType,
+    final alertShipment,
+    final shipmentInvoice,
+    final isAmtEditedByUser,
+    final shipmentID,
+    final senderName,
+    final senderCompanyName,
+    final senderCountry,
+    final senderState,
+    final senderCity,
+    final senderAera,
+    final senderPincode,
+    final senderAddress1,
+    final senderAddress2,
+    final senderMobile,
+    final senderEmail,
+    final senderSaveAddress,
+    final senderisNewAdresss,
+    final senderGstNo,
+    final senderCustID,
+    final receiverName,
+    final remark,
+    final billTo,
+    final noOfParcel,
+    final receiverCompanyName,
+    final receiverCountry,
+    final receiverState,
+    final receiverCity,
+    final receiverAera,
+    final receiverPincode,
+    final receiverAddress1,
+    final receiverAddress2,
+    final receiverMobile,
+    final receiverEmail,
+    final receiverSaveAddress,
+    final receiverisNewAdresss,
+    final receiverGstNo,
+    final receiverCustID,
+    final isDiffAdd,
+    final diffReceiverCountry,
+    final diffReceiverState,
+    final diffReceiverCity,
+    final diffReceiverAera,
+    final diffReceiverPincode,
+    final diffReceiverAddress1,
+    final diffReceiverAddress2,
+    final shipmentCharges,
+    final insuranceCharges,
+    final invoiceCharges,
+    final handlingCharges,
+    final tax,
+    final totalCharges,
+    final grandeTotal,
+    final docketNo,
+    final shipmentDate,
+  ) async {
+    final userData = await LocalStorage().getUserLocalData();
+    if (userData == null) return false;
+    final String? role = userData.role;
+    final String? mId = userData.messangerdetail?.id?.toString();
+    final String? custID = userData.customerdetail?.id.toString();
+    final String? token = userData.messangerdetail?.token.toString() ??
+        userData.customerdetail?.token.toString();
+
+    final String? userID = mId ?? custID;
+    if (userID == null || role == null || token == null) {
+      Utils().logInfo('Logout skipped - user data incomplete');
+      return false;
+    }
+    try {
+      final response = await _apiServices.addShipment(
+        custID,
+        cateID,
+        productID,
+        netWeight,
+        grossWeight,
+        paymentModeID,
+        serviceTypeID,
+        policyNo,
+        expDate,
+        invoiceAmt,
+        insurance,
+        addInsurance,
+        shipmentStatus,
+        caculationStatus,
+        addedBy,
+        addedType,
+        alertShipment,
+        shipmentInvoice,
+        isAmtEditedByUser,
+        shipmentID,
+        senderName,
+        senderCompanyName,
+        senderCountry,
+        senderState,
+        senderCity,
+        senderAera,
+        senderPincode,
+        senderAddress1,
+        senderAddress2,
+        senderMobile,
+        senderEmail,
+        senderSaveAddress,
+        senderisNewAdresss,
+        senderGstNo,
+        senderCustID,
+        receiverName,
+        remark,
+        billTo,
+        noOfParcel,
+        receiverCompanyName,
+        receiverCountry,
+        receiverState,
+        receiverCity,
+        receiverAera,
+        receiverPincode,
+        receiverAddress1,
+        receiverAddress2,
+        receiverMobile,
+        receiverEmail,
+        receiverSaveAddress,
+        receiverisNewAdresss,
+        receiverGstNo,
+        receiverCustID,
+        isDiffAdd,
+        diffReceiverCountry,
+        diffReceiverState,
+        diffReceiverCity,
+        diffReceiverAera,
+        diffReceiverPincode,
+        diffReceiverAddress1,
+        diffReceiverAddress2,
+        shipmentCharges,
+        insuranceCharges,
+        invoiceCharges,
+        handlingCharges,
+        tax,
+        totalCharges,
+        grandeTotal,
+        docketNo,
+        shipmentDate,
+      );
+      response.when(
+        success: (success) {
+          log(response.toString());
+        },
+        error: (error) {
+          throw Exception("shipment add Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      _utils.logError(e.toString());
+    }
   }
 }

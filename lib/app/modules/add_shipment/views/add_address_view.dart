@@ -63,6 +63,7 @@ class AddAddressView extends GetView {
               ),
               dropdownText('Name'),
               CommonTextfiled(
+                controller: addshipController.senderInfoNameController,
                 hintTxt: 'Name',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
@@ -72,6 +73,7 @@ class AddAddressView extends GetView {
                 hintTxt: 'Company Name',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
+                controller: addshipController.senderInfoCompanyNameController,
               ),
               dropdownText(zip),
               CommonTextfiled(
@@ -107,6 +109,7 @@ class AddAddressView extends GetView {
                       data?.stateName ?? (error.isNotEmpty ? error : 'State'),
                   textInputAction: TextInputAction.next,
                   validator: utils.validateText,
+                  controller: addshipController.senderInfoStateController,
                 );
               }),
               dropdownText(city),
@@ -125,6 +128,7 @@ class AddAddressView extends GetView {
                       data?.cityName ?? (error.isNotEmpty ? error : 'City'),
                   textInputAction: TextInputAction.next,
                   validator: utils.validateText,
+                  controller: addshipController.senderInfoCityController,
                 );
               }),
               dropdownText('Select Aera'),
@@ -143,18 +147,21 @@ class AddAddressView extends GetView {
                 hintTxt: 'GST No',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
+                controller: addshipController.senderInfoGstNoController,
               ),
               dropdownText('Address Line 1'),
               CommonTextfiled(
                 hintTxt: 'Address Line 1',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
+                controller: addshipController.senderInfoAddress1Controller,
               ),
               dropdownText('Address Line 2'),
               CommonTextfiled(
                 hintTxt: 'Address Line 2',
                 textInputAction: TextInputAction.next,
                 validator: utils.validateText,
+                controller: addshipController.senderInfoAddress2Controller,
               ),
               dropdownText('Mobile'),
               CommonTextfiled(
@@ -162,6 +169,7 @@ class AddAddressView extends GetView {
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.phone,
                 validator: utils.validatePhone,
+                controller: addshipController.senderInfoMobileController,
               ),
               dropdownText("Email"),
               CommonTextfiled(
@@ -169,6 +177,7 @@ class AddAddressView extends GetView {
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.emailAddress,
                 validator: utils.validateText,
+                controller: addshipController.senderInfoEmailController,
               ),
             ],
           ),

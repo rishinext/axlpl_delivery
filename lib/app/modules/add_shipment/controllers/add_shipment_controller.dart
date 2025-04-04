@@ -36,7 +36,9 @@ class AddShipmentController extends GetxController {
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
   Rx<DateTime> expireDate = DateTime.now().obs;
+
   final PageController pageController = PageController();
+
   final TextEditingController searchController = TextEditingController();
   final TextEditingController netWeightController = TextEditingController();
   final TextEditingController grossWeightController = TextEditingController();
@@ -52,7 +54,62 @@ class AddShipmentController extends GetxController {
   final TextEditingController senderInfoCompanyNameController =
       TextEditingController();
   final TextEditingController senderInfoZipController = TextEditingController();
+
+  final TextEditingController senderInfoStateController =
+      TextEditingController();
+
+  final TextEditingController senderInfoCityController =
+      TextEditingController();
+  final TextEditingController senderInfoGstNoController =
+      TextEditingController();
+  final TextEditingController senderInfoAddress1Controller =
+      TextEditingController();
+  final TextEditingController senderInfoAddress2Controller =
+      TextEditingController();
+  final TextEditingController senderInfoMobileController =
+      TextEditingController();
+  final TextEditingController senderInfoEmailController =
+      TextEditingController();
+
+  final TextEditingController receiverInfoNameController =
+      TextEditingController();
+  final TextEditingController receiverInfoCompanyNameController =
+      TextEditingController();
+  final TextEditingController receiverInfoZipController =
+      TextEditingController();
+
+  final TextEditingController receiverInfoStateController =
+      TextEditingController();
+  final TextEditingController receiverInfoCityController =
+      TextEditingController();
+  final TextEditingController receiverInfoGstNoController =
+      TextEditingController();
+  final TextEditingController receiverInfoAddress1Controller =
+      TextEditingController();
+  final TextEditingController receiverInfoAddress2Controller =
+      TextEditingController();
+  final TextEditingController receiverInfoMobileController =
+      TextEditingController();
+  final TextEditingController receiverInfoEmailController =
+      TextEditingController();
+
   final TextEditingController diffrentZipController = TextEditingController();
+  final TextEditingController diffrentStateController = TextEditingController();
+  final TextEditingController diffrentCityController = TextEditingController();
+  final TextEditingController diffrentAddress1Controller =
+      TextEditingController();
+  final TextEditingController diffrentAddress2Controller =
+      TextEditingController();
+  final TextEditingController shipmentChargeController =
+      TextEditingController();
+  final TextEditingController insuranceChargeController =
+      TextEditingController();
+  final TextEditingController odaChargeController = TextEditingController();
+  final TextEditingController holidayChargeController = TextEditingController();
+  final TextEditingController headlingChargeController =
+      TextEditingController();
+  final TextEditingController totalChargeController = TextEditingController();
+  final TextEditingController gstChargeController = TextEditingController();
 
   List<Widget> shipmentList = [
     AddShipmentView(),
@@ -292,8 +349,7 @@ class AddShipmentController extends GetxController {
   }
 
   void submitForm() {
-    final payload = shipmentData.toJson(); // 📦 Final collected data
-
+    final payload = shipmentData.toJson();
     Utils().log("Final Shipment Data: $payload");
 
     // Optionally, show it in a dialog/snackbar for now
@@ -329,24 +385,62 @@ class AddShipmentController extends GetxController {
           selectedCommdity: selectedCommodity.value,
           newWeight: netWeightController.text,
           grossWeight: grossWeightController.text,
-        );
-      case 1:
-        return shipmentData.copyWith(
+          paymentMode: selectedPaymentModeId.value,
           noOfParcel: noOfParcelController.text,
           serviceType: selectedServiceType.value,
-        );
-      case 2:
-        return shipmentData.copyWith(
           insurance: insuranceType.value,
           policyNo: policyNoController.text,
           expireDate: expireDate.toString().split("T")[0],
           insuranceAmt: insuranceValueController.text,
+          invoiceNo: invoiceNoController.text,
+          remark: remarkController.text,
+        );
+      case 1:
+        return shipmentData.copyWith(
+          sendInfoName: senderInfoNameController.text,
+          sendInfoCompanyName: senderInfoCompanyNameController.text,
+          sendInfoZip: senderInfoZipController.text,
+          sendInfoState: pincodeDetailsData.value?.stateId,
+          sendInfoCity: pincodeDetailsData.value?.cityId,
+          sendInfoAera: selectedArea.value,
+          sendInfoGstNo: senderInfoGstNoController.text,
+          sendInfoAddress1: senderInfoAddress1Controller.text,
+          sendInfoAddress2: senderInfoAddress2Controller.text,
+          sendInfoMobile: senderInfoMobileController.text,
+          sendInfoEmail: senderInfoEmailController.text,
+        );
+      case 2:
+        return shipmentData.copyWith(
+          receiverInfoName: senderInfoNameController.text,
+          receiverInfoCompanyName: senderInfoCompanyNameController.text,
+          receiverInfoZip: receiverInfoZipController.text,
+          receiverInfoState: receiverInfoStateController.text,
+          receiverInfoCity: receiverInfoCityController.text,
+          receiverInfoAera: selectedArea.value,
+          receiverInfoGstNo: receiverInfoGstNoController.text,
+          receiverInfoAddress1: receiverInfoAddress1Controller.text,
+          receiverInfoAddress2: receiverInfoAddress2Controller.text,
+          receiverInfoMobile: receiverInfoMobileController.text,
+          receiverInfoEmail: receiverInfoEmailController.text,
         );
       case 3:
         return shipmentData.copyWith(
-          paymentMode: selectedPaymentModeId.value,
-          invoiceNo: invoiceNoController.text,
-          remark: remarkController.text,
+          differentInfoZip: diffrentZipController.text,
+          differentInfoState: pincodeDataDiff.value?.stateId,
+          differentInfoCity: pincodeDataDiff.value?.cityId,
+          differentInfoAera: selectedDiffrentArea.value,
+          differentInfoAddress1: diffrentAddress1Controller.text,
+          differentInfoAddress2: diffrentAddress2Controller.text,
+        );
+      case 4:
+        return shipmentData.copyWith(
+          shipmentCharges: shipmentChargeController.text,
+          insuranceCharge: insuranceChargeController.text,
+          odaCharge: odaChargeController.text,
+          holidayCharge: holidayChargeController.text,
+          handlingCharge: headlingChargeController.text,
+          totalCharge: totalChargeController.text,
+          gst: gstChargeController.text,
         );
       default:
         return shipmentData;
