@@ -6,7 +6,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 class ShipnowRepo {
   final ApiServices _apiServices = ApiServices();
 
-  Future<List<ShipmentDataList>?> customerListRepo(
+  Future<List<ShipmentDatum>?> customerListRepo(
       final nextID,
       final shimentStatus,
       final receiverGSTNo,
@@ -27,7 +27,7 @@ class ShipnowRepo {
       if (userID != null && userID.isNotEmpty) {
         final response = await _apiServices.getShipmentDataList(
           token,
-          '15',
+          userID,
           nextID,
           shimentStatus,
           receiverGSTNo,
@@ -42,14 +42,18 @@ class ShipnowRepo {
         );
         return response.when(
           success: (body) {
-            final shipmentData = Shipment.fromJson(body);
-            if (shipmentData.message == 'Success') {
-              return shipmentData.shipmentData;
+            final shipmentModel = ShipmentDataModel.fromJson(body);
+
+            final List<Shipment>? shipmentList = shipmentModel.shipment;
+
+            if (shipmentList != null &&
+                shipmentList.isNotEmpty &&
+                shipmentList[0].message == 'Success') {
+              return shipmentList[0].shipmentData;
             } else {
-              Utils().logInfo(
-                  'API call successful but status is not "success" : ${shipmentData.code}');
+              throw Exception(
+                  "API Error: ${shipmentList?[0].message ?? 'Unknown'}");
             }
-            return [];
           },
           error: (error) {
             throw Exception("Shipment Data Failed: ${error.toString()}");
@@ -57,10 +61,8 @@ class ShipnowRepo {
         );
       }
     } catch (e) {
-      Utils().logError(
-        "$e",
-      );
+      Utils().logError("Shipment Fetch Exception: $e");
     }
-    return null;
+    return [];
   }
 }

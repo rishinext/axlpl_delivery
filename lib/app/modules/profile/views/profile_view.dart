@@ -1,6 +1,7 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/modules/auth/controllers/auth_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
+import 'package:axlpl_delivery/common_widget/change_password_dialog.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -456,25 +457,32 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: ListTile(
-                      tileColor: themes.whiteColor,
-                      dense: false,
-                      leading: CircleAvatar(
-                        backgroundColor: themes.blueGray,
-                        child: Image.asset(
-                          keyIcon,
-                          width: 18.w,
+                  child: GestureDetector(
+                    onTap: () {
+                      showChangePasswordDialog(context, (oldPass, newPass) {
+                        // Call controller method or API here
+                      });
+                    },
+                    child: ListTile(
+                        tileColor: themes.whiteColor,
+                        dense: false,
+                        leading: CircleAvatar(
+                          backgroundColor: themes.blueGray,
+                          child: Image.asset(
+                            keyIcon,
+                            width: 18.w,
+                          ),
                         ),
-                      ),
-                      title: Text(changePass),
-                      trailing: CircleAvatar(
-                        backgroundColor: themes.lightCream,
-                        // radius: 15,
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 20.w,
-                        ),
-                      )),
+                        title: Text(changePass),
+                        trailing: CircleAvatar(
+                          backgroundColor: themes.lightCream,
+                          // radius: 15,
+                          child: Icon(
+                            Icons.arrow_forward,
+                            size: 20.w,
+                          ),
+                        )),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),

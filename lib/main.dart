@@ -14,6 +14,8 @@ void main() async {
     ScreenUtilInit(
       designSize: ScreenUtil.defaultSize,
       child: GetMaterialApp(
+        enableLog: true,
+        defaultTransition: Transition.fadeIn,
         title: "AXLPL Delivery",
         builder: (context, child) {
           ErrorWidget.builder = (errorDetails) {

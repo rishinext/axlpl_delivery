@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -48,53 +50,88 @@ class ShipnowView extends GetView<ShipnowController> {
                 hintTxt: 'Search Here',
                 sufixIcon: Icon(Icons.search),
               ),
-              Obx(
-                () {
-                  if (shipnowController.isLoadingShipNow.value) {
-                    Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
-                  }
-                  if (shipnowController.shipmentDataList.isNotEmpty) {
-                    return ListView.builder(
+              Obx(() {
+                if (shipnowController.isLoadingShipNow.value) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
+
+                if (shipnowController.shipmentDataList.isNotEmpty) {
+                  return Expanded(
+                    child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: shipnowController.shipmentDataList.length,
-                      padding: EdgeInsets.all(8),
-                      itemBuilder: (context, index) => Card(
-                        elevation: 4,
-                        margin: EdgeInsets.symmetric(vertical: 8.0),
-                        child: ListTile(
-                          // onTap: () => showDetailsDialog(shipment),
-                          title: Text(
-                            "Shipment ID: ${['shipmentId']}",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                      padding: const EdgeInsets.all(8),
+                      itemBuilder: (context, index) {
+                        final shipment =
+                            shipnowController.shipmentDataList[index];
+                        final status = shipment.shipmentStatus;
+                        return Card(
+                          elevation: 4,
+                          margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: ListTile(
+                            title: Text(
+                              "Create Date: ${shipment.createdDate?.toIso8601String().split('T')[0] ?? 'N/A'}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 5),
+                                Text(
+                                    "Shipment ID: ${shipment.shipmentId ?? 'N/A'}"),
+                                Text(
+                                    "Sender Company: ${shipment.senderCompanyName ?? 'N/A'}"),
+                                Text(
+                                    "Receiver Company: ${shipment.receiverCompanyName ?? 'N/A'}"),
+                                Text("Orgin: ${shipment.origin ?? ''}"),
+                                Text(
+                                    'Destination: ${shipment.destination ?? ''}'),
+                                Text(
+                                    'Sender Area: ${shipment.senderAreaname ?? ''}'),
+                                Text(
+                                    'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Status:',
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: RichText(
+                                          text: TextSpan(children: [
+                                        TextSpan(
+                                            text: status,
+                                            style: theme.fontSize14_500
+                                                .copyWith(
+                                                    color: status != 'Approved'
+                                                        ? theme.redColor
+                                                        : theme.greenColor))
+                                      ])),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 5),
-                              Text("Date: ${['createdDate']}"),
-                              Text("Sender: ${['senderCompany']}"),
-                              Text("Receiver: ${['receiverCompany']}"),
-                              Text(
-                                  "Route: ${['origin']} to ${['destination']}"),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'No Shipment Data Found!',
-                        style: theme.fontReboto16_600,
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  }
-                },
-              ),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'No Shipment Data Found!',
+                      style: theme.fontReboto16_600,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+              }),
+
               /*   Expanded(
                 child: ListView.builder(
                   itemCount: 10,

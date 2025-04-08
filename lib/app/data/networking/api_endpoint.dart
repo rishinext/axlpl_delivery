@@ -11,3 +11,4 @@ const String getPincodeDetailsPoint = 'getPincodeDetail';
 const String getAllAreaByZipcodePoint = 'getAllAreaByZipcode';
 const String getShipmentDataListPoint = 'shipmentactivelist';
 const String addShipmentPoint = 'insertShipment';
+const String changePasswordPoint = 'changePassword';

@@ -1,63 +1,76 @@
+// To parse this JSON data, do
+//
+//     final shipmentDataModel = shipmentDataModelFromJson(jsonString);
+
+import 'dart:convert';
+
+ShipmentDataModel shipmentDataModelFromJson(String str) =>
+    ShipmentDataModel.fromJson(json.decode(str));
+
+String shipmentDataModelToJson(ShipmentDataModel data) =>
+    json.encode(data.toJson());
+
 class ShipmentDataModel {
   List<Shipment>? shipment;
 
-  ShipmentDataModel({this.shipment});
+  ShipmentDataModel({
+    this.shipment,
+  });
 
-  ShipmentDataModel.fromJson(Map<String, dynamic> json) {
-    if (json['shipment'] != null) {
-      shipment = <Shipment>[];
-      json['shipment'].forEach((v) {
-        shipment!.add(Shipment.fromJson(v));
-      });
-    }
-  }
+  factory ShipmentDataModel.fromJson(Map<String, dynamic> json) =>
+      ShipmentDataModel(
+        shipment: json["shipment"] == null
+            ? []
+            : List<Shipment>.from(
+                json["shipment"]!.map((x) => Shipment.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (shipment != null) {
-      data['shipment'] = shipment!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "shipment": shipment == null
+            ? []
+            : List<dynamic>.from(shipment!.map((x) => x.toJson())),
+      };
 }
 
 class Shipment {
-  List<ShipmentDataList>? shipmentData;
+  List<ShipmentDatum>? shipmentData;
   bool? error;
   int? code;
   String? type;
   String? message;
 
-  Shipment({this.shipmentData, this.error, this.code, this.type, this.message});
+  Shipment({
+    this.shipmentData,
+    this.error,
+    this.code,
+    this.type,
+    this.message,
+  });
 
-  Shipment.fromJson(Map<String, dynamic> json) {
-    if (json['shipmentData'] != null) {
-      shipmentData = <ShipmentDataList>[];
-      json['shipmentData'].forEach((v) {
-        shipmentData!.add(ShipmentDataList.fromJson(v));
-      });
-    }
-    error = json['error'];
-    code = json['code'];
-    type = json['type'];
-    message = json['message'];
-  }
+  factory Shipment.fromJson(Map<String, dynamic> json) => Shipment(
+        shipmentData: json["shipmentData"] == null
+            ? []
+            : List<ShipmentDatum>.from(
+                json["shipmentData"]!.map((x) => ShipmentDatum.fromJson(x))),
+        error: json["error"],
+        code: json["code"],
+        type: json["type"],
+        message: json["message"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (shipmentData != null) {
-      data['shipmentData'] = shipmentData!.map((v) => v.toJson()).toList();
-    }
-    data['error'] = error;
-    data['code'] = code;
-    data['type'] = type;
-    data['message'] = message;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "shipmentData": shipmentData == null
+            ? []
+            : List<dynamic>.from(shipmentData!.map((x) => x.toJson())),
+        "error": error,
+        "code": code,
+        "type": type,
+        "message": message,
+      };
 }
 
-class ShipmentDataList {
-  String? createdDate;
+class ShipmentDatum {
+  DateTime? createdDate;
   String? shipmentId;
   String? senderCompanyName;
   String? receiverCompanyName;
@@ -69,46 +82,47 @@ class ShipmentDataList {
   String? receiverGstNo;
   String? shipmentStatus;
 
-  ShipmentDataList(
-      {this.createdDate,
-      this.shipmentId,
-      this.senderCompanyName,
-      this.receiverCompanyName,
-      this.origin,
-      this.destination,
-      this.senderAreaname,
-      this.receiverAreaname,
-      this.senderGstNo,
-      this.receiverGstNo,
-      this.shipmentStatus});
+  ShipmentDatum({
+    this.createdDate,
+    this.shipmentId,
+    this.senderCompanyName,
+    this.receiverCompanyName,
+    this.origin,
+    this.destination,
+    this.senderAreaname,
+    this.receiverAreaname,
+    this.senderGstNo,
+    this.receiverGstNo,
+    this.shipmentStatus,
+  });
 
-  ShipmentDataList.fromJson(Map<String, dynamic> json) {
-    createdDate = json['created_date'];
-    shipmentId = json['shipment_id'];
-    senderCompanyName = json['sender_company_name'];
-    receiverCompanyName = json['receiver_company_name'];
-    origin = json['origin'];
-    destination = json['destination'];
-    senderAreaname = json['sender_areaname'];
-    receiverAreaname = json['receiver_areaname'];
-    senderGstNo = json['sender_gst_no'];
-    receiverGstNo = json['receiver_gst_no'];
-    shipmentStatus = json['shipment_status'];
-  }
+  factory ShipmentDatum.fromJson(Map<String, dynamic> json) => ShipmentDatum(
+        createdDate: json["created_date"] == null
+            ? null
+            : DateTime.parse(json["created_date"]),
+        shipmentId: json["shipment_id"],
+        senderCompanyName: json["sender_company_name"],
+        receiverCompanyName: json["receiver_company_name"],
+        origin: json["origin"],
+        destination: json["destination"],
+        senderAreaname: json["sender_areaname"],
+        receiverAreaname: json["receiver_areaname"],
+        senderGstNo: json["sender_gst_no"],
+        receiverGstNo: json["receiver_gst_no"],
+        shipmentStatus: json["shipment_status"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['created_date'] = createdDate;
-    data['shipment_id'] = shipmentId;
-    data['sender_company_name'] = senderCompanyName;
-    data['receiver_company_name'] = receiverCompanyName;
-    data['origin'] = origin;
-    data['destination'] = destination;
-    data['sender_areaname'] = senderAreaname;
-    data['receiver_areaname'] = receiverAreaname;
-    data['sender_gst_no'] = senderGstNo;
-    data['receiver_gst_no'] = receiverGstNo;
-    data['shipment_status'] = shipmentStatus;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "created_date": createdDate?.toIso8601String(),
+        "shipment_id": shipmentId,
+        "sender_company_name": senderCompanyName,
+        "receiver_company_name": receiverCompanyName,
+        "origin": origin,
+        "destination": destination,
+        "sender_areaname": senderAreaname,
+        "receiver_areaname": receiverAreaname,
+        "sender_gst_no": senderGstNo,
+        "receiver_gst_no": receiverGstNo,
+        "shipment_status": shipmentStatus,
+      };
 }

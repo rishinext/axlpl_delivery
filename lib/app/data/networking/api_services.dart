@@ -6,43 +6,6 @@ import 'api_response.dart';
 class ApiServices {
   static final ApiClient _api = ApiClient();
 
-  Future<APIResponse> loginUser(
-    String mobile,
-    // final email,
-    String password,
-    String fcmToken,
-    String appVersion,
-    String latitude,
-    String longitude,
-    final deviceId,
-
-    // String token
-  ) {
-    final Map<String, dynamic> body = {
-      'mobile': mobile,
-      'password': password,
-      'fcm_token': fcmToken,
-      // 'token': token,
-      'version': appVersion,
-      'latitude': latitude,
-      'longitude': longitude,
-      'device_id': deviceId,
-    };
-
-    return _api.post(loginPoint, body);
-  }
-
-  Future<APIResponse> logout(String userID, String role, String latitude,
-      String longitude, final token) {
-    final body = {
-      'm_id': userID,
-      'role': role,
-      'latitude': latitude,
-      'longitude': longitude
-    };
-    return _api.post(logoutPoint, body, token: token);
-  }
-
   Future<APIResponse> getDeliveryHistory(
     String userID,
     String branchID,
@@ -182,6 +145,44 @@ class ApiServices {
       token: token,
       body,
     );
+  }
+
+// post call
+  Future<APIResponse> loginUser(
+    String mobile,
+    // final email,
+    String password,
+    String fcmToken,
+    String appVersion,
+    String latitude,
+    String longitude,
+    final deviceId,
+
+    // String token
+  ) {
+    final Map<String, dynamic> body = {
+      'mobile': mobile,
+      'password': password,
+      'fcm_token': fcmToken,
+      // 'token': token,
+      'version': appVersion,
+      'latitude': latitude,
+      'longitude': longitude,
+      'device_id': deviceId,
+    };
+
+    return _api.post(loginPoint, body);
+  }
+
+  Future<APIResponse> logout(String userID, String role, String latitude,
+      String longitude, final token) {
+    final body = {
+      'm_id': userID,
+      'role': role,
+      'latitude': latitude,
+      'longitude': longitude
+    };
+    return _api.post(logoutPoint, body, token: token);
   }
 
   Future<APIResponse> addShipment(
@@ -329,5 +330,25 @@ class ApiServices {
       'shipment_date': shipmentDate,
     };
     return _api.post(addShipmentPoint, body);
+  }
+
+  Future<APIResponse> changePassword(
+    String id,
+    String oldPassword,
+    String newPassword,
+    String role,
+    String token,
+  ) {
+    final body = {
+      'id': id,
+      'old_password': oldPassword,
+      'new_password': newPassword,
+      'user_type': role,
+    };
+    return _api.post(
+      changePasswordPoint,
+      body,
+      token: token,
+    );
   }
 }

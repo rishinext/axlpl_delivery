@@ -7,26 +7,15 @@ class ShipnowController extends GetxController {
   //TODO: Implement ShipnowController
   final shipNowRepo = ShipnowRepo();
 
-  final shipmentDataList = <ShipmentDataList>[].obs;
+  final shipmentDataList = <ShipmentDatum>[].obs;
 
   final isLoadingShipNow = false.obs;
 
-  Future<void> fetchShipmentData([String nextID = '']) async {
+  Future<void> fetchShipmentData(String nextID) async {
     try {
       isLoadingShipNow(true);
       final data = await shipNowRepo.customerListRepo(
-        '1',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-      );
+          nextID, '', '', '', '', '', '', '', '', '', '');
       shipmentDataList.value = data ?? [];
     } catch (e) {
       shipmentDataList.value = [];
@@ -41,7 +30,7 @@ class ShipnowController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    fetchShipmentData();
+    fetchShipmentData('1');
     super.onInit();
   }
 }

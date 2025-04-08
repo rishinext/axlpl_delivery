@@ -211,7 +211,7 @@ class AddShipmentRepo {
     return null;
   }
 
-  Future<bool> addShipment(
+  Future<bool?> addShipment(
     final cateID,
     final productID,
     final netWeight,

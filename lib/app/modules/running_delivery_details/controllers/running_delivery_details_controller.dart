@@ -43,5 +43,4 @@ class RunningDeliveryDetailsController extends GetxController {
       "icon": Icons.check_circle
     }
   ];
-
 }
