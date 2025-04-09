@@ -1,15 +1,11 @@
+import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void showChangePasswordDialog(
-    BuildContext context, Function(String oldPass, String newPass) onSubmit) {
-  final oldPassController = TextEditingController();
-  final newPassController = TextEditingController();
-  final confirmPassController = TextEditingController();
-
+void showChangePasswordDialog() {
   final _formKey = GlobalKey<FormState>();
-
+  final controller = Get.put(ProfileController());
   Get.defaultDialog(
     title: "Change Password",
     content: Form(
@@ -19,7 +15,7 @@ void showChangePasswordDialog(
         child: Column(
           children: [
             TextFormField(
-              controller: oldPassController,
+              controller: controller.oldPasswordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: "Old Password"),
               validator: (value) =>
@@ -27,7 +23,7 @@ void showChangePasswordDialog(
             ),
             const SizedBox(height: 10),
             TextFormField(
-              controller: newPassController,
+              controller: controller.newPasswordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: "New Password"),
               validator: (value) =>
@@ -35,16 +31,17 @@ void showChangePasswordDialog(
             ),
             const SizedBox(height: 10),
             TextFormField(
-              controller: confirmPassController,
+              controller: controller.confirmPasswordController,
               obscureText: true,
               decoration: const InputDecoration(labelText: "Confirm Password"),
               validator: (value) {
                 if (value == null || value.isEmpty) return "Required";
-                if (value != newPassController.text)
+                if (value != controller.newPasswordController.text)
                   return "Passwords do not match";
                 return null;
               },
             ),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -55,8 +52,7 @@ void showChangePasswordDialog(
     confirmTextColor: themes.whiteColor,
     onConfirm: () {
       if (_formKey.currentState?.validate() == true) {
-        Get.back(); // close dialog
-        onSubmit(oldPassController.text, newPassController.text);
+        controller.changePassword();
       }
     },
   );

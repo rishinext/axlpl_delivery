@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:axlpl_delivery/app/data/networking/repostiory/profile_repo.dart';
+import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,10 +9,12 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController {
   //TODO: Implement ProfileController
-
+  final profileRepo = ProfileRepo();
   RxBool isEdit = false.obs;
   var imageFile = Rx<File?>(null);
-
+  var errorMessage = ''.obs;
+  final RxString successMessage = ''.obs;
+  var isPsswordChange = false.obs;
   TextEditingController nameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController stateController = TextEditingController();
@@ -20,7 +24,9 @@ class ProfileController extends GetxController {
   TextEditingController phoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController vehicleController = TextEditingController();
-
+  TextEditingController oldPasswordController = TextEditingController();
+  TextEditingController newPasswordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   void editProfile() {
     isEdit.value = !isEdit.value; // Toggle editing state
   }
@@ -59,5 +65,51 @@ class ProfileController extends GetxController {
     if (pickedFile != null) {
       imageFile.value = File(pickedFile.path);
     }
+  }
+
+  Future<void> changePassword() async {
+    errorMessage.value = '';
+    successMessage.value = '';
+    isPsswordChange.value = true;
+
+    final oldPass = oldPasswordController.text.trim();
+    final newPass = newPasswordController.text.trim();
+    final confirmPass = confirmPasswordController.text.trim();
+
+    if (newPass != confirmPass) {
+      isPsswordChange.value = false;
+      errorMessage.value = 'New and confirm passwords do not match';
+      return;
+    }
+
+    final result = await profileRepo.changePassword(oldPass, newPass);
+
+    isPsswordChange.value = false;
+
+    if (result) {
+      successMessage.value = 'Password changed successfully';
+      Get.back();
+      Get.snackbar(result.toString(), 'Password changed successfully',
+          backgroundColor: themes.darkCyanBlue);
+    } else {
+      errorMessage.value = 'Failed to change password';
+      Get.back();
+      Get.snackbar(result.toString(), errorMessage.toString(),
+          backgroundColor: themes.redColor);
+    }
+  }
+
+  void clearFields() {
+    oldPasswordController.clear();
+    newPasswordController.clear();
+    confirmPasswordController.clear();
+  }
+
+  @override
+  void onClose() {
+    oldPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.onClose();
   }
 }

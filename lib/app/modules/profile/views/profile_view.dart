@@ -459,9 +459,7 @@ class ProfileView extends GetView<ProfileController> {
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
                     onTap: () {
-                      showChangePasswordDialog(context, (oldPass, newPass) {
-                        // Call controller method or API here
-                      });
+                      showChangePasswordDialog();
                     },
                     child: ListTile(
                         tileColor: themes.whiteColor,

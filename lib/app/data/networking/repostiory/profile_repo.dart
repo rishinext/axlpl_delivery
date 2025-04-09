@@ -19,7 +19,7 @@ class ProfileRepo {
       // Check if user is available
       if (userID != null && userID.isNotEmpty) {
         final response = await _apiServices.changePassword(userID, oldPassword,
-            newPassword, token.toString(), role.toString());
+            newPassword, role.toString(), token.toString());
 
         return response.when(
           success: (body) {
