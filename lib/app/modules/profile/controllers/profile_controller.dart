@@ -90,12 +90,12 @@ class ProfileController extends GetxController {
       successMessage.value = 'Password changed successfully';
       Get.back();
       Get.snackbar(result.toString(), 'Password changed successfully',
-          backgroundColor: themes.darkCyanBlue);
+          backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
     } else {
       errorMessage.value = 'Failed to change password';
       Get.back();
       Get.snackbar(result.toString(), errorMessage.toString(),
-          backgroundColor: themes.redColor);
+          backgroundColor: themes.redColor, colorText: themes.whiteColor);
     }
   }
 

@@ -1,7 +1,10 @@
 import 'package:axlpl_delivery/app/data/networking/api_client.dart';
 import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
+import 'package:dio/dio.dart';
 
+import "dart:async";
 import 'api_response.dart';
+import "package:image_picker/image_picker.dart";
 
 class ApiServices {
   static final ApiClient _api = ApiClient();
@@ -351,4 +354,28 @@ class ApiServices {
       token: token,
     );
   }
+
+  Future<APIResponse> uploadPOD(
+    final shipmentID,
+    final shipmentStatus,
+    final shipmentOtp,
+    MultipartFile? attetchment,
+    final token,
+  ) async {
+    final formData = FormData.fromMap({
+      'shipment_id': shipmentID,
+      'shipment_status': shipmentStatus,
+      'shipment_otp': shipmentOtp,
+    });
+    return _api.post(uploadPODPoint, formData, token: token);
+  }
+
+  // Future<APIResponse> updateProfile(
+  //   String id,
+  //   String role,
+  //   String name,
+  //   String email,
+  //   String mobile,
+
+  // ) {}
 }
