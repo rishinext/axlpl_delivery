@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
+import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/image_picker_widget.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
@@ -111,6 +113,28 @@ class PodView extends GetView<PodController> {
                   ),
                 ),
               ),
+              controller.shipmentRecordList.any(
+                (item) => item.paymentMode?.toLowerCase() == 'topay',
+              )
+                  ? Column(
+                      children: [
+                        dropdownText('Payment Mode'),
+                        Obx(() => CommonDropdown<Map>(
+                              hint: 'Select Payment',
+                              selectedValue:
+                                  controller.selectedPaymentModeId.value,
+                              isLoading: false,
+                              items: controller.paymentModes,
+                              itemLabel: (m) => m['name'] ?? '',
+                              itemValue: (m) => m['id'],
+                              onChanged: (val) {
+                                log(val.toString());
+                                controller.selectedPaymentModeId.value = val;
+                              },
+                            )),
+                      ],
+                    )
+                  : SizedBox.shrink(),
               CommonButton(
                 title: 'Upload',
                 onPressed: () async {

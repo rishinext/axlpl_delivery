@@ -370,12 +370,37 @@ class ApiServices {
     return _api.post(uploadPODPoint, formData, token: token);
   }
 
-  // Future<APIResponse> updateProfile(
-  //   String id,
-  //   String role,
-  //   String name,
-  //   String email,
-  //   String mobile,
+  Future<APIResponse> getShipmentRecord(
+    final shipmentID,
+    final token,
+  ) async {
+    final body = {
+      'shipment_id': shipmentID,
+    };
+    return _api.post(
+      getShipmentRecordPoint,
+      body,
+      token: token,
+    );
+  }
 
-  // ) {}
+  Future<APIResponse> updateProfile(
+    String id,
+    String role,
+    String name,
+    String email,
+    String mobile,
+  ) async {
+    final body = {
+      'id': id,
+      'user_role': role,
+      'name': name,
+      'email': email,
+      'mobile_no': mobile,
+    };
+    return _api.post(
+      updateProfilePoint,
+      body,
+    );
+  }
 }

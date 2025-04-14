@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
+import 'package:axlpl_delivery/app/data/models/shipment_record_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:dio/dio.dart';
@@ -71,5 +72,33 @@ class PodRepo {
       Utils.instance.log(errorMessage);
       return false;
     }
+  }
+
+  Future<List<ShipmentRecordList>> getShipmentRecordRepo(
+      final shipmentID) async {
+    apiMessage = null;
+    final userData = await _localStorage.getUserLocalData();
+    final token =
+        userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+    try {
+      final response = await apiServices.getShipmentRecord(shipmentID, token);
+      response.when(
+        success: (success) {
+          final data = ShipmentRecordModel.fromJson(success);
+          if (data.status == 'success') {
+            return data;
+          } else {
+            Utils().logInfo(
+                'API call successful but status is not "success" : ${data.status}');
+          }
+        },
+        error: (error) {
+          throw Exception(error.toString());
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+    return [];
   }
 }

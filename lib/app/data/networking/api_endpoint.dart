@@ -13,3 +13,5 @@ const String getShipmentDataListPoint = 'shipmentactivelist';
 const String addShipmentPoint = 'insertShipment';
 const String changePasswordPoint = 'changePassword';
 const String uploadPODPoint = 'uploadPODNEW';
+const String getShipmentRecordPoint = 'getShipmentRecord';
+const String updateProfilePoint = 'updateProfile';
