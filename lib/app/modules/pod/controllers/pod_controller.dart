@@ -53,16 +53,21 @@ class PodController extends GetxController {
         shipmentIdController.clear();
 
         Get.snackbar("Success", message.value,
-            backgroundColor: themes.darkCyanBlue);
+            backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
       } else {
         status.value = Status.error;
         message.value = _repo.apiMessage ?? 'Upload failed';
-        Get.snackbar("Error", message.value, backgroundColor: themes.redColor);
+        Get.snackbar("Error", message.value,
+            backgroundColor: themes.redColor, colorText: themes.whiteColor);
       }
     } catch (e) {
       status.value = Status.error;
       message.value = 'Unexpected error: $e';
-      Get.snackbar("Error", message.value, backgroundColor: themes.redColor);
+      Get.snackbar(
+        "Error",
+        message.value,
+        backgroundColor: themes.redColor,
+      );
     }
   }
 

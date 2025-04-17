@@ -1,0 +1,135 @@
+// To parse this JSON data, do
+//
+//     final pickUpModel = pickUpModelFromJson(jsonString);
+
+import 'dart:convert';
+
+PickUpModel pickUpModelFromJson(String str) =>
+    PickUpModel.fromJson(json.decode(str));
+
+String pickUpModelToJson(PickUpModel data) => json.encode(data.toJson());
+
+class PickUpModel {
+  String? status;
+  String? message;
+  List<RunningPickUp>? runningPickUp;
+  List<Next>? next;
+
+  PickUpModel({
+    this.status,
+    this.message,
+    this.runningPickUp,
+    this.next,
+  });
+
+  factory PickUpModel.fromJson(Map<String, dynamic> json) => PickUpModel(
+        status: json["status"],
+        message: json["message"],
+        runningPickUp: json["RunningPickUp"] == null
+            ? []
+            : List<RunningPickUp>.from(
+                json["RunningPickUp"]!.map((x) => RunningPickUp.fromJson(x))),
+        next: json["next"] == null
+            ? []
+            : List<Next>.from(json["next"]!.map((x) => Next.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "RunningPickUp": runningPickUp == null
+            ? []
+            : List<dynamic>.from(runningPickUp!.map((x) => x.toJson())),
+        "next": next == null
+            ? []
+            : List<dynamic>.from(next!.map((x) => x.toJson())),
+      };
+}
+
+class Next {
+  String? total;
+  String? nextId;
+
+  Next({
+    this.total,
+    this.nextId,
+  });
+
+  factory Next.fromJson(Map<String, dynamic> json) => Next(
+        total: json["total"],
+        nextId: json["next_id"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "total": total,
+        "next_id": nextId,
+      };
+}
+
+class RunningPickUp {
+  String? id;
+  String? shipmentId;
+  String? status;
+  String? name;
+  String? companyName;
+  String? mobile;
+  String? areaId;
+  String? areaName;
+  String? pincode;
+  String? address1;
+  String? address2;
+  String? cityName;
+  DateTime? date;
+  String? receiverCityName;
+
+  RunningPickUp({
+    this.id,
+    this.shipmentId,
+    this.status,
+    this.name,
+    this.companyName,
+    this.mobile,
+    this.areaId,
+    this.areaName,
+    this.pincode,
+    this.address1,
+    this.address2,
+    this.cityName,
+    this.date,
+    this.receiverCityName,
+  });
+
+  factory RunningPickUp.fromJson(Map<String, dynamic> json) => RunningPickUp(
+        id: json["id"],
+        shipmentId: json["shipment_id"],
+        status: json["status"],
+        name: json["name"],
+        companyName: json["company_name"],
+        mobile: json["mobile"],
+        areaId: json["area_id"],
+        areaName: json["area_name"],
+        pincode: json["pincode"],
+        address1: json["address1"],
+        address2: json["address2"],
+        cityName: json["city_name"],
+        date: json["date"] == null ? null : DateTime.parse(json["date"]),
+        receiverCityName: json["receiver_city_name"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "shipment_id": shipmentId,
+        "status": status,
+        "name": name,
+        "company_name": companyName,
+        "mobile": mobile,
+        "area_id": areaId,
+        "area_name": areaName,
+        "pincode": pincode,
+        "address1": address1,
+        "address2": address2,
+        "city_name": cityName,
+        "date": date?.toIso8601String(),
+        "receiver_city_name": receiverCityName,
+      };
+}

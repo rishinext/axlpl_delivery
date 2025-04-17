@@ -79,8 +79,18 @@ class PodView extends GetView<PodController> {
                 color: themes.blueColor,
                 child: Obx(
                   () => InkWell(
-                    onTap: () =>
-                        pickImage(ImageSource.camera, controller.imageFile),
+                    onTap: () {
+                      if (controller.shipmentIdController.text.isNotEmpty) {
+                        pickImage(ImageSource.camera, controller.imageFile);
+                      } else {
+                        Get.snackbar(
+                          'error',
+                          'Shipment ID Required!',
+                          colorText: themes.whiteColor,
+                          backgroundColor: themes.redColor,
+                        );
+                      }
+                    },
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -142,7 +152,7 @@ class PodView extends GetView<PodController> {
                     shipmentStatus: 'Delivered',
                     shipmentOtp: '0000',
                     file: File(
-                      controller.imageFile.value!.path,
+                      controller.imageFile.value?.path ?? '',
                     ),
                   );
                 },

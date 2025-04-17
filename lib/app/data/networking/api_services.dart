@@ -403,4 +403,13 @@ class ApiServices {
       body,
     );
   }
+
+  Future<APIResponse> getAllPickup(final id, final brachID, final nextID) {
+    final body = {
+      'messanger_id': id,
+      'branch_id': brachID,
+      'next_id': nextID,
+    };
+    return _api.post(getAllPickupPoint, body);
+  }
 }
