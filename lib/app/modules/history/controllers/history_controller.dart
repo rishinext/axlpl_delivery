@@ -1,4 +1,4 @@
-import 'package:axlpl_delivery/app/data/models/history_model.dart';
+import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/history_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:get/get.dart';
@@ -24,7 +24,7 @@ class HistoryController extends GetxController {
     isLoading.value = true;
 
     try {
-      final success = await historyRepo.historyRepo();
+      final success = await historyRepo.deliveryHistoryRepo();
 
       if (success != null) {
         historyList.value = success;

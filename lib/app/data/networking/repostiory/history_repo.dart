@@ -1,5 +1,5 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
-import 'package:axlpl_delivery/app/data/models/history_model.dart';
+import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
 import 'package:axlpl_delivery/app/data/models/history_pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -8,7 +8,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 class HistoryRepository {
   final ApiServices _apiServices = ApiServices();
 
-  Future<List<HistoryDelivery>?> historyRepo() async {
+  Future<List<HistoryDelivery>?> deliveryHistoryRepo() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??

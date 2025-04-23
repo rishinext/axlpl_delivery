@@ -21,7 +21,15 @@ class PodController extends GetxController {
   final paymentModes = [
     {'id': '1', 'name': 'Prepaid'},
     {'id': '2', 'name': 'To Pay'},
-    {'id': '3', 'name': 'Contract'},
+    {'id': '3', 'name': 'Paid Cash'},
+    {'id': '4', 'name': 'To Pay Cash'},
+    {'id': '5', 'name': 'Account (contract)'},
+  ].obs;
+  final paymentTypes = [
+    {'id': '1', 'name': 'Account '},
+    {'id': '2', 'name': 'Cash'},
+    {'id': '3', 'name': 'Cheque'},
+    {'id': '4', 'name': 'Online /add shipment'},
   ].obs;
 
   final status = Status.initial.obs;
@@ -30,6 +38,7 @@ class PodController extends GetxController {
   final message = ''.obs;
 
   var selectedPaymentModeId = Rxn<String>();
+  var selectedPaymentTypeId = Rxn<String>();
 
   Future<void> uploadPod({
     required String shipmentStatus,

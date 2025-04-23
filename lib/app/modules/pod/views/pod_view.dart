@@ -123,28 +123,38 @@ class PodView extends GetView<PodController> {
                   ),
                 ),
               ),
-              controller.shipmentRecordList.any(
-                (item) => item.paymentMode?.toLowerCase() == 'topay',
-              )
-                  ? Column(
-                      children: [
-                        dropdownText('Payment Mode'),
-                        Obx(() => CommonDropdown<Map>(
-                              hint: 'Select Payment',
-                              selectedValue:
-                                  controller.selectedPaymentModeId.value,
-                              isLoading: false,
-                              items: controller.paymentModes,
-                              itemLabel: (m) => m['name'] ?? '',
-                              itemValue: (m) => m['id'],
-                              onChanged: (val) {
-                                log(val.toString());
-                                controller.selectedPaymentModeId.value = val;
-                              },
-                            )),
-                      ],
-                    )
-                  : SizedBox.shrink(),
+              Obx(
+                () => CommonDropdown<Map>(
+                  hint: 'Select Payment Type',
+                  selectedValue: controller.selectedPaymentTypeId.value,
+                  isLoading: false,
+                  items: controller.paymentTypes,
+                  itemLabel: (m) => m['name'] ?? '',
+                  itemValue: (m) => m['id'],
+                  onChanged: (val) {
+                    log(val.toString());
+                    controller.selectedPaymentTypeId.value = val;
+                  },
+                ),
+              ),
+              Obx(() {
+                return controller.shipmentRecordList.any(
+                  (item) => item.paymentMode?.toLowerCase() == 'topay',
+                )
+                    ? CommonDropdown<Map>(
+                        hint: 'Select Payment',
+                        selectedValue: controller.selectedPaymentModeId.value,
+                        isLoading: false,
+                        items: controller.paymentModes,
+                        itemLabel: (m) => m['name'] ?? '',
+                        itemValue: (m) => m['id'],
+                        onChanged: (val) {
+                          log(val.toString());
+                          controller.selectedPaymentModeId.value = val;
+                        },
+                      )
+                    : SizedBox.shrink();
+              }),
               CommonButton(
                 title: 'Upload',
                 onPressed: () async {

@@ -404,12 +404,41 @@ class ApiServices {
     );
   }
 
-  Future<APIResponse> getAllPickup(final id, final brachID, final nextID) {
+  Future<APIResponse> getAllPickup(
+    final id,
+    final brachID,
+    final nextID,
+    final token,
+  ) {
     final body = {
       'messanger_id': id,
       'branch_id': brachID,
       'next_id': nextID,
+      'token': token,
     };
-    return _api.post(getAllPickupPoint, body);
+    return _api.post(
+      getAllPickupPoint,
+      body,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> getAllDelivery(
+    final id,
+    final brachID,
+    final nextID,
+    final token,
+  ) {
+    final query = {
+      'messanger_id': id,
+      'branch_id': brachID,
+      'next_id': nextID,
+      'token': token,
+    };
+    return _api.get(
+      getAllDeliveryPoint,
+      query: query,
+      token: token,
+    );
   }
 }

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
@@ -37,36 +40,70 @@ class PickupView extends GetView<PickupController> {
               ),
               SizedBox(
                 height: 505.h,
-                child: ListView.separated(
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 1.h,
-                  ),
-                  itemCount: 10,
-                  shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index) => ListTile(
-                      tileColor: themes.whiteColor,
-                      dense: false,
-                      leading: CircleAvatar(
-                        backgroundColor: themes.blueGray,
-                        child: Image.asset(
-                          gpsIcon,
-                          width: 18.w,
+                child: Obx(
+                  () {
+                    if (controller.isPickupLoading.value == Status.loading) {
+                      return Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else if (controller.isPickupLoading.value ==
+                            Status.error ||
+                        controller.pickupList.isEmpty) {
+                      log(Status.error.toString());
+                      return Center(
+                        child: Text(
+                          'No Pickup Data Found!',
+                          style: themes.fontSize14_500,
                         ),
-                      ),
-                      title: Text('Company name'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [Text('+91900000000'), Text('400089')],
-                      ),
-                      trailing: CircleAvatar(
-                        backgroundColor: themes.lightCream,
-                        // radius: 15,
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 20.w,
+                      );
+                    } else if (controller.isPickupLoading.value ==
+                        Status.success) {
+                      return ListView.separated(
+                        separatorBuilder: (context, index) => SizedBox(
+                          height: 1.h,
                         ),
-                      )),
+                        itemCount: controller.pickupList.length,
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final data = controller.pickupList[index];
+                          return ListTile(
+                              tileColor: themes.whiteColor,
+                              dense: false,
+                              leading: CircleAvatar(
+                                backgroundColor: themes.blueGray,
+                                child: Image.asset(
+                                  gpsIcon,
+                                  width: 18.w,
+                                ),
+                              ),
+                              title: Text(data.companyName.toString()),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data.mobile.toString()),
+                                  Text(data.pincode.toString()),
+                                ],
+                              ),
+                              trailing: CircleAvatar(
+                                backgroundColor: themes.lightCream,
+                                // radius: 15,
+                                child: Icon(
+                                  Icons.arrow_forward,
+                                  size: 20.w,
+                                ),
+                              ));
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: Text(
+                          'No Pickup Found!',
+                          style: themes.fontSize18_600,
+                        ),
+                      );
+                    }
+                  },
                 ),
               )
             ],
