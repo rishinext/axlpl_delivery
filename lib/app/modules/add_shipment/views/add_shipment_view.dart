@@ -159,20 +159,6 @@ class AddShipmentView extends GetView<AddShipmentController> {
                       )
                     ],
                   ),
-                  dropdownText('Payment Mode'),
-                  Obx(() => CommonDropdown<Map>(
-                        hint: 'Select Payment',
-                        selectedValue:
-                            addshipController.selectedPaymentModeId.value,
-                        isLoading: false,
-                        items: addshipController.paymentModes,
-                        itemLabel: (m) => m['name'] ?? '',
-                        itemValue: (m) => m['id'],
-                        onChanged: (val) {
-                          log(val.toString());
-                          addshipController.selectedPaymentModeId.value = val;
-                        },
-                      )),
                   Text(
                     'No of Parcel',
                     style: themes.fontSize14_400,

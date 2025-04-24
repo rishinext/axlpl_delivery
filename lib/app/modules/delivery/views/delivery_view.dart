@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -12,15 +10,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/pickup_controller.dart';
+import '../controllers/delivery_controller.dart';
 
-class PickupView extends GetView<PickupController> {
-  const PickupView({super.key});
+class DeliveryView extends GetView<DeliveryController> {
+  const DeliveryView({super.key});
   @override
   Widget build(BuildContext context) {
-    final pickupController = Get.put(PickupController());
+    final deliveryController = Get.put(DeliveryController());
+
     return CommonScaffold(
-      appBar: commonAppbar('Pickup'),
+      appBar: commonAppbar('Delivery'),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 18.w),
         child: SingleChildScrollView(
@@ -29,23 +28,17 @@ class PickupView extends GetView<PickupController> {
             spacing: 15.h,
             children: [
               ContainerTextfiled(
-                  hintText: '   Enter your pin code',
-                  controller: pickupController.pincodeController,
-                  onChanged: (value) {
-                    pickupController.filterByPincode(value!);
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      pickupController.filterByPincode(
-                        pickupController.pincodeController.text,
-                      );
-                    },
-                    icon: Icon(
-                      CupertinoIcons.search,
-                      color: themes.grayColor,
-                    ),
-                  )),
+                hintText: '   Enter your pin code',
+                controller: deliveryController.pincodeController,
+                onChanged: (value) {
+                  deliveryController.filterByPincode(value!);
+                  return null;
+                },
+                suffixIcon: Icon(
+                  CupertinoIcons.search,
+                  color: themes.grayColor,
+                ),
+              ),
               Text(
                 'Recent Selected Pin code',
                 style: themes.fontSize14_500,
@@ -54,33 +47,33 @@ class PickupView extends GetView<PickupController> {
                 height: 505.h,
                 child: Obx(
                   () {
-                    if (pickupController.isPickupLoading.value ==
+                    if (deliveryController.isDeliveryLoading.value ==
                         Status.loading) {
                       return Center(
                         child: CircularProgressIndicator.adaptive(),
                       );
-                    } else if (pickupController.isPickupLoading.value ==
+                    } else if (deliveryController.isDeliveryLoading.value ==
                             Status.error ||
-                        pickupController.filteredPickupList.isEmpty) {
-                      log(Status.error.toString());
+                        deliveryController.filteredDeliveryList.isEmpty) {
                       return Center(
                         child: Text(
                           'No Pickup Data Found!',
                           style: themes.fontSize14_500,
                         ),
                       );
-                    } else if (pickupController.isPickupLoading.value ==
+                    } else if (deliveryController.isDeliveryLoading.value ==
                         Status.success) {
                       return ListView.separated(
                         separatorBuilder: (context, index) => SizedBox(
                           height: 1.h,
                         ),
-                        itemCount: pickupController.filteredPickupList.length,
+                        itemCount:
+                            deliveryController.filteredDeliveryList.length,
                         shrinkWrap: true,
                         physics: BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           final data =
-                              pickupController.filteredPickupList[index];
+                              deliveryController.filteredDeliveryList[index];
                           return ListTile(
                               tileColor: themes.whiteColor,
                               dense: false,

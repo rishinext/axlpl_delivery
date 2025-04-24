@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
@@ -30,6 +32,21 @@ class AddPaymentInfoView extends GetView {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     dropdownText('Payment Information'),
+
+                    dropdownText('Payment Mode'),
+                    Obx(() => CommonDropdown<Map>(
+                          hint: 'Select Payment',
+                          selectedValue:
+                              addshipController.selectedPaymentModeId.value,
+                          isLoading: false,
+                          items: addshipController.paymentModes,
+                          itemLabel: (m) => m['name'] ?? '',
+                          itemValue: (m) => m['id'],
+                          onChanged: (val) {
+                            log(val.toString());
+                            addshipController.selectedPaymentModeId.value = val;
+                          },
+                        )),
                     // Obx(
                     //   () => CommonDropdown(
                     //     hint: 'Select Customer',

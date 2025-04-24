@@ -156,8 +156,8 @@ class HomeView extends GetView<HomeController> {
                             child: HomeIconContainer(
                                 title: 'Delivery',
                                 Img: deliveryIcon,
-                                OnTap: () =>
-                                    Get.toNamed(Routes.PICKUP, arguments: ''))),
+                                OnTap: () => Get.toNamed(Routes.DELIVERY,
+                                    arguments: ''))),
                         SizedBox(
                           width: 10.w,
                         ),

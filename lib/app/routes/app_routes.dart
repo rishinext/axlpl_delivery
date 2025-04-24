@@ -16,6 +16,7 @@ abstract class Routes {
   static const CONSIGNMENT = _Paths.CONSIGNMENT;
   static const RUNNING_DELIVERY_DETAILS = _Paths.RUNNING_DELIVERY_DETAILS;
   static const ADD_SHIPMENT = _Paths.ADD_SHIPMENT;
+  static const DELIVERY = _Paths.DELIVERY;
 }
 
 abstract class _Paths {
@@ -33,4 +34,5 @@ abstract class _Paths {
   static const CONSIGNMENT = '/consignment';
   static const RUNNING_DELIVERY_DETAILS = '/running-delivery-details';
   static const ADD_SHIPMENT = '/add-shipment';
+  static const DELIVERY = '/delivery';
 }

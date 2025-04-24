@@ -8,6 +8,8 @@ import '../modules/bottombar/bindings/bottombar_binding.dart';
 import '../modules/bottombar/views/bottombar_view.dart';
 import '../modules/consignment/bindings/consignment_binding.dart';
 import '../modules/consignment/views/consignment_view.dart';
+import '../modules/delivery/bindings/delivery_binding.dart';
+import '../modules/delivery/views/delivery_view.dart';
 import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -108,6 +110,11 @@ class AppPages {
       name: _Paths.ADD_SHIPMENT,
       page: () => const AddShipmentView(),
       binding: AddShipmentBinding(),
+    ),
+    GetPage(
+      name: _Paths.DELIVERY,
+      page: () => const DeliveryView(),
+      binding: DeliveryBinding(),
     ),
   ];
 }

@@ -1,5 +1,6 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
+import 'package:axlpl_delivery/app/data/models/login_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
@@ -43,6 +44,32 @@ class ProfileRepo {
     } catch (e) {
       Utils.instance.log("Error changing password: $e");
       return false; // Return false in case of an error
+    }
+  }
+
+  Future<Messangerdetail?> editProfile() async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.messangerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+      final role = userData?.role.toString();
+
+      if (userID?.isNotEmpty == true || userID != null) {
+        final response = await _apiServices.getProfile(
+          userID.toString(),
+          role.toString(),
+        );
+        return response.when(success: (body) {
+          return Messangerdetail.fromJson(body);
+        }, error: (error) {
+          throw Exception("EditProfile Failed: ${error.toString()}");
+        });
+      }
+    } catch (e) {
+      Utils.instance.log("Error changing password: $e");
     }
   }
 }

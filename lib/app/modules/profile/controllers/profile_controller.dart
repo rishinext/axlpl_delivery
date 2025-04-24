@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:axlpl_delivery/app/data/models/login_model.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/profile_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +17,9 @@ class ProfileController extends GetxController {
   var errorMessage = ''.obs;
   final RxString successMessage = ''.obs;
   var isPsswordChange = false.obs;
+
+  var isProfileLoading = Status.initial.obs;
+
   TextEditingController nameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController stateController = TextEditingController();
@@ -99,6 +104,21 @@ class ProfileController extends GetxController {
     }
   }
 
+  Future editProfileData() async {
+    errorMessage.value = '';
+    isProfileLoading.value = Status.loading;
+    final result = await profileRepo.editProfile();
+    if (result != null) {
+      isProfileLoading.value = Status.success;
+      final data = Messangerdetail;
+      return data;
+    } else {
+      isProfileLoading.value = Status.error;
+      errorMessage.value = 'Failed to edit profile';
+      return null;
+    }
+  }
+
   void clearFields() {
     oldPasswordController.clear();
     newPasswordController.clear();
@@ -111,5 +131,12 @@ class ProfileController extends GetxController {
     newPasswordController.dispose();
     confirmPasswordController.dispose();
     super.onClose();
+  }
+
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    editProfile();
   }
 }

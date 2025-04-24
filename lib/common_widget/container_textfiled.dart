@@ -7,12 +7,14 @@ class ContainerTextfiled extends StatelessWidget {
   final controller;
   final prefixIcon;
   final suffixIcon;
+  final String? Function(String?)? onChanged;
   ContainerTextfiled({
     this.hintText,
     super.key,
     this.controller,
     this.prefixIcon,
     this.suffixIcon,
+    this.onChanged,
   });
 
   @override
@@ -25,8 +27,10 @@ class ContainerTextfiled extends StatelessWidget {
       // padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: TextFormField(
         controller: controller,
+        onChanged: onChanged,
         cursorWidth: 2,
         decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             hintText: "$hintText",
             hintStyle: themes.fontSize16_400,
             border: InputBorder.none, // Remove the default underline border

@@ -29,6 +29,9 @@ class AddShipmentController extends GetxController {
   final paymentModes = [
     {'id': '1', 'name': 'Prepaid'},
     {'id': '2', 'name': 'To Pay'},
+    {'id': '3', 'name': 'Prepaid Cash'},
+    {'id': '4', 'name': 'Topay Cash'},
+    {'id': '5', 'name': 'account(contract)'},
   ].obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
@@ -137,7 +140,7 @@ class AddShipmentController extends GetxController {
 
   var selectedPaymentModeId = Rxn<String>();
 
-  RxString insuranceType = 'NO'.obs;
+  RxString insuranceType = 'YES'.obs;
   RxString diffrentAddressType = 'NO'.obs;
   RxString addressType = 'New Address'.obs;
   var currentPage = 0.obs;

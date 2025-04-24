@@ -404,6 +404,17 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> getProfile(final id, final role) async {
+    final body = {
+      'id': id,
+      'user_role': role,
+    };
+    return _api.post(
+      editProfilePoint,
+      body,
+    );
+  }
+
   Future<APIResponse> getAllPickup(
     final id,
     final brachID,
