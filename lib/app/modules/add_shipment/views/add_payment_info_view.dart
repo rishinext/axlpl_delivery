@@ -47,6 +47,21 @@ class AddPaymentInfoView extends GetView {
                             addshipController.selectedPaymentModeId.value = val;
                           },
                         )),
+
+                    dropdownText('Sub Payment Info'),
+                    Obx(() => CommonDropdown<Map>(
+                          hint: 'Select Payment',
+                          selectedValue:
+                              addshipController.selectedSubPaymentId.value,
+                          isLoading: false,
+                          items: addshipController.subPaymentModes,
+                          itemLabel: (m) => m['name'] ?? '',
+                          itemValue: (m) => m['id'],
+                          onChanged: (val) {
+                            log(val.toString());
+                            addshipController.selectedPaymentModeId.value = val;
+                          },
+                        )),
                     // Obx(
                     //   () => CommonDropdown(
                     //     hint: 'Select Customer',
@@ -69,16 +84,25 @@ class AddPaymentInfoView extends GetView {
                     CommonTextfiled(
                       hintTxt: 'Shipment Charges',
                       controller: addshipController.shipmentChargeController,
+                      onChanged: (value) {
+                        addshipController.calculateGST();
+                      },
                     ),
                     dropdownText('Insurance Charges'),
                     CommonTextfiled(
                       hintTxt: 'Insurance Charges',
                       controller: addshipController.insuranceChargeController,
+                      onChanged: (value) {
+                        addshipController.calculateGST();
+                      },
                     ),
                     dropdownText('ODA Charges'),
                     CommonTextfiled(
                       hintTxt: 'ODA Charges',
                       controller: addshipController.odaChargeController,
+                      onChanged: (value) {
+                        addshipController.calculateGST();
+                      },
                     ),
                     dropdownText('Holiday Charges'),
                     CommonTextfiled(
@@ -89,17 +113,26 @@ class AddPaymentInfoView extends GetView {
                     CommonTextfiled(
                       hintTxt: 'Handling Charges',
                       controller: addshipController.headlingChargeController,
+                      onChanged: (value) {
+                        addshipController.calculateGST();
+                      },
                     ),
                     dropdownText('Total Charges'),
                     CommonTextfiled(
                       hintTxt: 'Total Charges',
                       controller: addshipController.totalChargeController,
+                      isEnable: false,
                     ),
-                    dropdownText('GST 18%'),
+                    dropdownText(
+                      'GST 18%',
+                    ),
                     CommonTextfiled(
-                      hintTxt: 'GST',
+                      hintTxt: 'Grand Total',
                       controller: addshipController.gstChargeController,
+                      isEnable: false,
                     ),
+                    Text('Total Amount (Including GST)',
+                        style: themes.fontSize14_500),
                   ],
                 ),
               ))

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
+import 'package:axlpl_delivery/app/data/models/profile_data_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/profile_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -12,6 +13,9 @@ import 'package:image_picker/image_picker.dart';
 class ProfileController extends GetxController {
   //TODO: Implement ProfileController
   final profileRepo = ProfileRepo();
+  var messangerDetail = Rxn<MessangersDetailsModel>();
+  var customerDetail = Rxn<Customerdetail>();
+
   RxBool isEdit = false.obs;
   var imageFile = Rx<File?>(null);
   var errorMessage = ''.obs;
@@ -19,6 +23,7 @@ class ProfileController extends GetxController {
   var isPsswordChange = false.obs;
 
   var isProfileLoading = Status.initial.obs;
+  var isUpdateProfile = Status.initial.obs;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
@@ -32,6 +37,11 @@ class ProfileController extends GetxController {
   TextEditingController oldPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController address1Controller = TextEditingController();
+  TextEditingController address2Controller = TextEditingController();
+  TextEditingController pincodeController = TextEditingController();
+  TextEditingController panController = TextEditingController();
+  TextEditingController gstController = TextEditingController();
   void editProfile() {
     isEdit.value = !isEdit.value; // Toggle editing state
   }
@@ -104,18 +114,85 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future editProfileData() async {
+  Future<void> fetchProfileData() async {
     errorMessage.value = '';
     isProfileLoading.value = Status.loading;
-    final result = await profileRepo.editProfile();
-    if (result != null) {
-      isProfileLoading.value = Status.success;
-      final data = Messangerdetail;
-      return data;
-    } else {
+    try {
+      final profileData = await profileRepo.editProfile();
+
+      if (profileData is Customerdetail) {
+        customerDetail.value = profileData;
+        messangerDetail.value = null;
+
+        nameController.text = profileData.fullName ?? '';
+        codeController.text = profileData.companyName ?? '';
+        stateController.text = profileData.stateName ?? '';
+        cityController.text = profileData.cityName ?? '';
+        branchController.text = profileData.branchName ?? '';
+        address1Controller.text = profileData.regAddress1 ?? '';
+        address2Controller.text = profileData.regAddress2 ?? '';
+        pincodeController.text = profileData.pincode ?? '';
+        phoneController.text = profileData.mobileNo ?? '';
+        emailController.text = profileData.email ?? '';
+        vehicleController.text =
+            profileData.natureBusiness ?? ''; // business nature for customer
+
+        // axlInsuranceController.text = profileData.axlplInsuranceValue ?? '';
+        // thirdPartyInsuranceController.text =
+        //     profileData.thirdPartyInsuranceValue ?? '';
+        // thirdPartyPolicyNoController.text =
+        //     profileData.thirdPartyPolicyNo ?? '';
+        // thirdPartyExpiryController.text =
+        //     profileData.thirdPartyExpDate?.toIso8601String().split("T")[0] ??
+        //         '';
+
+        isProfileLoading.value = Status.success;
+      } else if (profileData is MessangersDetailsModel) {
+        messangerDetail.value = profileData;
+        customerDetail.value = null;
+
+        nameController.text = profileData.messangerdetail?.name ?? '';
+        codeController.text = profileData.messangerdetail?.code ?? '';
+        stateController.text = profileData.messangerdetail?.stateName ?? '';
+        cityController.text = profileData.messangerdetail?.cityName ?? '';
+        branchController.text = profileData.messangerdetail?.branchName ?? '';
+        phoneController.text = profileData.messangerdetail?.phone ?? '';
+        emailController.text = profileData.messangerdetail?.email ?? '';
+        routeController.text = profileData.messangerdetail?.routeCode ?? '';
+        vehicleController.text = profileData.messangerdetail?.vehicleNo ?? '';
+
+        isProfileLoading.value = Status.success;
+      }
+    } catch (e) {
+      Utils.instance.log("Error fetching profile: $e");
+      errorMessage.value = 'Failed to fetch profile data';
       isProfileLoading.value = Status.error;
-      errorMessage.value = 'Failed to edit profile';
-      return null;
+    }
+  }
+
+  Future<void> updateProfile() async {
+    errorMessage.value = '';
+    isUpdateProfile.value = Status.loading;
+    try {
+      final result = await profileRepo.updateProfile(
+        nameController.text,
+        emailController.text,
+        phoneController.text,
+      );
+      if (result) {
+        await fetchProfileData();
+        isUpdateProfile.value = Status.success;
+        Get.snackbar(result.toString(), 'Profile updated successfully',
+            backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
+      } else {
+        isUpdateProfile.value = Status.error;
+        Get.snackbar(result.toString(), 'Failed to update profile',
+            backgroundColor: themes.redColor, colorText: themes.whiteColor);
+      }
+    } catch (e) {
+      Utils.instance.log("Error updating profile: $e");
+      isUpdateProfile.value = Status.error;
+      errorMessage.value = 'Failed to update profile';
     }
   }
 
@@ -137,6 +214,6 @@ class ProfileController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    editProfile();
+    fetchProfileData();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/auth/controllers/auth_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/change_password_dialog.dart';
@@ -73,7 +74,10 @@ class ProfileView extends GetView<ProfileController> {
                     final name = user?.messangerdetail?.name ??
                         user?.customerdetail?.fullName;
                     return Text(
-                      name.toString(),
+                      controller.messangerDetail.value?.messangerdetail?.name ??
+                          controller.customerDetail.value?.fullName ??
+                          name ??
+                          'Name',
                       style: themes.fontSize14_500,
                     );
                   }),
@@ -88,362 +92,407 @@ class ProfileView extends GetView<ProfileController> {
                     child: Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 10),
-                      child: Column(
-                        spacing: 15,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Profile Info',
-                                style: themes.fontSize18_600
-                                    .copyWith(fontSize: 16.sp),
-                              ),
-                              Spacer(),
-                              Obx(() {
-                                return controller.isEdit.value
-                                    ? TextButton.icon(
-                                        style: TextButton.styleFrom(
-                                            foregroundColor: themes.whiteColor,
-                                            backgroundColor:
-                                                themes.darkCyanBlue),
-                                        icon: Icon(
-                                          Icons.save,
-                                          color: themes.whiteColor,
-                                        ),
-                                        onPressed: controller.editProfile,
-                                        label: Text(
-                                          'Save',
-                                          style: themes.fontSize14_500.copyWith(
-                                            fontSize: 16.sp,
-                                          ),
-                                        ))
-                                    : TextButton.icon(
-                                        icon: Icon(
-                                          CupertinoIcons.square_pencil_fill,
-                                          color: themes.grayColor,
-                                        ),
-                                        onPressed: controller.editProfile,
-                                        label: Text(
-                                          'Edit',
-                                          style: themes.fontSize14_500.copyWith(
-                                              fontSize: 16.sp,
-                                              color: themes.grayColor),
-                                        ));
-                              })
-                            ],
-                          ),
-                          Text(
-                            yourName,
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.name ??
-                                  user?.customerdetail?.fullName,
-                              isEnable: controller.isEdit.value,
-                              controller: controller.nameController,
-                            );
-                          }),
-                          Text(
-                            user?.role == "messanger" ? 'Code' : 'Company Name',
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.code ??
-                                  user?.customerdetail?.companyName,
-                              isEnable: controller.isEdit.value,
-                              controller: controller.codeController,
-                            );
-                          }),
-                          if (user?.role != 'messanger')
-                            Column(
-                              spacing: 8.h,
+                      child: Obx(
+                        () {
+                          if (controller.isProfileLoading.value ==
+                              Status.loading) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (controller.isProfileLoading.value ==
+                              Status.error) {
+                            return const Center(child: Text('No Data Found!'));
+                          } else if (controller.isProfileLoading.value ==
+                              Status.success) {
+                            return Column(
+                              spacing: 15,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Profile Info',
+                                      style: themes.fontSize18_600
+                                          .copyWith(fontSize: 16.sp),
+                                    ),
+                                    Spacer(),
+                                    Obx(() {
+                                      return controller.isEdit.value
+                                          ? TextButton.icon(
+                                              style: TextButton.styleFrom(
+                                                  foregroundColor:
+                                                      themes.whiteColor,
+                                                  backgroundColor:
+                                                      themes.darkCyanBlue),
+                                              icon: Icon(
+                                                Icons.save,
+                                                color: themes.whiteColor,
+                                              ),
+                                              onPressed: () {
+                                                controller.editProfile;
+                                                controller.updateProfile();
+                                              },
+                                              label: Text(
+                                                'Save',
+                                                style: themes.fontSize14_500
+                                                    .copyWith(
+                                                  fontSize: 16.sp,
+                                                ),
+                                              ))
+                                          : TextButton.icon(
+                                              icon: Icon(
+                                                CupertinoIcons
+                                                    .square_pencil_fill,
+                                                color: themes.grayColor,
+                                              ),
+                                              onPressed: controller.editProfile,
+                                              label: Text(
+                                                'Edit',
+                                                style: themes.fontSize14_500
+                                                    .copyWith(
+                                                        fontSize: 16.sp,
+                                                        color:
+                                                            themes.grayColor),
+                                              ));
+                                    })
+                                  ],
+                                ),
                                 Text(
-                                  'Category',
+                                  yourName,
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                CommonTextfiled(
+                                  hintTxt: 'Enter your name',
+                                  isEnable: controller.isEdit.value,
+                                  controller: controller.nameController,
+                                ),
+                                Text(
+                                  user?.role == "messanger"
+                                      ? 'Code'
+                                      : 'Company Name',
                                   style: themes.fontSize14_500
                                       .copyWith(fontWeight: FontWeight.w400),
                                 ),
                                 Obx(() {
                                   return CommonTextfiled(
-                                    hintTxt: user?.customerdetail?.category ??
+                                    hintTxt: 'Enter code',
+                                    isEnable: controller.isEdit.value,
+                                    controller: controller.codeController,
+                                  );
+                                }),
+                                if (user?.role != 'messanger')
+                                  Column(
+                                    spacing: 8.h,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
                                         'Category',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt:
+                                              user?.customerdetail?.category ??
+                                                  'Category',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.stateController,
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                Text(
+                                  state,
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    hintTxt: user?.messangerdetail?.stateName ??
+                                        user?.customerdetail?.stateName,
                                     isEnable: controller.isEdit.value,
                                     controller: controller.stateController,
                                   );
                                 }),
-                              ],
-                            ),
-                          Text(
-                            state,
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.stateName ??
-                                  user?.customerdetail?.stateName,
-                              isEnable: controller.isEdit.value,
-                              controller: controller.stateController,
-                            );
-                          }),
-                          Text(
-                            city,
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.cityName ??
-                                  user?.customerdetail?.cityName,
-                              isEnable: controller.isEdit.value,
-                              controller: controller.cityController,
-                            );
-                          }),
-                          Text(
-                            branch,
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.branchName ??
-                                  user?.customerdetail?.branchName,
-                              isEnable: controller.isEdit.value,
-                              controller: controller.branchController,
-                            );
-                          }),
-                          Text(
-                            'Address1',
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.customerdetail?.regAddress1 ??
+                                Text(
+                                  city,
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    hintTxt: user?.messangerdetail?.cityName ??
+                                        user?.customerdetail?.cityName,
+                                    isEnable: controller.isEdit.value,
+                                    controller: controller.cityController,
+                                  );
+                                }),
+                                Text(
+                                  branch,
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    hintTxt:
+                                        user?.messangerdetail?.branchName ??
+                                            user?.customerdetail?.branchName,
+                                    isEnable: controller.isEdit.value,
+                                    controller: controller.branchController,
+                                  );
+                                }),
+                                Text(
                                   'Address1',
-                              isEnable: controller.isEdit.value,
-                              controller: controller.cityController,
-                            );
-                          }),
-                          Text(
-                            'Address2',
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.customerdetail?.regAddress2 ??
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    hintTxt:
+                                        user?.customerdetail?.regAddress1 ??
+                                            'Address1',
+                                    isEnable: controller.isEdit.value,
+                                    controller: controller.address1Controller,
+                                  );
+                                }),
+                                Text(
                                   'Address2',
-                              isEnable: controller.isEdit.value,
-                              controller: controller.cityController,
-                            );
-                          }),
-                          Text(
-                            'Pincode',
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt:
-                                  user?.customerdetail?.pincode ?? 'Pincode',
-                              isEnable: controller.isEdit.value,
-                              controller: controller.cityController,
-                            );
-                          }),
-                          if (user?.role != 'customer')
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 8.h,
-                              children: [
-                                Text(
-                                  'Route',
                                   style: themes.fontSize14_500
                                       .copyWith(fontWeight: FontWeight.w400),
                                 ),
                                 Obx(() {
                                   return CommonTextfiled(
-                                    hintTxt: user?.messangerdetail?.routeCode ??
-                                        'AXL- 033',
+                                    hintTxt:
+                                        user?.customerdetail?.regAddress2 ??
+                                            'Address2',
                                     isEnable: controller.isEdit.value,
-                                    controller: controller.routeController,
+                                    controller: controller.address2Controller,
                                   );
                                 }),
-                              ],
-                            ),
-                          Text(
-                            mobile,
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              isEnable: controller.isEdit.value,
-                              hintTxt: user?.messangerdetail?.phone ??
-                                  user?.customerdetail?.mobileNo ??
-                                  'Mobile No',
-                              controller: controller.phoneController,
-                            );
-                          }),
-                          Text(
-                            email,
-                            style: themes.fontSize14_500
-                                .copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Obx(() {
-                            return CommonTextfiled(
-                              hintTxt: user?.messangerdetail?.email ??
-                                  user?.customerdetail?.email ??
+                                Text(
+                                  'Pincode',
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    hintTxt: user?.customerdetail?.pincode ??
+                                        'Pincode',
+                                    isEnable: controller.isEdit.value,
+                                    controller: controller.cityController,
+                                  );
+                                }),
+                                if (user?.role != 'customer')
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    spacing: 8.h,
+                                    children: [
+                                      Text(
+                                        'Route',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.messangerdetail
+                                                  ?.routeCode ??
+                                              'AXL- 033',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.routeController,
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                Text(
+                                  mobile,
+                                  style: themes.fontSize14_500
+                                      .copyWith(fontWeight: FontWeight.w400),
+                                ),
+                                Obx(() {
+                                  return CommonTextfiled(
+                                    isEnable: controller.isEdit.value,
+                                    hintTxt: user?.messangerdetail?.phone ??
+                                        user?.customerdetail?.mobileNo ??
+                                        'Mobile No',
+                                    controller: controller.phoneController,
+                                  );
+                                }),
+                                Text(
                                   email,
-                              isEnable: controller.isEdit.value,
-                              controller: controller.emailController,
-                            );
-                          }),
-                          if (user?.role != 'customer')
-                            Column(
-                              spacing: 8.h,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Vehicle No',
                                   style: themes.fontSize14_500
                                       .copyWith(fontWeight: FontWeight.w400),
                                 ),
                                 Obx(() {
                                   return CommonTextfiled(
-                                    hintTxt: user?.messangerdetail?.vehicleNo ??
-                                        '0555',
+                                    hintTxt: user?.messangerdetail?.email ??
+                                        user?.customerdetail?.email ??
+                                        email,
                                     isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
+                                    controller: controller.emailController,
                                   );
                                 }),
-                              ],
-                            ),
-                          if (user?.role == 'customer')
-                            Column(
-                              spacing: 12.h,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Business nature',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt:
-                                        user?.customerdetail?.natureBusiness ??
-                                            '0555',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'fax No',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt: user?.customerdetail?.faxNo,
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'Pan No',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt: user?.customerdetail?.panNo != ''
-                                        ? user?.customerdetail?.panNo
-                                        : 'Pan No',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'Gst No',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt:
-                                        user?.customerdetail?.gstNo ?? 'Gst No',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'AXLPL Insurance value',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt: user?.customerdetail
-                                            ?.axlplInsuranceValue ??
+                                if (user?.role != 'customer')
+                                  Column(
+                                    spacing: 8.h,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Vehicle No',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.messangerdetail
+                                                  ?.vehicleNo ??
+                                              '0555',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                if (user?.role == 'customer')
+                                  Column(
+                                    spacing: 12.h,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Business nature',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.customerdetail
+                                                  ?.natureBusiness ??
+                                              '0555',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
+                                        'fax No',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.customerdetail?.faxNo,
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
+                                        'Pan No',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt:
+                                              user?.customerdetail?.panNo != ''
+                                                  ? user?.customerdetail?.panNo
+                                                  : 'Pan No',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
+                                        'Gst No',
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt:
+                                              user?.customerdetail?.gstNo ??
+                                                  'Gst No',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
                                         'AXLPL Insurance value',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'Third party insurance value',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt: user?.customerdetail
-                                            ?.thirdPartyInsuranceValue ??
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.customerdetail
+                                                  ?.axlplInsuranceValue ??
+                                              'AXLPL Insurance value',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
                                         'Third party insurance value',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'Third party policy No',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt: user?.customerdetail
-                                            ?.thirdPartyPolicyNo ??
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.customerdetail
+                                                  ?.thirdPartyInsuranceValue ??
+                                              'Third party insurance value',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
                                         'Third party policy No',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
-                                Text(
-                                  'Third party expiry date',
-                                  style: themes.fontSize14_500
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                Obx(() {
-                                  return CommonTextfiled(
-                                    hintTxt: user
-                                            ?.customerdetail?.thirdPartyExpDate
-                                            ?.toIso8601String()
-                                            .split("T")[0] ??
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.customerdetail
+                                                  ?.thirdPartyPolicyNo ??
+                                              'Third party policy No',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                      Text(
                                         'Third party expiry date',
-                                    isEnable: controller.isEdit.value,
-                                    controller: controller.vehicleController,
-                                  );
-                                }),
+                                        style: themes.fontSize14_500.copyWith(
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      Obx(() {
+                                        return CommonTextfiled(
+                                          hintTxt: user?.customerdetail
+                                                  ?.thirdPartyExpDate
+                                                  ?.toIso8601String()
+                                                  .split("T")[0] ??
+                                              'Third party expiry date',
+                                          isEnable: controller.isEdit.value,
+                                          controller:
+                                              controller.vehicleController,
+                                        );
+                                      }),
+                                    ],
+                                  )
                               ],
-                            )
-                        ],
+                            );
+                          } else {
+                            return Center(child: Text('No Data Found'));
+                          }
+                        },
                       ),
                     ),
                   ),

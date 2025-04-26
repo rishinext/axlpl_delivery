@@ -33,6 +33,12 @@ class AddShipmentController extends GetxController {
     {'id': '4', 'name': 'Topay Cash'},
     {'id': '5', 'name': 'account(contract)'},
   ].obs;
+  final subPaymentModes = [
+    {'id': '1', 'name': 'Account'},
+    {'id': '2', 'name': 'Cash'},
+    {'id': '3', 'name': 'Cheque'},
+    {'id': '4', 'name': 'Online'},
+  ].obs;
 
   Rx<DateTime> selectedDate = DateTime.now().obs;
   Rx<DateTime> expireDate = DateTime.now().obs;
@@ -111,6 +117,7 @@ class AddShipmentController extends GetxController {
   final TextEditingController totalChargeController = TextEditingController();
   final TextEditingController gstChargeController = TextEditingController();
 
+  var handlingChargeController = TextEditingController();
   List<Widget> shipmentList = [
     AddShipmentView(),
     AddAddressView(),
@@ -139,6 +146,7 @@ class AddShipmentController extends GetxController {
   var selectedDiffrentArea = Rxn<String>();
 
   var selectedPaymentModeId = Rxn<String>();
+  var selectedSubPaymentId = Rxn<String>();
 
   RxString insuranceType = 'YES'.obs;
   RxString diffrentAddressType = 'NO'.obs;
@@ -146,6 +154,32 @@ class AddShipmentController extends GetxController {
   var currentPage = 0.obs;
   RxInt totalPage = 5.obs;
   final errorMessage = RxString('');
+
+  var gstAmount = 0.0.obs;
+  var grandTotal = 0.0.obs;
+  var totalAmount = 0.0.obs;
+
+  void calculateGST() {
+    final shipment = double.tryParse(shipmentChargeController.text) ?? 0.0;
+    final insurance = double.tryParse(insuranceChargeController.text) ?? 0.0;
+    final oda = double.tryParse(odaChargeController.text) ?? 0.0;
+
+    final handling = double.tryParse(handlingChargeController.text) ?? 0.0;
+
+    final totalCharges = shipment + insurance + oda + handling;
+
+    const gstRate = 18.0; // 18% GST
+    final gst = (totalCharges * gstRate) / 100;
+    final grandTotalAmount = totalCharges + gst;
+
+    // Update the controllers:
+    totalChargeController.text = totalCharges.toStringAsFixed(2);
+    gstChargeController.text = grandTotalAmount.toStringAsFixed(2);
+
+    // Update observables (optional if you want to show somewhere)
+    gstAmount.value = gst;
+    grandTotal.value = grandTotalAmount;
+  }
 
   Future<void> fetchCustomers([String nextID = '']) async {
     try {
@@ -463,6 +497,13 @@ class AddShipmentController extends GetxController {
   @override
   void onClose() {
     // TODO: implement onClose
+    shipmentChargeController.dispose();
+    insuranceChargeController.dispose();
+    odaChargeController.dispose();
+    holidayChargeController.dispose();
+    handlingChargeController.dispose();
+    totalChargeController.dispose();
+    gstChargeController.dispose();
     super.onClose();
     pageController.dispose();
   }

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
+import 'package:axlpl_delivery/app/data/models/profile_data_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
@@ -16,7 +19,7 @@ class ProfileRepo {
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
       final role = userData?.role.toString();
-
+      log("roles profile data ${role.toString()}");
       // Check if user is available
       if (userID != null && userID.isNotEmpty) {
         final response = await _apiServices.changePassword(userID, oldPassword,
@@ -47,29 +50,69 @@ class ProfileRepo {
     }
   }
 
-  Future<Messangerdetail?> editProfile() async {
+  Future<dynamic> editProfile() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??
           userData?.customerdetail?.id.toString();
-
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
-      final role = userData?.role.toString();
+      final role = userData?.role?.toString();
+      log("roles profile data ${role.toString()}");
+      if (userID != null && userID.isNotEmpty) {
+        final response = await _apiServices.getProfile(userID, role ?? '');
 
-      if (userID?.isNotEmpty == true || userID != null) {
-        final response = await _apiServices.getProfile(
-          userID.toString(),
-          role.toString(),
-        );
         return response.when(success: (body) {
-          return Messangerdetail.fromJson(body);
+          if (role == 'customer') {
+            return Customerdetail.fromJson(body);
+          } else {
+            return MessangersDetailsModel.fromJson(body);
+          }
         }, error: (error) {
           throw Exception("EditProfile Failed: ${error.toString()}");
         });
       }
     } catch (e) {
-      Utils.instance.log("Error changing password: $e");
+      Utils.instance.log("Error in editProfile: $e");
     }
+    return null;
+  }
+
+  Future<bool> updateProfile(String name, String email, String phone) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.messangerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+      // final token =
+      //     userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+      final role = userData?.role?.toString();
+      log("roles profile data ${role.toString()}");
+      if (userID != null && userID.isNotEmpty) {
+        final response = await _apiServices.updateProfile(
+          userID,
+          role.toString(),
+          name,
+          email,
+          phone,
+        ); // Pass token
+
+        return response.when(success: (body) {
+          final updateProfileData = CommonModel.fromJson(body);
+          if (updateProfileData.status != "success") {
+            throw Exception(updateProfileData.message ??
+                "UpdateProfile Failed: Unknown Error");
+          } else {
+            Utils.instance
+                .log("UpdateProfile Success: ${updateProfileData.message}");
+          }
+          return true;
+        }, error: (error) {
+          throw Exception("UpdateProfile Failed: ${error.toString()}");
+        });
+      }
+    } catch (e) {
+      Utils.instance.log("Error in updateProfile: $e");
+    }
+    return false;
   }
 }
