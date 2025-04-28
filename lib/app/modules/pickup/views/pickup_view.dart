@@ -102,9 +102,15 @@ class PickupView extends GetView<PickupController> {
                               trailing: CircleAvatar(
                                 backgroundColor: themes.lightCream,
                                 // radius: 15,
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  size: 20.w,
+                                child: IconButton(
+                                  onPressed: () {
+                                    pickupController.openMapWithAddress(
+                                        data.address1.toString());
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_forward,
+                                    color: themes.grayColor,
+                                  ),
                                 ),
                               ));
                         },

@@ -82,6 +82,25 @@ class ApiServices {
     return _api.get(getCategoryListPoint, query: query, token: token);
   }
 
+  Future<APIResponse> getAllDelivery(
+    final id,
+    final brachID,
+    final nextID,
+    final token,
+  ) {
+    final query = {
+      'messanger_id': id,
+      'branch_id': brachID,
+      'next_id': nextID,
+      'token': token,
+    };
+    return _api.get(
+      getAllDeliveryPoint,
+      query: query,
+      token: token,
+    );
+  }
+
   Future<APIResponse> getCommodityList(
     String? search,
     String? categoryID,
@@ -434,22 +453,21 @@ class ApiServices {
     );
   }
 
-  Future<APIResponse> getAllDelivery(
-    final id,
-    final brachID,
-    final nextID,
-    final token,
+  Future<APIResponse> grossCalculation(
+    final netWeight,
+    final grossWeight,
+    final status,
+    final productID,
   ) {
-    final query = {
-      'messanger_id': id,
-      'branch_id': brachID,
-      'next_id': nextID,
-      'token': token,
+    final body = {
+      'net_weight': netWeight,
+      'gross_weight': grossWeight,
+      'status': status,
+      'product_id': productID,
     };
-    return _api.get(
-      getAllDeliveryPoint,
-      query: query,
-      token: token,
+    return _api.post(
+      grosssCalculationPoint,
+      body,
     );
   }
 }

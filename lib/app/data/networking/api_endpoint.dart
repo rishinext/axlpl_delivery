@@ -18,3 +18,4 @@ const String updateProfilePoint = 'updateProfile';
 const String editProfilePoint = 'editProfile';
 const String getAllPickupPoint = 'getAllPickup';
 const String getAllDeliveryPoint = 'getAllDelivery';
+const String grosssCalculationPoint = 'grossCalculation';

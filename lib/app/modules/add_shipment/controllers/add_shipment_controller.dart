@@ -355,6 +355,36 @@ class AddShipmentController extends GetxController {
     }
   }
 
+  Future<void> calculateGrossWeight({
+    required String netWeight,
+    required String grossWeight,
+    required String status,
+    required String productID,
+  }) async {
+    try {
+      final result = await addShipmentRepo.grossCalculationRepo(
+        netWeight,
+        grossWeight,
+        status,
+        productID,
+      );
+
+      if (result == false) {
+        // Handle gross weight validation failed
+        Get.snackbar(
+            'error', 'Gross weight should be greater than Net weight!');
+      } else if (result == true) {
+        // Success case, continue
+      } else {
+        // Null or unknown error
+        Get.snackbar(
+            'error', 'Gross weight should be greater than Net weight!');
+      }
+    } catch (e) {
+      Get.snackbar('error', 'Gross weight should be greater than Net weight!');
+    }
+  }
+
   Future<void> pickDate(BuildContext context, [final selectDate]) async {
     final DateTime? pickedDate = await holoDatePicker(
       context,

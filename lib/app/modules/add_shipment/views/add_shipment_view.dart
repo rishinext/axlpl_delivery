@@ -149,6 +149,17 @@ class AddShipmentView extends GetView<AddShipmentController> {
                       Expanded(
                         child: CommonTextfiled(
                           controller: addshipController.grossWeightController,
+                          onChanged: (p0) {
+                            addshipController.calculateGrossWeight(
+                              netWeight:
+                                  addshipController.netWeightController.text,
+                              grossWeight:
+                                  addshipController.grossWeightController.text,
+                              status: 'global',
+                              productID: addshipController.selectedCommodity
+                                  .toString(),
+                            );
+                          },
                           hintTxt: "Enter Gross weight",
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,

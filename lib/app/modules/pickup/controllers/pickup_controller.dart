@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/app/data/networking/repostiory/pickup_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PickupController extends GetxController {
   //TODO: Implement PickupController
@@ -42,6 +43,24 @@ class PickupController extends GetxController {
       filteredPickupList.value = pickupList
           .where((pickup) => (pickup.pincode ?? '').contains(query.trim()))
           .toList();
+    }
+  }
+
+  Future<void> openMapWithAddress(String address) async {
+    final encodedAddress = Uri.encodeComponent(address);
+    final googleMapsUrl =
+        'https://www.google.com/maps/search/?api=1&query=$encodedAddress';
+    final Uri url = Uri.parse(googleMapsUrl);
+
+    if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
+      await launchUrl(Uri.parse(googleMapsUrl),
+          mode: LaunchMode.externalApplication);
+    } else {
+      await launchUrl(
+        url,
+        mode: LaunchMode
+            .externalNonBrowserApplication, // ✅ open inside WebView as last option
+      );
     }
   }
 

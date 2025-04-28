@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
@@ -17,7 +18,7 @@ class DeliveryView extends GetView<DeliveryController> {
   @override
   Widget build(BuildContext context) {
     final deliveryController = Get.put(DeliveryController());
-
+    final pickupController = Get.put(PickupController());
     return CommonScaffold(
       appBar: commonAppbar('Delivery'),
       body: Padding(
@@ -95,9 +96,15 @@ class DeliveryView extends GetView<DeliveryController> {
                               trailing: CircleAvatar(
                                 backgroundColor: themes.lightCream,
                                 // radius: 15,
-                                child: Icon(
-                                  Icons.arrow_forward,
-                                  size: 20.w,
+                                child: IconButton(
+                                  onPressed: () {
+                                    pickupController.openMapWithAddress(
+                                        data.address1.toString());
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_forward,
+                                    size: 20.w,
+                                  ),
                                 ),
                               ));
                         },

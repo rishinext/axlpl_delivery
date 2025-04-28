@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
+import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
@@ -378,6 +379,42 @@ class AddShipmentRepo {
       );
     } catch (e) {
       _utils.logError(e.toString());
+    }
+  }
+
+  Future<bool?> grossCalculationRepo(
+    String netWeight,
+    String grossWeight,
+    String status,
+    String productID,
+  ) async {
+    try {
+      final response = await _apiServices.grossCalculation(
+        netWeight,
+        grossWeight,
+        status,
+        productID,
+      );
+
+      return response.when(
+        success: (body) {
+          final grossCal = CommonModel.fromJson(body);
+          if (grossCal.status == "fail") {
+            // 🔥 fix check
+            Utils().logInfo(grossCal.message.toString());
+            return false; // fail condition
+          } else {
+            Utils().logInfo(grossCal.message.toString());
+            return true; // success
+          }
+        },
+        error: (error) {
+          throw Exception("Gross Calculation API Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      Utils().logError(e.toString());
+      return null; // 🛡️ safe fallback
     }
   }
 }
