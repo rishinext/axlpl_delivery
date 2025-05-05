@@ -9,6 +9,21 @@ import "package:image_picker/image_picker.dart";
 class ApiServices {
   static final ApiClient _api = ApiClient();
 
+  Future<APIResponse> getConsignment(
+    String userID,
+
+    // String zipcode,
+  ) async {
+    final body = {
+      'user_id': userID,
+      // 'zipcode': zipcode,
+    };
+    return _api.get(
+      getConsignmentPoint,
+      query: body,
+    );
+  }
+
   Future<APIResponse> getDeliveryHistory(
     String userID,
     String branchID,

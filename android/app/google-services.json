@@ -1,0 +1,91 @@
+{
+  "project_info": {
+    "project_number": "964469623389",
+    "firebase_url": "https://mots-f6f8d.firebaseio.com",
+    "project_id": "mots-f6f8d",
+    "storage_bucket": "mots-f6f8d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964469623389:android:1eeb4bc4ffc637074a9bb4",
+        "android_client_info": {
+          "package_name": "com.example.axlpl_delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964469623389-hd71ih2vg6kul2hhpj6q0kehh1mfv3u9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1fchie7WZYEk3BoWmY9BGf0rDFyKTupM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "964469623389-hd71ih2vg6kul2hhpj6q0kehh1mfv3u9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "964469623389-2ncg8nqckjfr3vplmm9s0bgc3d75nvhm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.version.next.motosurgeon"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964469623389:android:4243ac142532ead3",
+        "android_client_info": {
+          "package_name": "com.version.next.motosurgeon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "964469623389-474i8fu8k4pe05dkflegaimqcdg76650.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.version.next.motosurgeon",
+            "certificate_hash": "3112a2cd51b90a029dd0dcba465597e848be93db"
+          }
+        },
+        {
+          "client_id": "964469623389-hd71ih2vg6kul2hhpj6q0kehh1mfv3u9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1fchie7WZYEk3BoWmY9BGf0rDFyKTupM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "964469623389-hd71ih2vg6kul2hhpj6q0kehh1mfv3u9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "964469623389-2ncg8nqckjfr3vplmm9s0bgc3d75nvhm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.version.next.motosurgeon"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,6 +8,7 @@ import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,18 @@ class AddShipmentView extends GetView<AddShipmentController> {
                             controller.selectedCustomer.value = val,
                       );
                     }),
+                  // DropdownSearch<String>(
+                  //   selectedItem: controller.selectedCustomer.value,
+                  //   items: (filter, infiniteScrollProps) =>
+                  //       ["Menu", "Dialog", "Modal", "BottomSheet"],
+                  //   decoratorProps: DropDownDecoratorProps(
+                  //     decoration: InputDecoration(
+                  //       border: OutlineInputBorder(),
+                  //     ),
+                  //   ),
+                  //   popupProps: PopupProps.menu(
+                  //       fit: FlexFit.loose, constraints: BoxConstraints()),
+                  // ),
                   dropdownText('Category'),
                   Obx(() => CommonDropdown<CategoryList>(
                         hint: 'Select Category',

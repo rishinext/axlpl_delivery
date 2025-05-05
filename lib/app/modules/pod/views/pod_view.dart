@@ -29,145 +29,148 @@ class PodView extends GetView<PodController> {
         appBar: commonAppbar('Upload POD'),
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 5.h),
-          child: Column(
-            spacing: 20,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: ContainerTextfiled(
-                      prefixIcon: Icon(
-                        CupertinoIcons.search,
-                        color: themes.grayColor,
-                      ),
-                      hintText: 'Shipment ID',
-                      controller: controller.shipmentIdController,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () async {
-                      String? res = await SimpleBarcodeScanner.scanBarcode(
-                        scanType: ScanType.defaultMode,
-                        context,
-                        barcodeAppBar: const BarcodeAppBar(
-                          appBarTitle: '',
-                          centerTitle: false,
-                          enableBackButton: true,
-                          backButtonIcon: Icon(Icons.arrow_back_ios),
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 20,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ContainerTextfiled(
+                        prefixIcon: Icon(
+                          CupertinoIcons.search,
+                          color: themes.grayColor,
                         ),
-                        isShowFlashIcon: true,
-                        cameraFace: CameraFace.back,
-                      );
-
-                      if (res != null && res != "-1") {
-                        controller.shipmentIdController.text = res;
-                        log("Scanned result: $res");
-                      } else {
-                        log("Scan cancelled or failed.");
-                      }
-                    },
-                    icon: Icon(CupertinoIcons.qrcode_viewfinder),
-                  )
-                ],
-              ),
-              DottedBorder(
-                borderType: BorderType.RRect,
-                dashPattern: [8, 4],
-                radius: Radius.circular(10.r),
-                padding: EdgeInsets.all(2),
-                color: themes.blueColor,
-                child: Obx(
-                  () => InkWell(
-                    onTap: () {
-                      if (controller.shipmentIdController.text.isNotEmpty) {
-                        pickImage(ImageSource.camera, controller.imageFile);
-                      } else {
-                        Get.snackbar(
-                          'error',
-                          'Shipment ID Required!',
-                          colorText: themes.whiteColor,
-                          backgroundColor: themes.redColor,
+                        hintText: 'Shipment ID',
+                        controller: controller.shipmentIdController,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        String? res = await SimpleBarcodeScanner.scanBarcode(
+                          scanType: ScanType.defaultMode,
+                          context,
+                          barcodeAppBar: const BarcodeAppBar(
+                            appBarTitle: '',
+                            centerTitle: false,
+                            enableBackButton: true,
+                            backButtonIcon: Icon(Icons.arrow_back_ios),
+                          ),
+                          isShowFlashIcon: true,
+                          cameraFace: CameraFace.back,
                         );
-                      }
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: themes.blueGray,
-                          borderRadius: BorderRadius.circular(10.r)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(38.0).r,
-                        child: controller.imageFile.value == null
-                            ? Column(
-                                children: [
-                                  Image.asset(
-                                    uploadIcon,
-                                    width: 40.w,
+
+                        if (res != null && res != "-1") {
+                          controller.shipmentIdController.text = res;
+                          log("Scanned result: $res");
+                        } else {
+                          log("Scan cancelled or failed.");
+                        }
+                      },
+                      icon: Icon(CupertinoIcons.qrcode_viewfinder),
+                    )
+                  ],
+                ),
+                DottedBorder(
+                  borderType: BorderType.RRect,
+                  dashPattern: [8, 4],
+                  radius: Radius.circular(10.r),
+                  padding: EdgeInsets.all(2),
+                  color: themes.blueColor,
+                  child: Obx(
+                    () => InkWell(
+                      onTap: () {
+                        if (controller.shipmentIdController.text.isNotEmpty) {
+                          pickImage(ImageSource.camera, controller.imageFile);
+                        } else {
+                          Get.snackbar(
+                            'error',
+                            'Shipment ID Required!',
+                            colorText: themes.whiteColor,
+                            backgroundColor: themes.redColor,
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: themes.blueGray,
+                            borderRadius: BorderRadius.circular(10.r)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(38.0).r,
+                          child: controller.imageFile.value == null
+                              ? Column(
+                                  children: [
+                                    Image.asset(
+                                      uploadIcon,
+                                      width: 40.w,
+                                    ),
+                                    Text(
+                                      'Upload your file here',
+                                      style: themes.fontSize14_500,
+                                    )
+                                  ],
+                                )
+                              : Image.file(
+                                  width: 50.w,
+                                  height: 100.h,
+                                  File(
+                                    controller.imageFile.value!.path,
                                   ),
-                                  Text(
-                                    'Upload your file here',
-                                    style: themes.fontSize14_500,
-                                  )
-                                ],
-                              )
-                            : Image.file(
-                                width: 50.w,
-                                height: 100.h,
-                                File(
-                                  controller.imageFile.value!.path,
                                 ),
-                              ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Obx(
-                () => CommonDropdown<Map>(
-                  hint: 'Select Payment Type',
-                  selectedValue: controller.selectedPaymentTypeId.value,
-                  isLoading: false,
-                  items: controller.paymentTypes,
-                  itemLabel: (m) => m['name'] ?? '',
-                  itemValue: (m) => m['id'],
-                  onChanged: (val) {
-                    log(val.toString());
-                    controller.selectedPaymentTypeId.value = val;
+                /*
+                Obx(
+                  () => CommonDropdown<Map>(
+                    hint: 'Select Payment Type',
+                    selectedValue: controller.selectedPaymentTypeId.value,
+                    isLoading: false,
+                    items: controller.paymentTypes,
+                    itemLabel: (m) => m['name'] ?? '',
+                    itemValue: (m) => m['id'],
+                    onChanged: (val) {
+                      log(val.toString());
+                      controller.selectedPaymentTypeId.value = val;
+                    },
+                  ),
+                ),*/
+                Obx(() {
+                  return controller.shipmentRecordList.any(
+                    (item) => item.paymentMode?.toLowerCase() == 'topay',
+                  )
+                      ? CommonDropdown<Map>(
+                          hint: 'Select Payment',
+                          selectedValue: controller.selectedPaymentModeId.value,
+                          isLoading: false,
+                          items: controller.paymentModes,
+                          itemLabel: (m) => m['name'] ?? '',
+                          itemValue: (m) => m['id'],
+                          onChanged: (val) {
+                            log(val.toString());
+                            controller.selectedPaymentModeId.value = val;
+                          },
+                        )
+                      : SizedBox.shrink();
+                }),
+                CommonButton(
+                  title: 'Upload',
+                  onPressed: () async {
+                    controller.uploadPod(
+                      shipmentStatus: 'Delivered',
+                      shipmentOtp: '0000',
+                      file: File(
+                        controller.imageFile.value?.path ?? '',
+                      ),
+                    );
                   },
-                ),
-              ),
-              Obx(() {
-                return controller.shipmentRecordList.any(
-                  (item) => item.paymentMode?.toLowerCase() == 'topay',
                 )
-                    ? CommonDropdown<Map>(
-                        hint: 'Select Payment',
-                        selectedValue: controller.selectedPaymentModeId.value,
-                        isLoading: false,
-                        items: controller.paymentModes,
-                        itemLabel: (m) => m['name'] ?? '',
-                        itemValue: (m) => m['id'],
-                        onChanged: (val) {
-                          log(val.toString());
-                          controller.selectedPaymentModeId.value = val;
-                        },
-                      )
-                    : SizedBox.shrink();
-              }),
-              CommonButton(
-                title: 'Upload',
-                onPressed: () async {
-                  controller.uploadPod(
-                    shipmentStatus: 'Delivered',
-                    shipmentOtp: '0000',
-                    file: File(
-                      controller.imageFile.value?.path ?? '',
-                    ),
-                  );
-                },
-              )
-            ],
+              ],
+            ),
           ),
         ));
   }

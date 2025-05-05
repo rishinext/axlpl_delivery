@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_datepicker.dart';
@@ -11,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../controllers/consignment_controller.dart';
 
@@ -18,6 +21,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
   const ConsignmentView({super.key});
   @override
   Widget build(BuildContext context) {
+    final congimentController = Get.put(ConsignmentController());
     return CommonScaffold(
         appBar: commonAppbar('Consignment'),
         body: Padding(
@@ -27,10 +31,10 @@ class ConsignmentView extends GetView<ConsignmentController> {
               () => Column(
                 spacing: 20.h,
                 children: [
-                  SizedBox(
-                    height: 1.h,
-                  ),
-                  /*
+                  // SizedBox(
+                  //   height: 1.h,
+                  // ),
+
                   Row(
                     spacing: 10.w,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -100,7 +104,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                         ),
                       ),
                     ],
-                  ),*/
+                  ),
                   controller.isSelected.value == 0
                       ? Container(
                           width: double.infinity,
@@ -113,7 +117,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                               spacing: 10,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                dropdownText('Source Branch'),
+                                // dropdownText('Source Branch'),
                                 /*  CommonDropdown(
                                     hint: 'Mumbai',
                                     selectedValue:
@@ -156,21 +160,17 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                               final selectedDate =
                                                   await holoDatePicker(
                                                       context,
-                                                      initialDate:
-                                                          controller
-                                                                  .selectedStartDate
-                                                                  .value ??
-                                                              DateTime.now(),
-                                                      firstDate:
-                                                          controller
+                                                      initialDate: controller
                                                               .selectedStartDate
-                                                              .value,
+                                                              .value ??
+                                                          DateTime.now(),
+                                                      firstDate: DateTime(1950),
                                                       lastDate: DateTime(2090),
                                                       hintText:
                                                           "Choose Start Date");
 
                                               if (selectedDate != null) {
-                                                controller.selectedEndDate
+                                                controller.selectedStartDate
                                                     .value = selectedDate;
                                               }
                                             },
@@ -185,33 +185,29 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                                 .split(" ")[0],
                                         isReadOnly: true,
                                         sufixIcon: InkWell(
-                                            onTap: () async {
-                                              final selectedDate =
-                                                  await holoDatePicker(context,
-                                                      initialDate: controller
-                                                              .selectedEndDate
-                                                              .value ??
-                                                          DateTime.now(),
-                                                      firstDate: controller
-                                                          .selectedStartDate
-                                                          .value,
-                                                      lastDate: DateTime(2090),
-                                                      hintText:
-                                                          "Choose End Date");
+                                          onTap: () async {
+                                            final selectedDate =
+                                                await holoDatePicker(
+                                              context,
+                                              initialDate: controller
+                                                  .selectedEndDate.value,
+                                              firstDate: controller
+                                                  .selectedStartDate
+                                                  .value, // ✅ always after start
+                                              lastDate: DateTime(2090),
+                                              hintText: "Choose End Date",
+                                            );
 
-                                              if (selectedDate != null) {
-                                                controller.selectedEndDate
-                                                    .value = selectedDate;
-                                              }
-                                            },
-                                            // showPicker(context, (value) {
-                                            //   controller.selectedEndDate
-                                            //       .value = value;
-                                            // }, []),
-                                            child: Icon(
-                                                CupertinoIcons.calendar_today)),
+                                            if (selectedDate != null) {
+                                              controller.selectedEndDate.value =
+                                                  selectedDate;
+                                            }
+                                          },
+                                          child: Icon(
+                                              CupertinoIcons.calendar_today),
+                                        ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
                                 SizedBox(
@@ -225,100 +221,131 @@ class ConsignmentView extends GetView<ConsignmentController> {
                             ),
                           ),
                         )
-                      : SizedBox(
-                          height: 500.h,
-                          child: ListView.separated(
-                            itemCount: 10,
-                            shrinkWrap: true,
-                            physics: ScrollPhysics(),
-                            separatorBuilder: (context, index) => SizedBox(
-                              height: 1.h,
+                      : Column(
+                          children: [
+                            CommonTextfiled(
+                              controller:
+                                  congimentController.congimentControllerSearch,
+                              hintTxt: 'enter congiment ID',
+                              sufixIcon: IconButton(
+                                  onPressed: () async {
+                                    String? res =
+                                        await SimpleBarcodeScanner.scanBarcode(
+                                      scanType: ScanType.defaultMode,
+                                      context,
+                                      barcodeAppBar: const BarcodeAppBar(
+                                        appBarTitle: '',
+                                        centerTitle: false,
+                                        enableBackButton: true,
+                                        backButtonIcon:
+                                            Icon(Icons.arrow_back_ios),
+                                      ),
+                                      isShowFlashIcon: true,
+                                      // delayMillis: 2000,
+                                      cameraFace: CameraFace.back,
+                                    );
+
+                                    final result = res as String;
+                                    log(result.toString());
+                                  },
+                                  icon: Icon(
+                                    CupertinoIcons.qrcode_viewfinder,
+                                  )),
                             ),
-                            itemBuilder: (context, index) => Container(
-                              decoration: BoxDecoration(
-                                  color: themes.whiteColor,
-                                  borderRadius: BorderRadius.circular(10.r)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Row(
-                                  spacing: 10,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Column(
-                                      spacing: 10,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundColor: themes.blueGray,
-                                          child: Icon(Icons.gps_fixed),
-                                        ),
-                                        Image.asset(
-                                          arrowImg,
-                                          height: 45.h,
-                                        ),
-                                        CircleAvatar(
-                                          backgroundColor: themes.blueGray,
-                                          child: Image.asset(
-                                            lolipopImg,
-                                            width: 10.w,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                            ListView.separated(
+                              itemCount: 10,
+                              shrinkWrap: true,
+                              physics: ScrollPhysics(),
+                              separatorBuilder: (context, index) => SizedBox(
+                                height: 1.h,
+                              ),
+                              itemBuilder: (context, index) => Container(
+                                decoration: BoxDecoration(
+                                    color: themes.whiteColor,
+                                    borderRadius: BorderRadius.circular(10.r)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    spacing: 10,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Column(
+                                        spacing: 10,
                                         children: [
-                                          Text(
-                                            'Mumbai : 20/4/2024',
-                                            style: themes.fontSize14_400,
+                                          CircleAvatar(
+                                            backgroundColor: themes.blueGray,
+                                            child: Icon(Icons.gps_fixed),
                                           ),
-                                          SizedBox(
-                                            width: 150.w,
-                                            child: Text(
-                                              'Lorem Ipsum is simply dummy text ',
-                                              style: themes.fontSize14_400
-                                                  .copyWith(
-                                                      color: themes.grayColor),
+                                          Image.asset(
+                                            arrowImg,
+                                            height: 45.h,
+                                          ),
+                                          CircleAvatar(
+                                            backgroundColor: themes.blueGray,
+                                            child: Image.asset(
+                                              lolipopImg,
+                                              width: 10.w,
                                             ),
                                           ),
-                                          SizedBox(
-                                            height: 35.h,
-                                          ),
-                                          Text(
-                                            'Delhi : 20/4/2024',
-                                            style: themes.fontSize14_400,
-                                          ),
-                                          SizedBox(
-                                            width: 150.w,
-                                            child: Text(
-                                              'Lorem Ipsum is simply dummy text ',
-                                              style: themes.fontSize14_400
-                                                  .copyWith(
-                                                      color: themes.grayColor),
-                                            ),
-                                          )
                                         ],
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: TextButton(
-                                          style: TextButton.styleFrom(
-                                              backgroundColor:
-                                                  themes.lightGrayColor,
-                                              foregroundColor:
-                                                  themes.darkCyanBlue),
-                                          onPressed: () {},
-                                          child: Text('Choose')),
-                                    )
-                                  ],
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.w),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Mumbai : 20/4/2024',
+                                              style: themes.fontSize14_400,
+                                            ),
+                                            SizedBox(
+                                              width: 150.w,
+                                              child: Text(
+                                                'Lorem Ipsum is simply dummy text ',
+                                                style: themes.fontSize14_400
+                                                    .copyWith(
+                                                        color:
+                                                            themes.grayColor),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 35.h,
+                                            ),
+                                            Text(
+                                              'Delhi : 20/4/2024',
+                                              style: themes.fontSize14_400,
+                                            ),
+                                            SizedBox(
+                                              width: 150.w,
+                                              child: Text(
+                                                'Lorem Ipsum is simply dummy text ',
+                                                style: themes.fontSize14_400
+                                                    .copyWith(
+                                                        color:
+                                                            themes.grayColor),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      // Expanded(
+                                      //   child: TextButton(
+                                      //       style: TextButton.styleFrom(
+                                      //           backgroundColor: themes.lightGrayColor,
+                                      //           foregroundColor: themes.darkCyanBlue),
+                                      //       onPressed: () {},
+                                      //       child: Text('Choose')),
+                                      // )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        )
+                            )
+                          ],
+                        ),
                 ],
               ),
             ),

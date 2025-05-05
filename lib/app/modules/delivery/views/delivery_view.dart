@@ -58,7 +58,7 @@ class DeliveryView extends GetView<DeliveryController> {
                         deliveryController.filteredDeliveryList.isEmpty) {
                       return Center(
                         child: Text(
-                          'No Pickup Data Found!',
+                          'No Delivery Data Found!',
                           style: themes.fontSize14_500,
                         ),
                       );
@@ -112,7 +112,7 @@ class DeliveryView extends GetView<DeliveryController> {
                     } else {
                       return Center(
                         child: Text(
-                          'No Pickup Found!',
+                          'No Delivery Data Found!',
                           style: themes.fontSize18_600,
                         ),
                       );
