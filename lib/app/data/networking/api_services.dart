@@ -4,23 +4,25 @@ import 'package:dio/dio.dart';
 
 import "dart:async";
 import 'api_response.dart';
-import "package:image_picker/image_picker.dart";
 
 class ApiServices {
   static final ApiClient _api = ApiClient();
 
   Future<APIResponse> getConsignment(
-    String userID,
-
+    String consigenmentID,
+    final branchID,
+    final token,
     // String zipcode,
   ) async {
     final body = {
-      'user_id': userID,
+      'consignment_no': consigenmentID,
+      'branch_id': branchID
       // 'zipcode': zipcode,
     };
     return _api.get(
       getConsignmentPoint,
       query: body,
+      token: token,
     );
   }
 

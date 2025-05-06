@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_datepicker.dart';
@@ -29,6 +30,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
           child: SingleChildScrollView(
             child: Obx(
               () => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 20.h,
                 children: [
                   // SizedBox(
@@ -222,11 +224,17 @@ class ConsignmentView extends GetView<ConsignmentController> {
                           ),
                         )
                       : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CommonTextfiled(
                               controller:
                                   congimentController.congimentControllerSearch,
-                              hintTxt: 'enter congiment ID',
+                              onChanged: (p0) {
+                                congimentController.getConsigmentData(
+                                    congimentController
+                                        .congimentControllerSearch.text);
+                              },
+                              hintTxt: 'enter consigment ID',
                               sufixIcon: IconButton(
                                   onPressed: () async {
                                     String? res =
@@ -252,97 +260,143 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                     CupertinoIcons.qrcode_viewfinder,
                                   )),
                             ),
-                            ListView.separated(
-                              itemCount: 10,
-                              shrinkWrap: true,
-                              physics: ScrollPhysics(),
-                              separatorBuilder: (context, index) => SizedBox(
-                                height: 1.h,
-                              ),
-                              itemBuilder: (context, index) => Container(
-                                decoration: BoxDecoration(
-                                    color: themes.whiteColor,
-                                    borderRadius: BorderRadius.circular(10.r)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    spacing: 10,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Column(
-                                        spacing: 10,
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: themes.blueGray,
-                                            child: Icon(Icons.gps_fixed),
-                                          ),
-                                          Image.asset(
-                                            arrowImg,
-                                            height: 45.h,
-                                          ),
-                                          CircleAvatar(
-                                            backgroundColor: themes.blueGray,
-                                            child: Image.asset(
-                                              lolipopImg,
-                                              width: 10.w,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10.w),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Mumbai : 20/4/2024',
-                                              style: themes.fontSize14_400,
-                                            ),
-                                            SizedBox(
-                                              width: 150.w,
-                                              child: Text(
-                                                'Lorem Ipsum is simply dummy text ',
-                                                style: themes.fontSize14_400
-                                                    .copyWith(
-                                                        color:
-                                                            themes.grayColor),
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                            Obx(
+                              () {
+                                if (congimentController
+                                        .isConsigementLoading.value ==
+                                    Status.loading) {
+                                  return Center(
+                                    child: CircularProgressIndicator.adaptive(),
+                                  );
+                                } else if (congimentController
+                                            .isConsigementLoading.value ==
+                                        Status.error ||
+                                    congimentController
+                                        .consignmentList.isEmpty) {
+                                  return Align(
+                                      alignment: Alignment.center,
+                                      child:
+                                          Text('No Consignment Data Found!'));
+                                } else if (congimentController
+                                        .isConsigementLoading.value ==
+                                    Status.success) {
+                                  return ListView.separated(
+                                    itemCount: congimentController
+                                        .consignmentList.length,
+                                    shrinkWrap: true,
+                                    physics: ScrollPhysics(),
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(
+                                      height: 10.h,
+                                    ),
+                                    itemBuilder: (context, index) {
+                                      final data = congimentController
+                                          .consignmentList[index];
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            color: themes.whiteColor,
+                                            borderRadius:
+                                                BorderRadius.circular(10.r)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Row(
+                                            spacing: 10,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              /*  Column(
+                                            spacing: 10,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    themes.blueGray,
+                                                child: Icon(Icons.gps_fixed),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              height: 35.h,
-                                            ),
-                                            Text(
-                                              'Delhi : 20/4/2024',
-                                              style: themes.fontSize14_400,
-                                            ),
-                                            SizedBox(
-                                              width: 150.w,
-                                              child: Text(
-                                                'Lorem Ipsum is simply dummy text ',
-                                                style: themes.fontSize14_400
-                                                    .copyWith(
-                                                        color:
-                                                            themes.grayColor),
+                                              Image.asset(
+                                                arrowImg,
+                                                height: 45.h,
                                               ),
-                                            )
-                                          ],
+                                              CircleAvatar(
+                                                backgroundColor:
+                                                    themes.blueGray,
+                                                child: Image.asset(
+                                                  lolipopImg,
+                                                  width: 10.w,
+                                                ),
+                                              ),
+                                            ],
+                                          ),*/
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.w),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      '${data.origin}',
+                                                      style:
+                                                          themes.fontSize14_400,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 150.w,
+                                                      child: Text(
+                                                        'Lorem Ipsum is simply dummy text ',
+                                                        style: themes
+                                                            .fontSize14_400
+                                                            .copyWith(
+                                                                color: themes
+                                                                    .grayColor),
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 35.h,
+                                                    ),
+                                                    Text(
+                                                      '${data.destination} : 20/4/2024',
+                                                      style:
+                                                          themes.fontSize14_400,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 150.w,
+                                                      child: Text(
+                                                        'Lorem Ipsum is simply dummy text ',
+                                                        style: themes
+                                                            .fontSize14_400
+                                                            .copyWith(
+                                                                color: themes
+                                                                    .grayColor),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              // Expanded(
+                                              //   child: TextButton(
+                                              //       style: TextButton.styleFrom(
+                                              //           backgroundColor: themes.lightGrayColor,
+                                              //           foregroundColor: themes.darkCyanBlue),
+                                              //       onPressed: () {},
+                                              //       child: Text('Choose')),
+                                              // )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      // Expanded(
-                                      //   child: TextButton(
-                                      //       style: TextButton.styleFrom(
-                                      //           backgroundColor: themes.lightGrayColor,
-                                      //           foregroundColor: themes.darkCyanBlue),
-                                      //       onPressed: () {},
-                                      //       child: Text('Choose')),
-                                      // )
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                      );
+                                    },
+                                  );
+                                } else {
+                                  return Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'No Consignment Data Found!',
+                                        style: themes.fontSize14_500,
+                                      ));
+                                }
+                              },
                             )
                           ],
                         ),

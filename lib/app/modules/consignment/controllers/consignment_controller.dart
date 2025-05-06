@@ -11,7 +11,7 @@ class ConsignmentController extends GetxController {
   final conRepo = CongimentRepo();
   var isConsigementLoading = Status.initial.obs;
 
-  var consignmentList = <ConsignmentDatum>[].obs;
+  var consignmentList = <ShipmentDatum>[].obs;
 
   RxString showConsiment = 'showConsiment'.obs;
 
@@ -37,10 +37,10 @@ class ConsignmentController extends GetxController {
     isSelected.value = index;
   }
 
-  Future<void> getConsigmentData() async {
+  Future<void> getConsigmentData(final consigmentID) async {
     isConsigementLoading.value = Status.loading;
     try {
-      final success = await conRepo.getConsigmentRepo();
+      final success = await conRepo.getConsigmentRepo(consigmentID);
       if (success != null) {
         consignmentList.value = success;
         // filteredDeliveryList.value = success;
@@ -58,7 +58,6 @@ class ConsignmentController extends GetxController {
 
   @override
   void onInit() {
-    getConsigmentData();
     super.onInit();
   }
 }

@@ -1,4 +1,1 @@
-class NotificationRepo {
-
-}
-
+class NotificationRepo {}

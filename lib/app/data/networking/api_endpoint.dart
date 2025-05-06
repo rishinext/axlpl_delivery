@@ -19,4 +19,4 @@ const String editProfilePoint = 'editProfile';
 const String getAllPickupPoint = 'getAllPickup';
 const String getAllDeliveryPoint = 'getAllDelivery';
 const String grosssCalculationPoint = 'grossCalculation';
-const String getConsignmentPoint = 'getConsignment';
+const String getConsignmentPoint = 'getShipmentByConsignmentId';

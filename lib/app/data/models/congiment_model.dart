@@ -1,108 +1,158 @@
 // To parse this JSON data, do
 //
-//     final consigmentModel = consigmentModelFromJson(jsonString);
+//     final congismentModel = congismentModelFromJson(jsonString);
 
 import 'dart:convert';
 
-ConsigmentModel consigmentModelFromJson(String str) =>
-    ConsigmentModel.fromJson(json.decode(str));
+CongismentModel congismentModelFromJson(String str) =>
+    CongismentModel.fromJson(json.decode(str));
 
-String consigmentModelToJson(ConsigmentModel data) =>
+String congismentModelToJson(CongismentModel data) =>
     json.encode(data.toJson());
 
-class ConsigmentModel {
-  List<ConsignmentDatum>? consignmentData;
-  String? status;
+class CongismentModel {
+  List<Shipment>? shipment;
+
+  CongismentModel({
+    this.shipment,
+  });
+
+  factory CongismentModel.fromJson(Map<String, dynamic> json) =>
+      CongismentModel(
+        shipment: json["shipment"] == null
+            ? []
+            : List<Shipment>.from(
+                json["shipment"]!.map((x) => Shipment.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "shipment": shipment == null
+            ? []
+            : List<dynamic>.from(shipment!.map((x) => x.toJson())),
+      };
+}
+
+class Shipment {
+  List<ShipmentDatum>? shipmentData;
+  bool? error;
+  int? code;
+  String? type;
   String? message;
 
-  ConsigmentModel({
-    this.consignmentData,
-    this.status,
+  Shipment({
+    this.shipmentData,
+    this.error,
+    this.code,
+    this.type,
     this.message,
   });
 
-  factory ConsigmentModel.fromJson(Map<String, dynamic> json) =>
-      ConsigmentModel(
-        consignmentData: json["consignmentData"] == null
+  factory Shipment.fromJson(Map<String, dynamic> json) => Shipment(
+        shipmentData: json["shipmentData"] == null
             ? []
-            : List<ConsignmentDatum>.from(json["consignmentData"]!
-                .map((x) => ConsignmentDatum.fromJson(x))),
-        status: json["status"],
+            : List<ShipmentDatum>.from(
+                json["shipmentData"]!.map((x) => ShipmentDatum.fromJson(x))),
+        error: json["error"],
+        code: json["code"],
+        type: json["type"],
         message: json["message"],
       );
 
   Map<String, dynamic> toJson() => {
-        "consignmentData": consignmentData == null
+        "shipmentData": shipmentData == null
             ? []
-            : List<dynamic>.from(consignmentData!.map((x) => x.toJson())),
-        "status": status,
+            : List<dynamic>.from(shipmentData!.map((x) => x.toJson())),
+        "error": error,
+        "code": code,
+        "type": type,
         "message": message,
       };
 }
 
-class ConsignmentDatum {
-  String? id;
-  String? consignmentNo;
-  String? sourceBranchId;
-  String? destinationBranchId;
+class ShipmentDatum {
   String? shipmentId;
-  DateTime? date;
-  DateTime? acceptedDate;
-  String? acceptedById;
-  String? acceptedByName;
-  String? manifest;
-  String? sourceBranchName;
-  String? destinationBranchName;
-  String? shipmentStatus;
+  String? customerId;
+  String? origin;
+  String? destination;
+  String? senderName;
+  String? senderMobile;
+  String? senderAddress1;
+  String? senderEmail;
+  String? receiverName;
+  String? receiverMobile;
+  String? receiverAddress1;
+  String? receiverEmail;
+  String? paymentMode;
+  String? shipmentCharges;
+  String? insuranceValue;
+  String? remark;
+  String? axlplInsurance;
+  String? grossWeight;
+  String? invoiceValue;
 
-  ConsignmentDatum({
-    this.id,
-    this.consignmentNo,
-    this.sourceBranchId,
-    this.destinationBranchId,
+  ShipmentDatum({
     this.shipmentId,
-    this.date,
-    this.acceptedDate,
-    this.acceptedById,
-    this.acceptedByName,
-    this.manifest,
-    this.sourceBranchName,
-    this.destinationBranchName,
-    this.shipmentStatus,
+    this.customerId,
+    this.origin,
+    this.destination,
+    this.senderName,
+    this.senderMobile,
+    this.senderAddress1,
+    this.senderEmail,
+    this.receiverName,
+    this.receiverMobile,
+    this.receiverAddress1,
+    this.receiverEmail,
+    this.paymentMode,
+    this.shipmentCharges,
+    this.insuranceValue,
+    this.remark,
+    this.axlplInsurance,
+    this.grossWeight,
+    this.invoiceValue,
   });
 
-  factory ConsignmentDatum.fromJson(Map<String, dynamic> json) =>
-      ConsignmentDatum(
-        id: json["id"],
-        consignmentNo: json["consignment_no"],
-        sourceBranchId: json["source_branch_id"],
-        destinationBranchId: json["destination_branch_id"],
+  factory ShipmentDatum.fromJson(Map<String, dynamic> json) => ShipmentDatum(
         shipmentId: json["shipment_id"],
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        acceptedDate: json["accepted_date"] == null
-            ? null
-            : DateTime.parse(json["accepted_date"]),
-        acceptedById: json["accepted_by_id"],
-        acceptedByName: json["accepted_by_name"],
-        manifest: json["manifest"],
-        sourceBranchName: json["source_branch_name"],
-        destinationBranchName: json["destination_branch_name"],
-        shipmentStatus: json["shipment_status"],
+        customerId: json["customer_id"],
+        origin: json["origin"],
+        destination: json["destination"],
+        senderName: json["sender_name"],
+        senderMobile: json["sender_mobile"],
+        senderAddress1: json["sender_address1"],
+        senderEmail: json["sender_email"],
+        receiverName: json["receiver_name"],
+        receiverMobile: json["receiver_mobile"],
+        receiverAddress1: json["receiver_address1"],
+        receiverEmail: json["receiver_email"],
+        paymentMode: json["payment_mode"],
+        shipmentCharges: json["shipment_charges"],
+        insuranceValue: json["insurance_value"],
+        remark: json["remark"],
+        axlplInsurance: json["axlpl_insurance"],
+        grossWeight: json["gross_weight"],
+        invoiceValue: json["invoice_value"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "consignment_no": consignmentNo,
-        "source_branch_id": sourceBranchId,
-        "destination_branch_id": destinationBranchId,
         "shipment_id": shipmentId,
-        "date": date?.toIso8601String(),
-        "accepted_date": acceptedDate?.toIso8601String(),
-        "accepted_by_id": acceptedById,
-        "accepted_by_name": acceptedByName,
-        "manifest": manifest,
-        "source_branch_name": sourceBranchName,
-        "destination_branch_name": destinationBranchName,
-        "shipment_status": shipmentStatus,
+        "customer_id": customerId,
+        "origin": origin,
+        "destination": destination,
+        "sender_name": senderName,
+        "sender_mobile": senderMobile,
+        "sender_address1": senderAddress1,
+        "sender_email": senderEmail,
+        "receiver_name": receiverName,
+        "receiver_mobile": receiverMobile,
+        "receiver_address1": receiverAddress1,
+        "receiver_email": receiverEmail,
+        "payment_mode": paymentMode,
+        "shipment_charges": shipmentCharges,
+        "insurance_value": insuranceValue,
+        "remark": remark,
+        "axlpl_insurance": axlplInsurance,
+        "gross_weight": grossWeight,
+        "invoice_value": invoiceValue,
       };
 }
