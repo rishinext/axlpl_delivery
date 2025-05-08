@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/auth_repo.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
+import 'package:axlpl_delivery/common_widget/awsome_notification.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
@@ -12,6 +15,15 @@ class SplashController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('🔔 Received a foreground message!');
+      print('Title: ${message.notification?.title}');
+      print('Body: ${message.notification?.body}');
+      print('Data: ${message.data}');
+
+      // Optional: show a local notification
+      NotificationService.showNotification(message);
+    });
     keepLogin();
   }
 

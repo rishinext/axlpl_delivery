@@ -487,4 +487,21 @@ class ApiServices {
       body,
     );
   }
+
+  Future<APIResponse> getNotificationList(
+    final id,
+    final nextID,
+    final token,
+  ) {
+    final body = {
+      'm_id': id,
+      'next_id': nextID,
+      'token': token,
+    };
+    return _api.post(
+      getNotificationListPoint,
+      body,
+      token: token,
+    );
+  }
 }

@@ -65,6 +65,8 @@ dependencies:
   onesignal_flutter: ^5.3.0
   firebase_messaging: ^15.2.5
   firebase_core: ^3.13.0
+  awesome_notifications: ^0.8.2
+  flutter_local_notifications: ^19.1.0
 
 dev_dependencies:
   flutter_test:

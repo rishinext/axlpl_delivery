@@ -20,3 +20,4 @@ const String getAllPickupPoint = 'getAllPickup';
 const String getAllDeliveryPoint = 'getAllDelivery';
 const String grosssCalculationPoint = 'grossCalculation';
 const String getConsignmentPoint = 'getShipmentByConsignmentId';
+const String getNotificationListPoint = 'notificationList';

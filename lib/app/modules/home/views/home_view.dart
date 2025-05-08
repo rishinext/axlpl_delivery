@@ -53,9 +53,13 @@ class HomeView extends GetView<HomeController> {
           ),
           actions: [
             Padding(
-              padding: const EdgeInsets.only(right: 15),
-              child: Icon(Icons.notifications_none),
-            )
+                padding: const EdgeInsets.only(right: 15),
+                child: IconButton(
+                  onPressed: () {
+                    Get.toNamed(Routes.NOTIFICATION);
+                  },
+                  icon: Icon(Icons.notifications_none),
+                ))
           ],
         ),
         body: Padding(
