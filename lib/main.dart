@@ -56,12 +56,13 @@ void main() async {
         enableLog: true,
         defaultTransition: Transition.fadeIn,
         title: "AXLPL Delivery",
-        builder: (context, child) {
-          ErrorWidget.builder = (errorDetails) {
-            return ErrorScreen();
-          };
-          return child!;
-        },
+        // builder: (context, child) {
+        //   ErrorWidget.builder = (FlutterErrorDetails details) {
+        //     return ErrorScreen(); //
+        //   };
+
+        //   return child!;
+        // },
         initialRoute: AppPages.INITIAL,
         getPages: AppPages.routes,
         theme: ThemeData(textTheme: GoogleFonts.workSansTextTheme()),

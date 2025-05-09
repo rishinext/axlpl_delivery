@@ -228,33 +228,37 @@ class ConsignmentView extends GetView<ConsignmentController> {
                     CommonTextfiled(
                       controller: congimentController.congimentControllerSearch,
                       onChanged: (p0) {
-                        congimentController.getConsigmentData(
-                            congimentController.congimentControllerSearch.text);
+                        congimentController
+                            .getConsigmentData(p0); // use input directly
                       },
-                      hintTxt: 'enter consigment ID',
+                      hintTxt: 'Enter Consignment ID',
                       sufixIcon: IconButton(
-                          onPressed: () async {
-                            String? res =
-                                await SimpleBarcodeScanner.scanBarcode(
-                              scanType: ScanType.defaultMode,
-                              context,
-                              barcodeAppBar: const BarcodeAppBar(
-                                appBarTitle: '',
-                                centerTitle: false,
-                                enableBackButton: true,
-                                backButtonIcon: Icon(Icons.arrow_back_ios),
-                              ),
-                              isShowFlashIcon: true,
-                              // delayMillis: 2000,
-                              cameraFace: CameraFace.back,
-                            );
+                        onPressed: () async {
+                          String? res = await SimpleBarcodeScanner.scanBarcode(
+                            scanType: ScanType.defaultMode,
+                            context,
+                            barcodeAppBar: const BarcodeAppBar(
+                              appBarTitle: '',
+                              centerTitle: false,
+                              enableBackButton: true,
+                              backButtonIcon: Icon(Icons.arrow_back_ios),
+                            ),
+                            isShowFlashIcon: true,
+                            cameraFace: CameraFace.back,
+                          );
 
-                            final result = res as String;
-                            log(result.toString());
-                          },
-                          icon: Icon(
-                            CupertinoIcons.qrcode_viewfinder,
-                          )),
+                          if (res != null && res.isNotEmpty && res != "-1") {
+                            congimentController.congimentControllerSearch.text =
+                                res; // ✅ autofill
+                            congimentController
+                                .getConsigmentData(res); // ✅ fetch data
+                            log('Scanned barcode: $res');
+                          } else {
+                            log('Scan cancelled or failed');
+                          }
+                        },
+                        icon: const Icon(CupertinoIcons.qrcode_viewfinder),
+                      ),
                     ),
                     SizedBox(
                       height: 20.h,
@@ -272,7 +276,8 @@ class ConsignmentView extends GetView<ConsignmentController> {
                             congimentController.consignmentList.isEmpty) {
                           return Align(
                               alignment: Alignment.center,
-                              child: Text('No Consignment Data Found!'));
+                              child: Text('No Consignment Data Found!',
+                                  style: themes.fontSize16_400));
                         } else if (congimentController
                                 .isConsigementLoading.value ==
                             Status.success) {
@@ -380,7 +385,7 @@ class ConsignmentView extends GetView<ConsignmentController> {
                               alignment: Alignment.center,
                               child: Text(
                                 'No Consignment Data Found!',
-                                style: themes.fontSize14_500,
+                                style: themes.fontSize16_400,
                               ));
                         }
                       },

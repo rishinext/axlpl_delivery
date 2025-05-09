@@ -62,11 +62,26 @@ class PageviewView extends GetView {
                         addshipController.currentPage.value = value,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      AddShipmentView(),
-                      AddAddressView(),
-                      ReceiverAddressView(),
-                      AddDifferentAddressView(),
-                      AddPaymentInfoView()
+                      Form(
+                        key: addshipController.formKeys[0],
+                        child: AddShipmentView(),
+                      ),
+                      Form(
+                        key: addshipController.formKeys[1],
+                        child: AddAddressView(),
+                      ),
+                      Form(
+                        key: addshipController.formKeys[2],
+                        child: ReceiverAddressView(),
+                      ),
+                      Form(
+                        key: addshipController.formKeys[3],
+                        child: AddDifferentAddressView(),
+                      ),
+                      Form(
+                        key: addshipController.formKeys[4],
+                        child: AddPaymentInfoView(),
+                      ),
                     ],
                   ),
                 ),
@@ -87,10 +102,24 @@ class PageviewView extends GetView {
                     Expanded(
                       child: CommonButton(
                           onPressed: () {
+                            int current = addshipController.currentPage.value;
+
+                            final isValid = addshipController
+                                    .formKeys[current].currentState
+                                    ?.validate() ??
+                                false;
+
+                            if (!isValid) return;
                             addshipController.shipmentData =
                                 addshipController.collectFormData(
                                     addshipController.currentPage.value);
-                            addshipController.nextPage();
+
+                            if (current == 4) {
+                              // Submit
+                              // addshipController.submitShipment();
+                            } else {
+                              addshipController.nextPage();
+                            }
                           },
                           title: addshipController.currentPage.value == 4
                               ? 'Submit'

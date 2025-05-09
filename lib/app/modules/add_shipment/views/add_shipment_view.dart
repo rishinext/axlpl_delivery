@@ -85,22 +85,44 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   //       fit: FlexFit.loose, constraints: BoxConstraints()),
                   // ),
                   dropdownText('Category'),
-                  Obx(() => CommonDropdown<CategoryList>(
-                        hint: 'Select Category',
-                        selectedValue: controller.selectedCategory.value,
-                        isLoading: addshipController.isLoadingCate.value,
-                        items: controller.categoryList,
-                        itemLabel: (c) => c.name ?? 'Unknown',
-                        itemValue: (c) => c.id.toString(),
-                        onChanged: (val) {
-                          controller.selectedCategory.value = val;
-                          if (val != null) {
-                            controller.selectedCommodity.value = null;
+                  Obx(() {
+                    final isCustomerSelected =
+                        controller.selectedCustomer.value != null;
+                    return GestureDetector(
+                      onTap: () {
+                        if (!isCustomerSelected) {
+                          Get.snackbar(
+                            'Select Customer',
+                            'Please select a customer first',
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: themes.redColor,
+                            colorText: themes.whiteColor,
+                          );
+                        }
+                      },
+                      behavior: HitTestBehavior.translucent,
+                      child: AbsorbPointer(
+                        absorbing: !isCustomerSelected,
+                        child: CommonDropdown<CategoryList>(
+                          hint: 'Select Category',
+                          selectedValue: controller.selectedCategory.value,
+                          isLoading: addshipController.isLoadingCate.value,
+                          items: controller.categoryList,
+                          itemLabel: (c) => c.name ?? 'Unknown',
+                          itemValue: (c) => c.id.toString(),
+                          onChanged: (val) {
+                            controller.selectedCategory.value = val;
+                            if (val != null) {
+                              controller.selectedCommodity.value = null;
 
-                            addshipController.commodityListData(val.toString());
-                          }
-                        },
-                      )),
+                              addshipController
+                                  .commodityListData(val.toString());
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  }),
                   dropdownText('Commodity'),
                   Obx(
                     () {
@@ -110,8 +132,8 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         onTap: () {
                           if (!isCategorySelected) {
                             Get.snackbar(
-                              'Select Customer',
-                              'Please select a customer first',
+                              'Select Category',
+                              'Please select a category first',
                               snackPosition: SnackPosition.TOP,
                               backgroundColor: themes.redColor,
                               colorText: themes.whiteColor,
@@ -178,7 +200,25 @@ class AddShipmentView extends GetView<AddShipmentController> {
                           textInputAction: TextInputAction.next,
                           sufixIcon: InkWell(
                               child: Icon(CupertinoIcons.calendar_today)),
-                          validator: utils.validateText,
+                          validator: (value) {
+                            final net = double.tryParse(
+                                addshipController.netWeightController.text);
+                            final gross = double.tryParse(value ?? '');
+
+                            if (value == null || value.isEmpty) {
+                              return 'Gross weight is required';
+                            }
+
+                            if (net == null) return 'Net weight is invalid';
+                            if (gross == null)
+                              return 'Gross weight must be a number';
+
+                            if (gross <= net) {
+                              return 'Gross weight must be greater than net weight';
+                            }
+
+                            return null; //
+                          },
                         ),
                       )
                     ],

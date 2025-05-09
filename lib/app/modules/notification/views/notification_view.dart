@@ -28,16 +28,23 @@ class NotificationView extends GetView<NotificationController> {
                 } else if (controller.isNotificationLoading.value ==
                         Status.error ||
                     controller.notiList.isEmpty) {
-                  return Center(
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      "No Notification Data Found!",
-                      style: themes.fontSize14_500,
-                    ),
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        textAlign: TextAlign.center,
+                        "No Notification Data Found!",
+                        style: themes.fontSize16_400,
+                      ),
+                    ],
                   );
                 } else if (controller.isNotificationLoading.value ==
                     Status.success) {
-                  return ListView.builder(
+                  return ListView.separated(
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 10.h,
+                    ),
                     shrinkWrap: true,
                     itemCount: controller.notiList.length,
                     itemBuilder: (context, index) {
@@ -46,10 +53,8 @@ class NotificationView extends GetView<NotificationController> {
                     },
                   );
                 } else {
-                  return Center(
-                    child: Text("No Notification Data Found!",
-                        style: themes.fontSize14_500),
-                  );
+                  return Text("No Notification Data Found!",
+                      style: themes.fontSize16_400);
                 }
               },
             )

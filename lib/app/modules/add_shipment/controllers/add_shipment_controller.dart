@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
@@ -45,6 +47,9 @@ class AddShipmentController extends GetxController {
 
   final PageController pageController = PageController();
 
+  List<GlobalKey<FormState>> formKeys =
+      List.generate(5, (index) => GlobalKey<FormState>());
+
   final TextEditingController searchController = TextEditingController();
   final TextEditingController netWeightController = TextEditingController();
   final TextEditingController grossWeightController = TextEditingController();
@@ -74,7 +79,28 @@ class AddShipmentController extends GetxController {
       TextEditingController();
   final TextEditingController senderInfoMobileController =
       TextEditingController();
-  final TextEditingController senderInfoEmailController =
+  final TextEditingController senderInfoExitingEmailController =
+      TextEditingController();
+// ✅ Controllers for EXISTING ADDRESS
+  final TextEditingController existingSenderInfoNameController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoCompanyNameController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoZipController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoStateController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoCityController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoGstNoController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoAddress1Controller =
+      TextEditingController();
+  final TextEditingController existingSenderInfoAddress2Controller =
+      TextEditingController();
+  final TextEditingController existingSenderInfoMobileController =
+      TextEditingController();
+  final TextEditingController existingSenderInfoEmailController =
       TextEditingController();
 
   final TextEditingController receiverInfoNameController =
@@ -135,6 +161,7 @@ class AddShipmentController extends GetxController {
   final isLoadingDiffArea = false.obs;
 
   var selectedCustomer = Rxn<String>();
+  var selectedExitingCustomer = Rxn<String>();
 
   var selectedCategory = Rxn<String>();
 
@@ -150,7 +177,7 @@ class AddShipmentController extends GetxController {
 
   RxString insuranceType = 'YES'.obs;
   RxString diffrentAddressType = 'NO'.obs;
-  RxString addressType = 'New Address'.obs;
+  RxString addressType = '2'.obs;
   var currentPage = 0.obs;
   RxInt totalPage = 5.obs;
   final errorMessage = RxString('');
@@ -371,17 +398,15 @@ class AddShipmentController extends GetxController {
 
       if (result == false) {
         // Handle gross weight validation failed
-        Get.snackbar(
-            'error', 'Gross weight should be greater than Net weight!');
+        log('Gross weight should be greater than Net weight!');
       } else if (result == true) {
         // Success case, continue
       } else {
         // Null or unknown error
-        Get.snackbar(
-            'error', 'Gross weight should be greater than Net weight!');
+        log('Gross weight should be greater than Net weight!');
       }
     } catch (e) {
-      Get.snackbar('error', 'Gross weight should be greater than Net weight!');
+      log('Gross weight should be greater than Net weight!');
     }
   }
 
@@ -471,7 +496,7 @@ class AddShipmentController extends GetxController {
           sendInfoAddress1: senderInfoAddress1Controller.text,
           sendInfoAddress2: senderInfoAddress2Controller.text,
           sendInfoMobile: senderInfoMobileController.text,
-          sendInfoEmail: senderInfoEmailController.text,
+          sendInfoEmail: senderInfoExitingEmailController.text,
         );
       case 2:
         return shipmentData.copyWith(
