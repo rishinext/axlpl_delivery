@@ -61,7 +61,7 @@ class ApiServices {
     String token,
     String fcmToken,
     String version,
-    final deviceID,
+    String deviceID,
   ) async {
     final query = {
       'messanger_id': userID,
@@ -187,7 +187,7 @@ class ApiServices {
   }
 
 // post call
-  Future<APIResponse> loginUser(
+  Future<APIResponse> loginUserService(
     String mobile,
     // final email,
     String password,
@@ -195,7 +195,7 @@ class ApiServices {
     String appVersion,
     String latitude,
     String longitude,
-    final deviceId,
+    String deviceId,
 
     // String token
   ) {
@@ -295,6 +295,7 @@ class ApiServices {
     final grandeTotal,
     final docketNo,
     final shipmentDate,
+    final token,
   ) async {
     final body = {
       'customer_id': custID,
@@ -367,8 +368,9 @@ class ApiServices {
       'grand_total': grandeTotal,
       'docket_no': docketNo,
       'shipment_date': shipmentDate,
+      'token': token,
     };
-    return _api.post(addShipmentPoint, body);
+    return _api.post(addShipmentPoint, body, token: token);
   }
 
   Future<APIResponse> changePassword(

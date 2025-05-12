@@ -116,7 +116,7 @@ class PageviewView extends GetView {
 
                             if (current == 4) {
                               // Submit
-                              // addshipController.submitShipment();
+                              addshipController.submitFormShipment();
                             } else {
                               addshipController.nextPage();
                             }

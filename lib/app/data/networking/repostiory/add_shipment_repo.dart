@@ -368,6 +368,7 @@ class AddShipmentRepo {
         grandeTotal,
         docketNo,
         shipmentDate,
+        token.toString(),
       );
       response.when(
         success: (success) {

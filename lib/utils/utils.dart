@@ -18,9 +18,6 @@ class Utils {
     return _instance;
   }
 
-  final fcmToken =
-      'dYPw_9uuoYE:APA91bExO-MoUCYPclUiEn8LXtJYI3MVZX4A9x7tozQx3tEIi7AOOYdHKoCAGkoqjKFwYC-Yl5SGhnYN3qQ8t1GwZ5dWsD_yfaRbQQkcme919T5VxRDLey8';
-
   var logger = Logger(
     printer: PrettyPrinter(
       methodCount: 6, // Number of method calls to be displayed

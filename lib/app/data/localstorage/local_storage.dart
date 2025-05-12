@@ -23,6 +23,7 @@ class LocalStorage {
   final String adminDataKey = 'Messangerdetail';
   final String customerDataKey = 'Customerdetail';
   final String userRole = 'role';
+  final String fcmToken = 'fcmToken';
 
 // get users data
 

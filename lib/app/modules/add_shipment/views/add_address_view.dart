@@ -1,6 +1,5 @@
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
-import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../controllers/add_shipment_controller.dart';
 
@@ -65,7 +63,6 @@ class AddAddressView extends GetView {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// 👇 Conditionally show dropdown based on addressType
                   Obx(() {
                     if (addshipController.addressType.value == "2") {
                       //ext add
@@ -100,7 +97,7 @@ class AddAddressView extends GetView {
                             onChanged: (id) {
                               addshipController.selectedExitingCustomer.value =
                                   id;
-                              if (addshipController.addressType.value == '2') {}
+
                               final selectedCustomer =
                                   addshipController.customerList.firstWhere(
                                 (e) => e.id == id,
@@ -128,6 +125,12 @@ class AddAddressView extends GetView {
                               addshipController
                                   .existingSenderInfoGstNoController
                                   .text = selectedCustomer.gstNo ?? '';
+                              addshipController.existingSenderInfoAreaController
+                                  .text = selectedCustomer.areaName ?? '';
+                              // addshipController.fetchAeraByZipData(
+                              //   addshipController
+                              //       .existingSenderInfoZipController.text,
+                              // );
                             },
                           ),
                           dropdownText(zip),
@@ -182,18 +185,26 @@ class AddAddressView extends GetView {
                             );
                           }),
                           dropdownText('Select Aera'),
-                          Obx(() => CommonDropdown<AreaList>(
-                                hint: 'Select Area',
-                                selectedValue:
-                                    addshipController.selectedArea.value,
-                                isLoading:
-                                    addshipController.isLoadingArea.value,
-                                items: addshipController.areaList,
-                                itemLabel: (c) => c.name ?? 'Unknown',
-                                itemValue: (c) => c.id.toString(),
-                                onChanged: (val) =>
-                                    addshipController.selectedArea.value = val,
-                              )),
+                          CommonTextfiled(
+                            isEnable: true,
+                            hintTxt: 'GST No',
+                            textInputAction: TextInputAction.next,
+                            validator: utils.validateText,
+                            controller: addshipController
+                                .existingSenderInfoAreaController,
+                          ),
+                          // Obx(() => CommonDropdown<AreaList>(
+                          //       hint: 'Select Area',
+                          //       selectedValue:
+                          //           addshipController.selectedArea.value,
+                          //       isLoading:
+                          //           addshipController.isLoadingArea.value,
+                          //       items: addshipController.areaList,
+                          //       itemLabel: (c) => c.name ?? 'Unknown',
+                          //       itemValue: (c) => c.id.toString(),
+                          //       onChanged: (val) =>
+                          //           addshipController.selectedArea.value = val,
+                          //     )),
                           dropdownText('GST No'),
                           CommonTextfiled(
                             hintTxt: 'GST No',

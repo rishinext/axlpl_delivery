@@ -102,6 +102,8 @@ class AddShipmentController extends GetxController {
       TextEditingController();
   final TextEditingController existingSenderInfoEmailController =
       TextEditingController();
+  final TextEditingController existingSenderInfoAreaController =
+      TextEditingController();
 
   final TextEditingController receiverInfoNameController =
       TextEditingController();
@@ -123,6 +125,8 @@ class AddShipmentController extends GetxController {
   final TextEditingController receiverInfoMobileController =
       TextEditingController();
   final TextEditingController receiverInfoEmailController =
+      TextEditingController();
+  final TextEditingController receiverInfoAreaController =
       TextEditingController();
 
   final TextEditingController diffrentZipController = TextEditingController();
@@ -152,6 +156,7 @@ class AddShipmentController extends GetxController {
   ];
 
   final isLoadingCustomers = false.obs;
+  final isLoadingReceiverCustomer = false.obs;
   final isLoadingCate = false.obs;
   final isLoadingCommodity = false.obs;
   final isServiceType = false.obs;
@@ -162,7 +167,7 @@ class AddShipmentController extends GetxController {
 
   var selectedCustomer = Rxn<String>();
   var selectedExitingCustomer = Rxn<String>();
-
+  var selectedReceiverCustomer = Rxn<String>();
   var selectedCategory = Rxn<String>();
 
   var selectedCommodity = Rxn<String>();
@@ -178,6 +183,7 @@ class AddShipmentController extends GetxController {
   RxString insuranceType = 'YES'.obs;
   RxString diffrentAddressType = 'NO'.obs;
   RxString addressType = '2'.obs;
+  RxString receviverAddressType = '2'.obs;
   var currentPage = 0.obs;
   RxInt totalPage = 5.obs;
   final errorMessage = RxString('');
@@ -211,6 +217,7 @@ class AddShipmentController extends GetxController {
   Future<void> fetchCustomers([String nextID = '']) async {
     try {
       isLoadingCustomers(true);
+      isLoadingReceiverCustomer(true);
       final data = await addShipmentRepo.customerListRepo('', nextID);
       customerList.value = data ?? [];
     } catch (e) {
@@ -220,6 +227,7 @@ class AddShipmentController extends GetxController {
       );
     } finally {
       isLoadingCustomers(false);
+      isLoadingReceiverCustomer(false);
     }
   }
 
@@ -433,35 +441,125 @@ class AddShipmentController extends GetxController {
         curve: Curves.easeInOut,
       );
     } else {
-      submitForm();
+      submitFormShipment();
     }
   }
 
-  void submitForm() {
+  void submitFormShipment() async {
+    // Collect all form data (0 to 4 steps)
+    for (int i = 0; i <= 4; i++) {
+      shipmentData = collectFormData(i);
+    }
+
     final payload = shipmentData.toJson();
     Utils().log("Final Shipment Data: $payload");
-
-    // Optionally, show it in a dialog/snackbar for now
-    Get.defaultDialog(
-      title: "Shipment Preview",
-      content: SingleChildScrollView(
-        child: Text(payload.toString()),
-      ),
-      textConfirm: "OK",
-      onConfirm: () {
-        Get.back();
-      },
-    );
-
-    // Or navigate to a confirmation screen later if needed
+    await sendShipmentToAPI(shipmentData);
+    // Optional dialog to preview
+    // Get.defaultDialog(
+    //   title: "Shipment Preview",
+    //   content: SingleChildScrollView(
+    //     child: Text(payload.toString()),
+    //   ),
+    //   textConfirm: "Submit",
+    //   onConfirm: () async {
+    //     Get.back();
+    //     await sendShipmentToAPI(shipmentData);
+    //   },
+    // );
   }
 
-  void previousPage() {
-    if (currentPage.value > 0) {
-      pageController.previousPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+  Future<void> sendShipmentToAPI(ShipmentRequestModel data) async {
+    try {
+      final isSuccess = await addShipmentRepo.addShipment(
+        data.selectedCate,
+        data.selectedCommdity,
+        data.newWeight,
+        data.grossWeight,
+        data.paymentMode,
+        data.serviceType,
+        data.policyNo,
+        data.expireDate,
+        data.insuranceAmt,
+        data.insurance,
+        "", // addInsurance if available
+        "", // shipmentStatus
+        "", // caculationStatus
+        "", // addedBy
+        "", // addedType
+        "", // alertShipment
+        "", // shipmentInvoice
+        "", // isAmtEditedByUser
+        "", // shipmentID
+        data.sendInfoName,
+        data.sendInfoCompanyName,
+        "", // senderCountry
+        data.sendInfoState,
+        data.sendInfoCity,
+        data.sendInfoAera,
+        data.sendInfoZip,
+        data.sendInfoAddress1,
+        data.sendInfoAddress2,
+        data.sendInfoMobile,
+        data.sendInfoEmail,
+        "", // senderSaveAddress
+        "", // senderisNewAdresss
+        data.sendInfoGstNo,
+        "", // senderCustID
+        data.receiverInfoName,
+        data.remark,
+        "", // billTo
+        data.noOfParcel,
+        data.receiverInfoCompanyName,
+        "", // receiverCountry
+        data.receiverInfoState,
+        data.receiverInfoCity,
+        data.receiverInfoAera,
+        data.receiverInfoZip,
+        data.receiverInfoAddress1,
+        data.receiverInfoAddress2,
+        data.receiverInfoMobile,
+        data.receiverInfoEmail,
+        "", // receiverSaveAddress
+        "", // receiverisNewAdresss
+        data.receiverInfoGstNo,
+        "", // receiverCustID
+        "1", // isDiffAdd (or logic to check if different address is used)
+        "", // diffReceiverCountry
+        data.differentInfoState,
+        data.differentInfoCity,
+        data.differentInfoAera,
+        data.differentInfoZip,
+        data.differentInfoAddress1,
+        data.differentInfoAddress2,
+        data.shipmentCharges,
+        data.insuranceCharge,
+        "", // invoiceCharges
+        data.handlingCharge,
+        data.gst,
+        data.totalCharge,
+        "", // grandeTotal
+        "", // docketNo
+        data.shipmentSelectedDate,
       );
+
+      if (isSuccess == true) {
+        Get.snackbar(
+          'success',
+          "Shipment added successfully!",
+          colorText: themes.whiteColor,
+          backgroundColor: themes.darkCyanBlue,
+        );
+      } else {
+        Get.snackbar(
+          'failed',
+          "Shipment add failed!",
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+        );
+      }
+    } catch (e) {
+      Utils().logError("Error sending shipment: $e");
+      Get.snackbar('error', "Shipment error!");
     }
   }
 
@@ -533,6 +631,15 @@ class AddShipmentController extends GetxController {
         );
       default:
         return shipmentData;
+    }
+  }
+
+  void previousPage() {
+    if (currentPage.value > 0) {
+      pageController.previousPage(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 

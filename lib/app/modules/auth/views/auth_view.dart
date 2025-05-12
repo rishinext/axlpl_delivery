@@ -93,7 +93,7 @@ class AuthView extends GetView<AuthController> {
                         FocusScope.of(context).unfocus();
                         if (authController.formKey.currentState?.validate() ==
                             true) {
-                          authController.loginUser(
+                          authController.loginAuth(
                             controller.mobileController.text,
                             controller.passwordController.text,
                           );

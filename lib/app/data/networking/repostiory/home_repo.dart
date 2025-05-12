@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
@@ -8,9 +10,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class HomeRepository {
   final ApiServices _apiServices = ApiServices();
-  final Utils _utils = Utils();
-  final deviceId = MobileDeviceIdentifier().getDeviceId();
 
+  final LocalStorage _localStorage = LocalStorage();
   Future<DashboardDataModel?> dashboardDataRepo() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
@@ -20,9 +21,13 @@ class HomeRepository {
           userData?.customerdetail?.branchId.toString();
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
-      final fcmToken = _utils.fcmToken;
+      final fcmToken = await storage.read(key: _localStorage.fcmToken);
       final packageInfo = await PackageInfo.fromPlatform();
       final appVersion = "${packageInfo.version}-${packageInfo.buildNumber}";
+
+      final deviceId = await MobileDeviceIdentifier().getDeviceId();
+      log("device id : ===> $deviceId");
+
       if (userID != null && userID.isNotEmpty) {
         Utils().logInfo(
             "Calling API with: userID=$userID, branchID=$branchID, token=$token");

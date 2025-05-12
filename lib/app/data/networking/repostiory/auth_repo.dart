@@ -7,6 +7,7 @@ import 'package:axlpl_delivery/app/data/networking/api_client.dart';
 import 'package:axlpl_delivery/app/data/networking/api_response.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile_device_identifier/mobile_device_identifier.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -15,15 +16,18 @@ class AuthRepo {
   final ApiServices _apiServices = ApiServices();
   final Utils _utils = Utils();
   final LocalStorage _localStorage = LocalStorage();
-
+  final FlutterSecureStorage storage = FlutterSecureStorage();
   Future<bool> loginRepo(
     String mobile,
     String password,
   ) async {
-    final fcmToken = _utils.fcmToken;
+    String? fcmToken = await storage.read(key: _localStorage.fcmToken);
+    log("fcmToken ${fcmToken.toString()}");
     final packageInfo = await PackageInfo.fromPlatform();
     final appVersion = "${packageInfo.version}-${packageInfo.buildNumber}";
-    final deviceId = MobileDeviceIdentifier().getDeviceId();
+    final deviceId = await MobileDeviceIdentifier().getDeviceId();
+    log("device id : ===> $deviceId");
+
     String location;
 
     try {
@@ -31,19 +35,19 @@ class AuthRepo {
     } catch (e) {
       location = '';
     }
-    final response = await _apiServices.loginUser(
+    final response = await _apiServices.loginUserService(
       mobile,
       password,
-      fcmToken,
+      fcmToken.toString(),
       appVersion,
       location,
       location,
-      deviceId,
+      deviceId.toString(),
     );
     return response.when(
       success: (body) async {
         final loginData = LoginModel.fromJson(body);
-
+        _utils.logInfo(fcmToken.toString());
         if (loginData.status != "success") {
           throw Exception(loginData.message ?? "Login Failed: Unknown Error");
         }
@@ -92,7 +96,8 @@ class AuthRepo {
       final response = await _apiServices.logout(
           mId ?? custID.toString(), role.toString(), '', '', token);
       response.when(success: (success) {
-        _localStorage.clearAll();
+        // _localStorage.clearAll();
+        _localStorage.deleteToken();
         return true;
       }, error: (error) {
         log("API Logout Error: $error");

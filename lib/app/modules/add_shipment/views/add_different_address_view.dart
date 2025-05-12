@@ -100,7 +100,7 @@ class AddDifferentAddressView extends GetView {
                                 hintTxt: data?.stateName ??
                                     (error.isNotEmpty ? error : 'State'),
                                 textInputAction: TextInputAction.next,
-                                validator: utils.validateText,
+                                // validator: utils.validateText,
                               );
                             }),
                             dropdownText(city),
@@ -123,7 +123,7 @@ class AddDifferentAddressView extends GetView {
                                 hintTxt: data?.cityName ??
                                     (error.isNotEmpty ? error : 'City'),
                                 textInputAction: TextInputAction.next,
-                                validator: utils.validateText,
+                                // validator: utils.validateText,
                               );
                             }),
                             dropdownText('Area'),

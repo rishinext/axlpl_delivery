@@ -25,7 +25,7 @@ class AuthController extends GetxController {
   TextEditingController mobileController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  Future<void> loginUser(
+  Future<void> loginAuth(
     String mobile,
     String password,
   ) async {

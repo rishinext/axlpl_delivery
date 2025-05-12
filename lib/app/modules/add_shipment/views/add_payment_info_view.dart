@@ -59,7 +59,7 @@ class AddPaymentInfoView extends GetView {
                           itemValue: (m) => m['id'],
                           onChanged: (val) {
                             log(val.toString());
-                            addshipController.selectedPaymentModeId.value = val;
+                            addshipController.selectedSubPaymentId.value = val;
                           },
                         )),
                     // Obx(
