@@ -99,20 +99,25 @@ class PickupView extends GetView<PickupController> {
                                   Text(data.pincode.toString()),
                                 ],
                               ),
-                              trailing: CircleAvatar(
-                                backgroundColor: themes.lightCream,
-                                // radius: 15,
-                                child: IconButton(
-                                  onPressed: () {
-                                    pickupController.openMapWithAddress(
-                                        data.address1.toString());
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_forward,
-                                    color: themes.grayColor,
-                                  ),
+                              trailing: IconButton(
+                                onPressed: () {},
+                                icon: Icon(Icons.more_vert),
+                              )
+                              /* CircleAvatar(
+                              backgroundColor: themes.lightCream,
+                              // radius: 15,
+                              child: IconButton(
+                                onPressed: () {
+                                  pickupController.openMapWithAddress(
+                                      data.address1.toString());
+                                },
+                                icon: Icon(
+                                  Icons.arrow_forward,
+                                  color: themes.grayColor,
                                 ),
-                              ));
+                              ),
+                            ),*/
+                              );
                         },
                       );
                     } else {

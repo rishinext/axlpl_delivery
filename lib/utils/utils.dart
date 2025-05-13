@@ -1,6 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
@@ -108,18 +111,39 @@ class Utils {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
+        desiredAccuracy: LocationAccuracy.high);
   }
 
-  Future<String> getUserLocation() async {
+  Future<UserLocation> getUserLocation() async {
     final position = await determinePosition();
-    log("${position.latitude} ${position.longitude}");
-    List<Placemark> placeMarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-    Placemark place = placeMarks.first;
-    final location =
-        "${place.name} ${place.street} ${place.postalCode} ${place.locality} ${place.country}";
-    log(location);
-    return location.toString();
+    final latitude = position.latitude;
+    final longitude = position.longitude;
+
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(latitude, longitude);
+    Placemark place = placemarks.first;
+
+    final address =
+        "${place.name}, ${place.street}, ${place.postalCode}, ${place.locality}, ${place.country}";
+
+    return UserLocation(
+      latitude: latitude,
+      longitude: longitude,
+      address: address,
+    );
+  }
+
+  Future<String?> getDeviceId() async {
+    final deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.id; // OR androidInfo.androidId (better)
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      return iosInfo.identifierForVendor;
+    }
+
+    return null;
   }
 }

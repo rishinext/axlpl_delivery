@@ -87,6 +87,10 @@ class LocalStorage {
     await storage.delete(key: tokenKey);
   }
 
+  Future<void> deleteRole() async {
+    await storage.delete(key: userRole);
+  }
+
   // Clear all data
   Future<void> clearAll() async {
     await storage.deleteAll();

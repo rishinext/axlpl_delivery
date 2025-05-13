@@ -59,16 +59,10 @@ class ApiServices {
     String branchID,
     // String zipcode,
     String token,
-    String fcmToken,
-    String version,
-    String deviceID,
   ) async {
     final query = {
       'messanger_id': userID,
       'branch_id': branchID,
-      'fcm_token': fcmToken,
-      'version': version,
-      'device_id': deviceID
     };
     return _api.get(dashboardDataPoint, query: query, token: token);
   }
@@ -502,6 +496,43 @@ class ApiServices {
     };
     return _api.post(
       getNotificationListPoint,
+      body,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> transferShipment(
+    final shipmentID,
+    final transferByID,
+    final transferToID,
+    final shipmentType,
+  ) {
+    final body = {
+      "shipment_id": shipmentID,
+      "transfer_by": transferByID,
+      "transfer_to": transferToID,
+      "shipment_type": shipmentType,
+    };
+    return _api.post(transferShipmentPoint, body);
+  }
+
+  Future<APIResponse> getAllMessanger(
+    final messangerID,
+    final routeID,
+    final lat,
+    final long,
+    final nextID,
+    final token,
+  ) {
+    final body = {
+      "m_id": messangerID,
+      "route": routeID,
+      "latitude": lat,
+      "longitude": long,
+      "next_id": nextID,
+    };
+    return _api.post(
+      getAllMessangerPoint,
       body,
       token: token,
     );

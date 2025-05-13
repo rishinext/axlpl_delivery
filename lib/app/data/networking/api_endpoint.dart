@@ -21,3 +21,5 @@ const String getAllDeliveryPoint = 'getAllDelivery';
 const String grosssCalculationPoint = 'grossCalculation';
 const String getConsignmentPoint = 'getShipmentByConsignmentId';
 const String getNotificationListPoint = 'notificationList';
+const String transferShipmentPoint = 'transfer_shipment';
+const String getAllMessangerPoint = 'getallmessengers';

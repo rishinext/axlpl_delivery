@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
-import 'package:mobile_device_identifier/mobile_device_identifier.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class HomeRepository {
   final ApiServices _apiServices = ApiServices();
@@ -21,12 +17,6 @@ class HomeRepository {
           userData?.customerdetail?.branchId.toString();
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
-      final fcmToken = await storage.read(key: _localStorage.fcmToken);
-      final packageInfo = await PackageInfo.fromPlatform();
-      final appVersion = "${packageInfo.version}-${packageInfo.buildNumber}";
-
-      final deviceId = await MobileDeviceIdentifier().getDeviceId();
-      log("device id : ===> $deviceId");
 
       if (userID != null && userID.isNotEmpty) {
         Utils().logInfo(
@@ -35,9 +25,6 @@ class HomeRepository {
           userID,
           branchID.toString(),
           token ?? "",
-          fcmToken ?? "",
-          appVersion,
-          deviceId.toString(),
         );
         response.when(
           success: (data) {

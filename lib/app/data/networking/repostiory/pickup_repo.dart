@@ -1,4 +1,6 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
+import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -68,6 +70,51 @@ class PickupRepo {
           },
           error: (error) {
             throw Exception("Get All Pickup Failed: ${error.toString()}");
+          },
+        );
+      }
+    } catch (e) {
+      Utils().logError(
+        "$e",
+      );
+    }
+    return null;
+  }
+
+  Future<List<MessangerList>?> getMessangerRepo(final nextID) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+
+      final userID = userData?.messangerdetail?.id?.toString();
+
+      final routeID = userData?.messangerdetail?.routeId;
+
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+      UserLocation location = await Utils().getUserLocation();
+
+      if (userID?.isNotEmpty == true || userID != null) {
+        final response = await _apiServices.getAllMessanger(
+          userID.toString(),
+          routeID,
+          location.latitude,
+          location.longitude,
+          nextID,
+          token,
+        );
+        return response.when(
+          success: (body) {
+            final messangerdata = MessangerModel.fromJson(body);
+            if (messangerdata.messangersList != null) {
+              return messangerdata.messangersList;
+            } else {
+              Utils()
+                  .logInfo('API call successful but status is not "success"');
+            }
+            return [];
+          },
+          error: (error) {
+            throw Exception("Get Messanger Failed: ${error.toString()}");
           },
         );
       }
