@@ -20,6 +20,9 @@ class PickupController extends GetxController {
 
   var isPickupLoading = Status.initial.obs;
   var isMessangerLoading = Status.initial.obs;
+  var isTrasferLoading = Status.initial.obs;
+
+  var selectedMessenger = ''.obs;
 
   final TextEditingController pincodeController = TextEditingController();
 
@@ -58,6 +61,30 @@ class PickupController extends GetxController {
     }
   }
 
+  Future<void> transferShipment(
+    final shipmentID,
+    final transferToID,
+  ) async {
+    isMessangerLoading.value = Status.loading;
+    try {
+      final success = await shipmentRepo.trasferShipmentRepo(
+        shipmentID,
+        transferToID,
+        'pickup',
+      );
+      if (success) {
+        Get.snackbar('success', 'Shipment Transfer Success!');
+        isMessangerLoading.value = Status.success;
+      } else {
+        Get.snackbar('failed', 'Shipment Transfer Failed!');
+        isMessangerLoading.value = Status.error;
+      }
+    } catch (e) {
+      Get.snackbar('failed', 'Shipment Transfer Failed!');
+      isMessangerLoading.value = Status.error;
+    }
+  }
+
   void filterByPincode(String query) {
     if (query.isEmpty) {
       filteredPickupList.value = pickupList;
@@ -89,7 +116,8 @@ class PickupController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    super.onInit();
     getPickupData();
+    getMessangerData();
+    super.onInit();
   }
 }

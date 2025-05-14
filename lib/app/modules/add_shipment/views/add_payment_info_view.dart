@@ -131,6 +131,14 @@ class AddPaymentInfoView extends GetView {
                       controller: addshipController.gstChargeController,
                       isEnable: false,
                     ),
+                    dropdownText(
+                      'Docket No',
+                    ),
+                    CommonTextfiled(
+                      hintTxt: 'Docket No',
+                      controller: addshipController.docketNoController,
+                      isEnable: true,
+                    ),
                     Text('Total Amount (Including GST)',
                         style: themes.fontSize14_500),
                   ],

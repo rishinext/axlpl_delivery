@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
@@ -19,6 +20,7 @@ class PickupView extends GetView<PickupController> {
   @override
   Widget build(BuildContext context) {
     final pickupController = Get.put(PickupController());
+
     return CommonScaffold(
       appBar: commonAppbar('Pickup'),
       body: Padding(
@@ -81,6 +83,7 @@ class PickupView extends GetView<PickupController> {
                         itemBuilder: (context, index) {
                           final data =
                               pickupController.filteredPickupList[index];
+                          final messangerID = pickupController.messangerList;
                           return ListTile(
                               tileColor: themes.whiteColor,
                               dense: false,
@@ -99,25 +102,82 @@ class PickupView extends GetView<PickupController> {
                                   Text(data.pincode.toString()),
                                 ],
                               ),
-                              trailing: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.more_vert),
-                              )
-                              /* CircleAvatar(
-                              backgroundColor: themes.lightCream,
-                              // radius: 15,
-                              child: IconButton(
-                                onPressed: () {
-                                  pickupController.openMapWithAddress(
-                                      data.address1.toString());
-                                },
-                                icon: Icon(
-                                  Icons.arrow_forward,
-                                  color: themes.grayColor,
-                                ),
-                              ),
-                            ),*/
-                              );
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  PopupMenuButton<String>(
+                                    icon: Icon(Icons.more_vert),
+                                    onSelected: (value) {
+                                      pickupController.selectedMessenger.value =
+                                          value;
+                                      Utils().logInfo(
+                                          "Selected Messenger: $value");
+                                      pickupController.transferShipment(
+                                          data.shipmentId,
+                                          messangerID[index].id);
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      if (pickupController
+                                              .isMessangerLoading.value ==
+                                          Status.loading) {
+                                        return [
+                                          PopupMenuItem(
+                                            value: 'no_data',
+                                            child: Text('Loading..'),
+                                            enabled: false,
+                                          )
+                                        ];
+                                      } else if (pickupController
+                                              .messangerList.isEmpty &&
+                                          pickupController
+                                                  .isMessangerLoading.value ==
+                                              Status.error) {
+                                        return [
+                                          PopupMenuItem(
+                                            value: 'no_data',
+                                            child: Text('No Messengers'),
+                                            enabled: false,
+                                          )
+                                        ];
+                                      } else if (pickupController
+                                              .isMessangerLoading.value ==
+                                          Status.success) {
+                                        return pickupController.messangerList
+                                            .map((messenger) =>
+                                                PopupMenuItem<String>(
+                                                  value: messenger
+                                                      .id, // or messenger.id
+                                                  child: Text(messenger.name
+                                                      .toString()),
+                                                ))
+                                            .toList();
+                                      } else {
+                                        return [
+                                          PopupMenuItem(
+                                            value: 'no_data',
+                                            child: Text('No Messengers'),
+                                            enabled: false,
+                                          )
+                                        ];
+                                      }
+                                    },
+                                  ),
+                                  CircleAvatar(
+                                    backgroundColor: themes.lightCream,
+                                    // radius: 15,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        pickupController.openMapWithAddress(
+                                            data.address1.toString());
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_forward,
+                                        color: themes.darkCyanBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ));
                         },
                       );
                     } else {

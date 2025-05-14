@@ -213,6 +213,7 @@ class AddShipmentRepo {
   }
 
   Future<bool?> addShipment(
+    final custID,
     final cateID,
     final productID,
     final netWeight,
@@ -287,7 +288,8 @@ class AddShipmentRepo {
     if (userData == null) return false;
     final String? role = userData.role;
     final String? mId = userData.messangerdetail?.id?.toString();
-    final String? custID = userData.customerdetail?.id.toString();
+    // final String? custID = userData.customerdetail?.id.toString() ??
+    //     userData.messangerdetail?.id.toString();
     final String? token = userData.messangerdetail?.token.toString() ??
         userData.customerdetail?.token.toString();
 

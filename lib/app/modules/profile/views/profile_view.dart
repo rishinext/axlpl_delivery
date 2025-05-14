@@ -7,6 +7,7 @@ import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/common_tow_btn_dialog.dart';
+import 'package:axlpl_delivery/common_widget/ratting_widget.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -553,6 +554,11 @@ class ProfileView extends GetView<ProfileController> {
                         ),
                       )),
                 ),
+                TextButton(
+                    onPressed: () {
+                      showRatingDialog();
+                    },
+                    child: Text('Click star')),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: InkWell(

@@ -227,9 +227,8 @@ class ConsignmentView extends GetView<ConsignmentController> {
                   children: [
                     CommonTextfiled(
                       controller: congimentController.congimentControllerSearch,
-                      onChanged: (p0) {
-                        congimentController
-                            .getConsigmentData(p0); // use input directly
+                      onChanged: (val) {
+                        congimentController.getConsigmentData(val);
                       },
                       hintTxt: 'Enter Consignment ID',
                       sufixIcon: IconButton(

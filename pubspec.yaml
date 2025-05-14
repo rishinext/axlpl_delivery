@@ -68,6 +68,8 @@ dependencies:
   awesome_notifications: ^0.8.2
   flutter_local_notifications: ^19.1.0
   device_info_plus: ^11.3.0
+  flutter_rating_stars: ^1.1.0
+  custom_rating_bar: ^3.0.0
 
 dev_dependencies:
   flutter_test:

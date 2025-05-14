@@ -27,7 +27,7 @@ class HomeView extends GetView<HomeController> {
     final controller = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
     final MobileScannerController QRController = MobileScannerController();
-
+    final user = bottomController.userData.value;
     return Scaffold(
         backgroundColor: themes.lightWhite,
         appBar: AppBar(
@@ -104,41 +104,44 @@ class HomeView extends GetView<HomeController> {
                   hintText: 'Enter Your Package Number',
                   controller: controller.searchController,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Obx(() {
-                        return HomeContainer(
-                          onTap: () {
-                            Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS);
-                          },
-                          color: themes.blueGray,
-                          title: runningDeliveryTxt,
-                          subTitle: controller.isLoading.value
-                              ? controller
-                                  .dashboardDataModel.value?.totalDelivery
-                                  .toString()
-                              : '0'.toUpperCase(),
-                        );
-                      }),
-                    ),
-                    SizedBox(
-                      width: 10.w,
-                    ),
-                    Expanded(
-                      child: Obx(() {
-                        return HomeContainer(
-                          color: themes.lightCream,
-                          title: runningPickupTxt,
-                          subTitle: controller.isLoading.value
-                              ? controller.dashboardDataModel.value?.totalPickup
-                                  .toString()
-                              : '0'.toUpperCase(),
-                        );
-                      }),
-                    ),
-                  ],
-                ),
+                user?.role == "messanger"
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: Obx(() {
+                              return HomeContainer(
+                                onTap: () {
+                                  Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS);
+                                },
+                                color: themes.blueGray,
+                                title: runningDeliveryTxt,
+                                subTitle: controller.isLoading.value
+                                    ? controller
+                                        .dashboardDataModel.value?.totalDelivery
+                                        .toString()
+                                    : '0'.toUpperCase(),
+                              );
+                            }),
+                          ),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          Expanded(
+                            child: Obx(() {
+                              return HomeContainer(
+                                color: themes.lightCream,
+                                title: runningPickupTxt,
+                                subTitle: controller.isLoading.value
+                                    ? controller
+                                        .dashboardDataModel.value?.totalPickup
+                                        .toString()
+                                    : '0'.toUpperCase(),
+                              );
+                            }),
+                          ),
+                        ],
+                      )
+                    : SizedBox.shrink(),
                 Obx(() {
                   if (bottomController.isLoading.value) {
                     return Center(

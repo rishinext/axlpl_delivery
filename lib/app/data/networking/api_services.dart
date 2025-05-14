@@ -207,15 +207,24 @@ class ApiServices {
     return _api.post(loginPoint, body);
   }
 
-  Future<APIResponse> logout(String userID, String role, String latitude,
-      String longitude, final token) {
+  Future<APIResponse> logout(
+    String userID,
+    String role,
+    String latitude,
+    String longitude,
+    final token,
+  ) {
     final body = {
       'm_id': userID,
       'role': role,
       'latitude': latitude,
-      'longitude': longitude
+      'longitude': longitude,
     };
-    return _api.post(logoutPoint, body, token: token);
+    return _api.post(
+      logoutPoint,
+      body,
+      token: token,
+    );
   }
 
   Future<APIResponse> addShipment(
@@ -524,17 +533,17 @@ class ApiServices {
     final nextID,
     final token,
   ) {
-    final body = {
+    final query = {
       "m_id": messangerID,
       "route": routeID,
       "latitude": lat,
       "longitude": long,
       "next_id": nextID,
     };
-    return _api.post(
+    return _api.get(
       getAllMessangerPoint,
-      body,
       token: token,
+      query: query,
     );
   }
 }

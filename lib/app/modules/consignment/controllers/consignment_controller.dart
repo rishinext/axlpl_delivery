@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/models/congiment_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/congiment_repo.dart';
@@ -44,6 +46,7 @@ class ConsignmentController extends GetxController {
       if (success != null) {
         consignmentList.value = success;
         // filteredDeliveryList.value = success;
+        log("Con list ${consignmentList.length.toString()}");
         isConsigementLoading.value = Status.success;
       } else {
         Utils().logInfo('No congiment Record Found!');

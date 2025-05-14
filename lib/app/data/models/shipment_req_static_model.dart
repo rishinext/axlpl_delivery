@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class ShipmentRequestModel {
   String? shipmentSelectedDate;
+  String? customerID;
   String? selectedCate;
   String? selectedCommdity;
   String? newWeight;
@@ -50,9 +51,12 @@ class ShipmentRequestModel {
   String? handlingCharge;
   String? totalCharge;
   String? gst;
+  String? docketNo;
+  String? shipmentID;
 
   ShipmentRequestModel({
     this.shipmentSelectedDate,
+    this.customerID,
     this.selectedCate,
     this.selectedCommdity,
     this.newWeight,
@@ -102,10 +106,13 @@ class ShipmentRequestModel {
     this.handlingCharge,
     this.totalCharge,
     this.gst,
+    this.docketNo,
+    this.shipmentID,
   });
 
   ShipmentRequestModel copyWith({
     String? shipmentSelectedDate,
+    String? customerID,
     String? selectedCate,
     String? selectedCommdity,
     String? newWeight,
@@ -155,9 +162,12 @@ class ShipmentRequestModel {
     String? handlingCharge,
     String? totalCharge,
     String? gst,
+    String? docketNo,
+    String? shipmentID,
   }) {
     return ShipmentRequestModel(
       shipmentSelectedDate: shipmentSelectedDate ?? this.shipmentSelectedDate,
+      customerID: customerID ?? this.customerID,
       selectedCate: selectedCate ?? this.selectedCate,
       selectedCommdity: selectedCommdity ?? this.selectedCommdity,
       newWeight: newWeight ?? this.newWeight,
@@ -210,12 +220,15 @@ class ShipmentRequestModel {
       handlingCharge: handlingCharge ?? this.handlingCharge,
       totalCharge: totalCharge ?? this.totalCharge,
       gst: gst ?? this.gst,
+      docketNo: docketNo ?? this.docketNo,
+      shipmentID: shipmentID ?? this.shipmentID,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'ship_date': shipmentSelectedDate,
+      'customer_id': customerID,
       'selected_cate': selectedCate,
       'selected_commo': selectedCommdity,
       'payment_mode': paymentMode,
@@ -265,6 +278,8 @@ class ShipmentRequestModel {
       'handling_charge': handlingCharge,
       'total_charge': totalCharge,
       'gst': gst,
+      'docket_no': docketNo,
+      'shipment_id': shipmentID,
     };
   }
 }

@@ -146,6 +146,7 @@ class AddShipmentController extends GetxController {
       TextEditingController();
   final TextEditingController totalChargeController = TextEditingController();
   final TextEditingController gstChargeController = TextEditingController();
+  final TextEditingController docketNoController = TextEditingController();
 
   var handlingChargeController = TextEditingController();
   List<Widget> shipmentList = [
@@ -471,6 +472,7 @@ class AddShipmentController extends GetxController {
   Future<void> sendShipmentToAPI(ShipmentRequestModel data) async {
     try {
       final isSuccess = await addShipmentRepo.addShipment(
+        data.customerID,
         data.selectedCate,
         data.selectedCommdity,
         data.newWeight,
@@ -489,7 +491,7 @@ class AddShipmentController extends GetxController {
         "", // alertShipment
         "", // shipmentInvoice
         "", // isAmtEditedByUser
-        "", // shipmentID
+        data.docketNo, // shipmentID
         data.sendInfoName,
         data.sendInfoCompanyName,
         "", // senderCountry
@@ -538,7 +540,7 @@ class AddShipmentController extends GetxController {
         data.gst,
         data.totalCharge,
         "", // grandeTotal
-        "", // docketNo
+        data.docketNo, // docketNo
         data.shipmentSelectedDate,
       );
 
@@ -568,6 +570,7 @@ class AddShipmentController extends GetxController {
       case 0:
         return shipmentData.copyWith(
           shipmentSelectedDate: selectedDate.value.toString().split("T")[0],
+          customerID: selectedCustomer.value,
           selectedCate: selectedCategory.value,
           selectedCommdity: selectedCommodity.value,
           newWeight: netWeightController.text,
@@ -628,6 +631,8 @@ class AddShipmentController extends GetxController {
           handlingCharge: headlingChargeController.text,
           totalCharge: totalChargeController.text,
           gst: gstChargeController.text,
+          docketNo: docketNoController.text,
+          shipmentID: docketNoController.text,
         );
       default:
         return shipmentData;
