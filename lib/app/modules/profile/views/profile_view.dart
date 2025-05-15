@@ -13,6 +13,7 @@ import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
@@ -26,7 +27,9 @@ class ProfileView extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     final bottomController = Get.put(BottombarController());
     final authController = Get.put(AuthController());
+    final profileController = Get.put(ProfileController());
     final user = bottomController.userData.value;
+
     return CommonScaffold(
         appBar: commonAppbar('Profile'),
         body: SingleChildScrollView(
@@ -176,7 +179,9 @@ class ProfileView extends GetView<ProfileController> {
                                 ),
                                 Obx(() {
                                   return CommonTextfiled(
-                                    hintTxt: 'Enter code',
+                                    hintTxt: user?.role == "messanger"
+                                        ? 'Enter code'
+                                        : 'Company Name',
                                     isEnable: controller.isEdit.value,
                                     controller: controller.codeController,
                                   );
@@ -198,8 +203,7 @@ class ProfileView extends GetView<ProfileController> {
                                               user?.customerdetail?.category ??
                                                   'Category',
                                           isEnable: controller.isEdit.value,
-                                          controller:
-                                              controller.stateController,
+                                          controller: controller.cateController,
                                         );
                                       }),
                                     ],
@@ -505,6 +509,36 @@ class ProfileView extends GetView<ProfileController> {
                     style: themes.fontSize18_600.copyWith(fontSize: 16.sp),
                   ),
                 ),
+                if (user?.role != 'messanger')
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: InkWell(
+                      onTap: () {
+                        showRatingDialog(context);
+                        // Get.toNamed(
+                        //   Routes.MYORDERS,
+                        // );
+                      },
+                      child: ListTile(
+                          tileColor: themes.whiteColor,
+                          dense: false,
+                          leading: CircleAvatar(
+                              backgroundColor: themes.blueGray,
+                              child: Image.asset(
+                                orders,
+                                width: 18.w,
+                              )),
+                          title: Text(myOrders),
+                          trailing: CircleAvatar(
+                            backgroundColor: themes.lightCream,
+                            // radius: 15,
+                            child: Icon(
+                              Icons.arrow_forward,
+                              size: 20.w,
+                            ),
+                          )),
+                    ),
+                  ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
@@ -554,11 +588,6 @@ class ProfileView extends GetView<ProfileController> {
                         ),
                       )),
                 ),
-                TextButton(
-                    onPressed: () {
-                      showRatingDialog();
-                    },
-                    child: Text('Click star')),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: InkWell(

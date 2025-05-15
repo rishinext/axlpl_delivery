@@ -84,45 +84,84 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   //   popupProps: PopupProps.menu(
                   //       fit: FlexFit.loose, constraints: BoxConstraints()),
                   // ),
-                  dropdownText('Category'),
-                  Obx(() {
-                    final isCustomerSelected =
-                        controller.selectedCustomer.value != null;
-                    return GestureDetector(
-                      onTap: () {
-                        if (!isCustomerSelected) {
-                          Get.snackbar(
-                            'Select Customer',
-                            'Please select a customer first',
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: themes.redColor,
-                            colorText: themes.whiteColor,
-                          );
-                        }
-                      },
-                      behavior: HitTestBehavior.translucent,
-                      child: AbsorbPointer(
-                        absorbing: !isCustomerSelected,
-                        child: CommonDropdown<CategoryList>(
-                          hint: 'Select Category',
-                          selectedValue: controller.selectedCategory.value,
-                          isLoading: addshipController.isLoadingCate.value,
-                          items: controller.categoryList,
-                          itemLabel: (c) => c.name ?? 'Unknown',
-                          itemValue: (c) => c.id.toString(),
-                          onChanged: (val) {
-                            controller.selectedCategory.value = val;
-                            if (val != null) {
-                              controller.selectedCommodity.value = null;
 
-                              addshipController
-                                  .commodityListData(val.toString());
-                            }
-                          },
-                        ),
-                      ),
-                    );
-                  }),
+                  Obx(
+                    () {
+                      if (bottomController.userData.value?.role !=
+                          'massanger') {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            dropdownText('Category'),
+                            CommonDropdown<CategoryList>(
+                              hint: 'Select Category',
+                              selectedValue: controller.selectedCategory.value,
+                              isLoading: addshipController.isLoadingCate.value,
+                              items: controller.categoryList,
+                              itemLabel: (c) => c.name ?? 'Unknown',
+                              itemValue: (c) => c.id.toString(),
+                              onChanged: (val) {
+                                controller.selectedCategory.value = val;
+                                if (val != null) {
+                                  controller.selectedCommodity.value = null;
+
+                                  addshipController
+                                      .commodityListData(val.toString());
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            dropdownText('Category'),
+                            Obx(() {
+                              final isCustomerSelected =
+                                  controller.selectedCustomer.value != null;
+                              return GestureDetector(
+                                onTap: () {
+                                  if (!isCustomerSelected) {
+                                    Get.snackbar(
+                                      'Select Customer',
+                                      'Please select a customer first',
+                                      snackPosition: SnackPosition.TOP,
+                                      backgroundColor: themes.redColor,
+                                      colorText: themes.whiteColor,
+                                    );
+                                  }
+                                },
+                                behavior: HitTestBehavior.translucent,
+                                child: AbsorbPointer(
+                                  absorbing: !isCustomerSelected,
+                                  child: CommonDropdown<CategoryList>(
+                                    hint: 'Select Category',
+                                    selectedValue:
+                                        controller.selectedCategory.value,
+                                    isLoading:
+                                        addshipController.isLoadingCate.value,
+                                    items: controller.categoryList,
+                                    itemLabel: (c) => c.name ?? 'Unknown',
+                                    itemValue: (c) => c.id.toString(),
+                                    onChanged: (val) {
+                                      controller.selectedCategory.value = val;
+                                      if (val != null) {
+                                        controller.selectedCommodity.value =
+                                            null;
+
+                                        addshipController
+                                            .commodityListData(val.toString());
+                                      }
+                                    },
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                        );
+                      }
+                    },
+                  ),
                   dropdownText('Commodity'),
                   Obx(
                     () {

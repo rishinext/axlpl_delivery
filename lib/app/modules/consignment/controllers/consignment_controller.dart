@@ -13,7 +13,7 @@ class ConsignmentController extends GetxController {
   final conRepo = CongimentRepo();
   var isConsigementLoading = Status.initial.obs;
 
-  var consignmentList = <ShipmentDatum>[].obs;
+  var consignmentList = <ShipmentDataList>[].obs;
 
   RxString showConsiment = 'showConsiment'.obs;
 
@@ -43,18 +43,18 @@ class ConsignmentController extends GetxController {
     isConsigementLoading.value = Status.loading;
     try {
       final success = await conRepo.getConsigmentRepo(consigmentID);
-      if (success != null) {
+      if (success != null && success.isNotEmpty) {
         consignmentList.value = success;
-        // filteredDeliveryList.value = success;
-        log("Con list ${consignmentList.length.toString()}");
+        log("Con list length: ${consignmentList.length}");
         isConsigementLoading.value = Status.success;
       } else {
-        Utils().logInfo('No congiment Record Found!');
+        consignmentList.value = [];
+        isConsigementLoading.value = Status.error;
+        Utils().logInfo('No consignment records found!');
       }
     } catch (e) {
-      Utils().logError(e.toString());
+      Utils().logError("getConsigmentData Error: $e");
       consignmentList.value = [];
-      // filteredDeliveryList.value = [];
       isConsigementLoading.value = Status.error;
     }
   }

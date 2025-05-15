@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
@@ -24,10 +25,12 @@ class ProfileController extends GetxController {
 
   var isProfileLoading = Status.initial.obs;
   var isUpdateProfile = Status.initial.obs;
+  var isRatting = Status.initial.obs;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController codeController = TextEditingController();
   TextEditingController stateController = TextEditingController();
+  TextEditingController cateController = TextEditingController();
   TextEditingController cityController = TextEditingController();
   TextEditingController branchController = TextEditingController();
   TextEditingController routeController = TextEditingController();
@@ -42,6 +45,10 @@ class ProfileController extends GetxController {
   TextEditingController pincodeController = TextEditingController();
   TextEditingController panController = TextEditingController();
   TextEditingController gstController = TextEditingController();
+  TextEditingController shipmentIDController = TextEditingController();
+  TextEditingController feedbackController = TextEditingController();
+  var rating = 0.0.obs;
+
   void editProfile() {
     isEdit.value = !isEdit.value; // Toggle editing state
   }
@@ -117,55 +124,65 @@ class ProfileController extends GetxController {
   Future<void> fetchProfileData() async {
     errorMessage.value = '';
     isProfileLoading.value = Status.loading;
+
     try {
       final profileData = await profileRepo.editProfile();
+
+      // Debugging logs
+      log('Profile Data Type: ${profileData.runtimeType}');
+      log('Raw Profile Data: $profileData');
+
+      if (profileData == null) {
+        errorMessage.value = 'No profile data received from server';
+        isProfileLoading.value = Status.error;
+        return;
+      }
 
       if (profileData is Customerdetail) {
         customerDetail.value = profileData;
         messangerDetail.value = null;
 
-        nameController.text = profileData.fullName ?? '';
+        // Null-aware assignments with fallback
+        nameController.text = profileData.fullName ?? 'N/A';
         codeController.text = profileData.companyName ?? '';
         stateController.text = profileData.stateName ?? '';
         cityController.text = profileData.cityName ?? '';
+        cateController.text = profileData.category ?? '';
         branchController.text = profileData.branchName ?? '';
         address1Controller.text = profileData.regAddress1 ?? '';
         address2Controller.text = profileData.regAddress2 ?? '';
         pincodeController.text = profileData.pincode ?? '';
         phoneController.text = profileData.mobileNo ?? '';
         emailController.text = profileData.email ?? '';
-        vehicleController.text =
-            profileData.natureBusiness ?? ''; // business nature for customer
-
-        // axlInsuranceController.text = profileData.axlplInsuranceValue ?? '';
-        // thirdPartyInsuranceController.text =
-        //     profileData.thirdPartyInsuranceValue ?? '';
-        // thirdPartyPolicyNoController.text =
-        //     profileData.thirdPartyPolicyNo ?? '';
-        // thirdPartyExpiryController.text =
-        //     profileData.thirdPartyExpDate?.toIso8601String().split("T")[0] ??
-        //         '';
+        vehicleController.text = profileData.natureBusiness ?? '';
 
         isProfileLoading.value = Status.success;
       } else if (profileData is MessangersDetailsModel) {
         messangerDetail.value = profileData;
         customerDetail.value = null;
 
-        nameController.text = profileData.messangerdetail?.name ?? '';
-        codeController.text = profileData.messangerdetail?.code ?? '';
-        stateController.text = profileData.messangerdetail?.stateName ?? '';
-        cityController.text = profileData.messangerdetail?.cityName ?? '';
-        branchController.text = profileData.messangerdetail?.branchName ?? '';
-        phoneController.text = profileData.messangerdetail?.phone ?? '';
-        emailController.text = profileData.messangerdetail?.email ?? '';
-        routeController.text = profileData.messangerdetail?.routeCode ?? '';
-        vehicleController.text = profileData.messangerdetail?.vehicleNo ?? '';
+        // Using null-safe access operator
+        final messenger = profileData.messangerdetail;
+        nameController.text = messenger?.name ?? '';
+        codeController.text = messenger?.code ?? '';
+        stateController.text = messenger?.stateName ?? '';
+        cityController.text = messenger?.cityName ?? '';
+        branchController.text = messenger?.branchName ?? '';
+        phoneController.text = messenger?.phone ?? '';
+        emailController.text = messenger?.email ?? '';
+        routeController.text = messenger?.routeCode ?? '';
+        vehicleController.text = messenger?.vehicleNo ?? '';
 
         isProfileLoading.value = Status.success;
+      } else {
+        errorMessage.value =
+            'Unexpected data format: ${profileData.runtimeType}';
+        isProfileLoading.value = Status.error;
       }
-    } catch (e) {
-      Utils.instance.log("Error fetching profile: $e");
-      errorMessage.value = 'Failed to fetch profile data';
+    } catch (e, stackTrace) {
+      Utils.instance
+          .log("Error fetching profile: $e\nStack Trace: $stackTrace");
+      errorMessage.value = 'Failed to fetch profile data: ${e.toString()}';
       isProfileLoading.value = Status.error;
     }
   }
@@ -193,6 +210,32 @@ class ProfileController extends GetxController {
       Utils.instance.log("Error updating profile: $e");
       isUpdateProfile.value = Status.error;
       errorMessage.value = 'Failed to update profile';
+    }
+  }
+
+  Future<void> rateMessanger() async {
+    errorMessage.value = '';
+    isRatting.value = Status.loading;
+    try {
+      final result = await profileRepo.rateMessangerRepo(
+        // shipmentIDController.text,
+        '221644046941',
+        rating.value,
+        feedbackController.text,
+      );
+      if (result) {
+        isRatting.value = Status.success;
+        Get.snackbar(result.toString(), 'Feedback successfully',
+            backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
+      } else {
+        isRatting.value = Status.error;
+        Get.snackbar(result.toString(), 'Failed to Feedaback',
+            backgroundColor: themes.redColor, colorText: themes.whiteColor);
+      }
+    } catch (e) {
+      Utils.instance.log("Error Feedaback: $e");
+      isRatting.value = Status.error;
+      errorMessage.value = 'Failed to Feedaback';
     }
   }
 

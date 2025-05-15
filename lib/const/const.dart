@@ -13,3 +13,4 @@ String password = 'Password';
 String mobile = 'Mobile No';
 String changePass = 'Change Password';
 String privacy = 'Privacy & Policy';
+String myOrders = 'My Orders';

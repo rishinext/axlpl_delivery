@@ -475,6 +475,24 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> rateMessanger(
+    final id,
+    final shipmentID,
+    final rating,
+    final feedback,
+  ) {
+    final body = {
+      'messanger_id': id,
+      'shipment_id': shipmentID,
+      'rating': rating,
+      'feedback': feedback,
+    };
+    return _api.post(
+      ratingPoint,
+      body,
+    );
+  }
+
   Future<APIResponse> grossCalculation(
     final netWeight,
     final grossWeight,

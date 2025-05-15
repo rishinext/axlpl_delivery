@@ -33,7 +33,7 @@ class CongismentModel {
 }
 
 class Shipment {
-  List<ShipmentDatum>? shipmentData;
+  List<ShipmentDataList>? shipmentData;
   bool? error;
   int? code;
   String? type;
@@ -50,8 +50,8 @@ class Shipment {
   factory Shipment.fromJson(Map<String, dynamic> json) => Shipment(
         shipmentData: json["shipmentData"] == null
             ? []
-            : List<ShipmentDatum>.from(
-                json["shipmentData"]!.map((x) => ShipmentDatum.fromJson(x))),
+            : List<ShipmentDataList>.from(
+                json["shipmentData"]!.map((x) => ShipmentDataList.fromJson(x))),
         error: json["error"],
         code: json["code"],
         type: json["type"],
@@ -69,7 +69,7 @@ class Shipment {
       };
 }
 
-class ShipmentDatum {
+class ShipmentDataList {
   String? shipmentId;
   String? customerId;
   String? origin;
@@ -89,8 +89,9 @@ class ShipmentDatum {
   String? axlplInsurance;
   String? grossWeight;
   String? invoiceValue;
+  String? shipmentDate;
 
-  ShipmentDatum({
+  ShipmentDataList({
     this.shipmentId,
     this.customerId,
     this.origin,
@@ -110,9 +111,11 @@ class ShipmentDatum {
     this.axlplInsurance,
     this.grossWeight,
     this.invoiceValue,
+    this.shipmentDate,
   });
 
-  factory ShipmentDatum.fromJson(Map<String, dynamic> json) => ShipmentDatum(
+  factory ShipmentDataList.fromJson(Map<String, dynamic> json) =>
+      ShipmentDataList(
         shipmentId: json["shipment_id"],
         customerId: json["customer_id"],
         origin: json["origin"],
@@ -132,6 +135,7 @@ class ShipmentDatum {
         axlplInsurance: json["axlpl_insurance"],
         grossWeight: json["gross_weight"],
         invoiceValue: json["invoice_value"],
+        shipmentDate: json["shipment_date"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -154,5 +158,6 @@ class ShipmentDatum {
         "axlpl_insurance": axlplInsurance,
         "gross_weight": grossWeight,
         "invoice_value": invoiceValue,
+        "shipment_date": shipmentDate,
       };
 }

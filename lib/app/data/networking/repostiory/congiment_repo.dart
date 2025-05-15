@@ -7,7 +7,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 class CongimentRepo {
   final ApiServices _apiServices = ApiServices();
 
-  Future<List<ShipmentDatum>?> getConsigmentRepo(final congimentID) async {
+  Future<List<ShipmentDataList>?> getConsigmentRepo(final congimentID) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       // final userID = userData?.messangerdetail?.id?.toString() ??
@@ -22,26 +22,17 @@ class CongimentRepo {
         branchID,
         token.toString(),
       );
-      return response.when(
-        success: (body) {
-          final conData = Shipment.fromJson(body);
-          if (conData.message == success) {
-            return conData.shipmentData;
-          } else {
-            Utils().logInfo(
-                'API call successful but status is not "success" : ${conData.message}');
-          }
-          return [];
-        },
-        error: (error) {
-          throw Exception("Consignment Failed: ${error.toString()}");
-        },
-      );
+      return response.when(success: (body) {
+        final parsed = CongismentModel.fromJson(body);
+        return parsed.shipment?.first.shipmentData ?? [];
+      }, error: (e) {
+        throw Exception("Error fetching shipment data: $e");
+      });
     } catch (e) {
       Utils().logError(
         "$e",
       );
     }
-    return null;
+    return [];
   }
 }

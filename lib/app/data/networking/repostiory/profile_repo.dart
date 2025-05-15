@@ -115,4 +115,42 @@ class ProfileRepo {
     }
     return false;
   }
+
+  Future<bool> rateMessangerRepo(
+    final shipmentID,
+    final rate,
+    final feedback,
+  ) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.messangerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+      // final token =
+      //     userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+
+      if (userID != null && userID.isNotEmpty) {
+        final response = await _apiServices.rateMessanger(
+          userID,
+          shipmentID,
+          rate,
+          feedback,
+        ); // Pass token
+
+        return response.when(success: (body) {
+          final data = CommonModel.fromJson(body);
+          if (data.status != "success") {
+            throw Exception(data.message ?? "Rating Failed: Unknown Error");
+          } else {
+            Utils.instance.log("Rating Success: ${data.message}");
+          }
+          return true;
+        }, error: (error) {
+          throw Exception("Rating Failed: ${error.toString()}");
+        });
+      }
+    } catch (e) {
+      Utils.instance.log("Error in rating: $e");
+    }
+    return false;
+  }
 }

@@ -248,9 +248,8 @@ class ConsignmentView extends GetView<ConsignmentController> {
 
                           if (res != null && res.isNotEmpty && res != "-1") {
                             congimentController.congimentControllerSearch.text =
-                                res; // ✅ autofill
-                            congimentController
-                                .getConsigmentData(res); // ✅ fetch data
+                                res; //
+                            congimentController.getConsigmentData(res);
                             log('Scanned barcode: $res');
                           } else {
                             log('Scan cancelled or failed');
@@ -303,27 +302,25 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       /*  Column(
-                                            spacing: 10,
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundColor:
-                                                    themes.blueGray,
-                                                child: Icon(Icons.gps_fixed),
-                                              ),
-                                              Image.asset(
-                                                arrowImg,
-                                                height: 45.h,
-                                              ),
-                                              CircleAvatar(
-                                                backgroundColor:
-                                                    themes.blueGray,
-                                                child: Image.asset(
-                                                  lolipopImg,
-                                                  width: 10.w,
-                                                ),
-                                              ),
-                                            ],
-                                          ),*/
+                                        spacing: 10,
+                                        children: [
+                                          CircleAvatar(
+                                            backgroundColor: themes.blueGray,
+                                            child: Icon(Icons.gps_fixed),
+                                          ),
+                                          Image.asset(
+                                            arrowImg,
+                                            height: 45.h,
+                                          ),
+                                          CircleAvatar(
+                                            backgroundColor: themes.blueGray,
+                                            child: Image.asset(
+                                              lolipopImg,
+                                              width: 10.w,
+                                            ),
+                                          ),
+                                        ],
+                                      ),*/
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10.w),
@@ -332,36 +329,42 @@ class ConsignmentView extends GetView<ConsignmentController> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              '${data.origin}',
-                                              style: themes.fontSize14_400,
+                                              'Source : ${data.origin}',
+                                              style: themes.fontSize14_500
+                                                  .copyWith(
+                                                      color:
+                                                          themes.darkCyanBlue),
                                             ),
+                                            // SizedBox(
+                                            //   width: 150.w,
+                                            //   child: Text(
+                                            //     'Lorem Ipsum is simply dummy text ',
+                                            //     style: themes.fontSize14_400
+                                            //         .copyWith(
+                                            //             color:
+                                            //                 themes.grayColor),
+                                            //   ),
+                                            // ),
                                             SizedBox(
-                                              width: 150.w,
-                                              child: Text(
-                                                'Lorem Ipsum is simply dummy text ',
-                                                style: themes.fontSize14_400
-                                                    .copyWith(
-                                                        color:
-                                                            themes.grayColor),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 35.h,
+                                              height: 10.h,
                                             ),
                                             Text(
-                                              '${data.destination} : 20/4/2024',
-                                              style: themes.fontSize14_400,
+                                              'Destination : ${data.destination}',
+                                              style: themes.fontSize14_500
+                                                  .copyWith(
+                                                      color:
+                                                          themes.darkCyanBlue),
                                             ),
                                             SizedBox(
-                                              width: 150.w,
-                                              child: Text(
-                                                'Lorem Ipsum is simply dummy text ',
-                                                style: themes.fontSize14_400
-                                                    .copyWith(
-                                                        color:
-                                                            themes.grayColor),
-                                              ),
-                                            )
+                                              height: 10.h,
+                                            ),
+                                            Text(
+                                              'Shipment Date : ${data.shipmentDate?.split(' ')[0]}',
+                                              style: themes.fontSize14_500
+                                                  .copyWith(
+                                                      color:
+                                                          themes.darkCyanBlue),
+                                            ),
                                           ],
                                         ),
                                       ),

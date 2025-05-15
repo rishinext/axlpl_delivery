@@ -23,3 +23,4 @@ const String getConsignmentPoint = 'getShipmentByConsignmentId';
 const String getNotificationListPoint = 'notificationList';
 const String transferShipmentPoint = 'transfer_shipment';
 const String getAllMessangerPoint = 'getallmessengers';
+const String ratingPoint = 'rate_shipment';

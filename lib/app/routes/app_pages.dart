@@ -14,6 +14,8 @@ import '../modules/history/bindings/history_binding.dart';
 import '../modules/history/views/history_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/myorders/bindings/myorders_binding.dart';
+import '../modules/myorders/views/myorders_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/pickup/bindings/pickup_binding.dart';
@@ -122,6 +124,11 @@ class AppPages {
       name: _Paths.NOTIFICATION,
       page: () => const NotificationView(),
       binding: NotificationBinding(),
+    ),
+    GetPage(
+      name: _Paths.MYORDERS,
+      page: () => const MyordersView(),
+      binding: MyordersBinding(),
     ),
   ];
 }
