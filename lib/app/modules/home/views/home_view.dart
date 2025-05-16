@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
@@ -104,8 +105,10 @@ class HomeView extends GetView<HomeController> {
                   hintText: 'Enter Your Package Number',
                   controller: controller.searchController,
                 ),
-                user?.role == "messanger"
-                    ? Row(
+                Obx(
+                  () {
+                    if (bottomController.userData.value?.role == 'messanger') {
+                      return Row(
                         children: [
                           Expanded(
                             child: Obx(() {
@@ -140,8 +143,12 @@ class HomeView extends GetView<HomeController> {
                             }),
                           ),
                         ],
-                      )
-                    : SizedBox.shrink(),
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  },
+                ),
                 Obx(() {
                   if (bottomController.isLoading.value) {
                     return Center(
@@ -224,6 +231,7 @@ class HomeView extends GetView<HomeController> {
                   );
                 }),
                 Obx(() {
+                  final rattingData = controller.rattingDataModel.value;
                   if (bottomController.isLoading.value) {
                     return Center(
                       child: CircularProgressIndicator.adaptive(),
@@ -290,13 +298,22 @@ class HomeView extends GetView<HomeController> {
                                           style: themes.fontSize14_500,
                                         ),
                                         SizedBox(height: 4.h),
-                                        Text(
-                                          '4.5',
-                                          style: themes.fontSize18_600.copyWith(
-                                            fontSize: 40.sp,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
+                                        controller.isRattingData.value ==
+                                                Status.loading
+                                            ? Center(
+                                                child: CircularProgressIndicator
+                                                    .adaptive())
+                                            : Text(
+                                                controller.rattingDataModel
+                                                        .value?.averageRating
+                                                        ?.toStringAsFixed(1) ??
+                                                    '0.0',
+                                                style: themes.fontSize18_600
+                                                    .copyWith(
+                                                  fontSize: 40.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              )
                                       ],
                                     ),
                                     Column(

@@ -82,6 +82,7 @@ class AddPaymentInfoView extends GetView {
                     // ),
                     dropdownText('Shipment Charges'),
                     CommonTextfiled(
+                      keyboardType: TextInputType.number,
                       hintTxt: 'Shipment Charges',
                       controller: addshipController.shipmentChargeController,
                       onChanged: (value) {
@@ -90,6 +91,7 @@ class AddPaymentInfoView extends GetView {
                     ),
                     dropdownText('Insurance Charges'),
                     CommonTextfiled(
+                      keyboardType: TextInputType.number,
                       hintTxt: 'Insurance Charges',
                       controller: addshipController.insuranceChargeController,
                       onChanged: (value) {
@@ -98,6 +100,7 @@ class AddPaymentInfoView extends GetView {
                     ),
                     dropdownText('ODA Charges'),
                     CommonTextfiled(
+                      keyboardType: TextInputType.number,
                       hintTxt: 'ODA Charges',
                       controller: addshipController.odaChargeController,
                       onChanged: (value) {
@@ -106,11 +109,13 @@ class AddPaymentInfoView extends GetView {
                     ),
                     dropdownText('Holiday Charges'),
                     CommonTextfiled(
+                      keyboardType: TextInputType.number,
                       hintTxt: 'Holiday Charges',
                       controller: addshipController.holidayChargeController,
                     ),
                     dropdownText('Handling Charges'),
                     CommonTextfiled(
+                      keyboardType: TextInputType.number,
                       hintTxt: 'Handling Charges',
                       controller: addshipController.headlingChargeController,
                       onChanged: (value) {

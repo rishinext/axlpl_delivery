@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
@@ -62,6 +63,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   if (bottomController.userData.value?.role != 'customer')
                     Obx(() {
                       return CommonDropdown<CustomersList>(
+                        isSearchable: true,
                         hint: 'Select Customer',
                         selectedValue: controller.selectedCustomer.value,
                         isLoading: addshipController.isLoadingCustomers.value,
@@ -87,13 +89,13 @@ class AddShipmentView extends GetView<AddShipmentController> {
 
                   Obx(
                     () {
-                      if (bottomController.userData.value?.role !=
-                          'massanger') {
+                      if (bottomController.userData.value?.role == 'customer') {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             dropdownText('Category'),
                             CommonDropdown<CategoryList>(
+                              isSearchable: true,
                               hint: 'Select Category',
                               selectedValue: controller.selectedCategory.value,
                               isLoading: addshipController.isLoadingCate.value,
@@ -114,6 +116,8 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         );
                       } else {
                         return Column(
+                          spacing: 8,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             dropdownText('Category'),
                             Obx(() {
@@ -135,6 +139,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                                 child: AbsorbPointer(
                                   absorbing: !isCustomerSelected,
                                   child: CommonDropdown<CategoryList>(
+                                    isSearchable: true,
                                     hint: 'Select Category',
                                     selectedValue:
                                         controller.selectedCategory.value,
@@ -183,11 +188,13 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         child: AbsorbPointer(
                           absorbing: !isCategorySelected,
                           child: CommonDropdown<CommodityList>(
+                            isSearchable: true,
                             hint: 'Select Commodity',
                             selectedValue:
                                 addshipController.selectedCommodity.value,
                             isLoading:
-                                addshipController.isLoadingCommodity.value,
+                                addshipController.isLoadingCommodity.value ==
+                                    Status.loading,
                             items: addshipController.commodityList,
                             itemLabel: (c) => c.name ?? 'Unknown',
                             itemValue: (c) => c.id.toString(),

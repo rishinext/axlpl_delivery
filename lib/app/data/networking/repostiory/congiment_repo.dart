@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/congiment_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CongimentRepo {
   final ApiServices _apiServices = ApiServices();
+  final FlutterSecureStorage storage = FlutterSecureStorage();
 
   Future<List<ShipmentDataList>?> getConsigmentRepo(final congimentID) async {
     try {
@@ -22,8 +26,13 @@ class CongimentRepo {
         branchID,
         token.toString(),
       );
-      return response.when(success: (body) {
+      return response.when(success: (body) async {
         final parsed = CongismentModel.fromJson(body);
+        final jsonString = json.encode(parsed.toJson());
+        await storage.write(
+          key: LocalStorage().shipmentData,
+          value: jsonString,
+        );
         return parsed.shipment?.first.shipmentData ?? [];
       }, error: (e) {
         throw Exception("Error fetching shipment data: $e");

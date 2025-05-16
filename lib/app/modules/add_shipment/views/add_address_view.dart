@@ -71,6 +71,7 @@ class AddAddressView extends GetView {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           CommonDropdown<String>(
+                            isSearchable: true,
                             hint: 'Select Customer',
                             selectedValue:
                                 addshipController.selectedExitingCustomer.value,

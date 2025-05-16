@@ -70,6 +70,7 @@ class ReceiverAddressView extends GetView {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CommonDropdown<String>(
+                              isSearchable: true,
                               hint: 'Select Customer',
                               selectedValue: addshipController
                                   .selectedReceiverCustomer.value,

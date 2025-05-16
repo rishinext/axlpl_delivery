@@ -15,33 +15,34 @@ class CommonTextfiled extends StatelessWidget {
   final lableText;
   final String? Function(String?)? validator;
   final String? Function(String?)? onChanged;
-
   final void Function(String?)? onSubmit;
-
   final isReadOnly;
   final isEnable;
+  final maxLine;
 
-  CommonTextfiled({
-    super.key,
-    this.hintTxt,
-    this.controller,
-    this.keyboardType,
-    this.obscureText = false,
-    this.sufixIcon,
-    this.prefixText,
-    this.validator,
-    this.onChanged,
-    this.isReadOnly = false,
-    this.textInputAction,
-    this.isEnable = true,
-    this.onSubmit,
-    this.lableText,
-  });
+  CommonTextfiled(
+      {super.key,
+      this.hintTxt,
+      this.controller,
+      this.keyboardType,
+      this.obscureText = false,
+      this.sufixIcon,
+      this.prefixText,
+      this.validator,
+      this.onChanged,
+      this.isReadOnly = false,
+      this.textInputAction,
+      this.isEnable = true,
+      this.onSubmit,
+      this.lableText,
+      this.maxLine,
+      t});
 
   @override
   Widget build(BuildContext context) {
     Themes themes = Themes();
     return TextFormField(
+      // maxLines: maxLine,
       enabled: isEnable,
       textInputAction: textInputAction,
       obscureText: obscureText,

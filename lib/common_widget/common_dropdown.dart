@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,15 +27,14 @@ Widget dropdownText(String text) {
 // }
 class CommonDropdown<T> extends StatelessWidget {
   final String hint;
-  final String? selectedValue; // ✅ Store ID, not name
+  final String? selectedValue;
   final Function(String?) onChanged;
   final VoidCallback? onTap;
-
-  bool isLoading;
+  final bool isLoading;
   final List<T> items;
-  final String Function(T) itemLabel; // ✅ Extract Name
-  final String Function(T) itemValue; // ✅ Extract ID
-
+  final String Function(T) itemLabel;
+  final String Function(T) itemValue;
+  final isSearchable;
   CommonDropdown({
     Key? key,
     required this.hint,
@@ -42,36 +42,45 @@ class CommonDropdown<T> extends StatelessWidget {
     required this.onChanged,
     required this.isLoading,
     required this.items,
-    required this.itemLabel, // ✅ Function to get name
+    required this.itemLabel,
     required this.itemValue,
-    this.onTap, // ✅ Function to get ID
+    this.onTap,
+    this.isSearchable,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          onTap: onTap,
-          isExpanded: true,
-          hint: Text(hint),
-          value: selectedValue, // ✅ Stores ID
-          items: items.map((item) {
-            return DropdownMenuItem<String>(
-              value: itemValue(item), // ✅ Stores ID
-              child: Text(itemLabel(item)), // ✅ Displays Name
-            );
-          }).toList(),
-          onChanged: onChanged,
-          icon: Icon(Icons.keyboard_arrow_down_outlined,
-              size: 30, color: Colors.black),
+    return DropdownSearch<String>(
+      items: items.map(itemLabel).toList(),
+      selectedItem: selectedValue != null
+          ? itemLabel(items.firstWhere((e) => itemValue(e) == selectedValue,
+              orElse: () => items.first))
+          : null,
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          labelText: hint,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         ),
       ),
+      popupProps: PopupProps.menu(
+        fit: FlexFit.loose,
+        showSearchBox: isSearchable ?? false,
+        searchFieldProps: TextFieldProps(
+          decoration: const InputDecoration(
+            hintText: 'Search...',
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+      onChanged: (label) {
+        final matchedItem = items.firstWhere(
+          (item) => itemLabel(item) == label,
+          orElse: () => items.first,
+        );
+        onChanged(itemValue(matchedItem));
+      },
     );
   }
 }

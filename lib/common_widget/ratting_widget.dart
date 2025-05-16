@@ -38,6 +38,7 @@ void showRatingDialog(BuildContext context) {
                   CommonTextfiled(
                     lableText: 'Feedback',
                     controller: profileController.feedbackController,
+                    maxLine: 3,
                   ),
                   CommonButton(
                     title: 'Submit',

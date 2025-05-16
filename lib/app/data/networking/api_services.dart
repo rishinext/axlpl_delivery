@@ -396,6 +396,20 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> getMessangerRatting(
+    String id,
+    String token,
+  ) {
+    final body = {
+      'messanger_id': id,
+    };
+    return _api.post(
+      getRatting,
+      body,
+      token: token,
+    );
+  }
+
   Future<APIResponse> uploadPOD(
     final shipmentID,
     final shipmentStatus,

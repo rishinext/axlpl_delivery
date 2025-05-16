@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -24,6 +23,7 @@ class LocalStorage {
   final String customerDataKey = 'Customerdetail';
   final String userRole = 'role';
   final String fcmToken = 'fcmToken';
+  final String shipmentData = 'shipment';
 
 // get users data
 

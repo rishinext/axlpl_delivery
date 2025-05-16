@@ -58,19 +58,30 @@ class ProfileRepo {
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
       final role = userData?.role?.toString();
-      log("roles profile data ${role.toString()}");
+
       if (userID != null && userID.isNotEmpty) {
         final response = await _apiServices.getProfile(userID, role ?? '');
 
-        return response.when(success: (body) {
-          if (role == 'customer') {
-            return Customerdetail.fromJson(body);
-          } else {
-            return MessangersDetailsModel.fromJson(body);
-          }
-        }, error: (error) {
-          throw Exception("EditProfile Failed: ${error.toString()}");
-        });
+        return response.when(
+          success: (body) {
+            if (role == 'customer') {
+              final customerData = body['Customerdetail'];
+              if (customerData != null) {
+                return Customerdetail.fromJson(customerData);
+              }
+            } else if (role == 'messanger') {
+              final messengerData = body['Messangerdetail'];
+              if (messengerData != null) {
+                return MessangersDetailsModel.fromJson(body);
+              }
+            }
+
+            return null;
+          },
+          error: (error) {
+            throw Exception("EditProfile Failed: ${error.toString()}");
+          },
+        );
       }
     } catch (e) {
       Utils.instance.log("Error in editProfile: $e");

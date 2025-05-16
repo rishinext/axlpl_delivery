@@ -143,7 +143,7 @@ class ProfileController extends GetxController {
         messangerDetail.value = null;
 
         // Null-aware assignments with fallback
-        nameController.text = profileData.fullName ?? 'N/A';
+        nameController.text = profileData.fullName ?? '';
         codeController.text = profileData.companyName ?? '';
         stateController.text = profileData.stateName ?? '';
         cityController.text = profileData.cityName ?? '';

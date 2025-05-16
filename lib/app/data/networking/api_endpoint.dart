@@ -24,3 +24,4 @@ const String getNotificationListPoint = 'notificationList';
 const String transferShipmentPoint = 'transfer_shipment';
 const String getAllMessangerPoint = 'getallmessengers';
 const String ratingPoint = 'rate_shipment';
+const String getRatting = 'get_messenger_rating';
