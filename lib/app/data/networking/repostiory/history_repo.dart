@@ -8,7 +8,10 @@ import 'package:axlpl_delivery/utils/utils.dart';
 class HistoryRepository {
   final ApiServices _apiServices = ApiServices();
 
-  Future<List<HistoryDelivery>?> deliveryHistoryRepo() async {
+  Future<List<HistoryDelivery>?> deliveryHistoryRepo(
+    final zipcode,
+    final nextID,
+  ) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??
@@ -20,7 +23,12 @@ class HistoryRepository {
 
       if (userID?.isNotEmpty == true || userID != null) {
         final response = await _apiServices.getDeliveryHistory(
-            userID.toString(), branchID.toString(), token.toString());
+          userID.toString(),
+          branchID.toString(),
+          zipcode,
+          token.toString(),
+          nextID,
+        );
         return response.when(
           success: (body) {
             final historyData = HistoryModel.fromJson(body);

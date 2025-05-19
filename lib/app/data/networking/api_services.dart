@@ -29,13 +29,15 @@ class ApiServices {
   Future<APIResponse> getDeliveryHistory(
     String userID,
     String branchID,
-    // String zipcode,
+    String zipcode,
     String token,
+    String nextID,
   ) async {
     final body = {
       'messanger_id': userID,
-      // 'zipcode': zipcode,
-      'branch_id': branchID
+      'zipcode': zipcode,
+      'branch_id': branchID,
+      'next_id': nextID
     };
     return _api.get(deliveryHistoryPoint, query: body, token: token);
   }
@@ -405,6 +407,20 @@ class ApiServices {
     };
     return _api.post(
       getRatting,
+      body,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> tracking(
+    String shipmentID,
+    String token,
+  ) {
+    final body = {
+      'shipment_id': shipmentID,
+    };
+    return _api.post(
+      trackPoint,
       body,
       token: token,
     );

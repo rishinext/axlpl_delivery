@@ -1,7 +1,6 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/notification_list_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
-import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
 class NotificationRepo {
@@ -20,7 +19,7 @@ class NotificationRepo {
         return response.when(
           success: (body) {
             final notiData = NotificationModel.fromJson(body);
-            if (notiData.status == success) {
+            if (notiData.status == 'success') {
               return notiData.notificationList;
             } else {
               Utils().logInfo(

@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/models/stepper_model.dart';
+import 'package:axlpl_delivery/app/data/models/tracking_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -43,4 +44,6 @@ class RunningDeliveryDetailsController extends GetxController {
       "icon": Icons.check_circle
     }
   ];
+
+  var trackingStatusList = <TrackingStatusList>[].obs;
 }

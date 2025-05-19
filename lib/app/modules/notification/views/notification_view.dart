@@ -40,7 +40,28 @@ class NotificationView extends GetView<NotificationController> {
                 itemCount: controller.notiList.length,
                 itemBuilder: (context, index) {
                   final data = controller.notiList[index];
-                  return Text(data.title.toString());
+                  return Card(
+                      child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      spacing: 10,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data.title.toString(),
+                          style: themes.fontReboto16_600,
+                        ),
+                        Text(
+                          data.message.toString(),
+                          style: themes.fontSize14_500,
+                        ),
+                        Text(
+                          data.createdDate.toString().split(' ')[0],
+                          style: themes.fontSize14_500,
+                        ),
+                      ],
+                    ),
+                  ));
                 },
               );
             } else {

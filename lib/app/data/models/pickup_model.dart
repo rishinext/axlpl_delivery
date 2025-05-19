@@ -58,6 +58,7 @@ class PickUpModel {
 class RunningPickUp {
   String? id;
   String? shipmentId;
+  String? messangerName;
   String? status;
   String? name;
   String? companyName;
@@ -68,59 +69,63 @@ class RunningPickUp {
   String? address1;
   String? address2;
   String? cityName;
-  DateTime? date;
+  String? date;
   String? receiverCityName;
 
-  RunningPickUp({
-    this.id,
-    this.shipmentId,
-    this.status,
-    this.name,
-    this.companyName,
-    this.mobile,
-    this.areaId,
-    this.areaName,
-    this.pincode,
-    this.address1,
-    this.address2,
-    this.cityName,
-    this.date,
-    this.receiverCityName,
-  });
+  RunningPickUp(
+      {this.id,
+      this.shipmentId,
+      this.messangerName,
+      this.status,
+      this.name,
+      this.companyName,
+      this.mobile,
+      this.areaId,
+      this.areaName,
+      this.pincode,
+      this.address1,
+      this.address2,
+      this.cityName,
+      this.date,
+      this.receiverCityName});
 
-  factory RunningPickUp.fromJson(Map<String, dynamic> json) => RunningPickUp(
-        id: json["id"],
-        shipmentId: json["shipment_id"],
-        status: json["status"],
-        name: json["name"],
-        companyName: json["company_name"],
-        mobile: json["mobile"],
-        areaId: json["area_id"],
-        areaName: json["area_name"],
-        pincode: json["pincode"],
-        address1: json["address1"],
-        address2: json["address2"],
-        cityName: json["city_name"],
-        date: json["date"] == null ? null : DateTime.parse(json["date"]),
-        receiverCityName: json["receiver_city_name"],
-      );
+  RunningPickUp.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    shipmentId = json['shipment_id'];
+    messangerName = json['messanger_name'];
+    status = json['status'];
+    name = json['name'];
+    companyName = json['company_name'];
+    mobile = json['mobile'];
+    areaId = json['area_id'];
+    areaName = json['area_name'];
+    pincode = json['pincode'];
+    address1 = json['address1'];
+    address2 = json['address2'];
+    cityName = json['city_name'];
+    date = json['date'];
+    receiverCityName = json['receiver_city_name'];
+  }
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "shipment_id": shipmentId,
-        "status": status,
-        "name": name,
-        "company_name": companyName,
-        "mobile": mobile,
-        "area_id": areaId,
-        "area_name": areaName,
-        "pincode": pincode,
-        "address1": address1,
-        "address2": address2,
-        "city_name": cityName,
-        "date": date?.toIso8601String(),
-        "receiver_city_name": receiverCityName,
-      };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['shipment_id'] = this.shipmentId;
+    data['messanger_name'] = this.messangerName;
+    data['status'] = this.status;
+    data['name'] = this.name;
+    data['company_name'] = this.companyName;
+    data['mobile'] = this.mobile;
+    data['area_id'] = this.areaId;
+    data['area_name'] = this.areaName;
+    data['pincode'] = this.pincode;
+    data['address1'] = this.address1;
+    data['address2'] = this.address2;
+    data['city_name'] = this.cityName;
+    data['date'] = this.date;
+    data['receiver_city_name'] = this.receiverCityName;
+    return data;
+  }
 }
 
 class RunningDelivery {

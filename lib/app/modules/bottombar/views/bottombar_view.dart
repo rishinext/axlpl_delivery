@@ -29,12 +29,12 @@ class BottombarView extends GetView<BottombarController> {
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage(homeIcon)),
-              label: usersData?.messangerdetail?.name ?? 'User',
+              label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage(trackingIcon)),
-              label: 'Tracking',
-            ),
+            // BottomNavigationBarItem(
+            //   icon: ImageIcon(AssetImage(trackingIcon)),
+            //   label: 'Tracking',
+            // ),
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage(shipIcon)),
               label: 'Ship Now',

@@ -301,8 +301,14 @@ class HomeView extends GetView<HomeController> {
                                         controller.isRattingData.value ==
                                                 Status.loading
                                             ? Center(
-                                                child: CircularProgressIndicator
-                                                    .adaptive())
+                                                child: Text(
+                                                '0.0',
+                                                style: themes.fontSize18_600
+                                                    .copyWith(
+                                                  fontSize: 40.sp,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ))
                                             : Text(
                                                 controller.rattingDataModel
                                                         .value?.averageRating
@@ -326,7 +332,10 @@ class HomeView extends GetView<HomeController> {
                                         ),
                                         SizedBox(height: 4.h),
                                         Text(
-                                          '110',
+                                          controller.rattingDataModel.value
+                                                  ?.deliveredCount
+                                                  .toString() ??
+                                              '0',
                                           style: themes.fontSize18_600.copyWith(
                                             fontSize: 40.sp,
                                             fontWeight: FontWeight.w700,

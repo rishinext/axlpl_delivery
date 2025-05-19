@@ -21,8 +21,12 @@ class PickupController extends GetxController {
   var isPickupLoading = Status.initial.obs;
   var isMessangerLoading = Status.initial.obs;
   var isTrasferLoading = Status.initial.obs;
+  RxInt isSelected = 0.obs;
 
   var selectedMessenger = ''.obs;
+  void selectedContainer(int index) {
+    isSelected.value = index;
+  }
 
   final TextEditingController pincodeController = TextEditingController();
 
@@ -85,13 +89,24 @@ class PickupController extends GetxController {
     }
   }
 
-  void filterByPincode(String query) {
+  void filterByQuery(String query) {
     if (query.isEmpty) {
       filteredPickupList.value = pickupList;
     } else {
-      filteredPickupList.value = pickupList
-          .where((pickup) => (pickup.pincode ?? '').contains(query.trim()))
-          .toList();
+      final lowerQuery = query.toLowerCase().trim();
+      filteredPickupList.value = pickupList.where((pickup) {
+        final pincode = (pickup.pincode ?? '').toLowerCase();
+        final name = (pickup.name ?? '').toLowerCase();
+        final address = (pickup.address1 ?? '').toLowerCase();
+        final city = (pickup.cityName ?? '').toLowerCase();
+        final shipmentID = (pickup.shipmentId ?? '').toLowerCase();
+
+        return pincode.contains(lowerQuery) ||
+            name.contains(lowerQuery) ||
+            address.contains(lowerQuery) ||
+            city.contains(lowerQuery) ||
+            shipmentID.contains(lowerQuery);
+      }).toList();
     }
   }
 

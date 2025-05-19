@@ -1,6 +1,7 @@
 import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/history_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../data/models/history_pickup_model.dart';
@@ -12,6 +13,7 @@ class HistoryController extends GetxController {
       HistoryRepository(); // assuming you have a repository class
   final historyList = <HistoryDelivery>[].obs;
   final pickUpHistoryList = <HistoryPickup>[].obs;
+  final zipcodeController = TextEditingController();
 
   RxInt isSelected = 0.obs;
   RxBool isLoading = false.obs;
@@ -20,11 +22,14 @@ class HistoryController extends GetxController {
     isSelected.value = index;
   }
 
-  Future<void> getHistory() async {
+  Future<void> getHistory(final nextID) async {
     isLoading.value = true;
 
     try {
-      final success = await historyRepo.deliveryHistoryRepo();
+      final success = await historyRepo.deliveryHistoryRepo(
+        zipcodeController,
+        nextID,
+      );
 
       if (success != null) {
         historyList.value = success;
@@ -69,7 +74,7 @@ class HistoryController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    getHistory();
+    getHistory('0');
     getPickupHistory();
     super.onInit();
   }

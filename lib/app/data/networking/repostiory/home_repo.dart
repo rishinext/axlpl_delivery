@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
@@ -72,35 +75,27 @@ class HomeRepository {
           userID,
           token.toString(),
         );
+
         RattingDataModel? result;
+
         response.when(
           success: (body) {
-            final data = GetRattingModel.fromJson(body);
-            if (data.status?.toLowerCase() == "success") {
-              result = data.data;
-            } else {
-              Utils().logInfo(
-                  'API call successful but status is not "success" : ${data.status}');
-              return null;
-            }
+            log("Raw response body: ${jsonEncode(body)}");
+            result = RattingDataModel.fromJson(body); // ✅ parse directly
           },
           error: (error) {
-            Utils().logError(
-              error.toString(),
-            );
-            return result;
+            Utils().logError("Ratting error: $error");
           },
         );
+
+        return result;
       } else {
-        Utils().logError(
-          "Error",
-        );
+        Utils().logError("Missing user ID");
       }
     } catch (e) {
-      Utils().logError(
-        "$e",
-      );
+      Utils().logError("Exception in getRattingRepo: $e");
     }
+
     return null;
   }
 }
