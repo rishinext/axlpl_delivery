@@ -99,7 +99,9 @@ class DeliveryView extends GetView<DeliveryController> {
                                 child: IconButton(
                                   onPressed: () {
                                     pickupController.openMapWithAddress(
-                                        data.address1.toString());
+                                        data.companyName.toString(),
+                                        data.address1.toString(),
+                                        data.pincode.toString());
                                   },
                                   icon: Icon(
                                     Icons.arrow_forward,

@@ -110,20 +110,23 @@ class PickupController extends GetxController {
     }
   }
 
-  Future<void> openMapWithAddress(String address) async {
-    final encodedAddress = Uri.encodeComponent(address);
+  Future<void> openMapWithAddress(
+      String companyName, String address, String pincode) async {
+    final fullQuery = '$companyName, $address, $pincode';
+    final encodedQuery = Uri.encodeComponent(fullQuery);
     final googleMapsUrl =
-        'https://www.google.com/maps/search/?api=1&query=$encodedAddress';
+        'https://www.google.com/maps/search/?api=1&query=$encodedQuery';
     final Uri url = Uri.parse(googleMapsUrl);
 
-    if (await canLaunchUrl(Uri.parse(googleMapsUrl))) {
-      await launchUrl(Uri.parse(googleMapsUrl),
-          mode: LaunchMode.externalApplication);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
     } else {
       await launchUrl(
         url,
-        mode: LaunchMode
-            .externalNonBrowserApplication, // ✅ open inside WebView as last option
+        mode: LaunchMode.externalNonBrowserApplication,
       );
     }
   }

@@ -320,7 +320,10 @@ class PickupView extends GetView<PickupController> {
                                             onPressed: () {
                                               pickupController
                                                   .openMapWithAddress(
-                                                      data.address1.toString());
+                                                      data.companyName
+                                                          .toString(),
+                                                      data.address1.toString(),
+                                                      data.pincode.toString());
                                             },
                                             icon: Icon(
                                               Icons.gps_fixed,
