@@ -53,22 +53,25 @@ class HistoryPickup {
   String? cityName;
   String? date;
   String? receiverCityName;
+  String? messangerName;
 
-  HistoryPickup(
-      {this.id,
-      this.shipmentId,
-      this.status,
-      this.name,
-      this.companyName,
-      this.mobile,
-      this.areaId,
-      this.areaName,
-      this.pincode,
-      this.address1,
-      this.address2,
-      this.cityName,
-      this.date,
-      this.receiverCityName});
+  HistoryPickup({
+    this.id,
+    this.shipmentId,
+    this.status,
+    this.name,
+    this.companyName,
+    this.mobile,
+    this.areaId,
+    this.areaName,
+    this.pincode,
+    this.address1,
+    this.address2,
+    this.cityName,
+    this.date,
+    this.receiverCityName,
+    this.messangerName,
+  });
 
   HistoryPickup.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -85,6 +88,7 @@ class HistoryPickup {
     cityName = json['city_name'];
     date = json['date'];
     receiverCityName = json['receiver_city_name'];
+    messangerName = json['messanger_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -103,6 +107,7 @@ class HistoryPickup {
     data['city_name'] = cityName;
     data['date'] = date;
     data['receiver_city_name'] = receiverCityName;
+    data['messanger_name'] = messangerName;
     return data;
   }
 }

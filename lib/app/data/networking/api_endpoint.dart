@@ -26,3 +26,4 @@ const String getAllMessangerPoint = 'getallmessengers';
 const String ratingPoint = 'rate_shipment';
 const String getRatting = 'get_messenger_rating';
 const String trackPoint = 'track';
+const String uploadPickup = 'uploadPickup';

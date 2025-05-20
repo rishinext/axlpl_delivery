@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
@@ -159,6 +160,7 @@ class PodView extends GetView<PodController> {
                 }),
                 CommonButton(
                   title: 'Upload',
+                  isLoading: controller.isPod.value == Status.loading,
                   onPressed: () async {
                     controller.uploadPod(
                       shipmentStatus: 'Delivered',

@@ -1,14 +1,14 @@
 import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
-import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
+import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
+import 'package:axlpl_delivery/app/modules/running_delivery_details/controllers/running_delivery_details_controller.dart';
+
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
-import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,6 +21,8 @@ class PickupView extends GetView<PickupController> {
   @override
   Widget build(BuildContext context) {
     final pickupController = Get.put(PickupController());
+    final historyController = Get.put(HistoryController());
+    final runningController = Get.put(RunningDeliveryDetailsController());
 
     return CommonScaffold(
       appBar: commonAppbar('Pickup'),
@@ -163,8 +165,189 @@ class PickupView extends GetView<PickupController> {
                                       .filteredPickupList[index];
                                   final messangerID =
                                       pickupController.messangerList;
-                                  return
-                                      // ExpansionTile(
+                                  return InkWell(
+                                    onTap: () {
+                                      runningController.fetchTrackingData(
+                                          data.shipmentId.toString());
+                                      Get.toNamed(
+                                        Routes.RUNNING_DELIVERY_DETAILS,
+                                      );
+                                    },
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r)),
+                                      child: ListTile(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.r)),
+
+                                        tileColor: themes.whiteColor,
+                                        dense: false,
+                                        // leading: CircleAvatar(
+                                        //   backgroundColor: themes.blueGray,
+                                        //   child: Image.asset(
+                                        //     gpsIcon,
+                                        //     width: 18.w,
+                                        //   ),
+                                        // ),
+                                        title: Text(
+                                            "Company Name : ${data.companyName.toString()}"),
+                                        subtitle: Column(
+                                          spacing: 5,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                "Messanger Name : ${data.messangerName.toString()}"),
+                                            Text(
+                                                "Phone : ${data.mobile.toString()}"),
+                                            Text(
+                                                "Zipcode : ${data.pincode.toString()}"),
+                                            Text(
+                                                "Shipment ID : ${data.shipmentId.toString()}"),
+                                            Text(
+                                                "Sender Address : ${data.address1.toString()}"),
+                                            Text(
+                                              "Status : ${data.status.toString()}",
+                                              style: themes.fontReboto16_600
+                                                  .copyWith(
+                                                color: themes.redColor,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        trailing: SizedBox(
+                                          // height: 48, // ListTile's default height
+                                          width: 48,
+                                          child: Align(
+                                            alignment: Alignment.topRight,
+                                            child: IconButton.outlined(
+                                              onPressed: () {
+                                                pickupController
+                                                    .openMapWithAddress(
+                                                        data.companyName
+                                                            .toString(),
+                                                        data.address1
+                                                            .toString(),
+                                                        data.pincode
+                                                            .toString());
+                                              },
+                                              icon: Icon(
+                                                Icons.gps_fixed,
+                                                color: themes.darkCyanBlue,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            } else {
+                              return Center(
+                                child: Text(
+                                  'No Pickup Found!',
+                                  style: themes.fontSize18_600,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      )
+                    : Obx(() {
+                        if (historyController.isLoading.value) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        if (historyController.pickUpHistoryList.isEmpty) {
+                          return Center(
+                              child: Text(
+                            'No Pickup History Data Found!',
+                            style: themes.fontReboto16_600,
+                          ));
+                        }
+                        return ListView.separated(
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: 5.h,
+                          ),
+                          itemCount: historyController.pickUpHistoryList.length,
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            var pickup =
+                                historyController.pickUpHistoryList[index];
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r)),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r)),
+                                tileColor: themes.whiteColor,
+                                dense: false,
+                                // leading: CircleAvatar(
+                                //   backgroundColor: themes.blueGray,
+                                //   child: Image.asset(
+                                //     truckBlueIcon,
+                                //     width: 18.w,
+                                //   ),
+                                // ),
+                                title: Text(
+                                    "Company Name : ${pickup.companyName.toString()}"),
+                                subtitle: Column(
+                                  spacing: 5,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "Messanger Name : ${pickup.messangerName.toString()}"),
+                                    Text("Phone : ${pickup.mobile.toString()}"),
+                                    Text(
+                                        "Zipcode : ${pickup.pincode.toString()}"),
+                                    Text(
+                                        "Shipment ID : ${pickup.shipmentId.toString()}"),
+                                    Text(
+                                        "Sender Address : ${pickup.address1.toString()}"),
+                                    Text(
+                                      "Status : ${pickup.status.toString()}",
+                                      style: themes.fontReboto16_600.copyWith(
+                                        color: themes.greenColor,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                trailing: SizedBox(
+                                  // height: 48, // ListTile's default height
+                                  width: 48,
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: IconButton.outlined(
+                                      onPressed: () {
+                                        pickupController.openMapWithAddress(
+                                            pickup.companyName.toString(),
+                                            pickup.address1.toString(),
+                                            pickup.pincode.toString());
+                                      },
+                                      icon: Icon(
+                                        Icons.gps_fixed,
+                                        color: themes.darkCyanBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+   // ExpansionTile(
                                       //   collapsedShape: RoundedRectangleBorder(
                                       //       borderRadius: BorderRadius.circular(10.r)),
                                       //   shape: RoundedRectangleBorder(
@@ -268,71 +451,7 @@ class PickupView extends GetView<PickupController> {
                                       //     ),
                                       //   ],
                                       // );
-
-                                      InkWell(
-                                    onTap: () {
-                                      Get.toNamed(
-                                        Routes.RUNNING_DELIVERY_DETAILS,
-                                      );
-                                    },
-                                    child: ListTile(
-                                      tileColor: themes.whiteColor,
-                                      dense: false,
-                                      // leading: CircleAvatar(
-                                      //   backgroundColor: themes.blueGray,
-                                      //   child: Image.asset(
-                                      //     gpsIcon,
-                                      //     width: 18.w,
-                                      //   ),
-                                      // ),
-                                      title: Text(
-                                          "Company Name : ${data.companyName.toString()}"),
-                                      subtitle: Column(
-                                        spacing: 5,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              "Messanger Name : ${data.messangerName.toString()}"),
-                                          Text(
-                                              "Phone : ${data.mobile.toString()}"),
-                                          Text(
-                                              "Zipcode : ${data.pincode.toString()}"),
-                                          Text(
-                                              "Shipment ID : ${data.shipmentId.toString()}"),
-                                          Text(
-                                              "Sender Address : ${data.address1.toString()}"),
-                                          Text(
-                                            "Status : ${data.status.toString()}",
-                                            style: themes.fontReboto16_600
-                                                .copyWith(
-                                              color: themes.redColor,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      trailing: SizedBox(
-                                        // height: 48, // ListTile's default height
-                                        width: 48,
-                                        child: Align(
-                                          alignment: Alignment.topRight,
-                                          child: IconButton.outlined(
-                                            onPressed: () {
-                                              pickupController
-                                                  .openMapWithAddress(
-                                                      data.companyName
-                                                          .toString(),
-                                                      data.address1.toString(),
-                                                      data.pincode.toString());
-                                            },
-                                            icon: Icon(
-                                              Icons.gps_fixed,
-                                              color: themes.darkCyanBlue,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      /*    trailing: Row(
+                                       /*    trailing: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           PopupMenuButton<String>(
@@ -410,27 +529,3 @@ class PickupView extends GetView<PickupController> {
                                           ),
                                         ],
                                       ),*/
-                                    ),
-                                  );
-                                },
-                              );
-                            } else {
-                              return Center(
-                                child: Text(
-                                  'No Pickup Found!',
-                                  style: themes.fontSize18_600,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      )
-                    : Text('data')
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

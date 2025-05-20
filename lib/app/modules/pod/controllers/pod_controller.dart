@@ -32,7 +32,7 @@ class PodController extends GetxController {
     {'id': '4', 'name': 'Online /add shipment'},
   ].obs;
 
-  final status = Status.initial.obs;
+  final isPod = Status.initial.obs;
   final isShipmentRecord = Status.initial.obs;
 
   final message = ''.obs;
@@ -46,7 +46,7 @@ class PodController extends GetxController {
     required File file,
   }) async {
     try {
-      status.value = Status.loading;
+      isPod.value = Status.loading;
       message.value = '';
 
       final result = await _repo.profilePhotoUploadRepo(
@@ -57,20 +57,20 @@ class PodController extends GetxController {
       );
 
       if (result) {
-        status.value = Status.success;
+        isPod.value = Status.success;
         message.value = _repo.apiMessage ?? 'Upload successful';
         shipmentIdController.clear();
 
         Get.snackbar("Success", message.value,
             backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
       } else {
-        status.value = Status.error;
+        isPod.value = Status.error;
         message.value = _repo.apiMessage ?? 'Upload failed';
         Get.snackbar("Error", message.value,
             backgroundColor: themes.redColor, colorText: themes.whiteColor);
       }
     } catch (e) {
-      status.value = Status.error;
+      isPod.value = Status.error;
       message.value = 'Unexpected error: $e';
       Get.snackbar(
         "Error",

@@ -107,7 +107,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.RUNNING_DELIVERY_DETAILS,
-      page: () => const RunningDeliveryDetailsView(),
+      page: () => RunningDeliveryDetailsView(),
       binding: RunningDeliveryDetailsBinding(),
     ),
     GetPage(
