@@ -17,6 +17,7 @@ class HistoryController extends GetxController {
 
   RxInt isSelected = 0.obs;
   RxBool isLoading = false.obs;
+  RxBool isPickedup = false.obs;
 
   void selectedContainer(int index) {
     isSelected.value = index;
@@ -49,17 +50,17 @@ class HistoryController extends GetxController {
   }
 
   Future<void> getPickupHistory() async {
-    isLoading.value = true;
+    isPickedup.value = true;
 
     try {
       final success = await historyRepo.pickupHistoryRepo();
 
       if (success != null) {
         pickUpHistoryList.value = success;
-        isLoading.value = false;
+        isPickedup.value = false;
       } else {
         Utils().logInfo('No Pickup History Data Found');
-        isLoading.value = false;
+        isPickedup.value = false;
       }
     } catch (error) {
       Utils().logError(
@@ -67,7 +68,7 @@ class HistoryController extends GetxController {
       );
       pickUpHistoryList.value = [];
     } finally {
-      isLoading.value = false;
+      isPickedup.value = false;
     }
   }
 

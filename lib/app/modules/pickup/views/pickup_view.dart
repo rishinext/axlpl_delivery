@@ -6,6 +6,7 @@ import 'package:axlpl_delivery/app/modules/running_delivery_details/controllers/
 
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
+import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -168,7 +169,8 @@ class PickupView extends GetView<PickupController> {
                                   return InkWell(
                                     onTap: () {
                                       runningController.fetchTrackingData(
-                                          data.shipmentId.toString());
+                                        data.shipmentId.toString(),
+                                      );
                                       Get.toNamed(
                                         Routes.RUNNING_DELIVERY_DETAILS,
                                       );
@@ -198,8 +200,8 @@ class PickupView extends GetView<PickupController> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                                "Messanger Name : ${data.messangerName.toString()}"),
+                                            // Text(
+                                            //     "Messanger Name : ${data.messangerName.toString()}"),
                                             Text(
                                                 "Phone : ${data.mobile.toString()}"),
                                             Text(
@@ -214,6 +216,15 @@ class PickupView extends GetView<PickupController> {
                                                   .copyWith(
                                                 color: themes.redColor,
                                               ),
+                                            ),
+                                            CommonButton(
+                                              title: 'Pickup',
+                                              onPressed: () {
+                                                pickupController.uploadPickup(
+                                                    data.shipmentId.toString(),
+                                                    'Picked up',
+                                                    data.date.toString());
+                                              },
                                             )
                                           ],
                                         ),
@@ -257,7 +268,7 @@ class PickupView extends GetView<PickupController> {
                         ),
                       )
                     : Obx(() {
-                        if (historyController.isLoading.value) {
+                        if (historyController.isPickedup.value) {
                           return Center(child: CircularProgressIndicator());
                         }
                         if (historyController.pickUpHistoryList.isEmpty) {

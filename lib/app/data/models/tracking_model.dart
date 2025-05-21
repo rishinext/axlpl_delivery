@@ -1,155 +1,140 @@
+// To parse this JSON data, do
+//
+//     final trackingModel = trackingModelFromJson(jsonString);
+
+import 'dart:convert';
+
+TrackingModel trackingModelFromJson(String str) =>
+    TrackingModel.fromJson(json.decode(str));
+
+String trackingModelToJson(TrackingModel data) => json.encode(data.toJson());
+
 class TrackingModel {
-  List<TrackingStatusList>? tracking;
-
-  TrackingModel({this.tracking});
-
-  TrackingModel.fromJson(Map<String, dynamic> json) {
-    if (json['tracking'] != null) {
-      tracking = <TrackingStatusList>[];
-      json['tracking'].forEach((v) {
-        tracking!.add(new TrackingStatusList.fromJson(v));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.tracking != null) {
-      data['tracking'] = this.tracking!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
-
-class TrackingStatusList {
-  List<TrackingStatus>? trackingStatus;
-  List<SenderData>? senderData;
-  List<ReceiverData>? receiverData;
+  List<Tracking>? tracking;
   bool? error;
   int? code;
   String? type;
   String? message;
 
-  TrackingStatusList(
-      {this.trackingStatus,
-      this.senderData,
-      this.receiverData,
-      this.error,
-      this.code,
-      this.type,
-      this.message});
+  TrackingModel({
+    this.tracking,
+    this.error,
+    this.code,
+    this.type,
+    this.message,
+  });
 
-  TrackingStatusList.fromJson(Map<String, dynamic> json) {
-    if (json['TrackingStatus'] != null) {
-      trackingStatus = <TrackingStatus>[];
-      json['TrackingStatus'].forEach((v) {
-        trackingStatus!.add(new TrackingStatus.fromJson(v));
-      });
-    }
-    if (json['SenderData'] != null) {
-      senderData = <SenderData>[];
-      json['SenderData'].forEach((v) {
-        senderData!.add(new SenderData.fromJson(v));
-      });
-    }
-    if (json['ReceiverData'] != null) {
-      receiverData = <ReceiverData>[];
-      json['ReceiverData'].forEach((v) {
-        receiverData!.add(new ReceiverData.fromJson(v));
-      });
-    }
-    error = json['error'];
-    code = json['code'];
-    type = json['type'];
-    message = json['message'];
-  }
+  factory TrackingModel.fromJson(Map<String, dynamic> json) => TrackingModel(
+        tracking: json["tracking"] == null
+            ? []
+            : List<Tracking>.from(
+                json["tracking"]!.map((x) => Tracking.fromJson(x))),
+        error: json["error"],
+        code: json["code"],
+        type: json["type"],
+        message: json["message"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.trackingStatus != null) {
-      data['TrackingStatus'] =
-          this.trackingStatus!.map((v) => v.toJson()).toList();
-    }
-    if (this.senderData != null) {
-      data['SenderData'] = this.senderData!.map((v) => v.toJson()).toList();
-    }
-    if (this.receiverData != null) {
-      data['ReceiverData'] = this.receiverData!.map((v) => v.toJson()).toList();
-    }
-    data['error'] = this.error;
-    data['code'] = this.code;
-    data['type'] = this.type;
-    data['message'] = this.message;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "tracking": tracking == null
+            ? []
+            : List<dynamic>.from(tracking!.map((x) => x.toJson())),
+        "error": error,
+        "code": code,
+        "type": type,
+        "message": message,
+      };
 }
 
-class TrackingStatus {
-  String? status;
-  String? dateTime;
+class Tracking {
+  List<TrackingStatus>? trackingStatus;
+  List<ErDatum>? senderData;
+  List<ErDatum>? receiverData;
 
-  TrackingStatus({this.status, this.dateTime});
+  Tracking({
+    this.trackingStatus,
+    this.senderData,
+    this.receiverData,
+  });
 
-  TrackingStatus.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    dateTime = json['date_time'];
-  }
+  factory Tracking.fromJson(Map<String, dynamic> json) => Tracking(
+        trackingStatus: json["TrackingStatus"] == null
+            ? []
+            : List<TrackingStatus>.from(
+                json["TrackingStatus"]!.map((x) => TrackingStatus.fromJson(x))),
+        senderData: json["SenderData"] == null
+            ? []
+            : List<ErDatum>.from(
+                json["SenderData"]!.map((x) => ErDatum.fromJson(x))),
+        receiverData: json["ReceiverData"] == null
+            ? []
+            : List<ErDatum>.from(
+                json["ReceiverData"]!.map((x) => ErDatum.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['date_time'] = this.dateTime;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "TrackingStatus": trackingStatus == null
+            ? []
+            : List<dynamic>.from(trackingStatus!.map((x) => x.toJson())),
+        "SenderData": senderData == null
+            ? []
+            : List<dynamic>.from(senderData!.map((x) => x.toJson())),
+        "ReceiverData": receiverData == null
+            ? []
+            : List<dynamic>.from(receiverData!.map((x) => x.toJson())),
+      };
 }
 
-class SenderData {
-  String? senderName;
-  String? companyName;
-  String? address1;
-  String? address2;
-
-  SenderData({this.senderName, this.companyName, this.address1, this.address2});
-
-  SenderData.fromJson(Map<String, dynamic> json) {
-    senderName = json['sender_name'];
-    companyName = json['company_name'];
-    address1 = json['address1'];
-    address2 = json['address2'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sender_name'] = this.senderName;
-    data['company_name'] = this.companyName;
-    data['address1'] = this.address1;
-    data['address2'] = this.address2;
-    return data;
-  }
-}
-
-class ReceiverData {
+class ErDatum {
   String? receiverName;
   String? companyName;
   String? address1;
   String? address2;
+  String? senderName;
 
-  ReceiverData(
-      {this.receiverName, this.companyName, this.address1, this.address2});
+  ErDatum({
+    this.receiverName,
+    this.companyName,
+    this.address1,
+    this.address2,
+    this.senderName,
+  });
 
-  ReceiverData.fromJson(Map<String, dynamic> json) {
-    receiverName = json['receiver_name'];
-    companyName = json['company_name'];
-    address1 = json['address1'];
-    address2 = json['address2'];
-  }
+  factory ErDatum.fromJson(Map<String, dynamic> json) => ErDatum(
+        receiverName: json["receiver_name"],
+        companyName: json["company_name"],
+        address1: json["address1"],
+        address2: json["address2"],
+        senderName: json["sender_name"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['receiver_name'] = this.receiverName;
-    data['company_name'] = this.companyName;
-    data['address1'] = this.address1;
-    data['address2'] = this.address2;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "receiver_name": receiverName,
+        "company_name": companyName,
+        "address1": address1,
+        "address2": address2,
+        "sender_name": senderName,
+      };
+}
+
+class TrackingStatus {
+  String? status;
+  DateTime? dateTime;
+
+  TrackingStatus({
+    this.status,
+    this.dateTime,
+  });
+
+  factory TrackingStatus.fromJson(Map<String, dynamic> json) => TrackingStatus(
+        status: json["status"],
+        dateTime: json["date_time"] == null
+            ? null
+            : DateTime.parse(json["date_time"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "date_time": dateTime?.toIso8601String(),
+      };
 }

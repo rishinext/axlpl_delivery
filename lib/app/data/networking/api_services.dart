@@ -441,6 +441,30 @@ class ApiServices {
     return _api.post(uploadPODPoint, formData, token: token);
   }
 
+  Future<APIResponse> uploadPickup(
+    final shipmentID,
+    final shipmentStatus,
+    final id,
+    final date,
+    final lat,
+    final long,
+    final token,
+  ) async {
+    final body = {
+      'shipment_id': shipmentID,
+      'status': shipmentStatus,
+      'messanger_id': id,
+      'date_time': date,
+      'latitude': lat,
+      'longitude': long,
+    };
+    return _api.post(
+      uploadPickupPoint,
+      body,
+      token: token,
+    );
+  }
+
   Future<APIResponse> getShipmentRecord(
     final shipmentID,
     final token,

@@ -14,11 +14,14 @@ class PickupController extends GetxController {
   final pickupRepo = PickupRepo();
   final shipmentRepo = ShipnowRepo();
 
+  final shipmentController = TextEditingController();
+
   final pickupList = <RunningPickUp>[].obs;
   final messangerList = <MessangerList>[].obs;
   final RxList<RunningPickUp> filteredPickupList = <RunningPickUp>[].obs;
 
   var isPickupLoading = Status.initial.obs;
+  var isUploadPickup = Status.initial.obs;
   var isMessangerLoading = Status.initial.obs;
   var isTrasferLoading = Status.initial.obs;
   RxInt isSelected = 0.obs;
@@ -62,6 +65,43 @@ class PickupController extends GetxController {
       Utils().logError(e.toString());
       pickupList.value = [];
       filteredPickupList.value = [];
+    }
+  }
+
+  Future<void> uploadPickup(
+      final shipmentID, final shipmentStatus, final date) async {
+    isUploadPickup.value = Status.loading;
+    try {
+      final success = await pickupRepo.uploadPickupRepo(
+        shipmentID,
+        shipmentStatus,
+        date,
+      );
+      if (success == true) {
+        Get.snackbar(
+          'success',
+          'upload pickup Success!',
+          colorText: themes.whiteColor,
+          backgroundColor: themes.darkCyanBlue,
+        );
+        isUploadPickup.value = Status.success;
+      } else {
+        Get.snackbar(
+          'fail',
+          'upload pickup Failed!',
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+        );
+        isUploadPickup.value = Status.error;
+      }
+    } catch (e) {
+      Get.snackbar(
+        'fail',
+        'upload pickup Failed!',
+        colorText: themes.whiteColor,
+        backgroundColor: themes.redColor,
+      );
+      isUploadPickup.value = Status.error;
     }
   }
 

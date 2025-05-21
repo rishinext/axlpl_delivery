@@ -6,7 +6,9 @@ import 'package:axlpl_delivery/utils/utils.dart';
 class TrackingRepo {
   final ApiServices _apiServices = ApiServices();
 
-  Future<TrackingModel?> trackingRepo(final shipmentID) async {
+  Future<TrackingModel?> trackingRepo(
+    final shipmentID,
+  ) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final token =
@@ -18,10 +20,10 @@ class TrackingRepo {
       return response.when(
         success: (body) {
           final trackingData = TrackingModel.fromJson(body);
-          if (trackingData.tracking?[0].error == false) {
+          if (trackingData.message == 'Success') {
             return trackingData;
           } else {
-            return throw Exception(trackingData.tracking?[0].error);
+            return throw Exception(trackingData.message);
           }
         },
         error: (error) {

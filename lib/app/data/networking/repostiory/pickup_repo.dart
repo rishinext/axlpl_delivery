@@ -1,4 +1,6 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
+import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
@@ -124,5 +126,58 @@ class PickupRepo {
       );
     }
     return null;
+  }
+
+  Future<bool?> uploadPickupRepo(
+    final shipmentID,
+    final shipmentStatus,
+    final date,
+  ) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.messangerdetail?.id?.toString();
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+
+      UserLocation location = await Utils().getUserLocation();
+
+      if (userID?.isNotEmpty == true || userID != null) {
+        final response = await _apiServices.uploadPickup(
+          shipmentID,
+          shipmentStatus,
+          userID,
+          date,
+          location.latitude,
+          location.longitude,
+          token.toString(),
+        );
+
+        bool isSuccess = false;
+
+        response.when(
+          success: (body) {
+            final data = CommonModel.fromJson(body);
+            if (data.status == 'success') {
+              Utils().log('pickup done');
+              isSuccess = true;
+            } else {
+              Utils().log('pickup error');
+              isSuccess = false;
+            }
+          },
+          error: (error) {
+            Utils().logError(error.toString());
+            isSuccess = false;
+          },
+        );
+
+        return isSuccess;
+      }
+    } catch (e) {
+      Utils().logError(e.toString());
+      return false;
+    }
+
+    return false;
   }
 }

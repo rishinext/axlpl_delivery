@@ -113,9 +113,9 @@ class HomeView extends GetView<HomeController> {
                           Expanded(
                             child: Obx(() {
                               return HomeContainer(
-                                onTap: () {
-                                  Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS);
-                                },
+                                // onTap: () {
+                                //   Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS);
+                                // },
                                 color: themes.blueGray,
                                 title: runningDeliveryTxt,
                                 subTitle: controller.isLoading.value
