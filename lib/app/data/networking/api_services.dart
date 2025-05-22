@@ -618,4 +618,10 @@ class ApiServices {
       query: query,
     );
   }
+
+  Future<APIResponse> getPaymentMode() {
+    return _api.get(
+      getPaymentModePoint,
+    );
+  }
 }

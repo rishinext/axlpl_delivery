@@ -3,6 +3,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -179,5 +180,28 @@ class PickupRepo {
     }
 
     return false;
+  }
+
+  Future<List<PaymentMode>?> getPaymentMode() async {
+    try {
+      final response = await _apiServices.getPaymentMode();
+      return response.when(
+        success: (body) {
+          final paymentData = PaymentModeModel.fromJson(body);
+          if (paymentData.status == 'success') {
+            return paymentData.data?.paymentModes;
+            // ✅ Must be List<PaymentMode>?
+          } else {
+            Utils().logInfo('API call successful but status != success');
+            return [];
+          }
+        },
+        error: (error) {
+          throw Exception("Payment Mode Fetch Error: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      throw Exception("Exception during fetch: ${e.toString()}");
+    }
   }
 }

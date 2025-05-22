@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/pickup_repo.dart';
@@ -15,16 +16,21 @@ class PickupController extends GetxController {
   final shipmentRepo = ShipnowRepo();
 
   final shipmentController = TextEditingController();
+  final amountController = TextEditingController();
 
   final pickupList = <RunningPickUp>[].obs;
   final messangerList = <MessangerList>[].obs;
+  final paymentModes = <PaymentMode>[].obs;
   final RxList<RunningPickUp> filteredPickupList = <RunningPickUp>[].obs;
 
   var isPickupLoading = Status.initial.obs;
   var isUploadPickup = Status.initial.obs;
   var isMessangerLoading = Status.initial.obs;
   var isTrasferLoading = Status.initial.obs;
+  var isPaymentLoading = Status.initial.obs;
+
   RxInt isSelected = 0.obs;
+  var selectedPay = Rxn<String>();
 
   var selectedMessenger = ''.obs;
   void selectedContainer(int index) {
@@ -65,6 +71,27 @@ class PickupController extends GetxController {
       Utils().logError(e.toString());
       pickupList.value = [];
       filteredPickupList.value = [];
+    }
+  }
+
+  Future<void> getPaymentModeData() async {
+    try {
+      isPaymentLoading.value = Status.loading;
+
+      final result = await pickupRepo.getPaymentMode();
+
+      if (result != null && result.isNotEmpty) {
+        paymentModes.value = result;
+        isPaymentLoading.value = Status.success;
+      } else {
+        paymentModes.clear();
+        Utils().log('Payment data not found');
+        isPaymentLoading.value = Status.error;
+      }
+    } catch (e) {
+      paymentModes.clear();
+      isPaymentLoading.value = Status.error;
+      Utils().logError("Error fetching payment mode: $e");
     }
   }
 

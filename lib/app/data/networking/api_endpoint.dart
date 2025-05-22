@@ -27,3 +27,4 @@ const String ratingPoint = 'rate_shipment';
 const String getRatting = 'get_messenger_rating';
 const String trackPoint = 'track';
 const String uploadPickupPoint = 'uploadPickup';
+const String getPaymentModePoint = 'get_payment_modes';
