@@ -57,8 +57,8 @@ class RunningDeliveryDetailsController extends GetxController {
       "icon": Icons.check_circle
     }
   ];
-  makingPhoneCall() async {
-    var url = Uri.parse("tel:1234567890");
+  Future<void> makingPhoneCall(String phoneNo) async {
+    final Uri url = Uri(scheme: 'tel', path: phoneNo);
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $url');
     }
@@ -71,10 +71,28 @@ class RunningDeliveryDetailsController extends GetxController {
       final trackingList = trackingData?.tracking ?? [];
 
       if (trackingList.isNotEmpty) {
-        trackingStatus.value = trackingList[0].trackingStatus ?? [];
-        senderData.value = trackingList[0].senderData ?? [];
-        receiverData.value = trackingList[0].receiverData ?? [];
+        List<TrackingStatus> trackingStatusList = [];
+        List<ErDatum> senderDataList = [];
+        List<ErDatum> receiverDataList = [];
+
+        for (var item in trackingList) {
+          if (item.trackingStatus != null && item.trackingStatus!.isNotEmpty) {
+            trackingStatusList.addAll(item.trackingStatus!);
+          }
+          if (item.senderData != null && item.senderData!.isNotEmpty) {
+            senderDataList.addAll(item.senderData!);
+          }
+          if (item.receiverData != null && item.receiverData!.isNotEmpty) {
+            receiverDataList.addAll(item.receiverData!);
+          }
+        }
+
+        trackingStatus.value = trackingStatusList;
+        senderData.value = senderDataList;
+        receiverData.value = receiverDataList;
+
         isTrackingLoading.value = Status.success;
+        Utils().logInfo("Tracking Status Count: ${trackingStatusList.length}");
       } else {
         trackingStatus.clear();
         senderData.clear();

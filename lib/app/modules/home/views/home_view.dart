@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
@@ -27,6 +28,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
+    final pickupController = Get.put(PickupController());
     final MobileScannerController QRController = MobileScannerController();
     final user = bottomController.userData.value;
     return Scaffold(
@@ -162,7 +164,10 @@ class HomeView extends GetView<HomeController> {
                             child: HomeIconContainer(
                                 title: 'Pickup',
                                 Img: truckIcon,
-                                OnTap: () => Get.toNamed(Routes.PICKUP))),
+                                OnTap: () {
+                                  pickupController.fetchPaymentModes();
+                                  Get.toNamed(Routes.PICKUP);
+                                })),
                         SizedBox(
                           width: 10.w,
                         ),

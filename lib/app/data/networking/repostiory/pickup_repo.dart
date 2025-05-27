@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
@@ -182,26 +184,26 @@ class PickupRepo {
     return false;
   }
 
-  Future<List<PaymentMode>?> getPaymentMode() async {
-    try {
-      final response = await _apiServices.getPaymentMode();
-      return response.when(
-        success: (body) {
-          final paymentData = PaymentModeModel.fromJson(body);
-          if (paymentData.status == 'success') {
-            return paymentData.data?.paymentModes;
-            // ✅ Must be List<PaymentMode>?
-          } else {
-            Utils().logInfo('API call successful but status != success');
-            return [];
-          }
-        },
-        error: (error) {
-          throw Exception("Payment Mode Fetch Error: ${error.toString()}");
-        },
-      );
-    } catch (e) {
-      throw Exception("Exception during fetch: ${e.toString()}");
-    }
-  }
+  // Future<List<PaymentMode>?> getPaymentMode() async {
+  //   try {
+  //     final response = await _apiServices.getPaymentMode();
+  //     return response.when(
+  //       success: (body) {
+  //         // ✅ Don't decode again if already Map
+  //         final paymentData = PaymentModeModel.fromJson(body);
+  //         if (paymentData.status == 'success') {
+  //           return paymentData.data?.paymentModes;
+  //         } else {
+  //           Utils().logInfo('API call successful but status != success');
+  //           return [];
+  //         }
+  //       },
+  //       error: (error) {
+  //         throw Exception("Payment Mode Fetch Error: ${error.toString()}");
+  //       },
+  //     );
+  //   } catch (e) {
+  //     throw Exception("Exception during fetch: ${e.toString()}");
+  //   }
+  // }
 }

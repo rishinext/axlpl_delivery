@@ -50,6 +50,7 @@ void showChangePasswordDialog() {
     textConfirm: "Submit",
     textCancel: "Cancel",
     confirmTextColor: themes.whiteColor,
+    buttonColor: themes.darkCyanBlue,
     onConfirm: () {
       if (_formKey.currentState?.validate() == true) {
         controller.changePassword();

@@ -9,7 +9,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void showPickDialog() {
+void showPickDialog(final shipmentID, final date) {
   final _formKey = GlobalKey<FormState>();
   final pickupController = Get.find<PickupController>();
   Get.defaultDialog(
@@ -25,14 +25,14 @@ void showPickDialog() {
             const SizedBox(height: 10),
             CommonTextfiled(
               controller: pickupController.amountController,
-              obscureText: true,
+              obscureText: false,
               hintTxt: 'Enter Amount',
               keyboardType: TextInputType.number,
               // validator: (value) =>
               //     value == null || value.length < 6 ? "Min 6 characters" : null,
             ),
             dropdownText('Payment Mode'),
-            Obx(() => CommonDropdown(
+            /*    Obx(() => CommonDropdown(
                   hint: 'Select Payment',
                   selectedValue: pickupController.selectedPay.value,
                   isLoading:
@@ -51,7 +51,51 @@ void showPickDialog() {
                     log(val.toString());
                     pickupController.selectedPay.value = val;
                   },
-                )),
+                )),*/
+            Obx(() {
+              if (pickupController.isLoadingPayment.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade400, width: 1),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade200,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<PaymentMode>(
+                    isExpanded: true,
+                    hint: Text(
+                      'Select Payment Mode',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    value: pickupController.selectedPaymentMode.value,
+                    icon: Icon(Icons.arrow_drop_down, color: Colors.blueGrey),
+                    items: pickupController.paymentModes.map((mode) {
+                      return DropdownMenuItem<PaymentMode>(
+                        value: mode,
+                        child: Text(
+                          mode.name,
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (PaymentMode? newValue) {
+                      pickupController.setSelectedPaymentMode(newValue);
+                    },
+                  ),
+                ),
+              );
+            }),
             const SizedBox(height: 16),
           ],
         ),
@@ -62,7 +106,10 @@ void showPickDialog() {
     textCancel: "Cancel",
     confirmTextColor: themes.whiteColor,
     onConfirm: () {
-      if (_formKey.currentState?.validate() == true) {}
+      if (_formKey.currentState?.validate() == true) {
+        pickupController.uploadPickup(shipmentID, 'Picked up', date);
+        Get.back();
+      }
     },
   );
 }

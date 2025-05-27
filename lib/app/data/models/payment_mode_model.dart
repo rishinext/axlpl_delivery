@@ -1,86 +1,59 @@
-// To parse this JSON data, do
-//
-//     final paymentModeModel = paymentModeModelFromJson(jsonString);
+// models/payment_modes_response.dart
 
-import 'dart:convert';
+class PaymentModesResponse {
+  final String status;
+  final String message;
+  final PaymentData data;
 
-PaymentModeModel paymentModeModelFromJson(String str) =>
-    PaymentModeModel.fromJson(json.decode(str));
-
-String paymentModeModelToJson(PaymentModeModel data) =>
-    json.encode(data.toJson());
-
-class PaymentModeModel {
-  String? status;
-  String? message;
-  DataList? data;
-
-  PaymentModeModel({
-    this.status,
-    this.message,
-    this.data,
+  PaymentModesResponse({
+    required this.status,
+    required this.message,
+    required this.data,
   });
 
-  factory PaymentModeModel.fromJson(Map<String, dynamic> json) =>
-      PaymentModeModel(
-        status: json["status"],
-        message: json["message"],
-        data: json["data"] == null ? null : DataList.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "status": status,
-        "message": message,
-        "data": data?.toJson(),
-      };
+  factory PaymentModesResponse.fromJson(Map<String, dynamic> json) {
+    return PaymentModesResponse(
+      status: json['status'],
+      message: json['message'],
+      data: PaymentData.fromJson(json['data']),
+    );
+  }
 }
 
-class DataList {
-  List<PaymentMode>? paymentModes;
-  List<PaymentMode>? subPaymentModes;
+class PaymentData {
+  final List<PaymentMode> paymentModes;
+  final List<PaymentMode> subPaymentModes;
 
-  DataList({
-    this.paymentModes,
-    this.subPaymentModes,
+  PaymentData({
+    required this.paymentModes,
+    required this.subPaymentModes,
   });
 
-  factory DataList.fromJson(Map<String, dynamic> json) => DataList(
-        paymentModes: json["payment_modes"] == null
-            ? []
-            : List<PaymentMode>.from(
-                json["payment_modes"]!.map((x) => PaymentMode.fromJson(x))),
-        subPaymentModes: json["sub_payment_modes"] == null
-            ? []
-            : List<PaymentMode>.from(
-                json["sub_payment_modes"]!.map((x) => PaymentMode.fromJson(x))),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "payment_modes": paymentModes == null
-            ? []
-            : List<dynamic>.from(paymentModes!.map((x) => x.toJson())),
-        "sub_payment_modes": subPaymentModes == null
-            ? []
-            : List<dynamic>.from(subPaymentModes!.map((x) => x.toJson())),
-      };
+  factory PaymentData.fromJson(Map<String, dynamic> json) {
+    return PaymentData(
+      paymentModes: (json['payment_modes'] as List)
+          .map((e) => PaymentMode.fromJson(e))
+          .toList(),
+      subPaymentModes: (json['sub_payment_modes'] as List)
+          .map((e) => PaymentMode.fromJson(e))
+          .toList(),
+    );
+  }
 }
 
 class PaymentMode {
-  String? id;
-  String? name;
+  final String id;
+  final String name;
 
   PaymentMode({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
   });
 
-  factory PaymentMode.fromJson(Map<String, dynamic> json) => PaymentMode(
-        id: json["id"],
-        name: json["name"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-      };
+  factory PaymentMode.fromJson(Map<String, dynamic> json) {
+    return PaymentMode(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
 }

@@ -59,29 +59,28 @@ class Tracking {
 
   factory Tracking.fromJson(Map<String, dynamic> json) => Tracking(
         trackingStatus: json["TrackingStatus"] == null
-            ? []
+            ? null
             : List<TrackingStatus>.from(
-                json["TrackingStatus"]!.map((x) => TrackingStatus.fromJson(x))),
+                json["TrackingStatus"].map((x) => TrackingStatus.fromJson(x))),
         senderData: json["SenderData"] == null
-            ? []
+            ? null
             : List<ErDatum>.from(
-                json["SenderData"]!.map((x) => ErDatum.fromJson(x))),
+                json["SenderData"].map((x) => ErDatum.fromJson(x))),
         receiverData: json["ReceiverData"] == null
-            ? []
+            ? null
             : List<ErDatum>.from(
-                json["ReceiverData"]!.map((x) => ErDatum.fromJson(x))),
+                json["ReceiverData"].map((x) => ErDatum.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
-        "TrackingStatus": trackingStatus == null
-            ? []
-            : List<dynamic>.from(trackingStatus!.map((x) => x.toJson())),
-        "SenderData": senderData == null
-            ? []
-            : List<dynamic>.from(senderData!.map((x) => x.toJson())),
-        "ReceiverData": receiverData == null
-            ? []
-            : List<dynamic>.from(receiverData!.map((x) => x.toJson())),
+        if (trackingStatus != null)
+          "TrackingStatus":
+              List<dynamic>.from(trackingStatus!.map((x) => x.toJson())),
+        if (senderData != null)
+          "SenderData": List<dynamic>.from(senderData!.map((x) => x.toJson())),
+        if (receiverData != null)
+          "ReceiverData":
+              List<dynamic>.from(receiverData!.map((x) => x.toJson())),
       };
 }
 

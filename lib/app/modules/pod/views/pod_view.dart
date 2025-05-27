@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
@@ -25,6 +27,7 @@ class PodView extends GetView<PodController> {
   const PodView({super.key});
   @override
   Widget build(BuildContext context) {
+    final pickupController = Get.find<PickupController>();
     return CommonScaffold(
         appBar: commonAppbar('Upload POD'),
         body: Padding(
@@ -140,22 +143,58 @@ class PodView extends GetView<PodController> {
                   ),
                 ),*/
                 Obx(() {
-                  return controller.shipmentRecordList.any(
+                  final toPay = controller.shipmentRecordList.any(
                     (item) => item.paymentMode?.toLowerCase() == 'topay',
-                  )
-                      ? CommonDropdown<Map>(
-                          hint: 'Select Payment',
-                          selectedValue: controller.selectedPaymentModeId.value,
-                          isLoading: false,
-                          items: controller.paymentModes,
-                          itemLabel: (m) => m['name'] ?? '',
-                          itemValue: (m) => m['id'],
-                          onChanged: (val) {
-                            log(val.toString());
-                            controller.selectedPaymentModeId.value = val;
+                  );
+                  if (pickupController.isLoadingPayment.value) {
+                    return Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  } else if (toPay) {
+                    return Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.grey.shade400, width: 1),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade200,
+                            blurRadius: 6,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<PaymentMode>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Select Payment Mode',
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                          value: pickupController.selectedPaymentMode.value,
+                          icon: Icon(Icons.arrow_drop_down,
+                              color: Colors.blueGrey),
+                          items: pickupController.paymentModes.map((mode) {
+                            return DropdownMenuItem<PaymentMode>(
+                              value: mode,
+                              child: Text(
+                                mode.name,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (PaymentMode? newValue) {
+                            pickupController.setSelectedPaymentMode(newValue);
                           },
-                        )
-                      : SizedBox.shrink();
+                        ),
+                      ),
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
                 }),
                 CommonButton(
                   title: 'Upload',

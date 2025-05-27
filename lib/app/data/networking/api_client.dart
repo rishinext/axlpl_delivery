@@ -12,11 +12,11 @@ import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 
 class ApiClient {
   late Dio _dio;
-  final String _baseUrl = 'https://new.axlpl.com/messenger/services_v6/';
+  final String baseUrl = 'https://new.axlpl.com/messenger/services_v6/';
 
   ApiClient() {
     _dio = Dio();
-    _dio.options.baseUrl = _baseUrl;
+    _dio.options.baseUrl = baseUrl;
     _dio.options.sendTimeout = Duration(seconds: 5);
     _dio.options.connectTimeout = Duration(seconds: 5);
     _dio.options.receiveTimeout = Duration(seconds: 5);
@@ -69,7 +69,7 @@ class ApiClient {
     }
 
     // ✅ Step 2: ruct URL
-    String url = newBaseUrl != null ? newBaseUrl + path : _baseUrl + path;
+    String url = newBaseUrl != null ? newBaseUrl + path : baseUrl + path;
 
     // ✅ Step 3: Define Content Type
     var content = contentType == ContentType.json
@@ -180,7 +180,7 @@ class ApiClient {
     }
 
     // Determine the URL to use
-    String url = newBaseUrl != null ? newBaseUrl + path : _baseUrl + path;
+    String url = newBaseUrl != null ? newBaseUrl + path : baseUrl + path;
 
     // Simplify content-type assignment
     final content = contentType == ContentType.json
