@@ -35,11 +35,7 @@ class RunningDeliveryDetailsView
             final receiverData = controller.receiverData;
 
             final trackingStatus = controller.trackingStatus;
-
-            String formattedDate = DateFormat('dd-MM-yyyy HH:mm').format(
-              trackingStatus[0].dateTime,
-            );
-
+            final details = controller.shipmentDetail.value;
             if (controller.isTrackingLoading.value == Status.loading) {
               return Center(
                 child: CircularProgressIndicator.adaptive(),
@@ -49,6 +45,10 @@ class RunningDeliveryDetailsView
                 child: Text('No Tracking Data Found'),
               );
             } else if (controller.isTrackingLoading.value == Status.success) {
+              String formattedDate = trackingStatus.isNotEmpty
+                  ? DateFormat('dd-MM-yyyy HH:mm')
+                      .format(trackingStatus[0].dateTime)
+                  : 'No date available';
               return Column(
                 spacing: 20,
                 children: [
@@ -103,66 +103,57 @@ class RunningDeliveryDetailsView
                               )
                             ],
                           ),
-                          Row(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Sender Name',
-                                        style: themes.fontSize14_500
-                                            .copyWith(color: themes.grayColor)),
-                                    SizedBox(height: 4),
-                                    Text(
-                                        senderData.isNotEmpty
-                                            ? senderData[0].senderName ??
-                                                'No sender name'
-                                            : 'No sender name',
-                                        style: themes.fontSize14_500),
-                                    SizedBox(height: 16),
-                                    Text('From',
-                                        style: themes.fontSize14_500
-                                            .copyWith(color: themes.grayColor)),
-                                    SizedBox(height: 4),
-                                    Text(
-                                        senderData.isNotEmpty
-                                            ? senderData[0].address1 ?? ''
-                                            : '',
-                                        style: themes.fontSize14_500),
-                                  ],
-                                ),
+                              Text('Sender Details',
+                                  style: themes.fontSize18_600.copyWith(
+                                      color: themes.grayColor,
+                                      fontSize: 16.sp)),
+                              SizedBox(height: 4),
+                              Text(
+                                  senderData.isNotEmpty
+                                      ? senderData[0].senderName ??
+                                          'No sender name'
+                                      : 'No sender name',
+                                  style: themes.fontSize18_600
+                                      .copyWith(fontSize: 16.sp)),
+                              Text(
+                                senderData.isNotEmpty
+                                    ? senderData[0].address1 +
+                                            ", ${senderData[0].state}" ??
+                                        ''
+                                    : '',
+                                style: themes.fontSize14_500,
                               ),
-                              SizedBox(width: 24),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Shipper Name',
-                                        style: themes.fontSize14_500
-                                            .copyWith(color: themes.grayColor)),
-                                    SizedBox(height: 4),
-                                    Text(
-                                        receiverData.isNotEmpty
-                                            ? receiverData[0].receiverName ??
-                                                'No receiver name'
-                                            : 'No receiver name',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: themes.fontSize14_500),
-                                    SizedBox(height: 16),
-                                    Text('To',
-                                        style: themes.fontSize14_500
-                                            .copyWith(color: themes.grayColor)),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      receiverData.isNotEmpty
-                                          ? receiverData[0].address1 ?? ''
-                                          : '',
-                                      style: themes.fontSize14_500,
-                                    ),
-                                  ],
-                                ),
+                              SizedBox(height: 10.h),
+                              Text('Receiver Details',
+                                  style: themes.fontSize18_600.copyWith(
+                                      color: themes.grayColor,
+                                      fontSize: 16.sp)),
+                              SizedBox(height: 4),
+                              Text(
+                                  receiverData.isNotEmpty
+                                      ? receiverData[0]
+                                              .receiverName
+                                              .toString()
+                                              .toLowerCase() ??
+                                          'No receiver name'
+                                      : 'No receiver name',
+                                  style: themes.fontSize18_600
+                                      .copyWith(fontSize: 16.sp)),
+                              SizedBox(
+                                height: 5.h,
+                              ),
+                              Text(
+                                receiverData.isNotEmpty
+                                    ? receiverData[0].address1 +
+                                            ", ${receiverData[0].state}"
+                                                .toString()
+                                                .toLowerCase() ??
+                                        ''
+                                    : '',
+                                style: themes.fontSize14_500,
                               ),
                             ],
                           ),
@@ -198,8 +189,8 @@ class RunningDeliveryDetailsView
                         ),
                         type: StepperType.vertical,
                         currentStep: controller.currentStep.value,
-                        onStepTapped: (index) =>
-                            controller.currentStep.value = index,
+                        // onStepTapped: (index) =>
+                        //     controller.currentStep.value = index,
                         steps: controller.trackingStatus.map((step) {
                           return EnhanceStep(
                             isActive: true,
@@ -224,68 +215,66 @@ class RunningDeliveryDetailsView
                             content: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  trackingStatus[0].status,
-                                  style: TextStyle(color: Colors.grey),
+                                // Text(
+                                //   trackingStatus[0].status,
+                                //   style: TextStyle(color: Colors.grey),
+                                // ),
+                                SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    // CircleAvatar(
+                                    //   // backgroundImage:
+                                    //   //     AssetImage(step["driverImage"]),
+                                    //   radius: 20,
+                                    // ),
+                                    SizedBox(width: 8),
+                                    // Column(
+                                    //   crossAxisAlignment:
+                                    //       CrossAxisAlignment.start,
+                                    //   children: [
+                                    //     Text(
+                                    //       "Driver",
+                                    //       style: TextStyle(color: Colors.grey),
+                                    //     ),
+                                    //     Text(
+                                    //       'driver name',
+                                    //       style: TextStyle(
+                                    //           fontWeight: FontWeight.bold),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                    Spacer(),
+                                    // InkWell(
+                                    //   onTap: () {
+                                    //     // controller.makingPhoneCall();
+                                    //   },
+                                    //   child: Container(
+                                    //     padding: EdgeInsets.symmetric(
+                                    //         horizontal: 12.w, vertical: 5.h),
+                                    //     decoration: BoxDecoration(
+                                    //       color: Colors.blue[100],
+                                    //       borderRadius:
+                                    //           BorderRadius.circular(20),
+                                    //     ),
+                                    //     child: Row(
+                                    //       children: [
+                                    //         Image.asset(
+                                    //           phoneIcon,
+                                    //           width: 15.w,
+                                    //         ),
+                                    //         SizedBox(width: 5),
+                                    //         Text('driver number',
+                                    //             style: themes.fontSize14_500
+                                    //                 .copyWith(
+                                    //                     fontSize: 14.sp,
+                                    //                     color: themes
+                                    //                         .darkCyanBlue)),
+                                    //       ],
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                  ],
                                 ),
-                                // if (step["hasDriver"] == true) ...[
-                                //   SizedBox(height: 8),
-                                //   Row(
-                                //     children: [
-                                //       CircleAvatar(
-                                //         backgroundImage:
-                                //             AssetImage(step["driverImage"]),
-                                //         radius: 20,
-                                //       ),
-                                //       SizedBox(width: 8),
-                                //       Column(
-                                //         crossAxisAlignment:
-                                //             CrossAxisAlignment.start,
-                                //         children: [
-                                //           Text(
-                                //             "Driver",
-                                //             style: TextStyle(color: Colors.grey),
-                                //           ),
-                                //           Text(
-                                //             step["driverName"],
-                                //             style: TextStyle(
-                                //                 fontWeight: FontWeight.bold),
-                                //           ),
-                                //         ],
-                                //       ),
-                                //       Spacer(),
-                                //       InkWell(
-                                //         onTap: () {
-                                //           // controller.makingPhoneCall();
-                                //         },
-                                //         child: Container(
-                                //           padding: EdgeInsets.symmetric(
-                                //               horizontal: 12.w, vertical: 5.h),
-                                //           decoration: BoxDecoration(
-                                //             color: Colors.blue[100],
-                                //             borderRadius:
-                                //                 BorderRadius.circular(20),
-                                //           ),
-                                //           child: Row(
-                                //             children: [
-                                //               Image.asset(
-                                //                 phoneIcon,
-                                //                 width: 15.w,
-                                //               ),
-                                //               SizedBox(width: 5),
-                                //               Text(step["phone"],
-                                //                   style: themes.fontSize14_500
-                                //                       .copyWith(
-                                //                           fontSize: 14.sp,
-                                //                           color: themes
-                                //                               .darkCyanBlue)),
-                                //             ],
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // ],
                               ],
                             ),
                           );

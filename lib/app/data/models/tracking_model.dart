@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // To parse this JSON data, do
 //
 //     final trackingModel = trackingModelFromJson(jsonString);
@@ -50,11 +51,13 @@ class Tracking {
   List<TrackingStatus>? trackingStatus;
   List<ErDatum>? senderData;
   List<ErDatum>? receiverData;
+  ShipmentDetails? shipmentDetails;
 
   Tracking({
     this.trackingStatus,
     this.senderData,
     this.receiverData,
+    this.shipmentDetails,
   });
 
   factory Tracking.fromJson(Map<String, dynamic> json) => Tracking(
@@ -70,6 +73,10 @@ class Tracking {
             ? null
             : List<ErDatum>.from(
                 json["ReceiverData"].map((x) => ErDatum.fromJson(x))),
+        shipmentDetails: json["ShipmentDetails"] == null
+            ? null
+            : ShipmentDetails.fromJson(
+                json["ShipmentDetails"]), // Add this line
       );
 
   Map<String, dynamic> toJson() => {
@@ -81,6 +88,8 @@ class Tracking {
         if (receiverData != null)
           "ReceiverData":
               List<dynamic>.from(receiverData!.map((x) => x.toJson())),
+        if (shipmentDetails != null)
+          "ShipmentDetails": shipmentDetails!.toJson(),
       };
 }
 
@@ -90,6 +99,10 @@ class ErDatum {
   String? address1;
   String? address2;
   String? senderName;
+  String? state;
+  String? city;
+  String? area;
+  String? pincode;
 
   ErDatum({
     this.receiverName,
@@ -97,6 +110,10 @@ class ErDatum {
     this.address1,
     this.address2,
     this.senderName,
+    this.state,
+    this.city,
+    this.area,
+    this.pincode,
   });
 
   factory ErDatum.fromJson(Map<String, dynamic> json) => ErDatum(
@@ -105,6 +122,10 @@ class ErDatum {
         address1: json["address1"],
         address2: json["address2"],
         senderName: json["sender_name"],
+        state: json["state"],
+        city: json["city"],
+        area: json["area"],
+        pincode: json["pincode"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -113,6 +134,10 @@ class ErDatum {
         "address1": address1,
         "address2": address2,
         "sender_name": senderName,
+        "state": state,
+        "city": city,
+        "area": area,
+        "pincode": pincode,
       };
 }
 
@@ -135,5 +160,112 @@ class TrackingStatus {
   Map<String, dynamic> toJson() => {
         "status": status,
         "date_time": dateTime?.toIso8601String(),
+      };
+}
+
+class ShipmentDetails {
+  String? shipmentId;
+  String? custId;
+  String? parcelDetail;
+  String? categoryId;
+  String? netWeight;
+  String? grossWeight;
+  String? paymentMode;
+  String? serviceId;
+  String? invoiceValue;
+  String? axlplInsurance;
+  String? policyNo;
+  DateTime? expDate;
+  String? insuranceValue;
+  String? remark;
+  String? billTo;
+  String? numberOfParcel;
+  String? additionalAxlplInsurance;
+  String? shipmentCharges;
+  String? insuranceCharges;
+  String? invoiceCharges;
+  String? handlingCharges;
+  String? tax;
+  String? totalCharges;
+
+  ShipmentDetails({
+    this.shipmentId,
+    this.custId,
+    this.parcelDetail,
+    this.categoryId,
+    this.netWeight,
+    this.grossWeight,
+    this.paymentMode,
+    this.serviceId,
+    this.invoiceValue,
+    this.axlplInsurance,
+    this.policyNo,
+    this.expDate,
+    this.insuranceValue,
+    this.remark,
+    this.billTo,
+    this.numberOfParcel,
+    this.additionalAxlplInsurance,
+    this.shipmentCharges,
+    this.insuranceCharges,
+    this.invoiceCharges,
+    this.handlingCharges,
+    this.tax,
+    this.totalCharges,
+  });
+
+  factory ShipmentDetails.fromJson(Map<String, dynamic> json) =>
+      ShipmentDetails(
+        shipmentId: json["shipment_id"],
+        custId: json["cust_id"],
+        parcelDetail: json["parcel_detail"],
+        categoryId: json["category_id"],
+        netWeight: json["net_weight"],
+        grossWeight: json["gross_weight"],
+        paymentMode: json["payment_mode"],
+        serviceId: json["service_id"],
+        invoiceValue: json["invoice_value"],
+        axlplInsurance: json["axlpl_insurance"],
+        policyNo: json["policy_no"],
+        expDate:
+            json["exp_date"] == null ? null : DateTime.parse(json["exp_date"]),
+        insuranceValue: json["insurance_value"],
+        remark: json["remark"],
+        billTo: json["bill_to"],
+        numberOfParcel: json["number_of_parcel"],
+        additionalAxlplInsurance: json["additional_axlpl_insurance"],
+        shipmentCharges: json["shipment_charges"],
+        insuranceCharges: json["insurance_charges"],
+        invoiceCharges: json["invoice_charges"],
+        handlingCharges: json["handling_charges"],
+        tax: json["tax"],
+        totalCharges: json["total_charges"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "shipment_id": shipmentId,
+        "cust_id": custId,
+        "parcel_detail": parcelDetail,
+        "category_id": categoryId,
+        "net_weight": netWeight,
+        "gross_weight": grossWeight,
+        "payment_mode": paymentMode,
+        "service_id": serviceId,
+        "invoice_value": invoiceValue,
+        "axlpl_insurance": axlplInsurance,
+        "policy_no": policyNo,
+        "exp_date":
+            "${expDate!.year.toString().padLeft(4, '0')}-${expDate!.month.toString().padLeft(2, '0')}-${expDate!.day.toString().padLeft(2, '0')}",
+        "insurance_value": insuranceValue,
+        "remark": remark,
+        "bill_to": billTo,
+        "number_of_parcel": numberOfParcel,
+        "additional_axlpl_insurance": additionalAxlplInsurance,
+        "shipment_charges": shipmentCharges,
+        "insurance_charges": insuranceCharges,
+        "invoice_charges": invoiceCharges,
+        "handling_charges": handlingCharges,
+        "tax": tax,
+        "total_charges": totalCharges,
       };
 }

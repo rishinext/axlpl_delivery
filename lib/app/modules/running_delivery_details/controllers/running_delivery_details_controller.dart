@@ -12,7 +12,7 @@ class RunningDeliveryDetailsController extends GetxController {
 
   var currentStep = 0.obs;
   final TrackingRepo repo = TrackingRepo();
-
+  final shipmentDetail = Rxn<ShipmentDetails>();
   // var trackingStatusList = <Tracking>[].obs;
 
   var trackingStatus = <dynamic>[].obs;
@@ -74,7 +74,7 @@ class RunningDeliveryDetailsController extends GetxController {
         List<TrackingStatus> trackingStatusList = [];
         List<ErDatum> senderDataList = [];
         List<ErDatum> receiverDataList = [];
-
+        ShipmentDetails? shipmentDetails;
         for (var item in trackingList) {
           if (item.trackingStatus != null && item.trackingStatus!.isNotEmpty) {
             trackingStatusList.addAll(item.trackingStatus!);
@@ -85,24 +85,34 @@ class RunningDeliveryDetailsController extends GetxController {
           if (item.receiverData != null && item.receiverData!.isNotEmpty) {
             receiverDataList.addAll(item.receiverData!);
           }
+          if (shipmentDetails == null && item.shipmentDetails != null) {
+            shipmentDetails = item.shipmentDetails;
+          }
         }
 
         trackingStatus.value = trackingStatusList;
         senderData.value = senderDataList;
         receiverData.value = receiverDataList;
-
+        shipmentDetail.value = shipmentDetails;
         isTrackingLoading.value = Status.success;
-        Utils().logInfo("Tracking Status Count: ${trackingStatusList.length}");
+        Utils().logInfo("""
+        Tracking Data Loaded:
+        - Status Events: ${trackingStatusList.length}
+        - Sender Data: ${senderDataList.length}
+        - Receiver Data: ${receiverDataList.length}
+        - Shipment Details: ${shipmentDetails != null ? 'Available' : 'Not Available'}
+      """);
       } else {
-        trackingStatus.clear();
-        senderData.clear();
-        receiverData.clear();
+        _clearAllData();
         isTrackingLoading.value = Status.error;
+        Utils().logInfo("No tracking data found for shipment: $shipmentID");
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       _clearAllData();
       isTrackingLoading.value = Status.error;
-      Utils().logError(e.toString());
+      Utils().logError(
+        "Failed to fetch tracking data: ${e.toString()}",
+      );
     }
   }
 
@@ -110,6 +120,6 @@ class RunningDeliveryDetailsController extends GetxController {
     trackingStatus.clear();
     senderData.clear();
     receiverData.clear();
-    isTrackingLoading.value = Status.error;
+    shipmentDetail.value = null;
   }
 }

@@ -135,6 +135,8 @@ class PickupRepo {
     final shipmentID,
     final shipmentStatus,
     final date,
+    final cashAmount,
+    final paymentMode,
   ) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
@@ -153,6 +155,8 @@ class PickupRepo {
           location.latitude,
           location.longitude,
           token.toString(),
+          cashAmount,
+          paymentMode,
         );
 
         bool isSuccess = false;

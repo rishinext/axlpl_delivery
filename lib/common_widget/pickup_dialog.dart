@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -12,6 +13,7 @@ import 'package:get/get.dart';
 void showPickDialog(final shipmentID, final date) {
   final _formKey = GlobalKey<FormState>();
   final pickupController = Get.find<PickupController>();
+  final historyController = Get.find<HistoryController>();
   Get.defaultDialog(
     title: "Payment Mode",
     content: Form(
@@ -27,6 +29,7 @@ void showPickDialog(final shipmentID, final date) {
               controller: pickupController.amountController,
               obscureText: false,
               hintTxt: 'Enter Amount',
+              lableText: 'Enter Amount',
               keyboardType: TextInputType.number,
               // validator: (value) =>
               //     value == null || value.length < 6 ? "Min 6 characters" : null,
@@ -107,7 +110,15 @@ void showPickDialog(final shipmentID, final date) {
     confirmTextColor: themes.whiteColor,
     onConfirm: () {
       if (_formKey.currentState?.validate() == true) {
-        pickupController.uploadPickup(shipmentID, 'Picked up', date);
+        pickupController.uploadPickup(
+          shipmentID,
+          'Picked up',
+          date,
+          pickupController.amountController,
+          'prepaid',
+        );
+        pickupController.getPickupData();
+        historyController.getPickupHistory();
         Get.back();
       }
     },

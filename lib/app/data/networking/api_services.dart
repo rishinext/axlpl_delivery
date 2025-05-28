@@ -448,6 +448,8 @@ class ApiServices {
     final date,
     final lat,
     final long,
+    final cashAmount,
+    final paymentMode,
     final token,
   ) async {
     final body = {
@@ -457,6 +459,8 @@ class ApiServices {
       'date_time': date,
       'latitude': lat,
       'longitude': long,
+      'cash_amount': cashAmount,
+      'sub_payment_mode': paymentMode,
     };
     return _api.post(
       uploadPickupPoint,

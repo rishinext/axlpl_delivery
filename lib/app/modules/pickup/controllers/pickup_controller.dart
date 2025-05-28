@@ -137,13 +137,20 @@ class PickupController extends GetxController {
   }
 
   Future<void> uploadPickup(
-      final shipmentID, final shipmentStatus, final date) async {
+    final shipmentID,
+    final shipmentStatus,
+    final date,
+    final cashAmount,
+    final paymentMode,
+  ) async {
     isUploadPickup.value = Status.loading;
     try {
       final success = await pickupRepo.uploadPickupRepo(
         shipmentID,
         shipmentStatus,
         date,
+        cashAmount,
+        paymentMode,
       );
       if (success == true) {
         Get.snackbar(
