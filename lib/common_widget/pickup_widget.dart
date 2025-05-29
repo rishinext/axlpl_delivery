@@ -217,7 +217,19 @@ class PickupWidget extends StatelessWidget {
                 Text(cityName, style: TextStyle(fontSize: 12.sp)),
               ],
             ),
-            InkWell(
+            Container(
+              width: 6.w,
+              height: 6.w,
+              decoration: BoxDecoration(
+                color: statusDotColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+            Text(
+              'Axlpl Insurance',
+              overflow: TextOverflow.fade,
+            ),
+            /*    InkWell(
               onTap: openDialerTap,
               child: Row(
                 children: [
@@ -237,7 +249,7 @@ class PickupWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+            ),*/
             Row(
               children: [
                 CircleAvatar(

@@ -71,6 +71,7 @@ dependencies:
   flutter_rating_stars: ^1.1.0
   custom_rating_bar: ^3.0.0
   dotted_line: ^3.2.3
+  audioplayers: ^6.4.0
 
 dev_dependencies:
   flutter_test:

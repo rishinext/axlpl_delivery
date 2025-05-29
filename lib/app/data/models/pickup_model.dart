@@ -59,6 +59,7 @@ class RunningPickUp {
   String? id;
   String? shipmentId;
   String? messangerName;
+  String? axlpInsurance;
   String? status;
   String? name;
   String? companyName;
@@ -75,6 +76,7 @@ class RunningPickUp {
   RunningPickUp(
       {this.id,
       this.shipmentId,
+      this.axlpInsurance,
       this.messangerName,
       this.status,
       this.name,
@@ -92,6 +94,7 @@ class RunningPickUp {
   RunningPickUp.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     shipmentId = json['shipment_id'];
+    axlpInsurance = json['axlpl_insurance'];
     messangerName = json['messanger_name'];
     status = json['status'];
     name = json['name'];
@@ -111,6 +114,7 @@ class RunningPickUp {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['shipment_id'] = this.shipmentId;
+    data['axlpl_insurance'] = this.axlpInsurance;
     data['messanger_name'] = this.messangerName;
     data['status'] = this.status;
     data['name'] = this.name;

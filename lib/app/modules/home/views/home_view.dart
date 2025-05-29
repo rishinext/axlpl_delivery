@@ -78,22 +78,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                   suffixIcon: InkWell(
                       onTap: () async {
-                        String? res = await SimpleBarcodeScanner.scanBarcode(
-                          scanType: ScanType.defaultMode,
-                          context,
-                          barcodeAppBar: const BarcodeAppBar(
-                            appBarTitle: '',
-                            centerTitle: false,
-                            enableBackButton: true,
-                            backButtonIcon: Icon(Icons.arrow_back_ios),
-                          ),
-                          isShowFlashIcon: true,
-                          // delayMillis: 2000,
-                          cameraFace: CameraFace.back,
-                        );
-
-                        final result = res as String;
-                        log(result.toString());
+                        Utils().scanAndPlaySound(context);
                       },
                       // Navigator.push(
                       //   context,

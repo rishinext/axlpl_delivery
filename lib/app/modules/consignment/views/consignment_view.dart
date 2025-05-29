@@ -233,26 +233,12 @@ class ConsignmentView extends GetView<ConsignmentController> {
                       hintTxt: 'Enter Consignment ID',
                       sufixIcon: IconButton(
                         onPressed: () async {
-                          String? res = await SimpleBarcodeScanner.scanBarcode(
-                            scanType: ScanType.defaultMode,
-                            context,
-                            barcodeAppBar: const BarcodeAppBar(
-                              appBarTitle: '',
-                              centerTitle: false,
-                              enableBackButton: true,
-                              backButtonIcon: Icon(Icons.arrow_back_ios),
-                            ),
-                            isShowFlashIcon: true,
-                            cameraFace: CameraFace.back,
-                          );
-
-                          if (res != null && res.isNotEmpty && res != "-1") {
+                          String? scannedValue =
+                              await Utils().scanAndPlaySound(context);
+                          if (scannedValue != null) {
                             congimentController.congimentControllerSearch.text =
-                                res; //
-                            congimentController.getConsigmentData(res);
-                            log('Scanned barcode: $res');
-                          } else {
-                            log('Scan cancelled or failed');
+                                scannedValue;
+                            congimentController.getConsigmentData(scannedValue);
                           }
                         },
                         icon: const Icon(CupertinoIcons.qrcode_viewfinder),

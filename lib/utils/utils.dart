@@ -1,14 +1,18 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 Themes themes = Themes();
+final player = AudioPlayer();
 
 class Utils {
   Utils._privateConstructor();
@@ -145,5 +149,29 @@ class Utils {
     }
 
     return null;
+  }
+
+  Future<String?> scanAndPlaySound(BuildContext context) async {
+    String? res = await SimpleBarcodeScanner.scanBarcode(
+      scanType: ScanType.defaultMode,
+      context,
+      barcodeAppBar: const BarcodeAppBar(
+        appBarTitle: '',
+        centerTitle: false,
+        enableBackButton: true,
+        backButtonIcon: Icon(Icons.arrow_back_ios),
+      ),
+      isShowFlashIcon: true,
+      cameraFace: CameraFace.back,
+    );
+
+    if (res != null && res.isNotEmpty && res != '-1') {
+      // Play sound only when valid scan result
+      await player.play(AssetSource('beep.mp3'));
+      // Handle scanned result here
+      logInfo('Scanned: $res');
+    } else {
+      log('Scan cancelled or invalid');
+    }
   }
 }

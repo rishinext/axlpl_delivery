@@ -49,8 +49,8 @@ class TrackingModel {
 
 class Tracking {
   List<TrackingStatus>? trackingStatus;
-  List<ErDatum>? senderData;
-  List<ErDatum>? receiverData;
+  ErDatum? senderData; // changed from List<ErDatum>? to ErDatum?
+  ErDatum? receiverData; // same
   ShipmentDetails? shipmentDetails;
 
   Tracking({
@@ -64,30 +64,25 @@ class Tracking {
         trackingStatus: json["TrackingStatus"] == null
             ? null
             : List<TrackingStatus>.from(
-                json["TrackingStatus"].map((x) => TrackingStatus.fromJson(x))),
+                (json["TrackingStatus"] as List<dynamic>)
+                    .map((x) => TrackingStatus.fromJson(x))),
         senderData: json["SenderData"] == null
             ? null
-            : List<ErDatum>.from(
-                json["SenderData"].map((x) => ErDatum.fromJson(x))),
+            : ErDatum.fromJson(json["SenderData"]), // SINGLE OBJECT
         receiverData: json["ReceiverData"] == null
             ? null
-            : List<ErDatum>.from(
-                json["ReceiverData"].map((x) => ErDatum.fromJson(x))),
+            : ErDatum.fromJson(json["ReceiverData"]),
         shipmentDetails: json["ShipmentDetails"] == null
             ? null
-            : ShipmentDetails.fromJson(
-                json["ShipmentDetails"]), // Add this line
+            : ShipmentDetails.fromJson(json["ShipmentDetails"]),
       );
 
   Map<String, dynamic> toJson() => {
         if (trackingStatus != null)
           "TrackingStatus":
               List<dynamic>.from(trackingStatus!.map((x) => x.toJson())),
-        if (senderData != null)
-          "SenderData": List<dynamic>.from(senderData!.map((x) => x.toJson())),
-        if (receiverData != null)
-          "ReceiverData":
-              List<dynamic>.from(receiverData!.map((x) => x.toJson())),
+        if (senderData != null) "SenderData": senderData!.toJson(),
+        if (receiverData != null) "ReceiverData": receiverData!.toJson(),
         if (shipmentDetails != null)
           "ShipmentDetails": shipmentDetails!.toJson(),
       };
@@ -96,6 +91,7 @@ class Tracking {
 class ErDatum {
   String? receiverName;
   String? companyName;
+  String? mobile;
   String? address1;
   String? address2;
   String? senderName;
@@ -107,6 +103,7 @@ class ErDatum {
   ErDatum({
     this.receiverName,
     this.companyName,
+    this.mobile,
     this.address1,
     this.address2,
     this.senderName,
@@ -119,6 +116,7 @@ class ErDatum {
   factory ErDatum.fromJson(Map<String, dynamic> json) => ErDatum(
         receiverName: json["receiver_name"],
         companyName: json["company_name"],
+        mobile: json["mobile"],
         address1: json["address1"],
         address2: json["address2"],
         senderName: json["sender_name"],
@@ -131,6 +129,7 @@ class ErDatum {
   Map<String, dynamic> toJson() => {
         "receiver_name": receiverName,
         "company_name": companyName,
+        "mobile": mobile,
         "address1": address1,
         "address2": address2,
         "sender_name": senderName,

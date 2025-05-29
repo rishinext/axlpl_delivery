@@ -195,10 +195,10 @@ class PickupView extends GetView<PickupController> {
                                         statusColor: data.status == 'Picked up'
                                             ? themes.greenColor
                                             : themes.redColor,
-                                        statusDotColor:
-                                            data.status == 'Picked up'
-                                                ? themes.greenColor
-                                                : themes.redColor,
+                                        statusDotColor: data.axlpInsurance ==
+                                                'axlpl_insurance'
+                                            ? themes.greenColor
+                                            : themes.redColor,
                                         showPickupBtn: true,
                                         showTrasferBtn: true,
                                         showDivider: true,

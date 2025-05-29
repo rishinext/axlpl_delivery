@@ -75,16 +75,21 @@ class RunningDeliveryDetailsController extends GetxController {
         List<ErDatum> senderDataList = [];
         List<ErDatum> receiverDataList = [];
         ShipmentDetails? shipmentDetails;
+
         for (var item in trackingList) {
           if (item.trackingStatus != null && item.trackingStatus!.isNotEmpty) {
             trackingStatusList.addAll(item.trackingStatus!);
           }
-          if (item.senderData != null && item.senderData!.isNotEmpty) {
-            senderDataList.addAll(item.senderData!);
+
+          // CHANGED: add single object directly
+          if (item.senderData != null) {
+            senderDataList.add(item.senderData!);
           }
-          if (item.receiverData != null && item.receiverData!.isNotEmpty) {
-            receiverDataList.addAll(item.receiverData!);
+
+          if (item.receiverData != null) {
+            receiverDataList.add(item.receiverData!);
           }
+
           if (shipmentDetails == null && item.shipmentDetails != null) {
             shipmentDetails = item.shipmentDetails;
           }
@@ -95,13 +100,14 @@ class RunningDeliveryDetailsController extends GetxController {
         receiverData.value = receiverDataList;
         shipmentDetail.value = shipmentDetails;
         isTrackingLoading.value = Status.success;
+
         Utils().logInfo("""
-        Tracking Data Loaded:
-        - Status Events: ${trackingStatusList.length}
-        - Sender Data: ${senderDataList.length}
-        - Receiver Data: ${receiverDataList.length}
-        - Shipment Details: ${shipmentDetails != null ? 'Available' : 'Not Available'}
-      """);
+      Tracking Data Loaded:
+      - Status Events: ${trackingStatusList.length}
+      - Sender Data: ${senderDataList.length}
+      - Receiver Data: ${receiverDataList.length}
+      - Shipment Details: ${shipmentDetails != null ? 'Available' : 'Not Available'}
+    """);
       } else {
         _clearAllData();
         isTrackingLoading.value = Status.error;
