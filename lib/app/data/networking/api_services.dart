@@ -46,6 +46,7 @@ class ApiServices {
     String userID,
     String branchID,
     // String zipcode,
+    // String paymentMode,
     String token,
   ) async {
     final body = {
@@ -441,16 +442,32 @@ class ApiServices {
     return _api.post(uploadPODPoint, formData, token: token);
   }
 
-  Future<APIResponse> uploadPickup(
+  Future<APIResponse> uploadInvoice(
     final shipmentID,
-    final shipmentStatus,
-    final id,
-    final date,
-    final lat,
-    final long,
-    final cashAmount,
-    final paymentMode,
+    MultipartFile? attetchment,
     final token,
+  ) async {
+    final formData = FormData.fromMap({
+      'shipment_id': shipmentID,
+      'invoice_file': attetchment,
+    });
+    return _api.post(
+      uploadInvoicePoint,
+      formData,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> uploadPickup(
+    shipmentID,
+    shipmentStatus,
+    id,
+    date,
+    lat,
+    long,
+    cashAmount,
+    paymentMode,
+    token,
   ) async {
     final body = {
       'shipment_id': shipmentID,
