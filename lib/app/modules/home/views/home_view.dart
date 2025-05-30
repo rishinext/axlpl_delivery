@@ -147,7 +147,7 @@ class HomeView extends GetView<HomeController> {
                       children: [
                         Expanded(
                             child: HomeIconContainer(
-                                title: 'Pickup',
+                                title: 'Pickups',
                                 Img: truckIcon,
                                 OnTap: () {
                                   pickupController.fetchPaymentModes();

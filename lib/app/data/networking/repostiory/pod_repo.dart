@@ -18,7 +18,7 @@ class PodRepo {
     return apiMessage;
   }
 
-  Future<bool> profilePhotoUploadRepo(
+  Future<bool> uploadPodRepo(
     String shipmentID,
     String shipmentStatus,
     String shipmentOtp,

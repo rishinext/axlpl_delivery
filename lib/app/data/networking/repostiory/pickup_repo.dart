@@ -5,7 +5,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
-
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -154,9 +154,9 @@ class PickupRepo {
           date,
           location.latitude,
           location.longitude,
-          token.toString(),
           cashAmount,
           paymentMode,
+          token.toString(),
         );
 
         bool isSuccess = false;

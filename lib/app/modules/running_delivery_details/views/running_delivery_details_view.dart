@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
+import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/image_picker_widget.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
@@ -24,7 +30,7 @@ class RunningDeliveryDetailsView
     StepperType type = StepperType.horizontal;
     final shipmentId = Get.parameters['shipmentID'];
     final status = Get.parameters['status'];
-
+    final profileController = Get.put(ProfileController());
     return CommonScaffold(
       appBar: commonAppbar('Running Delivery Detail'),
       body: Padding(
@@ -219,7 +225,7 @@ class RunningDeliveryDetailsView
                             SizedBox(width: 12),
                             Expanded(
                                 child: _infoCard('Net Weight',
-                                    '${details?.netWeight ?? "N/A"} Net Weight')),
+                                    '${details?.netWeight ?? "N/A"}g')),
                           ],
                         ),
                         SizedBox(height: 12),
@@ -227,7 +233,7 @@ class RunningDeliveryDetailsView
                           children: [
                             Expanded(
                                 child: _infoCard('Gross Weight',
-                                    '${details?.grossWeight ?? "N/A"} Gross Weight')),
+                                    '${details?.grossWeight ?? "N/A"}g')),
                             SizedBox(width: 12),
                             Expanded(
                                 child: _infoCard('Payment Mode',
@@ -285,9 +291,136 @@ class RunningDeliveryDetailsView
                               ? 'No Policy'
                               : details!.policyNo!,
                         ),
+                        SizedBox(height: 15.h),
+                        Divider(),
                       ],
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: themes.whiteColor,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Invoice Details',
+                            style: themes.fontSize16_400
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        _infoRow('Invoice Value',
+                            details?.invoiceValue?.toString() ?? 'N/A'),
+                        Divider(),
+                        SizedBox(height: 8),
+                        _infoRow(
+                            'Invoice Charges',
+                            details?.invoiceCharges?.toString() == ''
+                                ? 'N/A'
+                                : '' ?? 'N/A'),
+                        Divider(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () {
+                                    controller.pickImage(ImageSource.gallery,
+                                        (file) {
+                                      controller.imageFile.value = file;
+                                    });
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                        color: themes.grayColor, width: 1.w),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20.w, vertical: 8.h),
+                                  ),
+                                  child: Text(
+                                    'Choose',
+                                    style: themes.fontSize14_500
+                                        .copyWith(color: themes.darkCyanBlue),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: themes.darkCyanBlue,
+                                    foregroundColor: themes.whiteColor,
+                                  ),
+                                  onPressed: () {
+                                    controller.uploadInvoice(
+                                      shipmentID: shipmentId.toString(),
+                                      file: File(
+                                          controller.imageFile.value?.path ??
+                                              ''),
+                                    );
+                                  },
+                                  child: Text('UPLOAD'),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 12.h),
+                            Obx(() {
+                              final file = controller.imageFile.value;
+                              if (file == null) {
+                                return Center(
+                                  child: SizedBox()
+                                );
+                              }
+                              return Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      file,
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 4,
+                                    right: 4,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        controller.imageFile.value =
+                                            null; // Remove image
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.close,
+                                          size: 20,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 15.h),
 
                   // Your stepper container remains unchanged
                   Container(
@@ -319,8 +452,7 @@ class RunningDeliveryDetailsView
                               10), // Adjust spacing inside circle
                           child: Icon(
                             Icons.gps_fixed,
-                            color: themes
-                                .darkCyanBlue, // ✅ Ensure icon contrasts with background
+                            color: themes.darkCyanBlue,
                             size: 20,
                           ),
                         ),

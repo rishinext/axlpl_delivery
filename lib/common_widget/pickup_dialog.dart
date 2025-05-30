@@ -117,8 +117,8 @@ void showPickDialog(final shipmentID, final date) {
           pickupController.amountController,
           'prepaid',
         );
-        pickupController.getPickupData();
-        historyController.getPickupHistory();
+        // pickupController.getPickupData();
+        // historyController.getPickupHistory();
         Get.back();
       }
     },

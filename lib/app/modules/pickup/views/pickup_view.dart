@@ -158,7 +158,7 @@ class PickupView extends GetView<PickupController> {
                             return SizedBox(
                               height: 500.h,
                               child: ListView.separated(
-                                physics: ScrollPhysics(),
+                                physics: BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: pickupController.pickupList.length,
                                 separatorBuilder: (context, index) => SizedBox(
@@ -217,115 +217,13 @@ class PickupView extends GetView<PickupController> {
                                               data.shipmentId.toString(),
                                               data.date.toString());
                                         },
-                                        trasferTap: () {},
+                                        trasferTap: () {
+                                          showTransferDialog();
+                                        },
                                       ));
                                 },
                               ),
                             );
-
-                            // ListView.separated(
-                            //   separatorBuilder: (context, index) => SizedBox(
-                            //     height: 5.h,
-                            //   ),
-                            //   itemCount:
-                            //       pickupController.filteredPickupList.length,
-                            //   shrinkWrap: true,
-                            //   physics: BouncingScrollPhysics(),
-                            //   itemBuilder: (context, index) {
-                            //     final data = pickupController
-                            //         .filteredPickupList[index];
-                            //     final messangerID =
-                            //         pickupController.messangerList;
-                            //     return InkWell(
-                            //       onTap: () {
-                            //         runningController.fetchTrackingData(
-                            //           data.shipmentId.toString(),
-                            //         );
-                            //         Get.toNamed(
-                            //           Routes.RUNNING_DELIVERY_DETAILS,
-                            //         );
-                            //       },
-                            //       child: Card(
-                            //         shape: RoundedRectangleBorder(
-                            //             borderRadius:
-                            //                 BorderRadius.circular(10.r)),
-                            //         child: ListTile(
-                            //           shape: RoundedRectangleBorder(
-                            //               borderRadius:
-                            //                   BorderRadius.circular(10.r)),
-
-                            //           tileColor: themes.whiteColor,
-                            //           dense: false,
-                            //           // leading: CircleAvatar(
-                            //           //   backgroundColor: themes.blueGray,
-                            //           //   child: Image.asset(
-                            //           //     gpsIcon,
-                            //           //     width: 18.w,
-                            //           //   ),
-                            //           // ),
-                            //           title: Text(
-                            //               "Company Name : ${data.companyName.toString()}"),
-                            //           subtitle: Column(
-                            //             spacing: 5,
-                            //             crossAxisAlignment:
-                            //                 CrossAxisAlignment.start,
-                            //             children: [
-                            //               // Text(
-                            //               //     "Messanger Name : ${data.messangerName.toString()}"),
-                            //               Text(
-                            //                   "Phone : ${data.mobile.toString()}"),
-                            //               Text(
-                            //                   "Zipcode : ${data.pincode.toString()}"),
-                            //               Text(
-                            //                   "Shipment ID : ${data.shipmentId.toString()}"),
-                            //               Text(
-                            //                   "Sender Address : ${data.address1.toString()}"),
-                            //               Text(
-                            //                 "Status : ${data.status.toString()}",
-                            //                 style: themes.fontReboto16_600
-                            //                     .copyWith(
-                            //                   color: themes.redColor,
-                            //                 ),
-                            //               ),
-                            //               CommonButton(
-                            //                 title: 'Pickup',
-                            //                 onPressed: () {
-                            //                   pickupController.uploadPickup(
-                            //                       data.shipmentId.toString(),
-                            //                       'Picked up',
-                            //                       data.date.toString());
-                            //                 },
-                            //               )
-                            //             ],
-                            //           ),
-                            //           trailing: SizedBox(
-                            //             // height: 48, // ListTile's default height
-                            //             width: 48,
-                            //             child: Align(
-                            //               alignment: Alignment.topRight,
-                            //               child: IconButton.outlined(
-                            //                 onPressed: () {
-                            //                   pickupController
-                            //                       .openMapWithAddress(
-                            //                           data.companyName
-                            //                               .toString(),
-                            //                           data.address1
-                            //                               .toString(),
-                            //                           data.pincode
-                            //                               .toString());
-                            //                 },
-                            //                 icon: Icon(
-                            //                   Icons.gps_fixed,
-                            //                   color: themes.darkCyanBlue,
-                            //                 ),
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     );
-                            //   },
-                            // );
                           } else {
                             return Center(
                               child: Text(
@@ -351,72 +249,76 @@ class PickupView extends GetView<PickupController> {
                           ));
                         } else if (historyController.isPickedup.value ==
                             Status.success) {
-                          return ListView.separated(
-                            itemCount:
-                                historyController.pickUpHistoryList.length,
-                            shrinkWrap: true,
-                            separatorBuilder: (context, index) => SizedBox(),
-                            itemBuilder: (context, index) {
-                              var data =
-                                  historyController.pickUpHistoryList[index];
-                              return InkWell(
-                                onTap: () {
-                                  runningController.fetchTrackingData(
-                                      data.shipmentId.toString());
-                                  Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
-                                      parameters: {
-                                        'shipmentID':
-                                            data.shipmentId.toString(),
-                                        'status': data.status.toString(),
-                                      });
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.all(8.w),
-                                  padding: EdgeInsets.all(10.w),
-                                  decoration: BoxDecoration(
-                                    color: themes.whiteColor,
-                                    borderRadius: BorderRadius.circular(15.r),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 4.r,
-                                        offset: Offset(0, 3),
-                                      ),
-                                    ],
+                          return SizedBox(
+                            height: 500.h,
+                            child: ListView.separated(
+                              itemCount:
+                                  historyController.pickUpHistoryList.length,
+                              shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
+                              separatorBuilder: (context, index) => SizedBox(),
+                              itemBuilder: (context, index) {
+                                var data =
+                                    historyController.pickUpHistoryList[index];
+                                return InkWell(
+                                  onTap: () {
+                                    runningController.fetchTrackingData(
+                                        data.shipmentId.toString());
+                                    Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
+                                        parameters: {
+                                          'shipmentID':
+                                              data.shipmentId.toString(),
+                                          'status': data.status.toString(),
+                                        });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.all(8.w),
+                                    padding: EdgeInsets.all(10.w),
+                                    decoration: BoxDecoration(
+                                      color: themes.whiteColor,
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 4.r,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: PickupWidget(
+                                      companyName: data.companyName.toString(),
+                                      date: data.date.toString(),
+                                      status: data.status.toString(),
+                                      messangerName:
+                                          data.messangerName.toString(),
+                                      address: data.address1.toString(),
+                                      shipmentID: data.shipmentId.toString(),
+                                      cityName: data.cityName.toString(),
+                                      mobile: data.mobile.toString(),
+                                      statusColor: data.status == 'Picked up'
+                                          ? themes.greenColor
+                                          : themes.redColor,
+                                      statusDotColor: data.status == 'Picked up'
+                                          ? themes.greenColor
+                                          : themes.redColor,
+                                      showPickupBtn: false,
+                                      showTrasferBtn: false,
+                                      showDivider: false,
+                                      openMapTap: () {
+                                        pickupController.openMapWithAddress(
+                                            data.companyName.toString(),
+                                            data.address1.toString(),
+                                            data.pincode.toString());
+                                      },
+                                      openDialerTap: () {
+                                        runningController.makingPhoneCall(
+                                            data.mobile.toString());
+                                      },
+                                    ),
                                   ),
-                                  child: PickupWidget(
-                                    companyName: data.companyName.toString(),
-                                    date: data.date.toString(),
-                                    status: data.status.toString(),
-                                    messangerName:
-                                        data.messangerName.toString(),
-                                    address: data.address1.toString(),
-                                    shipmentID: data.shipmentId.toString(),
-                                    cityName: data.cityName.toString(),
-                                    mobile: data.mobile.toString(),
-                                    statusColor: data.status == 'Picked up'
-                                        ? themes.greenColor
-                                        : themes.redColor,
-                                    statusDotColor: data.status == 'Picked up'
-                                        ? themes.greenColor
-                                        : themes.redColor,
-                                    showPickupBtn: false,
-                                    showTrasferBtn: false,
-                                    showDivider: false,
-                                    openMapTap: () {
-                                      pickupController.openMapWithAddress(
-                                          data.companyName.toString(),
-                                          data.address1.toString(),
-                                          data.pincode.toString());
-                                    },
-                                    openDialerTap: () {
-                                      runningController.makingPhoneCall(
-                                          data.mobile.toString());
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           );
                         } else {
                           return SizedBox();

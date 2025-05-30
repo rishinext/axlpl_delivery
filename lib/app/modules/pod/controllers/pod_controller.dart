@@ -49,7 +49,7 @@ class PodController extends GetxController {
       isPod.value = Status.loading;
       message.value = '';
 
-      final result = await _repo.profilePhotoUploadRepo(
+      final result = await _repo.uploadPodRepo(
         shipmentIdController.text,
         shipmentStatus,
         shipmentOtp,

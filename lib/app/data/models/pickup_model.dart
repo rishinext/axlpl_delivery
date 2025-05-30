@@ -59,6 +59,7 @@ class RunningPickUp {
   String? id;
   String? shipmentId;
   String? messangerName;
+  String? paymentMode;
   String? axlpInsurance;
   String? status;
   String? name;
@@ -77,6 +78,7 @@ class RunningPickUp {
       {this.id,
       this.shipmentId,
       this.axlpInsurance,
+      this.paymentMode,
       this.messangerName,
       this.status,
       this.name,
@@ -96,6 +98,7 @@ class RunningPickUp {
     shipmentId = json['shipment_id'];
     axlpInsurance = json['axlpl_insurance'];
     messangerName = json['messanger_name'];
+    paymentMode = json['payment_mode'];
     status = json['status'];
     name = json['name'];
     companyName = json['company_name'];
@@ -116,6 +119,7 @@ class RunningPickUp {
     data['shipment_id'] = this.shipmentId;
     data['axlpl_insurance'] = this.axlpInsurance;
     data['messanger_name'] = this.messangerName;
+    data['payment_mode'] = this.paymentMode;
     data['status'] = this.status;
     data['name'] = this.name;
     data['company_name'] = this.companyName;
