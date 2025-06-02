@@ -81,7 +81,7 @@ class HistoryView extends GetView<HistoryController> {
                             child: Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
-                                'Pickup',
+                                'Picked-up',
                                 textAlign: TextAlign.center,
                                 style: themes.fontSize14_500.copyWith(
                                     color:

@@ -1,6 +1,6 @@
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
-import 'package:axlpl_delivery/app/modules/running_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ class PickupWidget extends StatelessWidget {
   final String shipmentID;
   final String cityName;
   final String mobile;
+  final String? paymentType;
   final Color statusColor;
   final Color statusDotColor;
   final bool showPickupBtn;
@@ -40,6 +41,7 @@ class PickupWidget extends StatelessWidget {
     required this.shipmentID,
     required this.cityName,
     required this.mobile,
+    this.paymentType,
     required this.statusColor,
     required this.statusDotColor,
     required this.showPickupBtn,
@@ -259,7 +261,7 @@ class PickupWidget extends StatelessWidget {
                       size: 16.sp, color: Colors.indigo),
                 ),
                 SizedBox(width: 4.w),
-                Text("To Pay", style: TextStyle(fontSize: 12.sp)),
+                Text(paymentType ?? 'N/A', style: TextStyle(fontSize: 12.sp)),
               ],
             ),
           ],

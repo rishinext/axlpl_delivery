@@ -483,18 +483,18 @@ class AddShipmentController extends GetxController {
         data.expireDate,
         data.insuranceAmt,
         data.insurance,
-        "", // addInsurance if available
-        "", // shipmentStatus
-        "", // caculationStatus
-        "", // addedBy
-        "", // addedType
-        "", // alertShipment
-        "", // shipmentInvoice
-        "", // isAmtEditedByUser
+        "N/A", // addInsurance if available
+        "N/A", // shipmentStatus
+        "N/A", // caculationStatus
+        "N/A", // addedBy
+        "N/A", // addedType
+        "N/A", // alertShipment
+        "N/A", // shipmentInvoice
+        "N/A", // isAmtEditedByUser
         data.docketNo, // shipmentID
         data.sendInfoName,
         data.sendInfoCompanyName,
-        "", // senderCountry
+        "N/A", // senderCountry
         data.sendInfoState,
         data.sendInfoCity,
         data.sendInfoAera,
@@ -503,16 +503,16 @@ class AddShipmentController extends GetxController {
         data.sendInfoAddress2,
         data.sendInfoMobile,
         data.sendInfoEmail,
-        "", // senderSaveAddress
-        "", // senderisNewAdresss
+        "N/A", // senderSaveAddress
+        "N/A", // senderisNewAdresss
         data.sendInfoGstNo,
-        "", // senderCustID
+        "N/A", // senderCustID
         data.receiverInfoName,
         data.remark,
-        "", // billTo
+        "N/A", // billTo
         data.noOfParcel,
         data.receiverInfoCompanyName,
-        "", // receiverCountry
+        "N/A", // receiverCountry
         data.receiverInfoState,
         data.receiverInfoCity,
         data.receiverInfoAera,
@@ -521,12 +521,12 @@ class AddShipmentController extends GetxController {
         data.receiverInfoAddress2,
         data.receiverInfoMobile,
         data.receiverInfoEmail,
-        "", // receiverSaveAddress
-        "", // receiverisNewAdresss
+        "N/A", // receiverSaveAddress
+        "N/A", // receiverisNewAdresss
         data.receiverInfoGstNo,
-        "", // receiverCustID
+        "N/A", // receiverCustID
         "1", // isDiffAdd (or logic to check if different address is used)
-        "", // diffReceiverCountry
+        "N/A", // diffReceiverCountry
         data.differentInfoState,
         data.differentInfoCity,
         data.differentInfoAera,
@@ -535,11 +535,11 @@ class AddShipmentController extends GetxController {
         data.differentInfoAddress2,
         data.shipmentCharges,
         data.insuranceCharge,
-        "", // invoiceCharges
+        "N/A", // invoiceCharges
         data.handlingCharge,
         data.gst,
         data.totalCharge,
-        "", // grandeTotal
+        "N/A", // grandeTotal
         data.docketNo, // docketNo
         data.shipmentSelectedDate,
       );

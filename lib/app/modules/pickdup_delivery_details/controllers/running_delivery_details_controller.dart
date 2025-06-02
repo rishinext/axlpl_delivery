@@ -30,6 +30,22 @@ class RunningDeliveryDetailsController extends GetxController {
 
   final message = ''.obs;
 
+  var imageMap = <String, File>{}.obs;
+
+  void setImage(String shipmentId, File file) {
+    imageMap[shipmentId] = file;
+    imageMap.refresh(); // to trigger Obx
+  }
+
+  void removeImage(String shipmentId) {
+    imageMap.remove(shipmentId);
+    imageMap.refresh();
+  }
+
+  File? getImage(String shipmentId) {
+    return imageMap[shipmentId];
+  }
+
   final List<Map<String, dynamic>> stepsData = [
     {
       "title": "Delivery Attempted",

@@ -28,11 +28,11 @@ class RunningDeliveryDetailsView
   @override
   Widget build(BuildContext context) {
     StepperType type = StepperType.horizontal;
-    final shipmentId = Get.parameters['shipmentID'];
+    final shipmentID = Get.parameters['shipmentID'];
     final status = Get.parameters['status'];
     final profileController = Get.put(ProfileController());
     return CommonScaffold(
-      appBar: commonAppbar('Running Delivery Detail'),
+      appBar: commonAppbar('Pickup Delivery Detail'),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(child: Obx(
@@ -82,7 +82,7 @@ class RunningDeliveryDetailsView
                         // SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Order No: ${shipmentId.toString()}',
+                            'Order No: ${shipmentID.toString()}',
                             style: themes.fontSize14_500.copyWith(
                                 fontWeight: FontWeight.bold, fontSize: 12.sp),
                             overflow: TextOverflow.ellipsis,
@@ -336,7 +336,8 @@ class RunningDeliveryDetailsView
                                   onPressed: () {
                                     controller.pickImage(ImageSource.gallery,
                                         (file) {
-                                      controller.imageFile.value = file;
+                                      controller.setImage(
+                                          shipmentID.toString(), file);
                                     });
                                   },
                                   style: OutlinedButton.styleFrom(
@@ -360,12 +361,13 @@ class RunningDeliveryDetailsView
                                     foregroundColor: themes.whiteColor,
                                   ),
                                   onPressed: () {
-                                    controller.uploadInvoice(
-                                      shipmentID: shipmentId.toString(),
-                                      file: File(
-                                          controller.imageFile.value?.path ??
-                                              ''),
-                                    );
+                                    final file = controller
+                                        .getImage(shipmentID.toString());
+                                    if (file != null) {
+                                      controller.uploadInvoice(
+                                          shipmentID: shipmentID.toString(),
+                                          file: file);
+                                    }
                                   },
                                   child: Text('UPLOAD'),
                                 ),
@@ -373,47 +375,36 @@ class RunningDeliveryDetailsView
                             ),
                             SizedBox(height: 12.h),
                             Obx(() {
-                              final file = controller.imageFile.value;
-                              if (file == null) {
-                                return Center(
-                                  child: SizedBox()
-                                );
-                              }
+                              final file =
+                                  controller.getImage(shipmentID.toString());
+                              if (file == null) return SizedBox();
                               return Stack(
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.file(
-                                      file,
-                                      width: 120,
-                                      height: 120,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: Image.file(file,
+                                        width: 120,
+                                        height: 120,
+                                        fit: BoxFit.cover),
                                   ),
                                   Positioned(
                                     top: 4,
                                     right: 4,
                                     child: GestureDetector(
-                                      onTap: () {
-                                        controller.imageFile.value =
-                                            null; // Remove image
-                                      },
+                                      onTap: () => controller
+                                          .removeImage(shipmentID.toString()),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.black54,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(
-                                          Icons.close,
-                                          size: 20,
-                                          color: Colors.white,
-                                        ),
+                                            color: Colors.black54,
+                                            shape: BoxShape.circle),
+                                        child: Icon(Icons.close,
+                                            size: 20, color: Colors.white),
                                       ),
                                     ),
                                   ),
                                 ],
                               );
-                            }),
+                            })
                           ],
                         ),
                       ],

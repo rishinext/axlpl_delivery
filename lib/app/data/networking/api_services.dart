@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/networking/api_client.dart';
 import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 import 'package:dio/dio.dart';
@@ -307,9 +310,9 @@ class ApiServices {
       'customer_id': custID,
       'category_id': cateID,
       'product_id': productID,
-      'net_weight': netWeight,
-      'gross_weight': grossWeight,
-      'payment_mode': paymentModeID,
+      'net_weight': double.tryParse(netWeight ?? '0') ?? 0,
+      'gross_weight': double.tryParse(grossWeight ?? '0') ?? 0,
+      'payment_mode': paymentModeID?.toString() ?? '1',
       'service_id': serviceTypeID,
       'invoice_value': invoiceAmt,
       'axlpl_insurance': insurance,
@@ -318,7 +321,7 @@ class ApiServices {
       'insurance_value': insuranceCharges,
       'remark': remark,
       'bill_to': billTo,
-      'number_of_parcel': noOfParcel,
+      'number_of_parcel': int.tryParse(noOfParcel ?? '1'),
       'additional_axlpl_insurance': addInsurance,
       'shipment_status': shipmentStatus,
       'calculation_status': caculationStatus,
@@ -328,16 +331,16 @@ class ApiServices {
       'shipment_invoice_no': shipmentInvoice,
       'is_amt_edited_by_user': isAmtEditedByUser,
       'shipment_id': shipmentID,
-      'sender_name': senderName,
+      'sender_name': senderName?.toString() ?? 'Default Sender',
       'sender_company_name': senderCompanyName,
       'sender_country': senderCountry,
-      'sender_state': senderState,
+      'sender_state': senderState?.toString() ?? 'Default State',
       'sender_city': senderCity,
       'sender_area': senderAera,
       'sender_pincode': senderPincode,
       'sender_address1': senderAddress1,
       'sender_address2': senderAddress2,
-      'sender_mobile': senderMobile,
+      'sender_mobile': senderMobile?.toString() ?? '9999999999',
       'sender_email': senderEmail,
       'sender_save_address': senderisNewAdresss,
       'sender_gst_no': senderGstNo,
@@ -367,16 +370,22 @@ class ApiServices {
       'diff_receiver_address2': diffReceiverAddress2,
       'shipment_charges': shipmentCharges,
       'insurance_charges': insuranceCharges,
-      'invoice_charges': invoiceCharges,
+      'invoice_charges': invoiceCharges?.toString() ?? '0',
       'handling_charges': handlingCharges,
       'tax': tax,
       'total_charges': totalCharges,
-      'grand_total': grandeTotal,
+      'grand_total': grandeTotal?.toString() ?? '0.0',
       'docket_no': docketNo,
       'shipment_date': shipmentDate,
       'token': token,
     };
-    return _api.post(addShipmentPoint, body, token: token);
+    log("Shipment API Body: ${jsonEncode(body)}");
+
+    return _api.post(
+      addShipmentPoint,
+      body,
+      token: token,
+    );
   }
 
   Future<APIResponse> changePassword(

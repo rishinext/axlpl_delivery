@@ -199,11 +199,11 @@ class ProfileController extends GetxController {
       if (result) {
         await fetchProfileData();
         isUpdateProfile.value = Status.success;
-        Get.snackbar(result.toString(), 'Profile updated successfully',
+        Get.snackbar('', 'Profile updated successfully',
             backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
       } else {
         isUpdateProfile.value = Status.error;
-        Get.snackbar(result.toString(), 'Failed to update profile',
+        Get.snackbar('', 'Failed to update profile',
             backgroundColor: themes.redColor, colorText: themes.whiteColor);
       }
     } catch (e) {

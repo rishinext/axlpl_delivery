@@ -1,17 +1,10 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/common_widget/awsome_notification.dart';
-import 'package:axlpl_delivery/common_widget/error_screen.dart';
-import 'package:axlpl_delivery/firebase_options.dart';
-import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';

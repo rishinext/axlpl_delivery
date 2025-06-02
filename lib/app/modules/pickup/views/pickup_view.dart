@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
-import 'package:axlpl_delivery/app/modules/running_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
@@ -181,45 +181,66 @@ class PickupView extends GetView<PickupController> {
                                           ),
                                         ],
                                       ),
-                                      child: PickupWidget(
-                                        companyName:
-                                            data.companyName.toString(),
-                                        date: data.date.toString(),
-                                        status: data.status.toString(),
-                                        messangerName:
-                                            data.messangerName.toString(),
-                                        address: data.address1.toString(),
-                                        shipmentID: data.shipmentId.toString(),
-                                        cityName: data.cityName.toString(),
-                                        mobile: data.mobile.toString(),
-                                        statusColor: data.status == 'Picked up'
-                                            ? themes.greenColor
-                                            : themes.redColor,
-                                        statusDotColor: data.axlpInsurance ==
-                                                'axlpl_insurance'
-                                            ? themes.greenColor
-                                            : themes.redColor,
-                                        showPickupBtn: true,
-                                        showTrasferBtn: true,
-                                        showDivider: true,
-                                        openDialerTap: () {
-                                          runningController.makingPhoneCall(
-                                              data.mobile.toString());
+                                      child: InkWell(
+                                        onTap: () {
+                                          Get.toNamed(
+                                            Routes.RUNNING_DELIVERY_DETAILS,
+                                            parameters: {
+                                              'shipmentID':
+                                                  data.shipmentId.toString(),
+                                              'status': data.status.toString(),
+                                            },
+                                          );
                                         },
-                                        openMapTap: () {
-                                          pickupController.openMapWithAddress(
+                                        child: PickupWidget(
+                                          companyName:
                                               data.companyName.toString(),
-                                              data.address1.toString(),
-                                              data.pincode.toString());
-                                        },
-                                        pickUpTap: () {
-                                          showPickDialog(
+                                          date: data.date.toString(),
+                                          status: data.status.toString(),
+                                          messangerName:
+                                              data.messangerName.toString(),
+                                          address: data.address1.toString(),
+                                          shipmentID:
                                               data.shipmentId.toString(),
-                                              data.date.toString());
-                                        },
-                                        trasferTap: () {
-                                          showTransferDialog();
-                                        },
+                                          cityName: data.cityName.toString(),
+                                          mobile: data.mobile.toString(),
+                                          statusColor:
+                                              data.status == 'Picked up'
+                                                  ? themes.greenColor
+                                                  : themes.redColor,
+                                          statusDotColor: data.axlpInsurance ==
+                                                  'axlpl_insurance'
+                                              ? themes.greenColor
+                                              : themes.redColor,
+                                          showPickupBtn: true,
+                                          showTrasferBtn: true,
+                                          showDivider: true,
+                                          openDialerTap: () {
+                                            runningController.makingPhoneCall(
+                                                data.mobile.toString());
+                                          },
+                                          openMapTap: () {
+                                            pickupController.openMapWithAddress(
+                                                data.companyName.toString(),
+                                                data.address1.toString(),
+                                                data.pincode.toString());
+                                          },
+                                          pickUpTap: () {
+                                            showPickDialog(
+                                                data.shipmentId.toString(),
+                                                data.date.toString());
+                                          },
+                                          trasferTap: () {
+                                            showTransferDialog(
+                                              () {
+                                                pickupController
+                                                    .transferShipment(
+                                                        data.shipmentId,
+                                                        data.id);
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ));
                                 },
                               ),
@@ -264,12 +285,14 @@ class PickupView extends GetView<PickupController> {
                                   onTap: () {
                                     runningController.fetchTrackingData(
                                         data.shipmentId.toString());
-                                    Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
-                                        parameters: {
-                                          'shipmentID':
-                                              data.shipmentId.toString(),
-                                          'status': data.status.toString(),
-                                        });
+                                    Get.toNamed(
+                                      Routes.RUNNING_DELIVERY_DETAILS,
+                                      parameters: {
+                                        'shipmentID':
+                                            data.shipmentId.toString(),
+                                        'status': data.status.toString(),
+                                      },
+                                    );
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(8.w),
@@ -286,6 +309,7 @@ class PickupView extends GetView<PickupController> {
                                       ],
                                     ),
                                     child: PickupWidget(
+                                      paymentType: data.paymentMode,
                                       companyName: data.companyName.toString(),
                                       date: data.date.toString(),
                                       status: data.status.toString(),
