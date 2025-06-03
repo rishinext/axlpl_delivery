@@ -1,3 +1,6 @@
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
@@ -14,7 +17,7 @@ class HistoryView extends GetView<HistoryController> {
   @override
   Widget build(BuildContext context) {
     final historyController = Get.put(HistoryController());
-
+    final pickupDetailsController = Get.put(RunningDeliveryDetailsController());
     return CommonScaffold(
         appBar: commonAppbar('History'),
         body: Obx(
@@ -154,7 +157,8 @@ class HistoryView extends GetView<HistoryController> {
                       : SizedBox(
                           height: 490.h,
                           child: Obx(() {
-                            if (historyController.isLoading.value) {
+                            if (historyController.isPickedup.value ==
+                                Status.loading) {
                               return Center(child: CircularProgressIndicator());
                             }
                             if (historyController.pickUpHistoryList.isEmpty) {
@@ -176,32 +180,39 @@ class HistoryView extends GetView<HistoryController> {
                                 var pickup =
                                     historyController.pickUpHistoryList[index];
                                 return ListTile(
-                                    tileColor: themes.whiteColor,
-                                    dense: false,
-                                    leading: CircleAvatar(
-                                      backgroundColor: themes.blueGray,
-                                      child: Image.asset(
-                                        truckBlueIcon,
-                                        width: 18.w,
-                                      ),
+                                  onTap: () {
+                                    pickupDetailsController.fetchTrackingData(
+                                        pickup.shipmentId.toString());
+                                    // Get.toNamed(
+                                    //     Routes.RUNNING_DELIVERY_DETAILS);
+                                  },
+                                  tileColor: themes.whiteColor,
+                                  dense: false,
+                                  leading: CircleAvatar(
+                                    backgroundColor: themes.blueGray,
+                                    child: Image.asset(
+                                      truckBlueIcon,
+                                      width: 18.w,
                                     ),
-                                    title: Text(
-                                        '${pickup.cityName.toString()} : ${pickup.pincode}'),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(pickup.address1.toString())
-                                      ],
-                                    ),
-                                    trailing: CircleAvatar(
-                                      backgroundColor: themes.lightCream,
-                                      // radius: 15,
-                                      child: Icon(
-                                        Icons.arrow_forward,
-                                        size: 20.w,
-                                      ),
-                                    ));
+                                  ),
+                                  title: Text(
+                                      '${pickup.cityName.toString()} : ${pickup.pincode}'),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(pickup.address1.toString())
+                                    ],
+                                  ),
+                                  // trailing: CircleAvatar(
+                                  //   backgroundColor: themes.lightCream,
+                                  //   // radius: 15,
+                                  //   child: Icon(
+                                  //     Icons.arrow_forward,
+                                  //     size: 20.w,
+                                  //   ),
+                                  // ),
+                                );
                               },
                             );
                           }),

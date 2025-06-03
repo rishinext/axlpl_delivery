@@ -47,7 +47,7 @@ void showChangePasswordDialog() {
       ),
     ),
     radius: 10,
-    textConfirm: "Submit",
+    textConfirm: "Change",
     textCancel: "Cancel",
     confirmTextColor: themes.whiteColor,
     buttonColor: themes.darkCyanBlue,

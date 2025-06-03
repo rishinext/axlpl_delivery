@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
@@ -23,6 +24,7 @@ class PickupController extends GetxController {
 
   final shipmentController = TextEditingController();
   final amountController = TextEditingController();
+  final TextEditingController pincodeController = TextEditingController();
 
   var selectedPaymentModeId = Rxn<String>();
 
@@ -39,12 +41,16 @@ class PickupController extends GetxController {
   var isUploadPickup = Status.initial.obs;
   var isMessangerLoading = Status.initial.obs;
   var isTrasferLoading = Status.initial.obs;
+  Rx<Status> isTransferLoading = Status.initial.obs;
+  RxBool isTransferSuccess = false.obs;
   var isPaymentLoading = Status.initial.obs;
 
   RxInt isSelected = 0.obs;
   var selectedPay = Rxn<String>();
 
   var selectedMessenger = ''.obs;
+  final currentUserId = ''.obs;
+
   void selectedContainer(int index) {
     isSelected.value = index;
   }
@@ -53,7 +59,10 @@ class PickupController extends GetxController {
     selectedPaymentMode.value = mode;
   }
 
-  final TextEditingController pincodeController = TextEditingController();
+  void initializeUserId() async {
+    final userData = await LocalStorage().getUserLocalData();
+    currentUserId.value = userData?.messangerdetail?.id.toString() ?? '-1';
+  }
 
   Future<void> getMessangerData() async {
     isMessangerLoading.value = Status.loading;
@@ -125,7 +134,7 @@ class PickupController extends GetxController {
 
       if (response.statusCode == 200 && response.data['status'] == 'success') {
         final data = PaymentModesResponse.fromJson(response.data);
-        paymentModes.value = data.data.paymentModes;
+        paymentModes.value = data.data.subPaymentModes;
       } else {
         Get.snackbar('Error', 'Failed to fetch payment modes');
       }
@@ -182,25 +191,28 @@ class PickupController extends GetxController {
 
   Future<void> transferShipment(
     final shipmentID,
-    final transferToID,
+    final transferTo,
   ) async {
-    isMessangerLoading.value = Status.loading;
+    isTransferLoading.value = Status.loading;
     try {
       final success = await shipmentRepo.trasferShipmentRepo(
         shipmentID,
-        transferToID,
+        transferTo.id,
         'pickup',
       );
       if (success) {
-        Get.snackbar('success', 'Shipment Transfer Success!');
-        isMessangerLoading.value = Status.success;
+        Get.snackbar('Success', 'Shipment Transfer Success!');
+        isTransferLoading.value = Status.success;
+        isTransferSuccess.value = true;
       } else {
-        Get.snackbar('failed', 'Shipment Transfer Failed!');
-        isMessangerLoading.value = Status.error;
+        Get.snackbar('Failed', 'Shipment Transfer Failed!');
+        isTransferLoading.value = Status.error;
+        isTransferSuccess.value = false;
       }
     } catch (e) {
-      Get.snackbar('failed', 'Shipment Transfer Failed!');
-      isMessangerLoading.value = Status.error;
+      Get.snackbar('Failed', 'Shipment Transfer Failed!');
+      isTransferLoading.value = Status.error;
+      isTransferSuccess.value = false;
     }
   }
 
@@ -249,10 +261,10 @@ class PickupController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-
-    super.onInit();
     getPickupData();
     // getPaymentModeData();
     getMessangerData();
+    initializeUserId();
+    super.onInit();
   }
 }

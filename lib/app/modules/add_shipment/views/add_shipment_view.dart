@@ -193,8 +193,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                             selectedValue:
                                 addshipController.selectedCommodity.value,
                             isLoading:
-                                addshipController.isLoadingCommodity.value ==
-                                    Status.loading,
+                                addshipController.isLoadingCommodity.value,
                             items: addshipController.commodityList,
                             itemLabel: (c) => c.name ?? 'Unknown',
                             itemValue: (c) => c.id.toString(),

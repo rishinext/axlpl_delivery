@@ -1,5 +1,6 @@
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 
@@ -20,23 +21,23 @@ class CommonTextfiled extends StatelessWidget {
   final isEnable;
   final maxLine;
 
-  CommonTextfiled(
-      {super.key,
-      this.hintTxt,
-      this.controller,
-      this.keyboardType,
-      this.obscureText = false,
-      this.sufixIcon,
-      this.prefixText,
-      this.validator,
-      this.onChanged,
-      this.isReadOnly = false,
-      this.textInputAction,
-      this.isEnable = true,
-      this.onSubmit,
-      this.lableText,
-      this.maxLine,
-      t});
+  CommonTextfiled({
+    super.key,
+    this.hintTxt,
+    this.controller,
+    this.keyboardType,
+    this.obscureText = false,
+    this.sufixIcon,
+    this.prefixText,
+    this.validator,
+    this.onChanged,
+    this.isReadOnly = false,
+    this.textInputAction,
+    this.isEnable = true,
+    this.onSubmit,
+    this.lableText,
+    this.maxLine,
+  });
 
   @override
   Widget build(BuildContext context) {

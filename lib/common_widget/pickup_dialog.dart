@@ -31,6 +31,19 @@ void showPickDialog(final shipmentID, final date) {
               hintTxt: 'Enter Amount',
               lableText: 'Enter Amount',
               keyboardType: TextInputType.number,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an amount';
+                }
+                final amount = int.tryParse(value);
+                if (amount == null) {
+                  return 'Please enter a valid number';
+                }
+                if (amount < 1) {
+                  return 'Amount must be at least 1';
+                }
+                return null;
+              },
               // validator: (value) =>
               //     value == null || value.length < 6 ? "Min 6 characters" : null,
             ),
