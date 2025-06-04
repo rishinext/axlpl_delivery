@@ -172,8 +172,12 @@ class PickupView extends GetView<PickupController> {
                                   final userId =
                                       pickupController.currentUserId.value;
                                   final enableTransfer =
-                                      data.id.toString() == userId;
-                                  return Container(
+                                      data.messangerId.toString() == userId;
+
+                                  return RefreshIndicator.adaptive(
+                                    onRefresh: () =>
+                                        pickupController.getPickupData(),
+                                    child: Container(
                                       margin: EdgeInsets.all(8.w),
                                       padding: EdgeInsets.all(10.w),
                                       decoration: BoxDecoration(
@@ -188,7 +192,7 @@ class PickupView extends GetView<PickupController> {
                                           ),
                                         ],
                                       ),
-                                      child: InkWell(
+                                      child: PickupWidget(
                                         onTap: () {
                                           runningController.fetchTrackingData(
                                               data.shipmentId.toString());
@@ -201,120 +205,117 @@ class PickupView extends GetView<PickupController> {
                                             },
                                           );
                                         },
-                                        child: PickupWidget(
-                                          companyName:
+                                        companyName:
+                                            data.companyName.toString(),
+                                        date: data.date.toString(),
+                                        status: data.status.toString(),
+                                        messangerName:
+                                            data.messangerName.toString(),
+                                        address: data.address1.toString(),
+                                        shipmentID: data.shipmentId.toString(),
+                                        cityName: data.cityName.toString(),
+                                        mobile: data.mobile.toString(),
+                                        statusColor: data.status == 'Picked up'
+                                            ? themes.greenColor
+                                            : themes.redColor,
+                                        statusDotColor: data.axlpInsurance ==
+                                                'axlpl_insurance'
+                                            ? themes.greenColor
+                                            : themes.redColor,
+                                        showPickupBtn: true,
+                                        showTrasferBtn: true,
+                                        showDivider: true,
+                                        openDialerTap: () {
+                                          runningController.makingPhoneCall(
+                                              data.mobile.toString());
+                                        },
+                                        openMapTap: () {
+                                          pickupController.openMapWithAddress(
                                               data.companyName.toString(),
-                                          date: data.date.toString(),
-                                          status: data.status.toString(),
-                                          messangerName:
-                                              data.messangerName.toString(),
-                                          address: data.address1.toString(),
-                                          shipmentID:
+                                              data.address1.toString(),
+                                              data.pincode.toString());
+                                        },
+                                        pickUpTap: () {
+                                          showPickDialog(
                                               data.shipmentId.toString(),
-                                          cityName: data.cityName.toString(),
-                                          mobile: data.mobile.toString(),
-                                          statusColor:
-                                              data.status == 'Picked up'
-                                                  ? themes.greenColor
-                                                  : themes.redColor,
-                                          statusDotColor: data.axlpInsurance ==
-                                                  'axlpl_insurance'
-                                              ? themes.greenColor
-                                              : themes.redColor,
-                                          showPickupBtn: true,
-                                          showTrasferBtn: true,
-                                          showDivider: true,
-                                          openDialerTap: () {
-                                            runningController.makingPhoneCall(
-                                                data.mobile.toString());
-                                          },
-                                          openMapTap: () {
-                                            pickupController.openMapWithAddress(
-                                                data.companyName.toString(),
-                                                data.address1.toString(),
-                                                data.pincode.toString());
-                                          },
-                                          pickUpTap: () {
-                                            showPickDialog(
-                                                data.shipmentId.toString(),
-                                                data.date.toString());
-                                          },
-                                          trasferTap: enableTransfer
-                                              ? () async {
-                                                  Get.defaultDialog(
-                                                    title: "Messangers",
-                                                    content: SizedBox(
-                                                      width: 400.w,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Column(
-                                                          spacing: 10,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const SizedBox(
-                                                                height: 10),
-                                                            dropdownText(
-                                                                'Messanger List'),
-                                                            Obx(
-                                                              () => CommonDropdown<
-                                                                  MessangerList>(
-                                                                isSearchable:
-                                                                    true,
-                                                                hint:
-                                                                    'Select Messanger',
-                                                                selectedValue:
-                                                                    pickupController
-                                                                        .selectedMessenger
-                                                                        .value,
-                                                                isLoading: pickupController
-                                                                        .isMessangerLoading
-                                                                        .value ==
-                                                                    Status
-                                                                        .loading,
-                                                                items: pickupController
-                                                                    .messangerList,
-                                                                itemLabel: (c) =>
-                                                                    c.name ??
-                                                                    'Unknown',
-                                                                itemValue: (c) => c
-                                                                    .id
-                                                                    .toString(),
-                                                                onChanged:
-                                                                    (val) {
+                                              data.date.toString());
+                                        },
+                                        trasferTap: enableTransfer
+                                            ? () async {
+                                                Get.defaultDialog(
+                                                  title: "Messangers",
+                                                  content: SizedBox(
+                                                    width: 400.w,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Column(
+                                                        spacing: 10,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          dropdownText(
+                                                              'Messanger List'),
+                                                          Obx(
+                                                            () => CommonDropdown<
+                                                                MessangerList>(
+                                                              isSearchable:
+                                                                  true,
+                                                              hint:
+                                                                  'Select Messanger',
+                                                              selectedValue:
                                                                   pickupController
                                                                       .selectedMessenger
-                                                                      .value = val!;
-                                                                },
-                                                              ),
+                                                                      .value,
+                                                              isLoading: pickupController
+                                                                      .isMessangerLoading
+                                                                      .value ==
+                                                                  Status
+                                                                      .loading,
+                                                              items: pickupController
+                                                                  .messangerList,
+                                                              itemLabel: (c) =>
+                                                                  c.name ??
+                                                                  'Unknown',
+                                                              itemValue: (c) => c
+                                                                  .id
+                                                                  .toString(),
+                                                              onChanged: (val) {
+                                                                pickupController
+                                                                    .selectedMessenger
+                                                                    .value = val!;
+                                                              },
                                                             ),
-                                                            const SizedBox(
-                                                                height: 16),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 16),
+                                                        ],
                                                       ),
                                                     ),
-                                                    radius: 10,
-                                                    textConfirm: "Transfer",
-                                                    textCancel: "Cancel",
-                                                    confirmTextColor:
-                                                        themes.whiteColor,
-                                                    onConfirm: () {
-                                                      pickupController
-                                                          .transferShipment(
-                                                              data.shipmentId,
-                                                              data.id);
-                                                      pickupController
-                                                          .getPickupData();
-                                                    },
-                                                  );
-                                                }
-                                              : null,
-                                        ),
-                                      ));
+                                                  ),
+                                                  radius: 10,
+                                                  textConfirm: "Transfer",
+                                                  textCancel: "Cancel",
+                                                  confirmTextColor:
+                                                      themes.whiteColor,
+                                                  onConfirm: () {
+                                                    pickupController
+                                                        .transferShipment(
+                                                            data.shipmentId,
+                                                            data.id);
+                                                    pickupController
+                                                        .getPickupData();
+                                                  },
+                                                );
+                                              }
+                                            : null,
+                                      ),
+                                    ),
+                                  );
                                 },
                               ),
                             );

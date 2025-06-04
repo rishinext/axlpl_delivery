@@ -32,7 +32,10 @@ class PickupController extends GetxController {
   final messangerList = <MessangerList>[].obs;
 
   var paymentModes = <PaymentMode>[].obs;
+  var subPaymentModes = <PaymentMode>[].obs;
+
   var selectedPaymentMode = Rxn<PaymentMode>();
+  var selectedSubPaymentMode = Rxn<PaymentMode>();
   var isLoadingPayment = false.obs;
 
   final RxList<RunningPickUp> filteredPickupList = <RunningPickUp>[].obs;
@@ -55,8 +58,14 @@ class PickupController extends GetxController {
     isSelected.value = index;
   }
 
-  void setSelectedPaymentMode(PaymentMode? mode) {
+  void setSelectedPaymentMode(PaymentMode? mode) async {
     selectedPaymentMode.value = mode;
+    selectedSubPaymentMode.value = null; // reset sub mode selection
+    // optional call
+  }
+
+  void setSelectedSubPaymentMode(PaymentMode? mode) {
+    selectedSubPaymentMode.value = mode;
   }
 
   void initializeUserId() async {
@@ -134,7 +143,8 @@ class PickupController extends GetxController {
 
       if (response.statusCode == 200 && response.data['status'] == 'success') {
         final data = PaymentModesResponse.fromJson(response.data);
-        paymentModes.value = data.data.subPaymentModes;
+        paymentModes.value = data.data.paymentModes;
+        subPaymentModes.value = data.data.subPaymentModes;
       } else {
         Get.snackbar('Error', 'Failed to fetch payment modes');
       }

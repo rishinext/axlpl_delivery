@@ -509,36 +509,36 @@ class ProfileView extends GetView<ProfileController> {
                     style: themes.fontSize18_600.copyWith(fontSize: 16.sp),
                   ),
                 ),
-                if (user?.role != 'messanger')
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
-                    child: InkWell(
-                      onTap: () {
-                        showRatingDialog(context);
-                        // Get.toNamed(
-                        //   Routes.MYORDERS,
-                        // );
-                      },
-                      child: ListTile(
-                          tileColor: themes.whiteColor,
-                          dense: false,
-                          leading: CircleAvatar(
-                              backgroundColor: themes.blueGray,
-                              child: Image.asset(
-                                orders,
-                                width: 18.w,
-                              )),
-                          title: Text(myOrders),
-                          trailing: CircleAvatar(
-                            backgroundColor: themes.lightCream,
-                            // radius: 15,
-                            child: Icon(
-                              Icons.arrow_forward,
-                              size: 20.w,
-                            ),
-                          )),
-                    ),
-                  ),
+                // if (user?.role != 'messanger')
+                //   Padding(
+                //     padding: EdgeInsets.symmetric(horizontal: 20.w),
+                //     child: InkWell(
+                //       onTap: () {
+                //         showRatingDialog(context);
+                //         // Get.toNamed(
+                //         //   Routes.MYORDERS,
+                //         // );
+                //       },
+                //       child: ListTile(
+                //           tileColor: themes.whiteColor,
+                //           dense: false,
+                //           leading: CircleAvatar(
+                //               backgroundColor: themes.blueGray,
+                //               child: Image.asset(
+                //                 orders,
+                //                 width: 18.w,
+                //               )),
+                //           title: Text(myOrders),
+                //           trailing: CircleAvatar(
+                //             backgroundColor: themes.lightCream,
+                //             // radius: 15,
+                //             child: Icon(
+                //               Icons.arrow_forward,
+                //               size: 20.w,
+                //             ),
+                //           )),
+                //     ),
+                //   ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: GestureDetector(
