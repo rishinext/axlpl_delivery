@@ -222,6 +222,7 @@ class AddShipmentRepo {
     final serviceTypeID,
     final policyNo,
     final expDate,
+    final insuraceValue,
     final invoiceAmt,
     final insurance,
     final addInsurance,
@@ -300,76 +301,77 @@ class AddShipmentRepo {
     }
     try {
       final response = await _apiServices.addShipment(
-        custID,
-        cateID,
-        productID,
-        netWeight,
-        grossWeight,
-        paymentModeID,
-        serviceTypeID,
-        policyNo,
-        expDate,
-        invoiceAmt,
-        insurance,
-        addInsurance,
-        shipmentStatus,
-        caculationStatus,
-        addedBy,
-        addedType,
-        alertShipment,
-        shipmentInvoice,
-        isAmtEditedByUser,
-        shipmentID,
-        senderName,
-        senderCompanyName,
-        senderCountry,
-        senderState,
-        senderCity,
-        senderAera,
-        senderPincode,
-        senderAddress1,
-        senderAddress2,
-        senderMobile,
-        senderEmail,
-        senderSaveAddress,
-        senderisNewAdresss,
-        senderGstNo,
-        senderCustID,
-        receiverName,
+        custID, // 1
+        cateID, // 2
+        productID, // 3
+        netWeight, // 4
+        grossWeight, // 5
+        paymentModeID, // 6
+        serviceTypeID, // 7 - add this if missing
+        policyNo, // 8
+        expDate, // 9
+        invoiceAmt, // 10
+        insurance, // 11
+        addInsurance, // 12
+        shipmentStatus, // 13
+        caculationStatus, // 14
+        addedBy, // 15
+        addedType, // 16
+        alertShipment, // 17
+        shipmentInvoice, // 18
+        isAmtEditedByUser, // 19
+        shipmentID, // 20
+        senderName, // 21
+        senderCompanyName, // 22
+        senderCountry, // 23
+        senderState, // 24
+        senderCity, // 25
+        senderAera, // 26
+        senderPincode, // 27
+        senderAddress1, // 28
+        senderAddress2, // 29
+        senderMobile, // 30
+        senderEmail, // 31
+        senderSaveAddress, // 32
+        senderisNewAdresss, // 33
+        senderGstNo, // 34
+        senderCustID, // 35
+        receiverName, // 36
         remark,
         billTo,
         noOfParcel,
-        receiverCompanyName,
-        receiverCountry,
-        receiverState,
-        receiverCity,
-        receiverAera,
-        receiverPincode,
-        receiverAddress1,
-        receiverAddress2,
-        receiverMobile,
-        receiverEmail,
-        receiverSaveAddress,
-        receiverisNewAdresss,
-        receiverGstNo,
-        receiverCustID,
-        isDiffAdd,
-        diffReceiverCountry,
-        diffReceiverState,
-        diffReceiverCity,
-        diffReceiverAera,
-        diffReceiverPincode,
-        diffReceiverAddress1,
-        diffReceiverAddress2,
-        shipmentCharges,
-        insuranceCharges,
-        invoiceCharges,
-        handlingCharges,
-        tax,
-        totalCharges,
-        grandeTotal,
-        docketNo,
-        shipmentDate,
+        receiverCompanyName, // 37
+        receiverCountry, // 38
+        receiverState, // 39
+        receiverCity, // 40
+        receiverAera, // 41
+        receiverPincode, // 42
+        receiverAddress1, // 43
+        receiverAddress2, // 44
+        receiverMobile, // 45
+        receiverEmail, // 46
+        receiverSaveAddress, // 47
+        receiverisNewAdresss, // 48
+        receiverGstNo, // 49
+        receiverCustID, // 50
+        isDiffAdd, // 51
+        diffReceiverCountry, // 52
+        diffReceiverState, // 53
+        diffReceiverCity, // 54
+        diffReceiverAera, // 55
+        diffReceiverPincode, // 56
+        diffReceiverAddress1, // 57
+        diffReceiverAddress2, // 58
+        shipmentCharges, // 59
+        insuranceCharges, // 60
+        invoiceCharges, //
+        insuraceValue,
+        handlingCharges, // 62
+        tax, // 63
+        totalCharges, // 64
+        grandeTotal, // 65
+        docketNo, // 66
+        shipmentDate, // 67
         token.toString(),
       );
       response.when(

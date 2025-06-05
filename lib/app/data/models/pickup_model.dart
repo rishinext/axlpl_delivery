@@ -61,7 +61,11 @@ class RunningPickUp {
   String? messangerId;
   String? messangerName;
   String? paymentMode;
-  String? axlpInsurance;
+  String? subPaymentMode;
+  String? axlplInsurance;
+  String? totalCharges;
+  String? tax;
+  String? branchName;
   String? status;
   String? name;
   String? companyName;
@@ -79,9 +83,13 @@ class RunningPickUp {
       {this.id,
       this.shipmentId,
       this.messangerId,
-      this.axlpInsurance,
-      this.paymentMode,
       this.messangerName,
+      this.paymentMode,
+      this.subPaymentMode,
+      this.axlplInsurance,
+      this.totalCharges,
+      this.tax,
+      this.branchName,
       this.status,
       this.name,
       this.companyName,
@@ -99,9 +107,13 @@ class RunningPickUp {
     id = json['id'];
     shipmentId = json['shipment_id'];
     messangerId = json['messanger_id'];
-    axlpInsurance = json['axlpl_insurance'];
     messangerName = json['messanger_name'];
     paymentMode = json['payment_mode'];
+    subPaymentMode = json['sub_payment_mode'];
+    axlplInsurance = json['axlpl_insurance'];
+    totalCharges = json['total_charges'];
+    tax = json['tax'];
+    branchName = json['branch_name'];
     status = json['status'];
     name = json['name'];
     companyName = json['company_name'];
@@ -121,9 +133,13 @@ class RunningPickUp {
     data['id'] = this.id;
     data['shipment_id'] = this.shipmentId;
     data['messanger_id'] = this.messangerId;
-    data['axlpl_insurance'] = this.axlpInsurance;
     data['messanger_name'] = this.messangerName;
     data['payment_mode'] = this.paymentMode;
+    data['sub_payment_mode'] = this.subPaymentMode;
+    data['axlpl_insurance'] = this.axlplInsurance;
+    data['total_charges'] = this.totalCharges;
+    data['tax'] = this.tax;
+    data['branch_name'] = this.branchName;
     data['status'] = this.status;
     data['name'] = this.name;
     data['company_name'] = this.companyName;

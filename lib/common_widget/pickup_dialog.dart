@@ -11,7 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-void showPickDialog(final shipmentID, final date) {
+void showPickDialog(
+  final shipmentID,
+  final date,
+  final amt,
+  final dropdownHintTxt,
+) {
   final _formKey = GlobalKey<FormState>();
   final pickupController = Get.find<PickupController>();
   final historyController = Get.find<HistoryController>();
@@ -48,7 +53,8 @@ void showPickDialog(final shipmentID, final date) {
                   return null;
                 },
               ),
-              dropdownText('Payment Mode'),
+              Text(amt),
+/*dropdownText('Payment Mode'),
               Obx(() {
                 if (pickupController.isLoadingPayment.value) {
                   return Center(child: CircularProgressIndicator());
@@ -84,7 +90,7 @@ void showPickDialog(final shipmentID, final date) {
                     ),
                   ),
                 );
-              }),
+              }),*/
               dropdownText('Sub Payment Mode'),
               Obx(() {
                 if (pickupController.isLoadingPayment.value) {
@@ -108,7 +114,7 @@ void showPickDialog(final shipmentID, final date) {
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<PaymentMode>(
-                      hint: Text('Sub Payment'),
+                      hint: Text(dropdownHintTxt),
                       value: pickupController.selectedSubPaymentMode.value,
                       items: pickupController.subPaymentModes
                           .map((mode) => DropdownMenuItem(

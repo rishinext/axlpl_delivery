@@ -472,77 +472,77 @@ class AddShipmentController extends GetxController {
   Future<void> sendShipmentToAPI(ShipmentRequestModel data) async {
     try {
       final isSuccess = await addShipmentRepo.addShipment(
-        data.customerID,
-        data.selectedCate,
-        data.selectedCommdity,
-        data.newWeight,
-        data.grossWeight,
-        data.paymentMode,
-        data.serviceType,
-        data.policyNo,
-        data.expireDate,
-        data.insuranceAmt,
-        data.insurance,
-        "N/A", // addInsurance if available
-        "N/A", // shipmentStatus
-        "N/A", // caculationStatus
-        "N/A", // addedBy
-        "N/A", // addedType
-        "N/A", // alertShipment
-        "N/A", // shipmentInvoice
-        "N/A", // isAmtEditedByUser
-        data.docketNo, // shipmentID
-        data.sendInfoName,
-        data.sendInfoCompanyName,
-        "N/A", // senderCountry
-        data.sendInfoState,
-        data.sendInfoCity,
-        data.sendInfoAera,
-        data.sendInfoZip,
-        data.sendInfoAddress1,
-        data.sendInfoAddress2,
-        data.sendInfoMobile,
-        data.sendInfoEmail,
-        "N/A", // senderSaveAddress
-        "N/A", // senderisNewAdresss
-        data.sendInfoGstNo,
-        "N/A", // senderCustID
-        data.receiverInfoName,
-        data.remark,
-        "N/A", // billTo
-        data.noOfParcel,
-        data.receiverInfoCompanyName,
-        "N/A", // receiverCountry
-        data.receiverInfoState,
-        data.receiverInfoCity,
-        data.receiverInfoAera,
-        data.receiverInfoZip,
-        data.receiverInfoAddress1,
-        data.receiverInfoAddress2,
-        data.receiverInfoMobile,
-        data.receiverInfoEmail,
-        "N/A", // receiverSaveAddress
-        "N/A", // receiverisNewAdresss
-        data.receiverInfoGstNo,
-        "N/A", // receiverCustID
-        "1", // isDiffAdd (or logic to check if different address is used)
-        "N/A", // diffReceiverCountry
-        data.differentInfoState,
-        data.differentInfoCity,
-        data.differentInfoAera,
-        data.differentInfoZip,
-        data.differentInfoAddress1,
-        data.differentInfoAddress2,
-        data.shipmentCharges,
-        data.insuranceCharge,
-        "N/A", // invoiceCharges
-        data.handlingCharge,
-        data.gst,
-        data.totalCharge,
-        "N/A", // grandeTotal
-        data.docketNo, // docketNo
-        data.shipmentSelectedDate,
-      );
+          data.customerID,
+          data.selectedCate,
+          data.selectedCommdity,
+          data.newWeight,
+          data.grossWeight,
+          data.paymentMode,
+          data.serviceType,
+          data.policyNo,
+          data.expireDate,
+          data.insuranceAmt,
+          data.insurance,
+          "N/A", // addInsurance if available
+          "N/A", // shipmentStatus
+          "N/A", // caculationStatus
+          "N/A", // addedBy
+          "N/A", // addedType
+          "N/A", // alertShipment
+          "N/A", // shipmentInvoice
+          "N/A", // isAmtEditedByUser
+          data.docketNo, // shipmentID
+          data.sendInfoName,
+          data.sendInfoCompanyName,
+          "N/A", // senderCountry
+          data.sendInfoState,
+          data.sendInfoCity,
+          data.sendInfoAera,
+          data.sendInfoZip,
+          data.sendInfoAddress1,
+          data.sendInfoAddress2,
+          data.sendInfoMobile,
+          data.sendInfoEmail,
+          "N/A", // senderSaveAddress
+          "N/A", // senderisNewAdresss
+          data.sendInfoGstNo,
+          "N/A", // senderCustID
+          data.receiverInfoName,
+          data.remark,
+          "N/A", // billTo
+          data.noOfParcel,
+          data.receiverInfoCompanyName,
+          "N/A", // receiverCountry
+          data.receiverInfoState,
+          data.receiverInfoCity,
+          data.receiverInfoAera,
+          data.receiverInfoZip,
+          data.receiverInfoAddress1,
+          data.receiverInfoAddress2,
+          data.receiverInfoMobile,
+          data.receiverInfoEmail,
+          "N/A", // receiverSaveAddress
+          "N/A", // receiverisNewAdresss
+          data.receiverInfoGstNo,
+          "N/A", // receiverCustID
+          "1", // isDiffAdd (or logic to check if different address is used)
+          "N/A", // diffReceiverCountry
+          data.differentInfoState,
+          data.differentInfoCity,
+          data.differentInfoAera,
+          data.differentInfoZip,
+          data.differentInfoAddress1,
+          data.differentInfoAddress2,
+          data.shipmentCharges,
+          data.insuranceCharge,
+          "N/A", // invoiceCharges
+          data.handlingCharge,
+          data.gst,
+          data.totalCharge,
+          "N/A", // grandeTotal
+          data.docketNo, // docketNo
+          data.shipmentSelectedDate,
+          'x');
 
       if (isSuccess == true) {
         Get.snackbar(
@@ -601,8 +601,8 @@ class AddShipmentController extends GetxController {
         );
       case 2:
         return shipmentData.copyWith(
-          receiverInfoName: senderInfoNameController.text,
-          receiverInfoCompanyName: senderInfoCompanyNameController.text,
+          receiverInfoName: receiverInfoNameController.text,
+          receiverInfoCompanyName: receiverInfoCompanyNameController.text,
           receiverInfoZip: receiverInfoZipController.text,
           receiverInfoState: receiverInfoStateController.text,
           receiverInfoCity: receiverInfoCityController.text,

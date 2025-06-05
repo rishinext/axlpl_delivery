@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
-import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
@@ -14,9 +12,7 @@ import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
-import 'package:axlpl_delivery/common_widget/transfer_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -215,14 +211,18 @@ class PickupView extends GetView<PickupController> {
                                         shipmentID: data.shipmentId.toString(),
                                         cityName: data.cityName.toString(),
                                         mobile: data.mobile.toString(),
+                                        paymentType: data.paymentMode,
                                         statusColor: data.status == 'Picked up'
                                             ? themes.greenColor
                                             : themes.redColor,
-                                        statusDotColor: data.axlpInsurance ==
+                                        statusDotColor: data.axlplInsurance ==
                                                 'axlpl_insurance'
                                             ? themes.greenColor
                                             : themes.redColor,
-                                        showPickupBtn: true,
+                                        showPickupBtn:
+                                            data.paymentMode == 'topay'
+                                                ? true
+                                                : false,
                                         showTrasferBtn: true,
                                         showDivider: true,
                                         openDialerTap: () {
@@ -237,8 +237,11 @@ class PickupView extends GetView<PickupController> {
                                         },
                                         pickUpTap: () {
                                           showPickDialog(
-                                              data.shipmentId.toString(),
-                                              data.date.toString());
+                                            data.shipmentId.toString(),
+                                            data.date.toString(),
+                                            data.totalCharges,
+                                            data.paymentMode,
+                                          );
                                         },
                                         trasferTap: enableTransfer
                                             ? () async {
