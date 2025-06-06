@@ -9,6 +9,7 @@ import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/pickup_repo.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/shipnow_repo.dart';
+import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -97,15 +98,23 @@ class PickupController extends GetxController {
       if (success != null) {
         pickupList.value = success;
         filteredPickupList.value = success;
+
+        if (success.isNotEmpty) {
+          amountController.text = success.first.totalCharges.toString();
+        } else {
+          amountController.text;
+        }
         isPickupLoading.value = Status.success;
       } else {
         Utils().logInfo('No pickup Record Found!');
+        amountController.text;
         isPickupLoading.value = Status.error;
       }
     } catch (e) {
       Utils().logError(e.toString());
       pickupList.value = [];
       filteredPickupList.value = [];
+      amountController.text; // Default on error
       isPickupLoading.value = Status.error;
     }
   }
@@ -179,6 +188,9 @@ class PickupController extends GetxController {
           backgroundColor: themes.darkCyanBlue,
         );
         isUploadPickup.value = Status.success;
+        getPickupData();
+        final historyController = Get.find<HistoryController>();
+        historyController.getPickupHistory();
       } else {
         Get.snackbar(
           'fail',

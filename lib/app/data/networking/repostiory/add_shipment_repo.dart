@@ -215,7 +215,7 @@ class AddShipmentRepo {
   Future<bool?> addShipment(
     final custID,
     final cateID,
-    final productID,
+    final commodityID,
     final netWeight,
     final grossWeight,
     final paymentModeID,
@@ -303,7 +303,7 @@ class AddShipmentRepo {
       final response = await _apiServices.addShipment(
         custID, // 1
         cateID, // 2
-        productID, // 3
+        commodityID, // 3
         netWeight, // 4
         grossWeight, // 5
         paymentModeID, // 6

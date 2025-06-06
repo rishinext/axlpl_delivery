@@ -53,7 +53,7 @@ void showPickDialog(
                   return null;
                 },
               ),
-              Text(amt),
+
 /*dropdownText('Payment Mode'),
               Obx(() {
                 if (pickupController.isLoadingPayment.value) {

@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/views/running_delivery_details_view.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
@@ -219,10 +220,7 @@ class PickupView extends GetView<PickupController> {
                                                 'axlpl_insurance'
                                             ? themes.greenColor
                                             : themes.redColor,
-                                        showPickupBtn:
-                                            data.paymentMode == 'topay'
-                                                ? true
-                                                : false,
+                                        showPickupBtn: true,
                                         showTrasferBtn: true,
                                         showDivider: true,
                                         openDialerTap: () {
@@ -236,12 +234,22 @@ class PickupView extends GetView<PickupController> {
                                               data.pincode.toString());
                                         },
                                         pickUpTap: () {
-                                          showPickDialog(
-                                            data.shipmentId.toString(),
-                                            data.date.toString(),
-                                            data.totalCharges,
-                                            data.paymentMode,
-                                          );
+                                          data.paymentMode != 'topay'
+                                              ? pickupController.uploadPickup(
+                                                  data.shipmentId,
+                                                  'Picked up',
+                                                  data.date,
+                                                  data.totalCharges,
+                                                  'prepaid',
+                                                )
+                                              : showPickDialog(
+                                                  data.shipmentId.toString(),
+                                                  data.date.toString(),
+                                                  data.totalCharges,
+                                                  data.subPaymentMode == '0'
+                                                      ? 'Select Payment Mode'
+                                                      : data.subPaymentMode,
+                                                );
                                         },
                                         trasferTap: enableTransfer
                                             ? () async {
@@ -309,9 +317,10 @@ class PickupView extends GetView<PickupController> {
                                                     pickupController
                                                         .transferShipment(
                                                             data.shipmentId,
-                                                            data.id);
+                                                            data.messangerId);
                                                     pickupController
                                                         .getPickupData();
+                                                    Get.back();
                                                   },
                                                 );
                                               }
@@ -362,9 +371,12 @@ class PickupView extends GetView<PickupController> {
                                   onTap: () {
                                     runningController.fetchTrackingData(
                                         data.shipmentId.toString());
-                                    Get.toNamed(
-                                      Routes.RUNNING_DELIVERY_DETAILS,
-                                      parameters: {
+                                    Get.to(
+                                      // Routes.RUNNING_DELIVERY_DETAILS,
+                                      RunningDeliveryDetailsView(
+                                        isShowInvoice: false,
+                                      ),
+                                      arguments: {
                                         'shipmentID':
                                             data.shipmentId.toString(),
                                         'status': data.status.toString(),

@@ -1,19 +1,15 @@
-import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/auth/controllers/auth_controller.dart';
-import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/change_password_dialog.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/common_tow_btn_dialog.dart';
-import 'package:axlpl_delivery/common_widget/ratting_widget.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
@@ -51,10 +47,11 @@ class ProfileView extends GetView<ProfileController> {
                           child: CircleAvatar(
                               backgroundColor: themes.redColor,
                               radius: 60,
-                              backgroundImage:
-                                  controller.imageFile.value != null
-                                      ? FileImage(controller.imageFile.value!)
-                                      : AssetImage(noImg)),
+                              backgroundImage: controller.imageFile.value !=
+                                      null
+                                  ? FileImage(controller.imageFile.value!)
+                                  : NetworkImage(
+                                      "${controller.messangerDetail.value?.messangerdetail?.path}+ ${controller.messangerDetail.value?.messangerdetail?.photo}")),
                         );
                       }),
                     ),
