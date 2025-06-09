@@ -516,17 +516,22 @@ class ApiServices {
     String name,
     String email,
     String mobile,
+    final profileUpdate,
   ) async {
-    final body = {
+    final formData = FormData.fromMap({
       'id': id,
       'user_role': role,
       'name': name,
       'email': email,
       'mobile_no': mobile,
-    };
+      // Conditionally set the photo field based on role
+      if (profileUpdate != null)
+        role == 'customer' ? 'customer_photo' : 'messanger_photo':
+            profileUpdate,
+    });
     return _api.post(
       updateProfilePoint,
-      body,
+      formData,
     );
   }
 

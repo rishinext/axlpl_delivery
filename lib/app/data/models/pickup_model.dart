@@ -61,6 +61,8 @@ class RunningPickUp {
   String? messangerId;
   String? messangerName;
   String? paymentMode;
+  String? invoicePath;
+  String? invoiceFile;
   String? subPaymentMode;
   String? axlplInsurance;
   String? totalCharges;
@@ -85,6 +87,8 @@ class RunningPickUp {
       this.messangerId,
       this.messangerName,
       this.paymentMode,
+      this.invoicePath,
+      this.invoiceFile,
       this.subPaymentMode,
       this.axlplInsurance,
       this.totalCharges,
@@ -109,6 +113,8 @@ class RunningPickUp {
     messangerId = json['messanger_id'];
     messangerName = json['messanger_name'];
     paymentMode = json['payment_mode'];
+    invoicePath = json['invoice_path'];
+    invoiceFile = json['invoice_file'];
     subPaymentMode = json['sub_payment_mode'];
     axlplInsurance = json['axlpl_insurance'];
     totalCharges = json['total_charges'];

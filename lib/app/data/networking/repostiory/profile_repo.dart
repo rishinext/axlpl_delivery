@@ -89,7 +89,8 @@ class ProfileRepo {
     return null;
   }
 
-  Future<bool> updateProfile(String name, String email, String phone) async {
+  Future<bool> updateProfile(
+      String name, String email, String phone, final photo) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??
@@ -105,6 +106,7 @@ class ProfileRepo {
           name,
           email,
           phone,
+          photo,
         ); // Pass token
 
         return response.when(success: (body) {

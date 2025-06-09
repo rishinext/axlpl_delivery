@@ -218,8 +218,9 @@ class AddShipmentController extends GetxController {
   Future<void> fetchCustomers([String nextID = '']) async {
     try {
       isLoadingCustomers(true);
+
       isLoadingReceiverCustomer(true);
-      final data = await addShipmentRepo.customerListRepo('', nextID);
+      final data = await addShipmentRepo.customerListRepo('version', nextID);
       customerList.value = data ?? [];
     } catch (e) {
       customerList.value = [];

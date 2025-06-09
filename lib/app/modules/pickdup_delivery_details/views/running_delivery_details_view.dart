@@ -1,10 +1,15 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/transfer_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 // ignore: depend_on_referenced_packages
@@ -17,17 +22,23 @@ class RunningDeliveryDetailsView
     extends GetView<RunningDeliveryDetailsController> {
   // final RunningPickUp? runningPickUp;
   final isShowInvoice;
+  final isShowTransfer;
   RunningDeliveryDetailsView({
     this.isShowInvoice = true,
+    this.isShowTransfer = false,
     super.key,
     // this.runningPickUp,
   });
   @override
   Widget build(BuildContext context) {
     StepperType type = StepperType.horizontal;
-    final shipmentID = Get.parameters['shipmentID'];
-    final status = Get.parameters['status'];
+    final String? shipmentID = Get.arguments['shipmentID'] as String?;
+    final String? status = Get.arguments['status'] as String?;
+    final String? invoicePath = Get.arguments['invoicePath'] as String?;
+
     final profileController = Get.put(ProfileController());
+    final pickupController = Get.put(PickupController());
+
     return CommonScaffold(
       appBar: commonAppbar('Pickup Delivery Detail'),
       body: Padding(
@@ -79,12 +90,21 @@ class RunningDeliveryDetailsView
                         // SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Order No: ${shipmentID.toString()}',
+                            'Shipment ID: ${shipmentID.toString()}',
                             style: themes.fontSize14_500.copyWith(
                                 fontWeight: FontWeight.bold, fontSize: 12.sp),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        IconButton(
+                            onPressed: () {
+                              Clipboard.setData(new ClipboardData(
+                                  text: shipmentID.toString()));
+                            },
+                            icon: Icon(
+                              Icons.copy,
+                              size: 18,
+                            )),
                         Container(
                           padding:
                               EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -320,7 +340,7 @@ class RunningDeliveryDetailsView
                             details?.insuranceValue?.toString() ?? 'N/A'),
                         Divider(),
                         SizedBox(height: 8),
-                        _infoRow('Insurance Charges',
+                        _infoRow('Total Charges',
                             details?.insuranceCharges?.toString() ?? 'N/A'),
                         // Divider(),
                         // SizedBox(height: 8),
@@ -360,105 +380,200 @@ class RunningDeliveryDetailsView
                               Divider(),
                               SizedBox(height: 8),
                               _infoRow(
-                                  'Invoice Charges',
+                                  'Invoice Number',
                                   details?.invoiceCharges?.toString() == ''
                                       ? 'N/A'
                                       : '' ?? 'N/A'),
                               Divider(),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      OutlinedButton(
-                                        onPressed: () {
-                                          controller.pickImage(
-                                              ImageSource.gallery, (file) {
-                                            controller.setImage(
-                                                shipmentID.toString(), file);
-                                          });
-                                        },
-                                        style: OutlinedButton.styleFrom(
-                                          side: BorderSide(
-                                              color: themes.grayColor,
-                                              width: 1.w),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
-                                          ),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 20.w, vertical: 8.h),
+                              invoicePath != null || invoicePath != ''
+                                  ? Image.network(
+                                      invoicePath.toString(),
+                                      fit: BoxFit.cover,
+                                      height: 120,
+                                      width: 120,
+                                    )
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            OutlinedButton(
+                                              onPressed: () {
+                                                controller.pickImage(
+                                                    ImageSource.gallery,
+                                                    (file) {
+                                                  controller.setImage(
+                                                      shipmentID.toString(),
+                                                      file);
+                                                });
+                                              },
+                                              style: OutlinedButton.styleFrom(
+                                                side: BorderSide(
+                                                    color: themes.grayColor,
+                                                    width: 1.w),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.r),
+                                                ),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20.w,
+                                                    vertical: 8.h),
+                                              ),
+                                              child: Text(
+                                                'Choose',
+                                                style: themes.fontSize14_500
+                                                    .copyWith(
+                                                        color: themes
+                                                            .darkCyanBlue),
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    themes.darkCyanBlue,
+                                                foregroundColor:
+                                                    themes.whiteColor,
+                                              ),
+                                              onPressed: () {
+                                                final file =
+                                                    controller.getImage(
+                                                        shipmentID.toString());
+                                                if (file != null) {
+                                                  controller.uploadInvoice(
+                                                      shipmentID:
+                                                          shipmentID.toString(),
+                                                      file: file);
+                                                }
+                                              },
+                                              child: Text('UPLOAD'),
+                                            ),
+                                          ],
                                         ),
-                                        child: Text(
-                                          'Choose',
-                                          style: themes.fontSize14_500.copyWith(
-                                              color: themes.darkCyanBlue),
-                                        ),
-                                      ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: themes.darkCyanBlue,
-                                          foregroundColor: themes.whiteColor,
-                                        ),
-                                        onPressed: () {
+                                        SizedBox(height: 12.h),
+                                        Obx(() {
                                           final file = controller
                                               .getImage(shipmentID.toString());
-                                          if (file != null) {
-                                            controller.uploadInvoice(
-                                                shipmentID:
-                                                    shipmentID.toString(),
-                                                file: file);
-                                          }
-                                        },
-                                        child: Text('UPLOAD'),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 12.h),
-                                  Obx(() {
-                                    final file = controller
-                                        .getImage(shipmentID.toString());
-                                    if (file == null) return SizedBox();
-                                    return Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.file(file,
-                                              width: 120,
-                                              height: 120,
-                                              fit: BoxFit.cover),
-                                        ),
-                                        Positioned(
-                                          top: 4,
-                                          right: 4,
-                                          child: GestureDetector(
-                                            onTap: () => controller.removeImage(
-                                                shipmentID.toString()),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.black54,
-                                                  shape: BoxShape.circle),
-                                              child: Icon(Icons.close,
-                                                  size: 20,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
+                                          if (file == null) return SizedBox();
+
+                                          return Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                child: Image.file(file,
+                                                    width: 120,
+                                                    height: 120,
+                                                    fit: BoxFit.cover),
+                                              ),
+                                              Positioned(
+                                                top: 4,
+                                                right: 4,
+                                                child: GestureDetector(
+                                                  onTap: () => controller
+                                                      .removeImage(shipmentID
+                                                          .toString()),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.black54,
+                                                        shape: BoxShape.circle),
+                                                    child: Icon(Icons.close,
+                                                        size: 20,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }),
                                       ],
-                                    );
-                                  })
-                                ],
-                              ),
+                                    ),
                             ],
                           ),
                         )
                       : SizedBox(),
-
-                  SizedBox(height: 15.h),
-
+                  isShowTransfer
+                      ? Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: themes.whiteColor,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              )
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                OutlinedButton(
+                                  onPressed: () {
+                                    showTransferDialog(
+                                      () {
+                                        final messengerId = pickupController
+                                            .selectedMessenger.value
+                                            .toString();
+                                        if (messengerId.isNotEmpty) {
+                                          pickupController.transferShipment(
+                                            shipmentID.toString(),
+                                            messengerId, // Pass selected messenger ID
+                                          );
+                                        } else {
+                                          Get.snackbar(
+                                            'Error',
+                                            'Please select a messenger',
+                                            colorText: themes.whiteColor,
+                                            backgroundColor: themes.redColor,
+                                          );
+                                        }
+                                      },
+                                    );
+                                  },
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(
+                                        color: themes.darkCyanBlue, width: 1.w),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 20.w, vertical: 8.h),
+                                  ),
+                                  child: Text(
+                                    'Transfer',
+                                    style: themes.fontSize18_600.copyWith(
+                                      fontSize: 14.sp,
+                                      color: themes.darkCyanBlue,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: themes.whiteColor,
+                                    backgroundColor: themes.darkCyanBlue,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 30.w, vertical: 8.h),
+                                  ),
+                                  child: Text('Pickup',
+                                      style: TextStyle(fontSize: 13.sp)),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
                   // Your stepper container remains unchanged
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -193,12 +193,17 @@ class PickupView extends GetView<PickupController> {
                                         onTap: () {
                                           runningController.fetchTrackingData(
                                               data.shipmentId.toString());
-                                          Get.toNamed(
-                                            Routes.RUNNING_DELIVERY_DETAILS,
-                                            parameters: {
+                                          Get.to(
+                                            RunningDeliveryDetailsView(
+                                              isShowInvoice: false,
+                                              isShowTransfer: true,
+                                            ),
+                                            arguments: {
                                               'shipmentID':
                                                   data.shipmentId.toString(),
                                               'status': data.status.toString(),
+                                              'invoicePath':
+                                                  "${data.invoicePath.toString()}+${data.invoiceFile}",
                                             },
                                           );
                                         },
@@ -314,13 +319,28 @@ class PickupView extends GetView<PickupController> {
                                                   confirmTextColor:
                                                       themes.whiteColor,
                                                   onConfirm: () {
-                                                    pickupController
-                                                        .transferShipment(
-                                                            data.shipmentId,
-                                                            data.messangerId);
-                                                    pickupController
-                                                        .getPickupData();
-                                                    Get.back();
+                                                    final messengerId =
+                                                        pickupController
+                                                            .selectedMessenger
+                                                            .value
+                                                            .toString();
+                                                    if (messengerId
+                                                        .isNotEmpty) {
+                                                      pickupController
+                                                          .transferShipment(
+                                                        data.shipmentId,
+                                                        messengerId, // Pass selected messenger ID
+                                                      );
+                                                    } else {
+                                                      Get.snackbar(
+                                                        'Error',
+                                                        'Please select a messenger',
+                                                        colorText:
+                                                            themes.whiteColor,
+                                                        backgroundColor:
+                                                            themes.redColor,
+                                                      );
+                                                    }
                                                   },
                                                 );
                                               }
@@ -374,7 +394,8 @@ class PickupView extends GetView<PickupController> {
                                     Get.to(
                                       // Routes.RUNNING_DELIVERY_DETAILS,
                                       RunningDeliveryDetailsView(
-                                        isShowInvoice: false,
+                                        isShowInvoice: true,
+                                        isShowTransfer: false,
                                       ),
                                       arguments: {
                                         'shipmentID':

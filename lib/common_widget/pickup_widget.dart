@@ -296,7 +296,13 @@ class PickupWidget extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
                     ),
-                    child: Text('Transfer', style: TextStyle(fontSize: 13.sp)),
+                    child: Text(
+                      'Transfer',
+                      style: themes.fontSize18_600.copyWith(
+                        fontSize: 14.sp,
+                        color: themes.darkCyanBlue,
+                      ),
+                    ),
                   )
                 : SizedBox(),
             showPickupBtn

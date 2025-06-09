@@ -45,13 +45,20 @@ class ProfileView extends GetView<ProfileController> {
                           radius: 64,
                           backgroundColor: themes.darkCyanBlue,
                           child: CircleAvatar(
-                              backgroundColor: themes.redColor,
-                              radius: 60,
-                              backgroundImage: controller.imageFile.value !=
-                                      null
-                                  ? FileImage(controller.imageFile.value!)
-                                  : NetworkImage(
-                                      "${controller.messangerDetail.value?.messangerdetail?.path}+ ${controller.messangerDetail.value?.messangerdetail?.photo}")),
+                            backgroundColor: themes.whiteColor,
+                            child: controller.imageFile.value == null
+                                ? Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: themes.darkCyanBlue,
+                                  )
+                                : null,
+                            radius: 60,
+                            backgroundImage: controller.imageFile.value != null
+                                ? FileImage(controller.imageFile.value!)
+                                : NetworkImage(
+                                    "${controller.messangerDetail.value?.messangerdetail?.path}+ ${controller.messangerDetail.value?.messangerdetail?.photo}"),
+                          ),
                         );
                       }),
                     ),

@@ -195,6 +195,7 @@ class ProfileController extends GetxController {
         nameController.text,
         emailController.text,
         phoneController.text,
+        imageFile,
       );
       if (result) {
         await fetchProfileData();
