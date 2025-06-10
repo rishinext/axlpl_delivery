@@ -171,7 +171,7 @@ class RunningDeliveryDetailsView
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 16.h),
                         // Receiver
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -527,6 +527,7 @@ class RunningDeliveryDetailsView
                                             shipmentID.toString(),
                                             messengerId, // Pass selected messenger ID
                                           );
+                                          Get.back();
                                         } else {
                                           Get.snackbar(
                                             'Error',
@@ -534,6 +535,7 @@ class RunningDeliveryDetailsView
                                             colorText: themes.whiteColor,
                                             backgroundColor: themes.redColor,
                                           );
+                                          Get.back();
                                         }
                                       },
                                     );

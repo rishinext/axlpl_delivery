@@ -165,7 +165,8 @@ class PickupRepo {
           success: (body) {
             final data = CommonModel.fromJson(body);
             if (data.status == 'success') {
-              Utils().log('pickup done');
+              Utils().log(data.toJson());
+
               isSuccess = true;
             } else {
               Utils().log('pickup error');

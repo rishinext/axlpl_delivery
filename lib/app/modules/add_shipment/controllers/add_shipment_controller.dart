@@ -569,6 +569,12 @@ class AddShipmentController extends GetxController {
   ShipmentRequestModel collectFormData(int step) {
     switch (step) {
       case 0:
+        String noOfParcel = noOfParcelController.text.isNotEmpty &&
+                int.tryParse(noOfParcelController.text) != null &&
+                int.parse(noOfParcelController.text) > 0
+            ? noOfParcelController.text
+            : '1';
+        log('Collected noOfParcel: $noOfParcel');
         return shipmentData.copyWith(
           shipmentSelectedDate: selectedDate.value.toString().split("T")[0],
           customerID: selectedCustomer.value,
@@ -577,7 +583,7 @@ class AddShipmentController extends GetxController {
           newWeight: netWeightController.text,
           grossWeight: grossWeightController.text,
           paymentMode: selectedPaymentModeId.value,
-          noOfParcel: noOfParcelController.text,
+          noOfParcel: noOfParcel,
           serviceType: selectedServiceType.value,
           insurance: insuranceType.value,
           policyNo: policyNoController.text,

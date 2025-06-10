@@ -256,6 +256,12 @@ class PickupView extends GetView<PickupController> {
                                                       : data.subPaymentMode,
                                                 );
                                         },
+                                        transferBtnColor: enableTransfer
+                                            ? themes.whiteColor
+                                            : themes.lightWhite,
+                                        transferTextColor: enableTransfer
+                                            ? themes.darkCyanBlue
+                                            : themes.grayColor,
                                         trasferTap: enableTransfer
                                             ? () async {
                                                 Get.defaultDialog(
@@ -307,8 +313,9 @@ class PickupView extends GetView<PickupController> {
                                                               },
                                                             ),
                                                           ),
-                                                          const SizedBox(
-                                                              height: 16),
+                                                          SizedBox(
+                                                            height: 16.h,
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -331,6 +338,7 @@ class PickupView extends GetView<PickupController> {
                                                         data.shipmentId,
                                                         messengerId, // Pass selected messenger ID
                                                       );
+                                                      Get.back();
                                                     } else {
                                                       Get.snackbar(
                                                         'Error',
@@ -345,6 +353,9 @@ class PickupView extends GetView<PickupController> {
                                                 );
                                               }
                                             : null,
+                                        transferBorderColor: enableTransfer
+                                            ? themes.darkCyanBlue
+                                            : themes.grayColor,
                                       ),
                                     ),
                                   );

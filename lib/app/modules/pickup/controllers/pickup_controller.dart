@@ -220,25 +220,22 @@ class PickupController extends GetxController {
       final success = await shipmentRepo.trasferShipmentRepo(
         shipmentID,
         transferTo,
-        'Picked up',
+        'pickup',
       );
       if (success) {
         Get.snackbar('Success', 'Shipment Transfer Success!');
         isTransferLoading.value = Status.success;
         isTransferSuccess.value = true;
         getPickupData();
-        Get.back();
       } else {
         Get.snackbar('Failed', 'Shipment Transfer Failed!');
         isTransferLoading.value = Status.error;
         isTransferSuccess.value = false;
-        Get.back();
       }
     } catch (e) {
       Get.snackbar('Failed', 'Shipment Transfer Failed!');
       isTransferLoading.value = Status.error;
       isTransferSuccess.value = false;
-      Get.back();
     }
   }
 

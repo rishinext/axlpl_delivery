@@ -1,15 +1,9 @@
-import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
-import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
-import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
-import 'package:axlpl_delivery/utils/utils.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:dotted_line/dotted_line.dart';
-// Make sure to import your `themes` and responsive units like `.r`, `.h`, `.w`, `.sp`.
+import 'package:axlpl_delivery/utils/utils.dart';
 
 class PickupWidget extends StatelessWidget {
   final String companyName;
@@ -28,6 +22,9 @@ class PickupWidget extends StatelessWidget {
   final bool showDivider;
   final VoidCallback? pickUpTap;
   final VoidCallback? trasferTap;
+  final Color? transferBtnColor;
+  final Color? transferBorderColor;
+  final Color? transferTextColor;
   final VoidCallback? openDialerTap;
   final VoidCallback? openMapTap;
   final VoidCallback? onTap;
@@ -50,6 +47,9 @@ class PickupWidget extends StatelessWidget {
     required this.showDivider,
     this.pickUpTap,
     this.trasferTap,
+    this.transferBtnColor,
+    this.transferBorderColor,
+    this.transferTextColor,
     this.openDialerTap,
     this.openMapTap,
     this.onTap,
@@ -173,6 +173,13 @@ class PickupWidget extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            SizedBox(
+                              width: 20.w,
+                            ),
+                            IconButton.outlined(
+                                color: themes.darkCyanBlue,
+                                onPressed: openDialerTap,
+                                icon: Icon(Icons.call))
                           ],
                         ),
                         SizedBox(height: 10.h),
@@ -289,7 +296,10 @@ class PickupWidget extends StatelessWidget {
                 ? OutlinedButton(
                     onPressed: trasferTap,
                     style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: themes.darkCyanBlue, width: 1.w),
+                      backgroundColor: transferBtnColor,
+                      side: BorderSide(
+                          color: transferBorderColor ?? themes.whiteColor,
+                          width: 1.w),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
                       ),
@@ -300,7 +310,7 @@ class PickupWidget extends StatelessWidget {
                       'Transfer',
                       style: themes.fontSize18_600.copyWith(
                         fontSize: 14.sp,
-                        color: themes.darkCyanBlue,
+                        color: transferTextColor,
                       ),
                     ),
                   )
