@@ -177,7 +177,6 @@ class PickupWidget extends StatelessWidget {
                               width: 20.w,
                             ),
                             IconButton.outlined(
-                                color: themes.darkCyanBlue,
                                 onPressed: openDialerTap,
                                 icon: Icon(Icons.call))
                           ],

@@ -204,6 +204,9 @@ class PickupView extends GetView<PickupController> {
                                               'status': data.status.toString(),
                                               'invoicePath':
                                                   "${data.invoicePath.toString()}+${data.invoiceFile}",
+                                              'paymentMode': data.paymentMode,
+                                              'date': data.date,
+                                              'cashAmt': data.totalCharges
                                             },
                                           );
                                         },
@@ -250,7 +253,8 @@ class PickupView extends GetView<PickupController> {
                                               : showPickDialog(
                                                   data.shipmentId.toString(),
                                                   data.date.toString(),
-                                                  data.totalCharges,
+                                                  pickupController
+                                                      .amountController.text,
                                                   data.subPaymentMode == '0'
                                                       ? 'Select Payment Mode'
                                                       : data.subPaymentMode,

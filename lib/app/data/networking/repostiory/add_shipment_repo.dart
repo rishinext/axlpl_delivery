@@ -296,7 +296,6 @@ class AddShipmentRepo {
 
     final String? userID = mId ?? custID;
     if (userID == null || role == null || token == null) {
-      Utils().logInfo('Logout skipped - user data incomplete');
       return false;
     }
     try {

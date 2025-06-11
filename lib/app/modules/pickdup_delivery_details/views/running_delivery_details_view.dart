@@ -5,6 +5,7 @@ import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/transfer_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:enhance_stepper/enhance_stepper.dart';
@@ -35,7 +36,10 @@ class RunningDeliveryDetailsView
     final String? shipmentID = Get.arguments['shipmentID'] as String?;
     final String? status = Get.arguments['status'] as String?;
     final String? invoicePath = Get.arguments['invoicePath'] as String?;
-
+    // final String? enableTransfer = Get.arguments['enableTransfer'] as String?;
+    final String? paymentMode = Get.arguments['paymentMode'] as String?;
+    final String? date = Get.arguments['date'] as String?;
+    final String? cashAmt = Get.arguments['cashAmt'] as String?;
     final profileController = Get.put(ProfileController());
     final pickupController = Get.put(PickupController());
 
@@ -558,7 +562,24 @@ class RunningDeliveryDetailsView
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    details?.paymentMode != 'topay'
+                                        ? pickupController.uploadPickup(
+                                            shipmentID,
+                                            'Picked up',
+                                            date,
+                                            cashAmt,
+                                            paymentMode)
+                                        : showPickDialog(
+                                            shipmentID,
+                                            date,
+                                            pickupController
+                                                .amountController.text,
+                                            paymentMode == '0'
+                                                ? 'Select Payment Mode'
+                                                : paymentMode,
+                                          );
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: themes.whiteColor,
                                     backgroundColor: themes.darkCyanBlue,

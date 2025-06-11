@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
@@ -408,15 +409,15 @@ class AddShipmentController extends GetxController {
 
       if (result == false) {
         // Handle gross weight validation failed
-        log('Gross weight should be greater than Net weight!');
+        print('Gross weight should be greater than Net weight!');
       } else if (result == true) {
         // Success case, continue
       } else {
         // Null or unknown error
-        log('Gross weight should be greater than Net weight!');
+        print('Gross weight should be greater than Net weight!');
       }
     } catch (e) {
-      log('Gross weight should be greater than Net weight!');
+      print('Gross weight should be greater than Net weight!');
     }
   }
 
@@ -432,6 +433,22 @@ class AddShipmentController extends GetxController {
     if (pickedDate != null && pickedDate != selectDate.value) {
       selectDate.value = pickedDate; // Update the selected date
     }
+  }
+
+  String generateRandomShipmentId() {
+    final random = Random();
+    int length = 12 + random.nextInt(3); // 12, 13, or 14 digits
+
+    StringBuffer buffer = StringBuffer();
+
+    // Ensure first digit is non-zero
+    buffer.write(random.nextInt(9) + 1);
+
+    for (int i = 1; i < length; i++) {
+      buffer.write(random.nextInt(10));
+    }
+
+    return buffer.toString();
   }
 
   void nextPage() {
@@ -492,9 +509,9 @@ class AddShipmentController extends GetxController {
           "N/A", // alertShipment
           "N/A", // shipmentInvoice
           "N/A", // isAmtEditedByUser
-          data.docketNo, // shipmentID
+          generateRandomShipmentId(), // shipmentID
           data.sendInfoName,
-          data.sendInfoCompanyName,
+          data.sendInfoCompanyName.toString(),
           "N/A", // senderCountry
           data.sendInfoState,
           data.sendInfoCity,
@@ -574,7 +591,7 @@ class AddShipmentController extends GetxController {
                 int.parse(noOfParcelController.text) > 0
             ? noOfParcelController.text
             : '1';
-        log('Collected noOfParcel: $noOfParcel');
+        print('Collected noOfParcel: $noOfParcel');
         return shipmentData.copyWith(
           shipmentSelectedDate: selectedDate.value.toString().split("T")[0],
           customerID: selectedCustomer.value,
@@ -583,7 +600,7 @@ class AddShipmentController extends GetxController {
           newWeight: netWeightController.text,
           grossWeight: grossWeightController.text,
           paymentMode: selectedPaymentModeId.value,
-          noOfParcel: noOfParcel,
+          noOfParcel: noOfParcelController.text,
           serviceType: selectedServiceType.value,
           insurance: insuranceType.value,
           policyNo: policyNoController.text,
@@ -639,7 +656,7 @@ class AddShipmentController extends GetxController {
           totalCharge: totalChargeController.text,
           gst: gstChargeController.text,
           docketNo: docketNoController.text,
-          shipmentID: docketNoController.text,
+          shipmentID: generateRandomShipmentId(),
         );
       default:
         return shipmentData;

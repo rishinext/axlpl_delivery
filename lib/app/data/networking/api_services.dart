@@ -322,7 +322,7 @@ class ApiServices {
       'insurance_value': insuranceValue,
       'remark': remark,
       'bill_to': billTo,
-      'number_of_parcel': int.tryParse(noOfParcel ?? '1'),
+      'number_of_parcel': double.tryParse(noOfParcel ?? '0') ?? 0,
       'additional_axlpl_insurance': addInsurance,
       'shipment_status': shipmentStatus,
       'calculation_status': caculationStatus,
@@ -380,7 +380,7 @@ class ApiServices {
       'shipment_date': shipmentDate,
       'token': token,
     };
-    log("Shipment API Body: ${jsonEncode(body)}");
+    log("Shipment API Body: ${json.encode(body)}");
 
     return _api.post(
       addShipmentPoint,
