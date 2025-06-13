@@ -90,7 +90,11 @@ class ProfileRepo {
   }
 
   Future<bool> updateProfile(
-      String name, String email, String phone, final photo) async {
+    String name,
+    String email,
+    String phone,
+    final photo,
+  ) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??

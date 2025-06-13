@@ -6,7 +6,6 @@ import 'package:axlpl_delivery/app/data/models/profile_data_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/profile_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

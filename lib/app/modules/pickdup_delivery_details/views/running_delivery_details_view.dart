@@ -519,47 +519,69 @@ class RunningDeliveryDetailsView
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                OutlinedButton(
-                                  onPressed: () {
-                                    showTransferDialog(
-                                      () {
-                                        final messengerId = pickupController
-                                            .selectedMessenger.value
-                                            .toString();
-                                        if (messengerId.isNotEmpty) {
-                                          pickupController.transferShipment(
-                                            shipmentID.toString(),
-                                            messengerId, // Pass selected messenger ID
-                                          );
-                                          Get.back();
-                                        } else {
-                                          Get.snackbar(
-                                            'Error',
-                                            'Please select a messenger',
-                                            colorText: themes.whiteColor,
-                                            backgroundColor: themes.redColor,
-                                          );
-                                          Get.back();
-                                        }
-                                      },
+                                Obx(
+                                  () {
+                                    final userId =
+                                        pickupController.currentUserId.value;
+                                    final enableTransfer =
+                                        details?.custId == userId;
+                                    return ElevatedButton(
+                                      onPressed: enableTransfer
+                                          ? () {
+                                              showTransferDialog(
+                                                () {
+                                                  final messengerId =
+                                                      pickupController
+                                                          .selectedMessenger
+                                                          .value
+                                                          .toString();
+                                                  if (messengerId.isNotEmpty) {
+                                                    pickupController
+                                                        .transferShipment(
+                                                      shipmentID.toString(),
+                                                      messengerId, // Pass selected messenger ID
+                                                    );
+                                                    Get.back();
+                                                  } else {
+                                                    Get.snackbar(
+                                                      'Error',
+                                                      'Please select a messenger',
+                                                      colorText:
+                                                          themes.whiteColor,
+                                                      backgroundColor:
+                                                          themes.redColor,
+                                                    );
+                                                    Get.back();
+                                                  }
+                                                },
+                                              );
+                                            }
+                                          : null,
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: enableTransfer
+                                            ? themes.darkCyanBlue
+                                            : themes.grayColor,
+                                        side: BorderSide(
+                                            color: enableTransfer
+                                                ? themes.darkCyanBlue
+                                                : themes.grayColor,
+                                            width: 1.w),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20.w, vertical: 8.h),
+                                      ),
+                                      child: Text(
+                                        'Transfer',
+                                        style: themes.fontSize18_600.copyWith(
+                                          fontSize: 14.sp,
+                                          color: themes.darkCyanBlue,
+                                        ),
+                                      ),
                                     );
                                   },
-                                  style: OutlinedButton.styleFrom(
-                                    side: BorderSide(
-                                        color: themes.darkCyanBlue, width: 1.w),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.r),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w, vertical: 8.h),
-                                  ),
-                                  child: Text(
-                                    'Transfer',
-                                    style: themes.fontSize18_600.copyWith(
-                                      fontSize: 14.sp,
-                                      color: themes.darkCyanBlue,
-                                    ),
-                                  ),
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
@@ -640,7 +662,7 @@ class RunningDeliveryDetailsView
                             isActive: true,
                             state: StepState.complete,
                             title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
                                   child: Text(

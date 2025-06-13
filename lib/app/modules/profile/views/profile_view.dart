@@ -35,6 +35,41 @@ class ProfileView extends GetView<ProfileController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8.h,
               children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Obx(() {
+                    return controller.isEdit.value
+                        ? TextButton.icon(
+                            style: TextButton.styleFrom(
+                                foregroundColor: themes.whiteColor,
+                                backgroundColor: themes.darkCyanBlue),
+                            icon: Icon(
+                              Icons.save,
+                              color: themes.whiteColor,
+                            ),
+                            onPressed: () {
+                              controller.editProfile;
+                              controller.updateProfile();
+                            },
+                            label: Text(
+                              'Save',
+                              style: themes.fontSize14_500.copyWith(
+                                fontSize: 16.sp,
+                              ),
+                            ))
+                        : TextButton.icon(
+                            icon: Icon(
+                              CupertinoIcons.square_pencil_fill,
+                              color: themes.grayColor,
+                            ),
+                            onPressed: controller.editProfile,
+                            label: Text(
+                              'Edit',
+                              style: themes.fontSize14_500.copyWith(
+                                  fontSize: 16.sp, color: themes.grayColor),
+                            ));
+                  }),
+                ),
                 Stack(
                   alignment: Alignment.center,
                   clipBehavior: Clip.none,
@@ -57,7 +92,8 @@ class ProfileView extends GetView<ProfileController> {
                             backgroundImage: controller.imageFile.value != null
                                 ? FileImage(controller.imageFile.value!)
                                 : NetworkImage(
-                                    "${controller.messangerDetail.value?.messangerdetail?.path}+ ${controller.messangerDetail.value?.messangerdetail?.photo}"),
+                                    "${controller.messangerDetail.value?.messangerdetail?.path}+ ${controller.messangerDetail.value?.messangerdetail?.photo}",
+                                  ),
                           ),
                         );
                       }),
@@ -123,45 +159,45 @@ class ProfileView extends GetView<ProfileController> {
                                           .copyWith(fontSize: 16.sp),
                                     ),
                                     Spacer(),
-                                    Obx(() {
-                                      return controller.isEdit.value
-                                          ? TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                  foregroundColor:
-                                                      themes.whiteColor,
-                                                  backgroundColor:
-                                                      themes.darkCyanBlue),
-                                              icon: Icon(
-                                                Icons.save,
-                                                color: themes.whiteColor,
-                                              ),
-                                              onPressed: () {
-                                                controller.editProfile;
-                                                controller.updateProfile();
-                                              },
-                                              label: Text(
-                                                'Save',
-                                                style: themes.fontSize14_500
-                                                    .copyWith(
-                                                  fontSize: 16.sp,
-                                                ),
-                                              ))
-                                          : TextButton.icon(
-                                              icon: Icon(
-                                                CupertinoIcons
-                                                    .square_pencil_fill,
-                                                color: themes.grayColor,
-                                              ),
-                                              onPressed: controller.editProfile,
-                                              label: Text(
-                                                'Edit',
-                                                style: themes.fontSize14_500
-                                                    .copyWith(
-                                                        fontSize: 16.sp,
-                                                        color:
-                                                            themes.grayColor),
-                                              ));
-                                    })
+                                    // Obx(() {
+                                    //   return controller.isEdit.value
+                                    //       ? TextButton.icon(
+                                    //           style: TextButton.styleFrom(
+                                    //               foregroundColor:
+                                    //                   themes.whiteColor,
+                                    //               backgroundColor:
+                                    //                   themes.darkCyanBlue),
+                                    //           icon: Icon(
+                                    //             Icons.save,
+                                    //             color: themes.whiteColor,
+                                    //           ),
+                                    //           onPressed: () {
+                                    //             controller.editProfile;
+                                    //             controller.updateProfile();
+                                    //           },
+                                    //           label: Text(
+                                    //             'Save',
+                                    //             style: themes.fontSize14_500
+                                    //                 .copyWith(
+                                    //               fontSize: 16.sp,
+                                    //             ),
+                                    //           ))
+                                    //       : TextButton.icon(
+                                    //           icon: Icon(
+                                    //             CupertinoIcons
+                                    //                 .square_pencil_fill,
+                                    //             color: themes.grayColor,
+                                    //           ),
+                                    //           onPressed: controller.editProfile,
+                                    //           label: Text(
+                                    //             'Edit',
+                                    //             style: themes.fontSize14_500
+                                    //                 .copyWith(
+                                    //                     fontSize: 16.sp,
+                                    //                     color:
+                                    //                         themes.grayColor),
+                                    //           ));
+                                    // })
                                   ],
                                 ),
                                 Text(
@@ -186,7 +222,8 @@ class ProfileView extends GetView<ProfileController> {
                                     hintTxt: user?.role == "messanger"
                                         ? 'Enter code'
                                         : 'Company Name',
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.codeController,
                                   );
                                 }),
@@ -206,7 +243,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt:
                                               user?.customerdetail?.category ??
                                                   'Category',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller: controller.cateController,
                                         );
                                       }),
@@ -221,7 +259,8 @@ class ProfileView extends GetView<ProfileController> {
                                   return CommonTextfiled(
                                     hintTxt: user?.messangerdetail?.stateName ??
                                         user?.customerdetail?.stateName,
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.stateController,
                                   );
                                 }),
@@ -234,7 +273,8 @@ class ProfileView extends GetView<ProfileController> {
                                   return CommonTextfiled(
                                     hintTxt: user?.messangerdetail?.cityName ??
                                         user?.customerdetail?.cityName,
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.cityController,
                                   );
                                 }),
@@ -248,7 +288,8 @@ class ProfileView extends GetView<ProfileController> {
                                     hintTxt:
                                         user?.messangerdetail?.branchName ??
                                             user?.customerdetail?.branchName,
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.branchController,
                                   );
                                 }),
@@ -262,7 +303,8 @@ class ProfileView extends GetView<ProfileController> {
                                     hintTxt:
                                         user?.customerdetail?.regAddress1 ??
                                             'Address1',
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.address1Controller,
                                   );
                                 }),
@@ -276,7 +318,8 @@ class ProfileView extends GetView<ProfileController> {
                                     hintTxt:
                                         user?.customerdetail?.regAddress2 ??
                                             'Address2',
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.address2Controller,
                                   );
                                 }),
@@ -289,7 +332,8 @@ class ProfileView extends GetView<ProfileController> {
                                   return CommonTextfiled(
                                     hintTxt: user?.customerdetail?.pincode ??
                                         'Pincode',
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.cityController,
                                   );
                                 }),
@@ -309,7 +353,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt: user?.messangerdetail
                                                   ?.routeCode ??
                                               'AXL- 033',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.routeController,
                                         );
@@ -323,7 +368,8 @@ class ProfileView extends GetView<ProfileController> {
                                 ),
                                 Obx(() {
                                   return CommonTextfiled(
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     hintTxt: user?.messangerdetail?.phone ??
                                         user?.customerdetail?.mobileNo ??
                                         'Mobile No',
@@ -340,7 +386,8 @@ class ProfileView extends GetView<ProfileController> {
                                     hintTxt: user?.messangerdetail?.email ??
                                         user?.customerdetail?.email ??
                                         email,
-                                    isEnable: controller.isEdit.value,
+                                    isEnable: controller.isEdit.value &&
+                                        user?.role == "messanger",
                                     controller: controller.emailController,
                                   );
                                 }),
@@ -360,7 +407,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt: user?.messangerdetail
                                                   ?.vehicleNo ??
                                               '0555',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -383,7 +431,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt: user?.customerdetail
                                                   ?.natureBusiness ??
                                               '0555',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -396,7 +445,8 @@ class ProfileView extends GetView<ProfileController> {
                                       Obx(() {
                                         return CommonTextfiled(
                                           hintTxt: user?.customerdetail?.faxNo,
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -412,7 +462,8 @@ class ProfileView extends GetView<ProfileController> {
                                               user?.customerdetail?.panNo != ''
                                                   ? user?.customerdetail?.panNo
                                                   : 'Pan No',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -427,7 +478,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt:
                                               user?.customerdetail?.gstNo ??
                                                   'Gst No',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -442,7 +494,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt: user?.customerdetail
                                                   ?.axlplInsuranceValue ??
                                               'AXLPL Insurance value',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -457,7 +510,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt: user?.customerdetail
                                                   ?.thirdPartyInsuranceValue ??
                                               'Third party insurance value',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -472,7 +526,8 @@ class ProfileView extends GetView<ProfileController> {
                                           hintTxt: user?.customerdetail
                                                   ?.thirdPartyPolicyNo ??
                                               'Third party policy No',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
@@ -489,7 +544,8 @@ class ProfileView extends GetView<ProfileController> {
                                                   ?.toIso8601String()
                                                   .split("T")[0] ??
                                               'Third party expiry date',
-                                          isEnable: controller.isEdit.value,
+                                          isEnable: controller.isEdit.value &&
+                                              user?.role == "messanger",
                                           controller:
                                               controller.vehicleController,
                                         );
