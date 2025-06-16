@@ -6,7 +6,6 @@ import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
-import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/image_picker_widget.dart';
@@ -19,7 +18,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../controllers/pod_controller.dart';
 
@@ -28,6 +26,7 @@ class PodView extends GetView<PodController> {
   @override
   Widget build(BuildContext context) {
     final pickupController = Get.find<PickupController>();
+    final podController = Get.put(PodController());
     return CommonScaffold(
         appBar: commonAppbar('Upload POD'),
         body: Padding(
@@ -46,30 +45,37 @@ class PodView extends GetView<PodController> {
                           color: themes.grayColor,
                         ),
                         hintText: 'Shipment ID',
-                        controller: controller.shipmentIdController,
+                        controller: podController.shipmentIdController,
                       ),
                     ),
                     IconButton(
                       onPressed: () async {
-                        String? res = await SimpleBarcodeScanner.scanBarcode(
-                          scanType: ScanType.defaultMode,
-                          context,
-                          barcodeAppBar: const BarcodeAppBar(
-                            appBarTitle: '',
-                            centerTitle: false,
-                            enableBackButton: true,
-                            backButtonIcon: Icon(Icons.arrow_back_ios),
-                          ),
-                          isShowFlashIcon: true,
-                          cameraFace: CameraFace.back,
-                        );
-
-                        if (res != null && res != "-1") {
-                          controller.shipmentIdController.text = res;
-                          log("Scanned result: $res");
-                        } else {
-                          log("Scan cancelled or failed.");
+                        var scannedValue =
+                            await Utils().scanAndPlaySound(context);
+                        if (scannedValue != null && scannedValue != '-1') {
+                          podController.shipmentIdController.text =
+                              scannedValue;
+                          log(scannedValue.toString());
                         }
+                        // String? res = await SimpleBarcodeScanner.scanBarcode(
+                        //   scanType: ScanType.defaultMode,
+                        //   context,
+                        //   barcodeAppBar: const BarcodeAppBar(
+                        //     appBarTitle: '',
+                        //     centerTitle: false,
+                        //     enableBackButton: true,
+                        //     backButtonIcon: Icon(Icons.arrow_back_ios),
+                        //   ),
+                        //   isShowFlashIcon: true,
+                        //   cameraFace: CameraFace.back,
+                        // );
+
+                        // if (res != null && res != "-1") {
+                        //   controller.shipmentIdController.text = res;
+                        //   log("Scanned result: $res");
+                        // } else {
+                        //   log("Scan cancelled or failed.");
+                        // }
                       },
                       icon: Icon(CupertinoIcons.qrcode_viewfinder),
                     )
@@ -81,29 +87,32 @@ class PodView extends GetView<PodController> {
                   radius: Radius.circular(10.r),
                   padding: EdgeInsets.all(2),
                   color: themes.blueColor,
-                  child: Obx(
-                    () => InkWell(
-                      onTap: () {
-                        if (controller.shipmentIdController.text.isNotEmpty) {
-                          pickImage(ImageSource.camera, controller.imageFile);
-                        } else {
-                          Get.snackbar(
-                            'error',
-                            'Shipment ID Required!',
-                            colorText: themes.whiteColor,
-                            backgroundColor: themes.redColor,
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: themes.blueGray,
-                            borderRadius: BorderRadius.circular(10.r)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(38.0).r,
-                          child: controller.imageFile.value == null
-                              ? Column(
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: themes.blueGray,
+                        borderRadius: BorderRadius.circular(10.r)),
+                    child: Padding(
+                        padding: const EdgeInsets.all(38.0).r,
+                        child: Obx(
+                          () {
+                            if (controller.imageFile.value == null) {
+                              return InkWell(
+                                onTap: () {
+                                  if (controller
+                                      .shipmentIdController.text.isNotEmpty) {
+                                    pickImage(ImageSource.camera,
+                                        controller.imageFile);
+                                  } else {
+                                    Get.snackbar(
+                                      'error',
+                                      'Shipment ID Required!',
+                                      colorText: themes.whiteColor,
+                                      backgroundColor: themes.redColor,
+                                    );
+                                  }
+                                },
+                                child: Column(
                                   children: [
                                     Image.asset(
                                       uploadIcon,
@@ -114,17 +123,38 @@ class PodView extends GetView<PodController> {
                                       style: themes.fontSize14_500,
                                     )
                                   ],
-                                )
-                              : Image.file(
-                                  width: 50.w,
-                                  height: 100.h,
-                                  File(
-                                    controller.imageFile.value!.path,
-                                  ),
                                 ),
-                        ),
-                      ),
-                    ),
+                              );
+                            } else {
+                              return Stack(
+                                  fit: StackFit.loose,
+                                  alignment: Alignment.center,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      child: Image.file(
+                                        // width: 60.w,
+                                        height: 150.h,
+                                        File(
+                                          controller.imageFile.value!.path,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 5,
+                                      left: 160,
+                                      child: IconButton(
+                                        iconSize: 30,
+                                        onPressed: () {
+                                          controller.imageFile.value = null;
+                                        },
+                                        icon: Icon(Icons.cancel),
+                                      ),
+                                    ),
+                                  ]);
+                            }
+                          },
+                        )),
                   ),
                 ),
                 /*

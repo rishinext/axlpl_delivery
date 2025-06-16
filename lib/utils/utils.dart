@@ -166,12 +166,12 @@ class Utils {
     );
 
     if (res != null && res.isNotEmpty && res != '-1') {
-      // Play sound only when valid scan result
       await player.play(AssetSource('beep.mp3'));
-      // Handle scanned result here
       logInfo('Scanned: $res');
+      return res; // <<<< return valid result here
     } else {
       log('Scan cancelled or invalid');
+      return null; // <<<< or return null if invalid
     }
   }
 }

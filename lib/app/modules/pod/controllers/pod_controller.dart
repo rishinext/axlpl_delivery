@@ -63,6 +63,7 @@ class PodController extends GetxController {
 
         Get.snackbar("Success", message.value,
             backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
+        imageFile.value = null;
       } else {
         isPod.value = Status.error;
         message.value = _repo.apiMessage ?? 'Upload failed';

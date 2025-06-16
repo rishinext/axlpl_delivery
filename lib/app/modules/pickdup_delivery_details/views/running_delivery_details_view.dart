@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
@@ -167,8 +165,9 @@ class RunningDeliveryDetailsView
                                   Text(
                                     '${senderData.isNotEmpty ? senderData[0].address1 ?? '' : ''}, ${senderData.isNotEmpty ? senderData[0].state ?? '' : ''}',
                                     style: themes.fontSize14_400.copyWith(
-                                        color: themes.grayColor,
-                                        fontSize: 13.sp),
+                                      color: themes.grayColor,
+                                      fontSize: 13.sp,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -577,7 +576,9 @@ class RunningDeliveryDetailsView
                                         'Transfer',
                                         style: themes.fontSize18_600.copyWith(
                                           fontSize: 14.sp,
-                                          color: themes.darkCyanBlue,
+                                          color: enableTransfer
+                                              ? themes.darkCyanBlue
+                                              : themes.grayColor,
                                         ),
                                       ),
                                     );
