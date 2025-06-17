@@ -13,6 +13,7 @@ import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
+import 'package:axlpl_delivery/common_widget/yes_no_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -195,7 +196,7 @@ class PickupView extends GetView<PickupController> {
                                               data.shipmentId.toString());
                                           Get.to(
                                             RunningDeliveryDetailsView(
-                                              isShowInvoice: false,
+                                              isShowInvoice: true,
                                               isShowTransfer: true,
                                             ),
                                             arguments: {
@@ -203,7 +204,7 @@ class PickupView extends GetView<PickupController> {
                                                   data.shipmentId.toString(),
                                               'status': data.status.toString(),
                                               'invoicePath':
-                                                  "${data.invoicePath.toString()}+${data.invoiceFile}",
+                                                  "${data.invoicePath.toString()}${data.invoiceFile}",
                                               'paymentMode': data.paymentMode,
                                               'date': data.date,
                                               'cashAmt': data.totalCharges
@@ -243,12 +244,18 @@ class PickupView extends GetView<PickupController> {
                                         },
                                         pickUpTap: () {
                                           data.paymentMode != 'topay'
-                                              ? pickupController.uploadPickup(
-                                                  data.shipmentId,
-                                                  'Picked up',
-                                                  data.date,
-                                                  data.totalCharges,
-                                                  'prepaid',
+                                              ? yesNoDialog(
+                                                  () {
+                                                    pickupController
+                                                        .uploadPickup(
+                                                      data.shipmentId,
+                                                      'Picked up',
+                                                      data.date,
+                                                      data.totalCharges,
+                                                      'prepaid',
+                                                    );
+                                                    Get.back();
+                                                  },
                                                 )
                                               : showPickDialog(
                                                   data.shipmentId.toString(),
@@ -416,6 +423,8 @@ class PickupView extends GetView<PickupController> {
                                         'shipmentID':
                                             data.shipmentId.toString(),
                                         'status': data.status.toString(),
+                                        // 'invoicePath':
+                                        //     "${data.invoicePath.toString()}${data.invoiceFile}",
                                       },
                                     );
                                   },

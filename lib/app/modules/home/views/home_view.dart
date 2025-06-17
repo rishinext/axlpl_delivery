@@ -1,14 +1,12 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
+import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
-import 'package:axlpl_delivery/common_widget/qr_scan_screen.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -18,7 +16,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -29,6 +26,7 @@ class HomeView extends GetView<HomeController> {
     final controller = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
     final pickupController = Get.put(PickupController());
+    final profileController = Get.put(ProfileController());
     final MobileScannerController QRController = MobileScannerController();
     final user = bottomController.userData.value;
     return Scaffold(
@@ -40,13 +38,20 @@ class HomeView extends GetView<HomeController> {
             padding: const EdgeInsets.only(left: 15),
             child: InkWell(
               onTap: () => Get.toNamed(Routes.PROFILE),
-              child: Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(
-                      'assets/manimg.png',
-                    )),
-                    shape: BoxShape.circle),
+              child: Obx(
+                () {
+                  final imageUrl =
+                      "${profileController.messangerDetail.value?.messangerdetail?.path ?? ''}${profileController.messangerDetail.value?.messangerdetail?.photo ?? ''}";
+                  return Container(
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              imageUrl,
+                            )),
+                        shape: BoxShape.circle),
+                  );
+                },
               ),
             ),
           ),
@@ -69,6 +74,7 @@ class HomeView extends GetView<HomeController> {
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
           child: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 20,
               children: [
                 ContainerTextfiled(
@@ -220,8 +226,18 @@ class HomeView extends GetView<HomeController> {
                     ],
                   );
                 }),
+                SizedBox(
+                  width: 100.w,
+                  child: HomeIconContainer(
+                    title: 'Show Shipment',
+                    Img: containerIcon,
+                    OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                  ),
+                ),
                 Obx(() {
                   final rattingData = controller.rattingDataModel.value;
+                  final imageUrl =
+                      "${profileController.messangerDetail.value?.messangerdetail?.path ?? ''}${profileController.messangerDetail.value?.messangerdetail?.photo ?? ''}";
                   if (bottomController.isLoading.value) {
                     return Center(
                       child: CircularProgressIndicator.adaptive(),
@@ -243,10 +259,8 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage:
-                                      AssetImage('assets/manimg.png'),
-                                ),
+                                    radius: 30,
+                                    backgroundImage: NetworkImage(imageUrl)),
                                 SizedBox(height: 8.h),
                                 Obx(() {
                                   final user = bottomController.userData.value;

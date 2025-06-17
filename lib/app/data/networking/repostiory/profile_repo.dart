@@ -1,5 +1,6 @@
 import 'dart:developer';
-
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
@@ -99,33 +100,49 @@ class ProfileRepo {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString() ??
           userData?.customerdetail?.id.toString();
-      // final token =
-      //     userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
       final role = userData?.role?.toString();
       log("roles profile data ${role.toString()}");
+
       if (userID != null && userID.isNotEmpty) {
+        dynamic photoToSend;
+
+        if (photo is File) {
+          photoToSend = await MultipartFile.fromFile(
+            photo.path,
+            filename: photo.path.split('/').last,
+          );
+        } else if (photo is String) {
+          photoToSend = photo;
+        } else {
+          photoToSend = null;
+        }
+
         final response = await _apiServices.updateProfile(
           userID,
           role.toString(),
           name,
           email,
           phone,
-          photo,
-        ); // Pass token
+          photoToSend,
+        );
 
-        return response.when(success: (body) {
-          final updateProfileData = CommonModel.fromJson(body);
-          if (updateProfileData.status != "success") {
-            throw Exception(updateProfileData.message ??
-                "UpdateProfile Failed: Unknown Error");
-          } else {
-            Utils.instance
-                .log("UpdateProfile Success: ${updateProfileData.message}");
-          }
-          return true;
-        }, error: (error) {
-          throw Exception("UpdateProfile Failed: ${error.toString()}");
-        });
+        log(photoToSend.toString());
+        return response.when(
+          success: (body) {
+            final updateProfileData = CommonModel.fromJson(body);
+            if (updateProfileData.status != "success") {
+              throw Exception(updateProfileData.message ??
+                  "UpdateProfile Failed: Unknown Error");
+            } else {
+              Utils.instance
+                  .log("UpdateProfile Success: ${updateProfileData.message}");
+            }
+            return true;
+          },
+          error: (error) {
+            throw Exception("UpdateProfile Failed: ${error.toString()}");
+          },
+        );
       }
     } catch (e) {
       Utils.instance.log("Error in updateProfile: $e");

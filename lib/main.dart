@@ -55,7 +55,7 @@ void main() async {
       designSize: ScreenUtil.defaultSize,
       child: GetMaterialApp(
         enableLog: true,
-        defaultTransition: Transition.fadeIn,
+        defaultTransition: Transition.noTransition,
         title: "AXLPL Delivery",
         // builder: (context, child) {
         //   ErrorWidget.builder = (FlutterErrorDetails details) {

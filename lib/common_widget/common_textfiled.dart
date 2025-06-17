@@ -12,6 +12,7 @@ class CommonTextfiled extends StatelessWidget {
   final TextInputAction? textInputAction;
   final bool obscureText;
   final sufixIcon;
+  final prefixIcon;
   final prefixText;
   final lableText;
   final String? Function(String?)? validator;
@@ -28,6 +29,7 @@ class CommonTextfiled extends StatelessWidget {
     this.keyboardType,
     this.obscureText = false,
     this.sufixIcon,
+    this.prefixIcon,
     this.prefixText,
     this.validator,
     this.onChanged,
@@ -59,6 +61,7 @@ class CommonTextfiled extends StatelessWidget {
         hintText: hintTxt,
         hintStyle: themes.fontSize16_400.copyWith(color: themes.grayColor),
         suffixIcon: sufixIcon,
+        prefixIcon: prefixIcon,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0.r),
         ),

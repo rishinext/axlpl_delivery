@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
+import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -38,7 +40,7 @@ class ShipnowView extends GetView<ShipnowController> {
               ],
             )
           ],*/
-          title: const Text('All Shipments'),
+          title: const Text('My Shipments'),
           centerTitle: true,
         ),
         body: Padding(
@@ -49,6 +51,16 @@ class ShipnowView extends GetView<ShipnowController> {
               CommonTextfiled(
                 hintTxt: 'Search Here',
                 sufixIcon: Icon(Icons.search),
+                controller: controller.shipmentIDController,
+                prefixIcon: InkWell(
+                    onTap: () async {
+                      var scannedValue =
+                          await Utils().scanAndPlaySound(context);
+                      if (scannedValue != null && scannedValue != '-1') {
+                        controller.shipmentIDController.text = scannedValue;
+                      }
+                    },
+                    child: Icon(CupertinoIcons.qrcode_viewfinder)),
               ),
               Obx(() {
                 if (shipnowController.isLoadingShipNow.value) {
@@ -57,15 +69,15 @@ class ShipnowView extends GetView<ShipnowController> {
                   );
                 }
 
-                if (shipnowController.shipmentDataList.isNotEmpty) {
+                if (shipnowController.filteredShipmentData.isNotEmpty) {
                   return Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      itemCount: shipnowController.shipmentDataList.length,
+                      itemCount: shipnowController.filteredShipmentData.length,
                       padding: const EdgeInsets.all(8),
                       itemBuilder: (context, index) {
                         final shipment =
-                            shipnowController.shipmentDataList[index];
+                            shipnowController.filteredShipmentData[index];
                         final status = shipment.shipmentStatus;
                         return Card(
                           elevation: 4,

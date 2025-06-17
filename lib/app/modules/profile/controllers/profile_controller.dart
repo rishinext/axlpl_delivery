@@ -187,29 +187,37 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateProfile() async {
-    errorMessage.value = '';
     isUpdateProfile.value = Status.loading;
     try {
+      // If user picked a new file, pass File, else pass existing photo filename string
+      dynamic photoParam;
+      if (imageFile.value != null) {
+        photoParam = imageFile.value; // File object
+      } else {
+        photoParam = messangerDetail.value?.messangerdetail?.photo ?? '';
+      }
+
       final result = await profileRepo.updateProfile(
         nameController.text,
         emailController.text,
         phoneController.text,
-        imageFile,
+        photoParam,
       );
+
       if (result) {
         await fetchProfileData();
         isUpdateProfile.value = Status.success;
-        Get.snackbar('', 'Profile updated successfully',
+        Get.snackbar('Success', 'Profile updated successfully',
             backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
       } else {
-        isUpdateProfile.value = Status.error;
-        Get.snackbar('', 'Failed to update profile',
-            backgroundColor: themes.redColor, colorText: themes.whiteColor);
+        throw Exception('Failed to update profile');
       }
     } catch (e) {
       Utils.instance.log("Error updating profile: $e");
       isUpdateProfile.value = Status.error;
       errorMessage.value = 'Failed to update profile';
+      Get.snackbar('Error', errorMessage.value,
+          backgroundColor: themes.redColor, colorText: themes.whiteColor);
     }
   }
 

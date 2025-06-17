@@ -66,7 +66,9 @@ class ProfileView extends GetView<ProfileController> {
                             label: Text(
                               'Edit',
                               style: themes.fontSize14_500.copyWith(
-                                  fontSize: 16.sp, color: themes.grayColor),
+                                fontSize: 16.sp,
+                                color: themes.grayColor,
+                              ),
                             ));
                   }),
                 ),
@@ -76,24 +78,28 @@ class ProfileView extends GetView<ProfileController> {
                   children: [
                     Center(
                       child: Obx(() {
+                        final imageFile = controller.imageFile.value;
+                        final imageUrl =
+                            "${controller.messangerDetail.value?.messangerdetail?.path ?? ''}${controller.messangerDetail.value?.messangerdetail?.photo ?? ''}";
+
                         return CircleAvatar(
-                          radius: 64,
+                          radius: 62,
                           backgroundColor: themes.darkCyanBlue,
                           child: CircleAvatar(
+                            radius: 60,
                             backgroundColor: themes.whiteColor,
-                            child: controller.imageFile.value == null
+                            child: imageFile == null && imageUrl.isEmpty
                                 ? Icon(
                                     Icons.person,
                                     size: 50,
                                     color: themes.darkCyanBlue,
                                   )
                                 : null,
-                            radius: 60,
-                            backgroundImage: controller.imageFile.value != null
-                                ? FileImage(controller.imageFile.value!)
-                                : NetworkImage(
-                                    "${controller.messangerDetail.value?.messangerdetail?.path}+ ${controller.messangerDetail.value?.messangerdetail?.photo}",
-                                  ),
+                            backgroundImage: imageFile != null
+                                ? FileImage(imageFile)
+                                : (imageUrl.isNotEmpty
+                                    ? NetworkImage(imageUrl)
+                                    : null),
                           ),
                         );
                       }),
