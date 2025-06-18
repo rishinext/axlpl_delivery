@@ -44,6 +44,8 @@ class HistoryPickup {
   String? paymentMode;
   String? subPaymentMode;
   String? shipmentId;
+  String? invoicePath;
+  String? invoiceFile;
   String? axlplInsurance;
   String? status;
   String? name;
@@ -64,6 +66,8 @@ class HistoryPickup {
     this.paymentMode,
     this.subPaymentMode,
     this.shipmentId,
+    this.invoicePath,
+    this.invoiceFile,
     this.axlplInsurance,
     this.status,
     this.name,
@@ -85,6 +89,8 @@ class HistoryPickup {
         paymentMode: json["payment_mode"],
         subPaymentMode: json["sub_payment_mode"],
         shipmentId: json["shipment_id"],
+        invoicePath: json["invoice_path"],
+        invoiceFile: json["invoice_file"],
         axlplInsurance: json["axlpl_insurance"],
         status: json["status"],
         name: json["name"],
@@ -106,6 +112,8 @@ class HistoryPickup {
         "payment_mode": paymentMode,
         "sub_payment_mode": subPaymentMode,
         "shipment_id": shipmentId,
+        "invoice_path": invoicePath,
+        "invoice_file": invoiceFile,
         "axlpl_insurance": axlplInsurance,
         "status": status,
         "name": name,

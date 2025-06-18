@@ -1,5 +1,9 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/views/customer_tracking_details_view.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/views/running_delivery_details_view.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -15,6 +19,7 @@ class ShipnowView extends GetView<ShipnowController> {
   @override
   Widget build(BuildContext context) {
     final shipnowController = Get.put(ShipnowController());
+    final runningController = Get.put(RunningDeliveryDetailsController());
     final theme = Themes();
     return Scaffold(
         appBar: AppBar(
@@ -82,50 +87,62 @@ class ShipnowView extends GetView<ShipnowController> {
                         return Card(
                           elevation: 4,
                           margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: ListTile(
-                            title: Text(
-                              "Create Date: ${shipment.createdDate?.toIso8601String().split('T')[0] ?? 'N/A'}",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 5),
-                                Text(
-                                    "Shipment ID: ${shipment.shipmentId ?? 'N/A'}"),
-                                Text(
-                                    "Sender Company: ${shipment.senderCompanyName ?? 'N/A'}"),
-                                Text(
-                                    "Receiver Company: ${shipment.receiverCompanyName ?? 'N/A'}"),
-                                Text("Orgin: ${shipment.origin ?? ''}"),
-                                Text(
-                                    'Destination: ${shipment.destination ?? ''}'),
-                                Text(
-                                    'Sender Area: ${shipment.senderAreaname ?? ''}'),
-                                Text(
-                                    'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Status:',
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: RichText(
-                                          text: TextSpan(children: [
-                                        TextSpan(
-                                            text: status,
-                                            style: theme.fontSize14_500
-                                                .copyWith(
-                                                    color: status != 'Approved'
-                                                        ? theme.redColor
-                                                        : theme.greenColor))
-                                      ])),
-                                    ),
-                                  ],
-                                )
-                              ],
+                          child: InkWell(
+                            onTap: () {
+                              runningController.fetchTrackingData(
+                                  shipment.shipmentId.toString());
+                              Get.toNamed(Routes.CUSTOMER_TRACKING_DETAILS,
+                                  arguments: {
+                                    'shipmentID': shipment.shipmentId,
+                                    'status': status,
+                                  });
+                            },
+                            child: ListTile(
+                              title: Text(
+                                "Create Date: ${shipment.createdDate?.toIso8601String().split('T')[0] ?? 'N/A'}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 5),
+                                  Text(
+                                      "Shipment ID: ${shipment.shipmentId ?? 'N/A'}"),
+                                  Text(
+                                      "Sender Company: ${shipment.senderCompanyName ?? 'N/A'}"),
+                                  Text(
+                                      "Receiver Company: ${shipment.receiverCompanyName ?? 'N/A'}"),
+                                  Text("Orgin: ${shipment.origin ?? ''}"),
+                                  Text(
+                                      'Destination: ${shipment.destination ?? ''}'),
+                                  Text(
+                                      'Sender Area: ${shipment.senderAreaname ?? ''}'),
+                                  Text(
+                                      'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Status:',
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: RichText(
+                                            text: TextSpan(children: [
+                                          TextSpan(
+                                              text: status,
+                                              style: theme.fontSize14_500
+                                                  .copyWith(
+                                                      color: status !=
+                                                              'Approved'
+                                                          ? theme.redColor
+                                                          : theme.greenColor))
+                                        ])),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         );

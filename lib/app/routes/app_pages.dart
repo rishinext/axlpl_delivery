@@ -32,8 +32,6 @@ import '../modules/shipnow/views/shipnow_view.dart';
 import '../modules/shipnow/views/shipnow_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/tracking/bindings/tracking_binding.dart';
-import '../modules/tracking/views/tracking_view.dart';
 
 part 'app_routes.dart';
 
@@ -62,11 +60,6 @@ class AppPages {
       name: _Paths.BOTTOMBAR,
       page: () => const BottombarView(),
       binding: BottombarBinding(),
-    ),
-    GetPage(
-      name: _Paths.TRACKING,
-      page: () => const TrackingView(),
-      binding: TrackingBinding(),
     ),
     GetPage(
       name: _Paths.SHIPNOW,

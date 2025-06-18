@@ -1,10 +1,4 @@
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
-import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
-import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
-import 'package:axlpl_delivery/common_widget/common_appbar.dart';
-import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
-import 'package:axlpl_delivery/common_widget/invoice_image_dialog.dart';
-import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/tracking_info_widget.dart';
 import 'package:axlpl_delivery/common_widget/transfer_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -12,40 +6,22 @@ import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
-import '../controllers/running_delivery_details_controller.dart';
+class CustomerTrackingDetailsView extends GetView {
+  // final shipmentID;
 
-class RunningDeliveryDetailsView
-    extends GetView<RunningDeliveryDetailsController> {
-  // final RunningPickUp? runningPickUp;
-  final isShowInvoice;
-  final isShowTransfer;
-  RunningDeliveryDetailsView({
-    this.isShowInvoice = true,
-    this.isShowTransfer = false,
-    super.key,
-    // this.runningPickUp,
-  });
+  CustomerTrackingDetailsView({super.key});
   @override
   Widget build(BuildContext context) {
-    StepperType type = StepperType.horizontal;
     final String? shipmentID = Get.arguments['shipmentID'] as String?;
     final String? status = Get.arguments['status'] as String?;
-    final String? invoicePath = Get.arguments['invoicePath'] as String?;
-    // final String? enableTransfer = Get.arguments['enableTransfer'] as String?;
-    final String? paymentMode = Get.arguments['paymentMode'] as String?;
-    final String? date = Get.arguments['date'] as String?;
-    final String? cashAmt = Get.arguments['cashAmt'] as String?;
-    final String? invoicePhoto = Get.arguments['invoicePhoto'] as String?;
-    final profileController = Get.put(ProfileController());
-    final pickupController = Get.put(PickupController());
-
-    return CommonScaffold(
-      appBar: commonAppbar('Pickup Delivery Detail'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Shipment Tracking Details'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(child: Obx(
@@ -95,7 +71,7 @@ class RunningDeliveryDetailsView
                         // SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            'Shipment ID: ${shipmentID.toString()}',
+                            'Shipment ID: ${shipmentID}',
                             style: themes.fontSize14_500.copyWith(
                                 fontWeight: FontWeight.bold, fontSize: 12.sp),
                             overflow: TextOverflow.ellipsis,
@@ -296,7 +272,7 @@ class RunningDeliveryDetailsView
                             details?.insuranceCharges?.toString() ?? 'N/A'),
                         // Divider(),
                         // SizedBox(height: 8),
-                        // _infoRow('Total Charges',
+                        // infoRow('Total Charges',
                         //     details?.totalCharges?.toString() ?? 'N/A'),
                         Divider(),
                         SizedBox(height: 12),
@@ -350,7 +326,7 @@ class RunningDeliveryDetailsView
                             details?.insuranceCharges?.toString() ?? 'N/A'),
                         // Divider(),
                         // SizedBox(height: 8),
-                        // _infoRow('Total Charges',
+                        // infoRow('Total Charges',
                         //     details?.totalCharges?.toString() ?? 'N/A'),
                         Divider(),
 
@@ -359,269 +335,149 @@ class RunningDeliveryDetailsView
                       ],
                     ),
                   ),
-                  isShowInvoice == true
-                      ? Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: themes.whiteColor,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                              )
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Invoice Details',
-                                  style: themes.fontSize16_400
-                                      .copyWith(fontWeight: FontWeight.bold)),
-                              infoRow('Invoice Value',
-                                  details?.invoiceValue?.toString() ?? 'N/A'),
-                              Divider(),
-                              SizedBox(height: 8),
-                              infoRow(
-                                  'Invoice Number',
-                                  details?.invoiceCharges?.toString() == ''
-                                      ? 'N/A'
-                                      : '' ?? 'N/A'),
-                              Divider(),
-                              invoicePhoto != ''
-                                  ? InvoiceImagePopup(
-                                      invoicePath: invoicePath.toString(),
-                                      invoicePhoto: invoicePhoto.toString(),
-                                    )
-                                  : Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            OutlinedButton(
-                                              onPressed: () {
-                                                controller.pickImage(
-                                                    ImageSource.gallery,
-                                                    (file) {
-                                                  controller.setImage(
-                                                      shipmentID.toString(),
-                                                      file);
-                                                });
-                                              },
-                                              style: OutlinedButton.styleFrom(
-                                                side: BorderSide(
-                                                    color: themes.grayColor,
-                                                    width: 1.w),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.r),
-                                                ),
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20.w,
-                                                    vertical: 8.h),
-                                              ),
-                                              child: Text(
-                                                'Choose',
-                                                style: themes.fontSize14_500
-                                                    .copyWith(
-                                                        color: themes
-                                                            .darkCyanBlue),
-                                              ),
-                                            ),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    themes.darkCyanBlue,
-                                                foregroundColor:
-                                                    themes.whiteColor,
-                                              ),
-                                              onPressed: () {
-                                                final file =
-                                                    controller.getImage(
-                                                        shipmentID.toString());
-                                                if (file != null) {
-                                                  controller.uploadInvoice(
-                                                      shipmentID:
-                                                          shipmentID.toString(),
-                                                      file: file);
-                                                }
-                                              },
-                                              child: Text('UPLOAD'),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 12.h),
-                                        Obx(() {
-                                          final file = controller
-                                              .getImage(shipmentID.toString());
-                                          if (file == null) return SizedBox();
+                  // isShowInvoice == true
+                  //     ? Container(
+                  //         margin:
+                  //             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  //         padding: EdgeInsets.all(16),
+                  //         decoration: BoxDecoration(
+                  //           color: themes.whiteColor,
+                  //           borderRadius: BorderRadius.circular(12),
+                  //           boxShadow: [
+                  //             BoxShadow(
+                  //               color: Colors.black12,
+                  //               blurRadius: 6,
+                  //               offset: Offset(0, 2),
+                  //             )
+                  //           ],
+                  //         ),
+                  //         child: Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Text('Invoice Details',
+                  //                 style: themes.fontSize16_400
+                  //                     .copyWith(fontWeight: FontWeight.bold)),
+                  //             infoRow('Invoice Value',
+                  //                 details?.invoiceValue?.toString() ?? 'N/A'),
+                  //             Divider(),
+                  //             SizedBox(height: 8),
+                  //             infoRow(
+                  //                 'Invoice Number',
+                  //                 details?.invoiceCharges?.toString() == ''
+                  //                     ? 'N/A'
+                  //                     : '' ?? 'N/A'),
+                  //             Divider(),
+                  //             invoicePath != null || invoicePath != ''
+                  //                 ? Image.network(
+                  //                     invoicePath.toString(),
+                  //                     fit: BoxFit.cover,
+                  //                     height: 120,
+                  //                     width: 120,
+                  //                   )
+                  //                 : Column(
+                  //                     crossAxisAlignment:
+                  //                         CrossAxisAlignment.start,
+                  //                     children: [
+                  //                       Row(
+                  //                         mainAxisAlignment:
+                  //                             MainAxisAlignment.spaceBetween,
+                  //                         children: [
+                  //                           OutlinedButton(
+                  //                             onPressed: () {
+                  //                               controller.pickImage(
+                  //                                   ImageSource.gallery,
+                  //                                   (file) {
+                  //                                 controller.setImage(
+                  //                                     shipmentID.toString(),
+                  //                                     file);
+                  //                               });
+                  //                             },
+                  //                             style: OutlinedButton.styleFrom(
+                  //                               side: BorderSide(
+                  //                                   color: themes.grayColor,
+                  //                                   width: 1.w),
+                  //                               shape: RoundedRectangleBorder(
+                  //                                 borderRadius:
+                  //                                     BorderRadius.circular(
+                  //                                         10.r),
+                  //                               ),
+                  //                               padding: EdgeInsets.symmetric(
+                  //                                   horizontal: 20.w,
+                  //                                   vertical: 8.h),
+                  //                             ),
+                  //                             child: Text(
+                  //                               'Choose',
+                  //                               style: themes.fontSize14_500
+                  //                                   .copyWith(
+                  //                                       color: themes
+                  //                                           .darkCyanBlue),
+                  //                             ),
+                  //                           ),
+                  //                           ElevatedButton(
+                  //                             style: ElevatedButton.styleFrom(
+                  //                               backgroundColor:
+                  //                                   themes.darkCyanBlue,
+                  //                               foregroundColor:
+                  //                                   themes.whiteColor,
+                  //                             ),
+                  //                             onPressed: () {
+                  //                               final file =
+                  //                                   controller.getImage(
+                  //                                       shipmentID.toString());
+                  //                               if (file != null) {
+                  //                                 controller.uploadInvoice(
+                  //                                     shipmentID:
+                  //                                         shipmentID.toString(),
+                  //                                     file: file);
+                  //                               }
+                  //                             },
+                  //                             child: Text('UPLOAD'),
+                  //                           ),
+                  //                         ],
+                  //                       ),
+                  //                       SizedBox(height: 12.h),
+                  //                       Obx(() {
+                  //                         final file = controller
+                  //                             .getImage(shipmentID.toString());
+                  //                         if (file == null) return SizedBox();
 
-                                          return Stack(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                child: Image.file(file,
-                                                    width: 120,
-                                                    height: 120,
-                                                    fit: BoxFit.cover),
-                                              ),
-                                              Positioned(
-                                                top: 4,
-                                                right: 4,
-                                                child: GestureDetector(
-                                                  onTap: () => controller
-                                                      .removeImage(shipmentID
-                                                          .toString()),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.black54,
-                                                        shape: BoxShape.circle),
-                                                    child: Icon(Icons.close,
-                                                        size: 20,
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        }),
-                                      ],
-                                    ),
-                            ],
-                          ),
-                        )
-                      : SizedBox(),
-                  isShowTransfer
-                      ? Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: themes.whiteColor,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 6,
-                                offset: Offset(0, 2),
-                              )
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Obx(
-                                  () {
-                                    final userId =
-                                        pickupController.currentUserId.value;
-                                    final enableTransfer =
-                                        details?.custId == userId;
-                                    return ElevatedButton(
-                                      onPressed: enableTransfer
-                                          ? () {
-                                              showTransferDialog(
-                                                () {
-                                                  final messengerId =
-                                                      pickupController
-                                                          .selectedMessenger
-                                                          .value
-                                                          .toString();
-                                                  if (messengerId.isNotEmpty) {
-                                                    pickupController
-                                                        .transferShipment(
-                                                      shipmentID.toString(),
-                                                      messengerId, // Pass selected messenger ID
-                                                    );
-                                                    Get.back();
-                                                  } else {
-                                                    Get.snackbar(
-                                                      'Error',
-                                                      'Please select a messenger',
-                                                      colorText:
-                                                          themes.whiteColor,
-                                                      backgroundColor:
-                                                          themes.redColor,
-                                                    );
-                                                    Get.back();
-                                                  }
-                                                },
-                                              );
-                                            }
-                                          : null,
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: enableTransfer
-                                            ? themes.darkCyanBlue
-                                            : themes.grayColor,
-                                        side: BorderSide(
-                                            color: enableTransfer
-                                                ? themes.darkCyanBlue
-                                                : themes.grayColor,
-                                            width: 1.w),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.r),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 20.w, vertical: 8.h),
-                                      ),
-                                      child: Text(
-                                        'Transfer',
-                                        style: themes.fontSize18_600.copyWith(
-                                          fontSize: 14.sp,
-                                          color: enableTransfer
-                                              ? themes.darkCyanBlue
-                                              : themes.grayColor,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    details?.paymentMode != 'topay'
-                                        ? pickupController.uploadPickup(
-                                            shipmentID,
-                                            'Picked up',
-                                            date,
-                                            cashAmt,
-                                            paymentMode)
-                                        : showPickDialog(
-                                            shipmentID,
-                                            date,
-                                            pickupController
-                                                .amountController.text,
-                                            paymentMode == '0'
-                                                ? 'Select Payment Mode'
-                                                : paymentMode,
-                                          );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: themes.whiteColor,
-                                    backgroundColor: themes.darkCyanBlue,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.r),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 30.w, vertical: 8.h),
-                                  ),
-                                  child: Text('Pickup',
-                                      style: TextStyle(fontSize: 13.sp)),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      : SizedBox(),
-                  // Your stepper container remains unchanged
+                  //                         return Stack(
+                  //                           children: [
+                  //                             ClipRRect(
+                  //                               borderRadius:
+                  //                                   BorderRadius.circular(8),
+                  //                               child: Image.file(file,
+                  //                                   width: 120,
+                  //                                   height: 120,
+                  //                                   fit: BoxFit.cover),
+                  //                             ),
+                  //                             Positioned(
+                  //                               top: 4,
+                  //                               right: 4,
+                  //                               child: GestureDetector(
+                  //                                 onTap: () => controller
+                  //                                     .removeImage(shipmentID
+                  //                                         .toString()),
+                  //                                 child: Container(
+                  //                                   decoration: BoxDecoration(
+                  //                                       color: Colors.black54,
+                  //                                       shape: BoxShape.circle),
+                  //                                   child: Icon(Icons.close,
+                  //                                       size: 20,
+                  //                                       color: Colors.white),
+                  //                                 ),
+                  //                               ),
+                  //                             ),
+                  //                           ],
+                  //                         );
+                  //                       }),
+                  //                     ],
+                  //                   ),
+                  //           ],
+                  //         ),
+                  //       )
+                  //     : SizedBox(),
+
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
@@ -768,22 +624,3 @@ class RunningDeliveryDetailsView
     );
   }
 }
-
-Widget buildDetailSection(String title, String mainInfo, String secondaryInfo,
-        {String? extraInfo}) =>
-    Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title,
-            style: themes.fontSize18_600
-                .copyWith(color: themes.grayColor, fontSize: 16.sp)),
-        SizedBox(height: 4),
-        Text(mainInfo, style: themes.fontSize14_500.copyWith(fontSize: 15.sp)),
-        if (secondaryInfo.trim().isNotEmpty)
-          Text(secondaryInfo,
-              style: themes.fontSize14_500.copyWith(color: themes.grayColor)),
-        if (extraInfo != null)
-          Text(extraInfo,
-              style: themes.fontSize14_500.copyWith(color: themes.grayColor)),
-      ],
-    );

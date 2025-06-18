@@ -81,6 +81,8 @@ class ProfileView extends GetView<ProfileController> {
                         final imageFile = controller.imageFile.value;
                         final imageUrl =
                             "${controller.messangerDetail.value?.messangerdetail?.path ?? ''}${controller.messangerDetail.value?.messangerdetail?.photo ?? ''}";
+                        final custImg =
+                            "${controller.customerDetail.value?.path ?? ''}${controller.customerDetail.value?.custProfileImg ?? ''}";
 
                         return CircleAvatar(
                           radius: 62,

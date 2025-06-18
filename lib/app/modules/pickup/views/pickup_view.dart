@@ -203,8 +203,8 @@ class PickupView extends GetView<PickupController> {
                                               'shipmentID':
                                                   data.shipmentId.toString(),
                                               'status': data.status.toString(),
-                                              'invoicePath':
-                                                  "${data.invoicePath.toString()}${data.invoiceFile}",
+                                              'invoicePath': data.invoicePath,
+                                              'invoicePhoto': data.invoiceFile,
                                               'paymentMode': data.paymentMode,
                                               'date': data.date,
                                               'cashAmt': data.totalCharges
@@ -423,8 +423,8 @@ class PickupView extends GetView<PickupController> {
                                         'shipmentID':
                                             data.shipmentId.toString(),
                                         'status': data.status.toString(),
-                                        // 'invoicePath':
-                                        //     "${data.invoicePath.toString()}${data.invoiceFile}",
+                                        'invoicePath': data.invoicePath,
+                                        'invoicePhoto': data.invoiceFile,
                                       },
                                     );
                                   },

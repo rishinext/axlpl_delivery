@@ -226,13 +226,19 @@ class HomeView extends GetView<HomeController> {
                     ],
                   );
                 }),
-                SizedBox(
-                  width: 100.w,
-                  child: HomeIconContainer(
-                    title: 'Show Shipment',
-                    Img: containerIcon,
-                    OnTap: () => Get.toNamed(Routes.SHIPNOW),
-                  ),
+                Obx(
+                  () {
+                    return bottomController.userData.value?.role == 'messanger'
+                        ? SizedBox(
+                            width: 100.w,
+                            child: HomeIconContainer(
+                              title: 'Show Shipment',
+                              Img: containerIcon,
+                              OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                            ),
+                          )
+                        : SizedBox.shrink();
+                  },
                 ),
                 Obx(() {
                   final rattingData = controller.rattingDataModel.value;
