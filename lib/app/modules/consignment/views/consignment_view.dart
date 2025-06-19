@@ -1,20 +1,13 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
-import 'package:axlpl_delivery/common_widget/common_button.dart';
-import 'package:axlpl_delivery/common_widget/common_datepicker.dart';
-import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
-import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 import '../controllers/consignment_controller.dart';
 

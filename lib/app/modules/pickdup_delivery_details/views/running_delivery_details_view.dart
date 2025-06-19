@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
@@ -55,6 +57,7 @@ class RunningDeliveryDetailsView
 
             final trackingStatus = controller.trackingStatus;
             final details = controller.shipmentDetail.value;
+            log(details?.invoiceNumber.toString() ?? 'N/A');
             if (controller.isTrackingLoading.value == Status.loading) {
               return Center(
                 child: CircularProgressIndicator.adaptive(),
@@ -342,12 +345,11 @@ class RunningDeliveryDetailsView
                         SizedBox(
                           height: 10.h,
                         ),
-                        infoRow('Gst ',
-                            details?.insuranceValue?.toString() ?? 'N/A'),
+                        infoRow('Gst ', details?.tax?.toString() ?? 'N/A'),
                         Divider(),
                         SizedBox(height: 8),
                         infoRow('Total Charges',
-                            details?.insuranceCharges?.toString() ?? 'N/A'),
+                            details?.totalCharges?.toString() ?? 'N/A'),
                         // Divider(),
                         // SizedBox(height: 8),
                         // _infoRow('Total Charges',
@@ -386,7 +388,13 @@ class RunningDeliveryDetailsView
                               Divider(),
                               SizedBox(height: 8),
                               infoRow(
-                                  'Invoice Number',
+                                'Invoice Number',
+                                details?.invoiceNumber.toString() ?? 'N/A',
+                              ),
+                              Divider(),
+                              SizedBox(height: 8),
+                              infoRow(
+                                  'Invoice Charges',
                                   details?.invoiceCharges?.toString() == ''
                                       ? 'N/A'
                                       : '' ?? 'N/A'),
@@ -622,6 +630,7 @@ class RunningDeliveryDetailsView
                         )
                       : SizedBox(),
                   // Your stepper container remains unchanged
+
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(

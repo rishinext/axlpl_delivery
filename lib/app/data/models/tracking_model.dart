@@ -183,6 +183,7 @@ class ShipmentDetails {
   String? shipmentCharges;
   String? insuranceCharges;
   String? invoiceCharges;
+  String? invoiceNumber;
   String? handlingCharges;
   String? tax;
   String? totalCharges;
@@ -208,6 +209,7 @@ class ShipmentDetails {
     this.shipmentCharges,
     this.insuranceCharges,
     this.invoiceCharges,
+    this.invoiceNumber,
     this.handlingCharges,
     this.tax,
     this.totalCharges,
@@ -233,6 +235,7 @@ class ShipmentDetails {
         billTo: json["bill_to"],
         numberOfParcel: json["number_of_parcel"],
         additionalAxlplInsurance: json["additional_axlpl_insurance"],
+        invoiceNumber: json["invoice_number"],
         shipmentCharges: json["shipment_charges"],
         insuranceCharges: json["insurance_charges"],
         invoiceCharges: json["invoice_charges"],
@@ -252,6 +255,7 @@ class ShipmentDetails {
         "service_id": serviceId,
         "invoice_value": invoiceValue,
         "axlpl_insurance": axlplInsurance,
+        "invoice_number": invoiceNumber,
         "policy_no": policyNo,
         "exp_date":
             "${expDate!.year.toString().padLeft(4, '0')}-${expDate!.month.toString().padLeft(2, '0')}-${expDate!.day.toString().padLeft(2, '0')}",

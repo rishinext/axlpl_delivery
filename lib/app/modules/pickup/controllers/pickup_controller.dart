@@ -284,7 +284,7 @@ class PickupController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    getPickupData();
+    // getPickupData();
     // getPaymentModeData();
     getMessangerData();
     initializeUserId();

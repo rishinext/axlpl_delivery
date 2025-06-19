@@ -156,6 +156,7 @@ class HomeView extends GetView<HomeController> {
                                 title: 'Pickups',
                                 Img: truckIcon,
                                 OnTap: () {
+                                  pickupController.getPickupData();
                                   pickupController.fetchPaymentModes();
                                   Get.toNamed(Routes.PICKUP);
                                 })),
