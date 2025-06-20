@@ -164,6 +164,7 @@ class TrackingStatus {
 
 class ShipmentDetails {
   String? shipmentId;
+  String? shipmentStatus;
   String? custId;
   String? parcelDetail;
   String? categoryId;
@@ -184,12 +185,15 @@ class ShipmentDetails {
   String? insuranceCharges;
   String? invoiceCharges;
   String? invoiceNumber;
+  String? invoicePath;
+  String? invoicePhoto;
   String? handlingCharges;
   String? tax;
   String? totalCharges;
-
+  String? grandTotal;
   ShipmentDetails({
     this.shipmentId,
+    this.shipmentStatus,
     this.custId,
     this.parcelDetail,
     this.categoryId,
@@ -210,14 +214,18 @@ class ShipmentDetails {
     this.insuranceCharges,
     this.invoiceCharges,
     this.invoiceNumber,
+    this.invoicePath,
+    this.invoicePhoto,
     this.handlingCharges,
     this.tax,
     this.totalCharges,
+    this.grandTotal,
   });
 
   factory ShipmentDetails.fromJson(Map<String, dynamic> json) =>
       ShipmentDetails(
         shipmentId: json["shipment_id"],
+        shipmentStatus: json["shipment_status"],
         custId: json["cust_id"],
         parcelDetail: json["parcel_detail"],
         categoryId: json["category_id"],
@@ -236,12 +244,15 @@ class ShipmentDetails {
         numberOfParcel: json["number_of_parcel"],
         additionalAxlplInsurance: json["additional_axlpl_insurance"],
         invoiceNumber: json["invoice_number"],
+        invoicePath: json["invoice_path"],
+        invoicePhoto: json["invoice_file"],
         shipmentCharges: json["shipment_charges"],
         insuranceCharges: json["insurance_charges"],
         invoiceCharges: json["invoice_charges"],
         handlingCharges: json["handling_charges"],
         tax: json["tax"],
         totalCharges: json["total_charges"],
+        grandTotal: json["grand_total"],
       );
 
   Map<String, dynamic> toJson() => {

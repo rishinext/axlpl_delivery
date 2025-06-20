@@ -35,6 +35,7 @@ class RunningDeliveryDetailsView
   @override
   Widget build(BuildContext context) {
     StepperType type = StepperType.horizontal;
+
     final String? shipmentID = Get.arguments['shipmentID'] as String?;
     final String? status = Get.arguments['status'] as String?;
     final String? invoicePath = Get.arguments['invoicePath'] as String?;
@@ -47,7 +48,7 @@ class RunningDeliveryDetailsView
     final pickupController = Get.put(PickupController());
 
     return CommonScaffold(
-      appBar: commonAppbar('Pickup Delivery Detail'),
+      appBar: commonAppbar('Tracking Detail'),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: SingleChildScrollView(child: Obx(
@@ -68,7 +69,8 @@ class RunningDeliveryDetailsView
               );
             } else if (controller.isTrackingLoading.value == Status.success) {
               String formattedDate = trackingStatus.isNotEmpty
-                  ? DateFormat('dd-MM-yyyy HH:mm')
+                  ? DateFormat('dd-MM-yyyy hh:mm a') //
+
                       .format(trackingStatus[0].dateTime)
                   : 'No date available';
               return Column(
@@ -121,7 +123,7 @@ class RunningDeliveryDetailsView
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
-                            status.toString(),
+                            details?.shipmentStatus.toString() ?? 'N/A',
                             style: themes.fontSize14_500
                                 .copyWith(color: themes.darkCyanBlue),
                           ),
@@ -355,8 +357,10 @@ class RunningDeliveryDetailsView
                         // _infoRow('Total Charges',
                         //     details?.totalCharges?.toString() ?? 'N/A'),
                         Divider(),
-
-                        // SizedBox(height: 15.h),
+                        SizedBox(height: 8),
+                        infoRow('Grand Total',
+                            details?.grandTotal?.toString() ?? 'N/A'),
+                        // SizedBox(height: 15.h), c c
                         // Divider(),
                       ],
                     ),
@@ -391,15 +395,15 @@ class RunningDeliveryDetailsView
                                 'Invoice Number',
                                 details?.invoiceNumber.toString() ?? 'N/A',
                               ),
+                              // Divider(),
+                              // SizedBox(height: 8),
+                              // infoRow(
+                              //     'Invoice Charges',
+                              //     details?.invoiceCharges?.toString() == ''
+                              //         ? 'N/A'
+                              //         : '' ?? 'N/A'),
                               Divider(),
-                              SizedBox(height: 8),
-                              infoRow(
-                                  'Invoice Charges',
-                                  details?.invoiceCharges?.toString() == ''
-                                      ? 'N/A'
-                                      : '' ?? 'N/A'),
-                              Divider(),
-                              invoicePhoto != ''
+                              details?.invoicePhoto != ''
                                   ? InvoiceImagePopup(
                                       invoicePath: invoicePath.toString(),
                                       invoicePhoto: invoicePhoto.toString(),
@@ -459,6 +463,8 @@ class RunningDeliveryDetailsView
                                                       shipmentID:
                                                           shipmentID.toString(),
                                                       file: file);
+                                                  controller.fetchTrackingData(
+                                                      shipmentID.toString());
                                                 }
                                               },
                                               child: Text('UPLOAD'),

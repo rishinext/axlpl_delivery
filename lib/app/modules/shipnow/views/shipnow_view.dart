@@ -91,10 +91,9 @@ class ShipnowView extends GetView<ShipnowController> {
                             onTap: () {
                               runningController.fetchTrackingData(
                                   shipment.shipmentId.toString());
-                              Get.toNamed(Routes.CUSTOMER_TRACKING_DETAILS,
+                              Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
                                   arguments: {
                                     'shipmentID': shipment.shipmentId,
-                                    'status': status,
                                   });
                             },
                             child: ListTile(

@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
+import 'package:axlpl_delivery/app/modules/pod/controllers/pod_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
+import 'package:axlpl_delivery/app/modules/shipment_record/controllers/shipment_record_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
@@ -26,7 +31,11 @@ class HomeView extends GetView<HomeController> {
     final controller = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
     final pickupController = Get.put(PickupController());
+    final runningPickupDetailsController =
+        Get.put(RunningDeliveryDetailsController());
     final profileController = Get.put(ProfileController());
+    final shipmentRecordController = Get.put(ShipmentRecordController());
+    final podController = Get.put(PodController());
     final MobileScannerController QRController = MobileScannerController();
     final user = bottomController.userData.value;
     return Scaffold(
@@ -78,25 +87,46 @@ class HomeView extends GetView<HomeController> {
               spacing: 20,
               children: [
                 ContainerTextfiled(
+                  onChanged: (val) {},
                   prefixIcon: Icon(
                     CupertinoIcons.search,
                     color: themes.grayColor,
                   ),
                   suffixIcon: InkWell(
                       onTap: () async {
-                        Utils().scanAndPlaySound(context);
-                      },
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SimpleBarcodeScannerPage(
-                      //       scanType: ScanType.barcode,
-                      //     ),
-                      //   ));
+                        var scannedValue =
+                            await Utils().scanAndPlaySound(context);
+                        if (scannedValue != null && scannedValue != '-1') {
+                          controller.searchController.text = scannedValue;
 
+                          Get.dialog(
+                            const Center(
+                                child: CircularProgressIndicator.adaptive()),
+                            barrierDismissible: false,
+                          );
+
+                          // await shipmentRecordController
+                          //     .getShipmentRecord(scannedValue);
+                          await runningPickupDetailsController
+                              .fetchTrackingData(scannedValue);
+                          Get.back(); // Close the dialog
+                          Get.toNamed(
+                            Routes.RUNNING_DELIVERY_DETAILS,
+                            arguments: {
+                              'shipmentID': scannedValue,
+                              // 'status': data.status.toString(),
+                              // 'invoicePath': data.invoicePath,
+                              // 'invoicePhoto': data.invoiceFile,
+                              // 'paymentMode': data.paymentMode,
+                              // 'date': data.date,
+                              // 'cashAmt': data.totalCharges
+                            },
+                          );
+                        }
+                      },
                       child: Icon(CupertinoIcons.qrcode_viewfinder)),
                   hintText: 'Enter Your Package Number',
-                  controller: controller.searchController,
+                  controller: shipmentRecordController.shipmentController,
                 ),
                 Obx(
                   () {

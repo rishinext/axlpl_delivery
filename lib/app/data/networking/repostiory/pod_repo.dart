@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
+import 'package:axlpl_delivery/app/data/models/get_shipment_record_model.dart';
 import 'package:axlpl_delivery/app/data/models/shipment_record_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -100,5 +101,37 @@ class PodRepo {
       rethrow;
     }
     return [];
+  }
+
+  Future<ShipmentRecordData> shipmentRecordRepo(final shipmentID) async {
+    apiMessage = null;
+    final userData = await _localStorage.getUserLocalData();
+    final token =
+        userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+
+    ShipmentRecordData shipmentData = ShipmentRecordData(); // default
+
+    try {
+      final response = await apiServices.getShipmentRecord(shipmentID, token);
+
+      response.when(
+        success: (success) {
+          final data = GetAllShipmentRecordModel.fromJson(success);
+          if (data.status == 'success' && data.shipmentRecordData != null) {
+            shipmentData = data.shipmentRecordData!;
+          } else {
+            Utils().logInfo(
+                'API call successful but no valid shipment: ${data.status}');
+          }
+        },
+        error: (error) {
+          throw Exception(error.toString());
+        },
+      );
+    } catch (e) {
+      Utils().logError('Error in getShipmentRecordRepo: $e');
+    }
+
+    return shipmentData;
   }
 }

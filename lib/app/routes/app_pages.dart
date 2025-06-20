@@ -18,14 +18,16 @@ import '../modules/myorders/bindings/myorders_binding.dart';
 import '../modules/myorders/views/myorders_view.dart';
 import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
+import '../modules/pickdup_delivery_details/bindings/running_delivery_details_binding.dart';
+import '../modules/pickdup_delivery_details/views/running_delivery_details_view.dart';
 import '../modules/pickup/bindings/pickup_binding.dart';
 import '../modules/pickup/views/pickup_view.dart';
 import '../modules/pod/bindings/pod_binding.dart';
 import '../modules/pod/views/pod_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
-import '../modules/pickdup_delivery_details/bindings/running_delivery_details_binding.dart';
-import '../modules/pickdup_delivery_details/views/running_delivery_details_view.dart';
+import '../modules/shipment_record/bindings/shipment_record_binding.dart';
+import '../modules/shipment_record/views/shipment_record_view.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
 import '../modules/shipnow/views/shipnow_view.dart';
@@ -122,6 +124,11 @@ class AppPages {
       name: _Paths.MYORDERS,
       page: () => const MyordersView(),
       binding: MyordersBinding(),
+    ),
+    GetPage(
+      name: _Paths.SHIPMENT_RECORD,
+      page: () => const ShipmentRecordView(),
+      binding: ShipmentRecordBinding(),
     ),
   ];
 }
