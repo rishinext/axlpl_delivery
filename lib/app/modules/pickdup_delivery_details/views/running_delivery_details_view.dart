@@ -65,7 +65,10 @@ class RunningDeliveryDetailsView
               );
             } else if (controller.isTrackingLoading.value == Status.error) {
               return Center(
-                child: Text('No Tracking Data Found'),
+                child: Text(
+                  'No Tracking Data Found',
+                  style: themes.fontReboto16_600,
+                ),
               );
             } else if (controller.isTrackingLoading.value == Status.success) {
               String formattedDate = trackingStatus.isNotEmpty

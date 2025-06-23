@@ -1,13 +1,6 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
-import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/views/customer_tracking_details_view.dart';
-import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/views/running_delivery_details_view.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
-import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
-import 'package:axlpl_delivery/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -53,20 +46,6 @@ class ShipnowView extends GetView<ShipnowController> {
           child: Column(
             spacing: 10,
             children: [
-              CommonTextfiled(
-                hintTxt: 'Search Here',
-                sufixIcon: Icon(Icons.search),
-                controller: controller.shipmentIDController,
-                prefixIcon: InkWell(
-                    onTap: () async {
-                      var scannedValue =
-                          await Utils().scanAndPlaySound(context);
-                      if (scannedValue != null && scannedValue != '-1') {
-                        controller.shipmentIDController.text = scannedValue;
-                      }
-                    },
-                    child: Icon(CupertinoIcons.qrcode_viewfinder)),
-              ),
               Obx(() {
                 if (shipnowController.isLoadingShipNow.value) {
                   return const Center(

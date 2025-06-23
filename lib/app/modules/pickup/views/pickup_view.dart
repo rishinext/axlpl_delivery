@@ -10,11 +10,13 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
 import 'package:axlpl_delivery/common_widget/yes_no_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -40,24 +42,52 @@ class PickupView extends GetView<PickupController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 15.h,
               children: [
+                // ContainerTextfiled(
+                //   hintText: '   Search Here',
+                //   // controller: pickupController.pincodeController,
+                //   onChanged: (value) {
+                //     pickupController.filterByQuery(value!);
+                //     return null;
+                //   },
+                // ),
                 ContainerTextfiled(
-                  hintText: '   Search Here',
-                  // controller: pickupController.pincodeController,
+                  controller: pickupController.pincodeController,
+                  hintText: 'Search Here',
                   onChanged: (value) {
                     pickupController.filterByQuery(value!);
                     return null;
                   },
-                  // suffixIcon: IconButton(
-                  //   onPressed: () {
-                  //     pickupController.filterByQuery(
-                  //       pickupController.pincodeController.text,
-                  //     );
-                  //   },
-                  //   icon: Icon(
-                  //     CupertinoIcons.clear,
-                  //     color: themes.grayColor,
-                  //   ),
-                  // ),
+                  suffixIcon: Icon(CupertinoIcons.search),
+                  prefixIcon: InkWell(
+                    onTap: () async {
+                      var scannedValue =
+                          await Utils().scanAndPlaySound(context);
+                      if (scannedValue != null && scannedValue != '-1') {
+                        pickupController.pincodeController.text = scannedValue;
+                        Get.dialog(
+                          const Center(
+                              child: CircularProgressIndicator.adaptive()),
+                          barrierDismissible: false,
+                        );
+
+                        await runningController.fetchTrackingData(scannedValue);
+                        Get.back(); // Close the dialog
+                        Get.toNamed(
+                          Routes.RUNNING_DELIVERY_DETAILS,
+                          arguments: {
+                            'shipmentID': scannedValue,
+                            // 'status': data.status.toString(),
+                            // 'invoicePath': data.invoicePath,
+                            // 'invoicePhoto': data.invoiceFile,
+                            // 'paymentMode': data.paymentMode,
+                            // 'date': data.date,
+                            // 'cashAmt': data.totalCharges
+                          },
+                        );
+                      }
+                    },
+                    child: Icon(CupertinoIcons.qrcode_viewfinder),
+                  ),
                 ),
                 Obx(
                   () => Row(
