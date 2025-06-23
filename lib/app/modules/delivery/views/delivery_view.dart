@@ -1,5 +1,7 @@
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
@@ -19,6 +21,7 @@ class DeliveryView extends GetView<DeliveryController> {
   Widget build(BuildContext context) {
     final deliveryController = Get.put(DeliveryController());
     final pickupController = Get.put(PickupController());
+    final runningController = Get.put(RunningDeliveryDetailsController());
     return CommonScaffold(
       appBar: commonAppbar('Delivery'),
       body: Padding(
@@ -28,16 +31,54 @@ class DeliveryView extends GetView<DeliveryController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 15.h,
             children: [
+              // ContainerTextfiled(
+              //   hintText: '   Enter your pin code',
+              //   controller: deliveryController.pincodeController,
+              //   onChanged: (value) {
+              //     deliveryController.filterByPincode(value!);
+              //     return null;
+              //   },
+              //   suffixIcon: Icon(
+              //     CupertinoIcons.search,
+              //     color: themes.grayColor,
+              //   ),
+              // ),
               ContainerTextfiled(
-                hintText: '   Enter your pin code',
                 controller: deliveryController.pincodeController,
+                hintText: 'Enter your pin code',
                 onChanged: (value) {
                   deliveryController.filterByPincode(value!);
                   return null;
                 },
-                suffixIcon: Icon(
-                  CupertinoIcons.search,
-                  color: themes.grayColor,
+                suffixIcon: Icon(CupertinoIcons.search),
+                prefixIcon: InkWell(
+                  onTap: () async {
+                    var scannedValue = await Utils().scanAndPlaySound(context);
+                    if (scannedValue != null && scannedValue != '-1') {
+                      deliveryController.pincodeController.text = scannedValue;
+                      Get.dialog(
+                        const Center(
+                            child: CircularProgressIndicator.adaptive()),
+                        barrierDismissible: false,
+                      );
+
+                      await runningController.fetchTrackingData(scannedValue);
+                      Get.back(); // Close the dialog
+                      Get.toNamed(
+                        Routes.RUNNING_DELIVERY_DETAILS,
+                        arguments: {
+                          'shipmentID': scannedValue,
+                          // 'status': data.status.toString(),
+                          // 'invoicePath': data.invoicePath,
+                          // 'invoicePhoto': data.invoiceFile,
+                          // 'paymentMode': data.paymentMode,
+                          // 'date': data.date,
+                          // 'cashAmt': data.totalCharges
+                        },
+                      );
+                    }
+                  },
+                  child: Icon(CupertinoIcons.qrcode_viewfinder),
                 ),
               ),
               Text(
