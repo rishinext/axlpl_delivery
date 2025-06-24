@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_client.dart';
 import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 import 'package:dio/dio.dart';
@@ -233,7 +234,7 @@ class ApiServices {
     );
   }
 
-  Future<APIResponse> addShipment(
+/*  Future<APIResponse> addShipment(
     final custID,
     final cateID,
     final productID,
@@ -380,13 +381,76 @@ class ApiServices {
       'shipment_date': shipmentDate,
       'token': token,
     };
-    log("Shipment API Body: ${json.encode(body)}");
+    
 
     return _api.post(
       addShipmentPoint,
       body,
       token: token,
     );
+  }*/
+
+  // Future<APIResponse> addShipment({
+  //   required ShipmentDetails shipmentDetails,
+  //   required SenderData sender,
+  //   required ReceiverData receiver,
+  //   required bool isDiffAdd,
+  //   required String docketNo,
+  //   required String shipmentDate,
+  //   bool alertShipment = false,
+  //   bool isAmtEditedByUser = false,
+  //   String shipmentStatus = 'Approved',
+  //   String calculationStatus = 'pending',
+  //   String? diffReceiverCountry,
+  //   String? diffReceiverState,
+  //   String? diffReceiverCity,
+  //   String? diffReceiverAera,
+  //   String? diffReceiverPincode,
+  //   String? diffReceiverAddress1,
+  //   String? diffReceiverAddress2,
+  //   required String token,
+  // }) async {
+  //   final body = {
+  //     ...shipmentDetails.toJson(),
+  //     ...sender.toJson(),
+  //     ...receiver.toJson(),
+  //     'is_diff_add': isDiffAdd,
+  //     'docket_no': docketNo,
+  //     'shipment_date': shipmentDate,
+  //     'pre_alert_shipment': alertShipment,
+  //     'is_amt_edited_by_user': isAmtEditedByUser,
+  //     'shipment_status': shipmentStatus,
+  //     'calculation_status': calculationStatus,
+  //     'diff_receiver_country': diffReceiverCountry,
+  //     'diff_receiver_state': diffReceiverState,
+  //     'diff_receiver_city': diffReceiverCity,
+  //     'diff_receiver_area': diffReceiverAera,
+  //     'diff_receiver_pincode': diffReceiverPincode,
+  //     'diff_receiver_address1': diffReceiverAddress1,
+  //     'diff_receiver_address2': diffReceiverAddress2,
+  //     'token': token,
+  //   };
+
+  //   log("Shipment API Body: ${json.encode(body)}");
+
+  //   return _api.post(addShipmentPoint, body, token: token);
+  // }
+
+  Future<APIResponse> addShipment({
+    required ShipmentModel shipmentModel,
+    required String token,
+  }) async {
+    // Convert ShipmentModel to JSON map
+    final body = shipmentModel.toJson();
+
+    // Add token if your API requires it in body (or in headers as needed)
+    body['token'] = token;
+
+    // Optional: log body for debugging
+    log("Shipment API Body: ${json.encode(body)}");
+
+    // Call your API post method
+    return _api.post(addShipmentPoint, body, token: token);
   }
 
   Future<APIResponse> changePassword(

@@ -13,8 +13,7 @@ import 'app/routes/app_pages.dart';
 // core Flutter primitives
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  NotificationService.showNotification(
-      message); // 🔥 trigger local notification
+  NotificationService.showNotification(message);
 }
 
 final LocalStorage _localStorage = LocalStorage();

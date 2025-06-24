@@ -1,285 +1,224 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-class ShipmentRequestModel {
-  final shipmentSelectedDate;
-  final customerID;
-  final selectedCate;
-  final selectedCommdity;
-  final newWeight;
+class ShipmentModel {
+  final shipmentId;
+  final customerId;
+  final categoryId;
+  final productId;
+  final netWeight;
   final grossWeight;
   final paymentMode;
-  final noOfParcel;
-  final serviceType;
-  final insurance;
+  final serviceId;
+  final invoiceValue;
+  final axlplInsurance;
   final policyNo;
-  final expireDate;
-  final insuranceAmt;
-  final invoiceNo;
+  final expDate;
+  final insuranceValue;
+  final shipmentStatus;
+  final calculationStatus;
+  final addedBy;
+  final addedByType;
+  final preAlertShipment;
+  final shipmentInvoiceNo;
+  final isAmtEditedByUser;
   final remark;
-  final sendInfoName;
-  final sendInfoCompanyName;
-  final sendInfoZip;
-  final sendInfoState;
-  final sendInfoCity;
-  final sendInfoAera;
-  final sendInfoGstNo;
-  final sendInfoAddress1;
-  final sendInfoAddress2;
-  final sendInfoMobile;
-  final sendInfoEmail;
-  final receiverInfoName;
-  final receiverInfoCompanyName;
-  final receiverInfoZip;
-  final receiverInfoState;
-  final receiverInfoCity;
-  final receiverInfoAera;
-  final receiverInfoGstNo;
-  final receiverInfoAddress1;
-  final receiverInfoAddress2;
-  final receiverInfoMobile;
-  final receiverInfoEmail;
-  final differentInfoZip;
-  final differentInfoState;
-  final differentInfoCity;
-  final differentInfoAera;
-  final differentInfoGstNo;
-  final differentInfoAddress1;
-  final differentInfoAddress2;
-  final insuranceCharge;
+  final billTo;
+  final numberOfParcel;
+  final additionalAxlplInsurance;
   final shipmentCharges;
-  final odaCharge;
-  final holidayCharge;
-  final handlingCharge;
-  final totalCharge;
-  final gst;
+  final insuranceCharges;
+  final invoiceCharges;
+  final handlingCharges;
+  final tax;
+  final totalCharges;
+  final grandTotal;
   final docketNo;
-  final shipmentID;
+  final shipmentDate;
 
-  ShipmentRequestModel({
-    this.shipmentSelectedDate,
-    this.customerID,
-    this.selectedCate,
-    this.selectedCommdity,
-    this.newWeight,
+  final senderName;
+  final senderCompanyName;
+  final senderCountry;
+  final senderState;
+  final senderCity;
+  final senderArea;
+  final senderPincode;
+  final senderAddress1;
+  final senderAddress2;
+  final senderMobile;
+  final senderEmail;
+  final senderSaveAddress;
+  final senderIsNewSenderAddress;
+  final senderGstNo;
+  final senderCustomerId;
+
+  final receiverName;
+  final receiverCompanyName;
+  final receiverCountry;
+  final receiverState;
+  final receiverCity;
+  final receiverArea;
+  final receiverPincode;
+  final receiverAddress1;
+  final receiverAddress2;
+  final receiverMobile;
+  final receiverEmail;
+  final receiverSaveAddress;
+  final receiverIsNewReceiverAddress;
+  final receiverGstNo;
+  final receiverCustomerId;
+
+  final isDiffAdd;
+  final diffReceiverCountry;
+  final diffReceiverState;
+  final diffReceiverCity;
+  final diffReceiverArea;
+  final diffReceiverPincode;
+  final diffReceiverAddress1;
+  final diffReceiverAddress2;
+
+  ShipmentModel({
+    this.shipmentId,
+    this.customerId,
+    this.categoryId,
+    this.productId,
+    this.netWeight,
     this.grossWeight,
     this.paymentMode,
-    this.noOfParcel,
-    this.serviceType,
-    this.insurance,
+    this.serviceId,
+    this.invoiceValue,
+    this.axlplInsurance,
     this.policyNo,
-    this.expireDate,
-    this.insuranceAmt,
-    this.invoiceNo,
+    this.expDate,
+    this.insuranceValue,
+    this.shipmentStatus,
+    this.calculationStatus,
+    this.addedBy,
+    this.addedByType,
+    this.preAlertShipment,
+    this.shipmentInvoiceNo,
+    this.isAmtEditedByUser,
     this.remark,
-    this.sendInfoName,
-    this.sendInfoCompanyName,
-    this.sendInfoZip,
-    this.sendInfoState,
-    this.sendInfoCity,
-    this.sendInfoAera,
-    this.sendInfoGstNo,
-    this.sendInfoAddress1,
-    this.sendInfoAddress2,
-    this.sendInfoMobile,
-    this.sendInfoEmail,
-    this.receiverInfoName,
-    this.receiverInfoCompanyName,
-    this.receiverInfoZip,
-    this.receiverInfoState,
-    this.receiverInfoCity,
-    this.receiverInfoAera,
-    this.receiverInfoGstNo,
-    this.receiverInfoAddress1,
-    this.receiverInfoAddress2,
-    this.receiverInfoMobile,
-    this.receiverInfoEmail,
-    this.differentInfoZip,
-    this.differentInfoState,
-    this.differentInfoCity,
-    this.differentInfoAera,
-    this.differentInfoGstNo,
-    this.differentInfoAddress1,
-    this.differentInfoAddress2,
-    this.insuranceCharge,
+    this.billTo,
+    this.numberOfParcel,
+    this.additionalAxlplInsurance,
     this.shipmentCharges,
-    this.odaCharge,
-    this.holidayCharge,
-    this.handlingCharge,
-    this.totalCharge,
-    this.gst,
+    this.insuranceCharges,
+    this.invoiceCharges,
+    this.handlingCharges,
+    this.tax,
+    this.totalCharges,
+    this.grandTotal,
     this.docketNo,
-    this.shipmentID,
+    this.shipmentDate,
+    this.senderName,
+    this.senderCompanyName,
+    this.senderCountry,
+    this.senderState,
+    this.senderCity,
+    this.senderArea,
+    this.senderPincode,
+    this.senderAddress1,
+    this.senderAddress2,
+    this.senderMobile,
+    this.senderEmail,
+    this.senderSaveAddress,
+    this.senderIsNewSenderAddress,
+    this.senderGstNo,
+    this.senderCustomerId,
+    this.receiverName,
+    this.receiverCompanyName,
+    this.receiverCountry,
+    this.receiverState,
+    this.receiverCity,
+    this.receiverArea,
+    this.receiverPincode,
+    this.receiverAddress1,
+    this.receiverAddress2,
+    this.receiverMobile,
+    this.receiverEmail,
+    this.receiverSaveAddress,
+    this.receiverIsNewReceiverAddress,
+    this.receiverGstNo,
+    this.receiverCustomerId,
+    this.isDiffAdd,
+    this.diffReceiverCountry,
+    this.diffReceiverState,
+    this.diffReceiverCity,
+    this.diffReceiverArea,
+    this.diffReceiverPincode,
+    this.diffReceiverAddress1,
+    this.diffReceiverAddress2,
   });
 
-  ShipmentRequestModel copyWith({
-    final shipmentSelectedDate,
-    final customerID,
-    final selectedCate,
-    final selectedCommdity,
-    final newWeight,
-    final grossWeight,
-    final paymentMode,
-    final noOfParcel,
-    final serviceType,
-    final insurance,
-    final policyNo,
-    final expireDate,
-    final insuranceAmt,
-    final invoiceNo,
-    final remark,
-    final sendInfoName,
-    final sendInfoCompanyName,
-    final sendInfoZip,
-    final sendInfoState,
-    final sendInfoCity,
-    final sendInfoAera,
-    final sendInfoGstNo,
-    final sendInfoAddress1,
-    final sendInfoAddress2,
-    final sendInfoMobile,
-    final sendInfoEmail,
-    final receiverInfoName,
-    final receiverInfoCompanyName,
-    final receiverInfoZip,
-    final receiverInfoState,
-    final receiverInfoCity,
-    final receiverInfoAera,
-    final receiverInfoGstNo,
-    final receiverInfoAddress1,
-    final receiverInfoAddress2,
-    final receiverInfoMobile,
-    final receiverInfoEmail,
-    final differentInfoZip,
-    final differentInfoState,
-    final differentInfoCity,
-    final differentInfoAera,
-    final differentInfoGstNo,
-    final differentInfoAddress1,
-    final differentInfoAddress2,
-    final shipmentCharges,
-    final insuranceCharge,
-    final odaCharge,
-    final holidayCharge,
-    final handlingCharge,
-    final totalCharge,
-    final gst,
-    final docketNo,
-    final shipmentID,
-  }) {
-    return ShipmentRequestModel(
-      shipmentSelectedDate: shipmentSelectedDate ?? this.shipmentSelectedDate,
-      customerID: customerID ?? this.customerID,
-      selectedCate: selectedCate ?? this.selectedCate,
-      selectedCommdity: selectedCommdity ?? this.selectedCommdity,
-      newWeight: newWeight ?? this.newWeight,
-      grossWeight: grossWeight ?? this.grossWeight,
-      paymentMode: paymentMode ?? this.paymentMode,
-      noOfParcel: noOfParcel ?? this.noOfParcel,
-      serviceType: serviceType ?? this.serviceType,
-      insurance: insurance ?? this.insurance,
-      policyNo: policyNo ?? this.policyNo,
-      expireDate: expireDate ?? this.expireDate,
-      insuranceAmt: insuranceAmt ?? this.insuranceAmt,
-      invoiceNo: invoiceNo ?? this.invoiceNo,
-      remark: remark ?? this.remark,
-      sendInfoName: sendInfoName ?? this.sendInfoName,
-      sendInfoCompanyName: sendInfoCompanyName ?? this.sendInfoCompanyName,
-      sendInfoZip: sendInfoZip ?? this.sendInfoZip,
-      sendInfoState: sendInfoState ?? this.sendInfoState,
-      sendInfoCity: sendInfoCity ?? this.sendInfoCity,
-      sendInfoAera: sendInfoAera ?? this.sendInfoAera,
-      sendInfoGstNo: sendInfoGstNo ?? this.sendInfoGstNo,
-      sendInfoAddress1: sendInfoAddress1 ?? this.sendInfoAddress1,
-      sendInfoAddress2: sendInfoAddress2 ?? this.sendInfoAddress2,
-      sendInfoMobile: sendInfoMobile ?? this.sendInfoMobile,
-      sendInfoEmail: sendInfoEmail ?? this.sendInfoEmail,
-      receiverInfoName: receiverInfoName ?? this.receiverInfoName,
-      receiverInfoCompanyName:
-          receiverInfoCompanyName ?? this.receiverInfoCompanyName,
-      receiverInfoZip: receiverInfoZip ?? this.receiverInfoZip,
-      receiverInfoState: receiverInfoState ?? this.receiverInfoState,
-      receiverInfoCity: receiverInfoCity ?? this.receiverInfoCity,
-      receiverInfoAera: receiverInfoAera ?? this.receiverInfoAera,
-      receiverInfoGstNo: receiverInfoGstNo ?? this.receiverInfoGstNo,
-      receiverInfoAddress1: receiverInfoAddress1 ?? this.receiverInfoAddress1,
-      receiverInfoAddress2: receiverInfoAddress2 ?? this.receiverInfoAddress2,
-      receiverInfoMobile: receiverInfoMobile ?? this.receiverInfoMobile,
-      receiverInfoEmail: receiverInfoEmail ?? this.receiverInfoEmail,
-      differentInfoZip: differentInfoZip ?? this.differentInfoZip,
-      differentInfoState: differentInfoState ?? this.differentInfoState,
-      differentInfoCity: differentInfoCity ?? this.differentInfoCity,
-      differentInfoAera: differentInfoAera ?? this.differentInfoAera,
-      differentInfoGstNo: differentInfoGstNo ?? this.differentInfoGstNo,
-      differentInfoAddress1:
-          differentInfoAddress1 ?? this.differentInfoAddress1,
-      differentInfoAddress2:
-          differentInfoAddress2 ?? this.differentInfoAddress2,
-      shipmentCharges: shipmentCharges ?? this.shipmentCharges,
-      insuranceCharge: insuranceCharge ?? this.insuranceCharge,
-      odaCharge: odaCharge ?? this.odaCharge,
-      holidayCharge: holidayCharge ?? this.holidayCharge,
-      handlingCharge: handlingCharge ?? this.handlingCharge,
-      totalCharge: totalCharge ?? this.totalCharge,
-      gst: gst ?? this.gst,
-      docketNo: docketNo ?? this.docketNo,
-      shipmentID: shipmentID ?? this.shipmentID,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'ship_date': shipmentSelectedDate,
-      'customer_id': customerID,
-      'selected_cate': selectedCate,
-      'selected_commo': selectedCommdity,
-      'payment_mode': paymentMode,
-      'net_weight': newWeight,
-      'gross_weight': grossWeight,
-      'number_of_parcel': noOfParcel,
-      'service_type': serviceType,
-      'insurance': insurance,
-      'policy_no': policyNo,
-      'exp_date': expireDate,
-      'insurnce_amt': insuranceAmt,
-      'invoice_no': invoiceNo,
-      'remark': remark,
-      'sender_name': sendInfoName,
-      'sender_company': sendInfoCompanyName,
-      'sender_zip': sendInfoZip,
-      'sender_state': sendInfoState,
-      'sender_city': sendInfoCity,
-      'sender_area': sendInfoAera,
-      'sender_gst_no': sendInfoGstNo,
-      'sender_address_1': sendInfoAddress1,
-      'sender_address_2': sendInfoAddress2,
-      'sender_mobile': sendInfoMobile,
-      'sender_email': sendInfoEmail,
-      'receiver_name': receiverInfoName,
-      'receiver_company': receiverInfoCompanyName,
-      'receiver_zip': receiverInfoZip,
-      'receiver_state': receiverInfoState,
-      'receiver_city': receiverInfoCity,
-      'receiver_area': receiverInfoAera,
-      'receiver_gst_no': receiverInfoGstNo,
-      'receiver_address_1': receiverInfoAddress1,
-      'receiver_address_2': receiverInfoAddress2,
-      'receiver_mobile': receiverInfoMobile,
-      'receiver_email': receiverInfoEmail,
-      'different_zip': differentInfoZip,
-      'different_state': differentInfoState,
-      'different_city': differentInfoCity,
-      'different_area': differentInfoAera,
-      'different_gst_no': differentInfoGstNo,
-      'different_address_1': differentInfoAddress1,
-      'different_address_2': differentInfoAddress2,
-      'shipment_charge': shipmentCharges,
-      'insurance_charge': insuranceCharge,
-      'oda_charge': odaCharge,
-      'holiday_charge': holidayCharge,
-      'handling_charge': handlingCharge,
-      'total_charge': totalCharge,
-      'gst': gst,
-      'docket_no': docketNo,
-      'shipment_id': shipmentID,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'shipment_id': shipmentId,
+        'customer_id': customerId,
+        'category_id': categoryId,
+        'product_id': productId,
+        'net_weight': netWeight,
+        'gross_weight': grossWeight,
+        'payment_mode': paymentMode,
+        'service_id': serviceId,
+        'invoice_value': invoiceValue,
+        'axlpl_insurance': axlplInsurance,
+        'policy_no': policyNo,
+        'exp_date': expDate,
+        'insurance_value': insuranceValue,
+        'shipment_status': shipmentStatus,
+        'calculation_status': calculationStatus,
+        'added_by': addedBy,
+        'added_by_type': addedByType,
+        'pre_alert_shipment': preAlertShipment,
+        'shipment_invoice_no': shipmentInvoiceNo,
+        'is_amt_edited_by_user': isAmtEditedByUser,
+        'remark': remark,
+        'bill_to': billTo,
+        'number_of_parcel': numberOfParcel,
+        'additional_axlpl_insurance': additionalAxlplInsurance,
+        'shipment_charges': shipmentCharges,
+        'insurance_charges': insuranceCharges,
+        'invoice_charges': invoiceCharges,
+        'handling_charges': handlingCharges,
+        'tax': tax,
+        'total_charges': totalCharges,
+        'grand_total': grandTotal,
+        'docket_no': docketNo,
+        'shipment_date': shipmentDate,
+        'sender_name': senderName,
+        'sender_company_name': senderCompanyName,
+        'sender_country': senderCountry,
+        'sender_state': senderState,
+        'sender_city': senderCity,
+        'sender_area': senderArea,
+        'sender_pincode': senderPincode,
+        'sender_address1': senderAddress1,
+        'sender_address2': senderAddress2,
+        'sender_mobile': senderMobile,
+        'sender_email': senderEmail,
+        'sender_save_address': senderSaveAddress,
+        'sender_is_new_sender_address': senderIsNewSenderAddress,
+        'sender_gst_no': senderGstNo,
+        'sender_customer_id': senderCustomerId,
+        'receiver_name': receiverName,
+        'receiver_company_name': receiverCompanyName,
+        'receiver_country': receiverCountry,
+        'receiver_state': receiverState,
+        'receiver_city': receiverCity,
+        'receiver_area': receiverArea,
+        'receiver_pincode': receiverPincode,
+        'receiver_address1': receiverAddress1,
+        'receiver_address2': receiverAddress2,
+        'receiver_mobile': receiverMobile,
+        'receiver_email': receiverEmail,
+        'receiver_save_address': receiverSaveAddress,
+        'receiver_is_new_receiver_address': receiverIsNewReceiverAddress,
+        'receiver_gst_no': receiverGstNo,
+        'receiver_customer_id': receiverCustomerId,
+        'is_diff_add': isDiffAdd,
+        'diff_receiver_country': diffReceiverCountry,
+        'diff_receiver_state': diffReceiverState,
+        'diff_receiver_city': diffReceiverCity,
+        'diff_receiver_area': diffReceiverArea,
+        'diff_receiver_pincode': diffReceiverPincode,
+        'diff_receiver_address1': diffReceiverAddress1,
+        'diff_receiver_address2': diffReceiverAddress2,
+      };
 }

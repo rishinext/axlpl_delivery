@@ -5,6 +5,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_different_address_view.dart';
@@ -19,7 +20,7 @@ class AddShipmentController extends GetxController {
   //TODO: Implement AddShipmentController
 
   final addShipmentRepo = AddShipmentRepo();
-  ShipmentRequestModel shipmentData = ShipmentRequestModel();
+  // ShipmentRequestModel shipmentData = ShipmentRequestModel();
 
   final customerList = <CustomersList>[].obs;
   final categoryList = <CategoryList>[].obs;
@@ -28,6 +29,7 @@ class AddShipmentController extends GetxController {
   final areaList = <AreaList>[].obs;
   final areaListDiff = <AreaList>[].obs;
   var pincodeDetailsData = Rxn<GetPincodeDetailsModel>(null);
+  var areaDetailsData = Rxn<GetPincodeDetailsModel>(null);
   var pincodeDataDiff = Rxn<GetPincodeDetailsModel>(null);
   final paymentModes = [
     {'id': '1', 'name': 'Prepaid'},
@@ -63,11 +65,15 @@ class AddShipmentController extends GetxController {
 
   final TextEditingController senderInfoNameController =
       TextEditingController();
+  final TextEditingController senderInfoEmailController =
+      TextEditingController();
   final TextEditingController senderInfoCompanyNameController =
       TextEditingController();
   final TextEditingController senderInfoZipController = TextEditingController();
 
   final TextEditingController senderInfoStateController =
+      TextEditingController();
+  final TextEditingController senderInfoAreaController =
       TextEditingController();
 
   final TextEditingController senderInfoCityController =
@@ -82,7 +88,7 @@ class AddShipmentController extends GetxController {
       TextEditingController();
   final TextEditingController senderInfoExitingEmailController =
       TextEditingController();
-// ✅ Controllers for EXISTING ADDRESS
+
   final TextEditingController existingSenderInfoNameController =
       TextEditingController();
   final TextEditingController existingSenderInfoCompanyNameController =
@@ -133,6 +139,7 @@ class AddShipmentController extends GetxController {
   final TextEditingController diffrentZipController = TextEditingController();
   final TextEditingController diffrentStateController = TextEditingController();
   final TextEditingController diffrentCityController = TextEditingController();
+  final TextEditingController diffrentAeraController = TextEditingController();
   final TextEditingController diffrentAddress1Controller =
       TextEditingController();
   final TextEditingController diffrentAddress2Controller =
@@ -146,6 +153,7 @@ class AddShipmentController extends GetxController {
   final TextEditingController headlingChargeController =
       TextEditingController();
   final TextEditingController totalChargeController = TextEditingController();
+  final TextEditingController grandeChargeController = TextEditingController();
   final TextEditingController gstChargeController = TextEditingController();
   final TextEditingController docketNoController = TextEditingController();
 
@@ -435,233 +443,207 @@ class AddShipmentController extends GetxController {
     }
   }
 
-  String generateRandomShipmentId() {
-    final random = Random();
-    int length = 12 + random.nextInt(3); // 12, 13, or 14 digits
-
-    StringBuffer buffer = StringBuffer();
-
-    // Ensure first digit is non-zero
-    buffer.write(random.nextInt(9) + 1);
-
-    for (int i = 1; i < length; i++) {
-      buffer.write(random.nextInt(10));
-    }
-
-    return buffer.toString();
-  }
-
   void nextPage() {
-    if (currentPage.value < 4) {
-      currentPage++;
+    int current = currentPage.value;
+
+    final isValid = formKeys[current].currentState?.validate() ?? false;
+    if (!isValid) return;
+
+    if (current == 4) {
+      submitShipment();
+    } else {
+      currentPage.value++;
       pageController.animateToPage(
         currentPage.value,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
-    } else {
-      submitFormShipment();
     }
   }
 
-  void submitFormShipment() async {
-    // Collect all form data (0 to 4 steps)
-    for (int i = 0; i <= 4; i++) {
-      shipmentData = collectFormData(i);
-    }
-
-    final payload = shipmentData.toJson();
-    Utils().log("Final Shipment Data: $payload");
-    await sendShipmentToAPI(shipmentData);
-    // Optional dialog to preview
-    // Get.defaultDialog(
-    //   title: "Shipment Preview",
-    //   content: SingleChildScrollView(
-    //     child: Text(payload.toString()),
-    //   ),
-    //   textConfirm: "Submit",
-    //   onConfirm: () async {
-    //     Get.back();
-    //     await sendShipmentToAPI(shipmentData);
-    //   },
-    // );
-  }
-
-  Future<void> sendShipmentToAPI(ShipmentRequestModel data) async {
+  Future<void> submitShipment() async {
     try {
-      final isSuccess = await addShipmentRepo.addShipment(
-          data.customerID,
-          data.selectedCate,
-          data.selectedCommdity,
-          data.newWeight,
-          data.grossWeight,
-          data.paymentMode,
-          data.serviceType,
-          data.policyNo,
-          data.expireDate,
-          data.insuranceAmt,
-          data.insurance,
-          "N/A", // addInsurance if available
-          "N/A", // shipmentStatus
-          "N/A", // caculationStatus
-          "N/A", // addedBy
-          "N/A", // addedType
-          "N/A", // alertShipment
-          "N/A", // shipmentInvoice
-          "N/A", // isAmtEditedByUser
-          generateRandomShipmentId(), // shipmentID
-          data.sendInfoName,
-          data.sendInfoCompanyName.toString(),
-          "N/A", // senderCountry
-          data.sendInfoState,
-          data.sendInfoCity,
-          data.sendInfoAera,
-          data.sendInfoZip,
-          data.sendInfoAddress1,
-          data.sendInfoAddress2,
-          data.sendInfoMobile,
-          data.sendInfoEmail,
-          "N/A", // senderSaveAddress
-          "N/A", // senderisNewAdresss
-          data.sendInfoGstNo,
-          "N/A", // senderCustID
-          data.receiverInfoName,
-          data.remark,
-          "N/A", // billTo
-          data.noOfParcel,
-          data.receiverInfoCompanyName,
-          "N/A", // receiverCountry
-          data.receiverInfoState,
-          data.receiverInfoCity,
-          data.receiverInfoAera,
-          data.receiverInfoZip,
-          data.receiverInfoAddress1,
-          data.receiverInfoAddress2,
-          data.receiverInfoMobile,
-          data.receiverInfoEmail,
-          "N/A", // receiverSaveAddress
-          "N/A", // receiverisNewAdresss
-          data.receiverInfoGstNo,
-          "N/A", // receiverCustID
-          "1", // isDiffAdd (or logic to check if different address is used)
-          "N/A", // diffReceiverCountry
-          data.differentInfoState,
-          data.differentInfoCity,
-          data.differentInfoAera,
-          data.differentInfoZip,
-          data.differentInfoAddress1,
-          data.differentInfoAddress2,
-          data.shipmentCharges,
-          data.insuranceCharge,
-          "N/A", // invoiceCharges
-          data.handlingCharge,
-          data.gst,
-          data.totalCharge,
-          "N/A", // grandeTotal
-          data.docketNo, // docketNo
-          data.shipmentSelectedDate,
-          'x');
+      final shipment = ShipmentModel(
+        shipmentId: '',
+        customerId: selectedCustomer.value ?? '0',
+        categoryId: selectedCategory.value ?? '0',
+        productId: selectedCommodity.value ?? '0',
+        netWeight: netWeightController.text,
+        grossWeight: grossWeightController.text,
+        paymentMode: selectedPaymentModeId.value ?? "0",
+        serviceId: selectedServiceType.value,
+        invoiceValue: invoiceNoController.text,
+        axlplInsurance: insuranceType.value,
+        policyNo: policyNoController.text,
+        expDate: expireDate.toString(),
+        insuranceValue: insuranceValueController.text,
+        shipmentStatus: '',
+        calculationStatus: 'custom',
+        addedBy: 1,
+        addedByType: 'System',
+        preAlertShipment: 0,
+        shipmentInvoiceNo: invoiceNoController.text,
+        isAmtEditedByUser: 0,
+        remark: remarkController.text,
+        billTo: 2,
+        numberOfParcel: noOfParcelController.text,
+        additionalAxlplInsurance: 0.00,
+        shipmentCharges: shipmentChargeController.text,
+        insuranceCharges: insuranceChargeController.text,
+        invoiceCharges: insuranceValueController.text,
+        handlingCharges: handlingChargeController.text,
+        tax: gstChargeController.text,
+        totalCharges: totalChargeController.text,
+        grandTotal: grandeChargeController.text,
+        docketNo: docketNoController.text,
+        shipmentDate: '',
+        senderName: senderInfoNameController.text,
+        senderCompanyName: senderInfoCompanyNameController.text,
+        senderCountry: 1,
+        senderState: senderInfoStateController.text,
+        senderCity: senderInfoCityController.text,
+        senderArea: senderInfoAreaController.text,
+        senderPincode: senderInfoZipController.text,
+        senderAddress1: senderInfoAddress1Controller.text,
+        senderAddress2: senderInfoAddress2Controller.text,
+        senderMobile: senderInfoMobileController.text,
+        senderEmail: senderInfoEmailController.text,
+        senderSaveAddress: 1,
+        senderIsNewSenderAddress: addressType.value,
+        senderGstNo: senderInfoGstNoController.text,
+        senderCustomerId: selectedExitingCustomer.value,
+        receiverName: receiverInfoNameController.text,
+        receiverCompanyName: receiverInfoCompanyNameController.text,
+        receiverCountry: 1,
+        receiverState: receiverInfoStateController.text,
+        receiverCity: receiverInfoCityController.text,
+        receiverArea: receiverInfoAreaController.text,
+        receiverPincode: receiverInfoZipController.text,
+        receiverAddress1: receiverInfoAddress1Controller.text,
+        receiverAddress2: receiverInfoAddress2Controller.text,
+        receiverMobile: receiverInfoMobileController.text,
+        receiverEmail: receiverInfoEmailController.text,
+        receiverSaveAddress: 1,
+        receiverIsNewReceiverAddress: receviverAddressType.value,
+        receiverGstNo: receiverInfoGstNoController.text,
+        receiverCustomerId: selectedReceiverCustomer.value,
+        isDiffAdd: receviverAddressType.value,
+        diffReceiverCountry: 0,
+        diffReceiverState: diffrentStateController.text,
+        diffReceiverCity: diffrentCityController.text,
+        diffReceiverArea: diffrentAeraController.text,
+        diffReceiverPincode: diffrentZipController.text,
+        diffReceiverAddress1: diffrentAddress1Controller.text,
+        diffReceiverAddress2: diffrentAddress2Controller.text,
+      );
 
-      if (isSuccess == true) {
-        Get.snackbar(
-          'success',
-          "Shipment added successfully!",
-          colorText: themes.whiteColor,
-          backgroundColor: themes.darkCyanBlue,
-        );
+      final response =
+          await addShipmentRepo.addShipmentRepo(shipmentModel: shipment);
+
+      if (response == Status.success) {
+        Get.snackbar('Success', 'Shipment added successfully');
       } else {
-        Get.snackbar(
-          'failed',
-          "Shipment add failed!",
-          colorText: themes.whiteColor,
-          backgroundColor: themes.redColor,
-        );
+        Get.snackbar('Error', 'Failed to add shipment');
       }
     } catch (e) {
-      Utils().logError("Error sending shipment: $e");
-      Get.snackbar('error', "Shipment error!");
+      Get.snackbar('Error', 'Unexpected error occurred');
+      print('Shipment submission error: $e');
     }
   }
+  // void testAddShipment() async {
+  //   final shipmentDetails = ShipmentDetails(
+  //     shipmentId: 12312345,
+  //     addedByType: 'System',
+  //     alertShipment: 0,
+  //     isAmtEditedByUser: 0,
+  //     // shipmentStatus: 'In Progress',
+  //     custId: 123, // <-- set actual customer id
+  //     addedBy: 0,
+  //     parcelDetail: '1'.trim(),
+  //     commodityID: 456, // <-- product id
+  //     categoryId: 789,
+  //     netWeight: 10.0,
+  //     grossWeight: 12.0,
+  //     paymentMode: 'prepaid',
+  //     serviceId: 1,
+  //     invoiceValue: 1000.0,
+  //     axlplInsurance: 0,
+  //     policyNo: 'POL123',
+  //     expDate: '2025-12-31',
+  //     insuranceValue: 500.0,
+  //     invoiceNumber: 1,
+  //     remark: 'fragile',
+  //     billTo: 'billtoName',
+  //     numberOfParcel: 1,
+  //     additionalAxlplInsurance: 0.0,
+  //     shipmentCharges: 100.0,
+  //     insuranceCharges: 50.0,
+  //     invoiceCharges: 0.0,
+  //     handlingCharges: 10.0,
+  //     tax: 18.0,
+  //     totalCharges: 178.0,
+  //     userId: 'user123',
+  //     customerId: 3306,
+  //     senderId: 123,
+  //     gst: 'GST123',
+  //     grandTotal: 178.0,
+  //   );
 
-  ShipmentRequestModel collectFormData(int step) {
-    switch (step) {
-      case 0:
-        String noOfParcel = noOfParcelController.text.isNotEmpty &&
-                int.tryParse(noOfParcelController.text) != null &&
-                int.parse(noOfParcelController.text) > 0
-            ? noOfParcelController.text
-            : '1';
-        print('Collected noOfParcel: $noOfParcel');
-        return shipmentData.copyWith(
-          shipmentSelectedDate: selectedDate.value.toString().split("T")[0],
-          customerID: selectedCustomer.value,
-          selectedCate: selectedCategory.value,
-          selectedCommdity: selectedCommodity.value,
-          newWeight: netWeightController.text,
-          grossWeight: grossWeightController.text,
-          paymentMode: selectedPaymentModeId.value,
-          noOfParcel: noOfParcelController.text,
-          serviceType: selectedServiceType.value,
-          insurance: insuranceType.value,
-          policyNo: policyNoController.text,
-          expireDate: expireDate.toString().split("T")[0],
-          insuranceAmt: insuranceValueController.text,
-          invoiceNo: invoiceNoController.text,
-          remark: remarkController.text,
-        );
-      case 1:
-        return shipmentData.copyWith(
-          sendInfoName: senderInfoNameController.text,
-          sendInfoCompanyName: senderInfoCompanyNameController.text,
-          sendInfoZip: senderInfoZipController.text,
-          sendInfoState: pincodeDetailsData.value?.stateId,
-          sendInfoCity: pincodeDetailsData.value?.cityId,
-          sendInfoAera: selectedArea.value,
-          sendInfoGstNo: senderInfoGstNoController.text,
-          sendInfoAddress1: senderInfoAddress1Controller.text,
-          sendInfoAddress2: senderInfoAddress2Controller.text,
-          sendInfoMobile: senderInfoMobileController.text,
-          sendInfoEmail: senderInfoExitingEmailController.text,
-        );
-      case 2:
-        return shipmentData.copyWith(
-          receiverInfoName: receiverInfoNameController.text,
-          receiverInfoCompanyName: receiverInfoCompanyNameController.text,
-          receiverInfoZip: receiverInfoZipController.text,
-          receiverInfoState: receiverInfoStateController.text,
-          receiverInfoCity: receiverInfoCityController.text,
-          receiverInfoAera: selectedArea.value,
-          receiverInfoGstNo: receiverInfoGstNoController.text,
-          receiverInfoAddress1: receiverInfoAddress1Controller.text,
-          receiverInfoAddress2: receiverInfoAddress2Controller.text,
-          receiverInfoMobile: receiverInfoMobileController.text,
-          receiverInfoEmail: receiverInfoEmailController.text,
-        );
-      case 3:
-        return shipmentData.copyWith(
-          differentInfoZip: diffrentZipController.text,
-          differentInfoState: pincodeDataDiff.value?.stateId,
-          differentInfoCity: pincodeDataDiff.value?.cityId,
-          differentInfoAera: selectedDiffrentArea.value,
-          differentInfoAddress1: diffrentAddress1Controller.text,
-          differentInfoAddress2: diffrentAddress2Controller.text,
-        );
-      case 4:
-        return shipmentData.copyWith(
-          shipmentCharges: shipmentChargeController.text,
-          insuranceCharge: insuranceChargeController.text,
-          odaCharge: odaChargeController.text,
-          holidayCharge: holidayChargeController.text,
-          handlingCharge: headlingChargeController.text,
-          totalCharge: totalChargeController.text,
-          gst: gstChargeController.text,
-          docketNo: docketNoController.text,
-          shipmentID: generateRandomShipmentId(),
-        );
-      default:
-        return shipmentData;
-    }
-  }
+  //   final sender = SenderData(
+  //     senderSaveAddress: 1,
+  //     senderIsNewSenderAddress: 1,
+  //     senderName: 'John Doe',
+  //     senderCustID: 1,
+  //     companyName: 'Sender Co',
+  //     mobile: '1234567890',
+  //     senderEmail: 'a@mail.com',
+  //     address1: '123 Street',
+  //     address2: 'Suite 1',
+  //     state: 4,
+  //     city: 817,
+  //     area: 63862,
+  //     pincode: '400002',
+  //     senderCountry: 1,
+  //     senderGst: '27AACPJ9801C1Z1',
+  //   );
+
+  //   final receiver = ReceiverData(
+  //     receiverSaveAddress: 1,
+  //     receiverNewAddress: 1,
+  //     receiverName: 'Jane Doe',
+  //     companyName: 'Receiver Co',
+  //     mobile: '0987654321',
+  //     address1: '456 Avenue',
+  //     address2: 'Apt 2',
+  //     receiverCountry: 1,
+  //     receiverEmail: 'rishi@version-next.com',
+  //     receiverGst: 122222,
+  //     receiverCustID: 624,
+  //     state: 'StateA',
+  //     city: 'CityB',
+  //     area: 'AreaC',
+  //     pincode: '654321',
+  //   );
+
+  //   final bool? response = await addShipmentRepo.addShipmentRepo(
+  //     shipmentDetails: shipmentDetails,
+  //     sender: sender,
+  //     receiver: receiver,
+  //     isDiffAdd: false,
+  //     docketNo: 'DCKT001',
+  //     shipmentDate: '2025-06-24',
+  //     // alertShipment: false, // Add required bools here
+  //     // isAmtEditedByUser: false,
+  //     // shipmentStatus: 'pending',
+  //     // calculationStatus: 'in_progress',
+  //   );
+
+  //   if (response == true) {
+  //     print("✅ Shipment added successfully.");
+  //   } else {
+  //     print("❌ Shipment add failed.");
+  //   }
+  // }
 
   void previousPage() {
     if (currentPage.value > 0) {

@@ -1,3 +1,5 @@
+import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
+import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_different_address_view.dart';
@@ -102,29 +104,13 @@ class PageviewView extends GetView {
                     Expanded(
                       child: CommonButton(
                           onPressed: () {
-                            int current = addshipController.currentPage.value;
-
-                            final isValid = addshipController
-                                    .formKeys[current].currentState
-                                    ?.validate() ??
-                                false;
-
-                            if (!isValid) return;
-                            addshipController.shipmentData =
-                                addshipController.collectFormData(
-                                    addshipController.currentPage.value);
-
-                            if (current == 4) {
-                              // Submit
-                              addshipController.submitFormShipment();
-                            } else {
-                              addshipController.nextPage();
-                            }
+                            addshipController.nextPage();
                           },
                           title: addshipController.currentPage.value == 4
                               ? 'Submit'
                               : 'Next'),
                     )
+                    // TextButton(onPressed: () async {}, child: Text('submit'))
                   ],
                 )
               ],

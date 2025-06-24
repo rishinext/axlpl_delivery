@@ -5,6 +5,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
+import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -212,177 +213,42 @@ class AddShipmentRepo {
     return null;
   }
 
-  Future<bool?> addShipment(
-    final custID,
-    final cateID,
-    final commodityID,
-    final netWeight,
-    final grossWeight,
-    final paymentModeID,
-    final serviceTypeID,
-    final policyNo,
-    final expDate,
-    final insuraceValue,
-    final invoiceAmt,
-    final insurance,
-    final addInsurance,
-    final shipmentStatus,
-    final caculationStatus,
-    final addedBy,
-    final addedType,
-    final alertShipment,
-    final shipmentInvoice,
-    final isAmtEditedByUser,
-    final shipmentID,
-    final senderName,
-    final senderCompanyName,
-    final senderCountry,
-    final senderState,
-    final senderCity,
-    final senderAera,
-    final senderPincode,
-    final senderAddress1,
-    final senderAddress2,
-    final senderMobile,
-    final senderEmail,
-    final senderSaveAddress,
-    final senderisNewAdresss,
-    final senderGstNo,
-    final senderCustID,
-    final receiverName,
-    final remark,
-    final billTo,
-    final noOfParcel,
-    final receiverCompanyName,
-    final receiverCountry,
-    final receiverState,
-    final receiverCity,
-    final receiverAera,
-    final receiverPincode,
-    final receiverAddress1,
-    final receiverAddress2,
-    final receiverMobile,
-    final receiverEmail,
-    final receiverSaveAddress,
-    final receiverisNewAdresss,
-    final receiverGstNo,
-    final receiverCustID,
-    final isDiffAdd,
-    final diffReceiverCountry,
-    final diffReceiverState,
-    final diffReceiverCity,
-    final diffReceiverAera,
-    final diffReceiverPincode,
-    final diffReceiverAddress1,
-    final diffReceiverAddress2,
-    final shipmentCharges,
-    final insuranceCharges,
-    final invoiceCharges,
-    final handlingCharges,
-    final tax,
-    final totalCharges,
-    final grandeTotal,
-    final docketNo,
-    final shipmentDate,
-  ) async {
+  Future<bool?> addShipmentRepo({
+    required ShipmentModel shipmentModel,
+  }) async {
     final userData = await LocalStorage().getUserLocalData();
     if (userData == null) return false;
-    final String? role = userData.role;
-    final String? mId = userData.messangerdetail?.id?.toString();
-    // final String? custID = userData.customerdetail?.id.toString() ??
-    //     userData.messangerdetail?.id.toString();
-    final String? token = userData.messangerdetail?.token.toString() ??
-        userData.customerdetail?.token.toString();
 
-    final String? userID = mId ?? custID;
+    final String? role = userData.role;
+    final String? userID = userData.messangerdetail?.id?.toString() ??
+        userData.customerdetail?.id?.toString();
+
+    final String? token = userData.messangerdetail?.token?.toString() ??
+        userData.customerdetail?.token?.toString();
+
     if (userID == null || role == null || token == null) {
       return false;
     }
+
     try {
       final response = await _apiServices.addShipment(
-        custID, // 1
-        cateID, // 2
-        commodityID, // 3
-        netWeight, // 4
-        grossWeight, // 5
-        paymentModeID, // 6
-        serviceTypeID, // 7 - add this if missing
-        policyNo, // 8
-        expDate, // 9
-        invoiceAmt, // 10
-        insurance, // 11
-        addInsurance, // 12
-        shipmentStatus, // 13
-        caculationStatus, // 14
-        addedBy, // 15
-        addedType, // 16
-        alertShipment, // 17
-        shipmentInvoice, // 18
-        isAmtEditedByUser, // 19
-        shipmentID, // 20
-        senderName, // 21
-        senderCompanyName, // 22
-        senderCountry, // 23
-        senderState, // 24
-        senderCity, // 25
-        senderAera, // 26
-        senderPincode, // 27
-        senderAddress1, // 28
-        senderAddress2, // 29
-        senderMobile, // 30
-        senderEmail, // 31
-        senderSaveAddress, // 32
-        senderisNewAdresss, // 33
-        senderGstNo, // 34
-        senderCustID, // 35
-        receiverName, // 36
-        remark,
-        billTo,
-        noOfParcel,
-        receiverCompanyName, // 37
-        receiverCountry, // 38
-        receiverState, // 39
-        receiverCity, // 40
-        receiverAera, // 41
-        receiverPincode, // 42
-        receiverAddress1, // 43
-        receiverAddress2, // 44
-        receiverMobile, // 45
-        receiverEmail, // 46
-        receiverSaveAddress, // 47
-        receiverisNewAdresss, // 48
-        receiverGstNo, // 49
-        receiverCustID, // 50
-        isDiffAdd, // 51
-        diffReceiverCountry, // 52
-        diffReceiverState, // 53
-        diffReceiverCity, // 54
-        diffReceiverAera, // 55
-        diffReceiverPincode, // 56
-        diffReceiverAddress1, // 57
-        diffReceiverAddress2, // 58
-        shipmentCharges, // 59
-        insuranceCharges, // 60
-        invoiceCharges, //
-        insuraceValue,
-        handlingCharges, // 62
-        tax, // 63
-        totalCharges, // 64
-        grandeTotal, // 65
-        docketNo, // 66
-        shipmentDate, // 67
-        token.toString(),
+        shipmentModel: shipmentModel,
+        token: token,
       );
+
       response.when(
         success: (success) {
-          log(response.toString());
+          log("Shipment Add Success: ${response.toString()}");
         },
         error: (error) {
-          throw Exception("shipment add Failed: ${error.toString()}");
+          throw Exception("Shipment add failed: ${error.toString()}");
         },
       );
+
+      return true;
     } catch (e) {
       _utils.logError(e.toString());
+      return false;
     }
   }
 

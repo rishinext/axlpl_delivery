@@ -18,7 +18,7 @@ class AddAddressView extends GetView {
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
     final Utils utils = Utils();
-    final data = addshipController.shipmentData;
+    // final data = addshipController.shipmentData;
 
     return CommonScaffold(
         body: SingleChildScrollView(
@@ -186,14 +186,35 @@ class AddAddressView extends GetView {
                             );
                           }),
                           dropdownText('Select Aera'),
-                          CommonTextfiled(
-                            isEnable: true,
-                            hintTxt: 'GST No',
-                            textInputAction: TextInputAction.next,
-                            validator: utils.validateText,
-                            controller: addshipController
-                                .existingSenderInfoAreaController,
-                          ),
+                          // CommonTextfiled(
+                          //   isEnable: true,
+                          //   hintTxt: 'Aera',
+                          //   textInputAction: TextInputAction.next,
+                          //   validator: utils.validateText,
+                          //   controller: addshipController
+                          //       .existingSenderInfoAreaController,
+                          // ),
+                          Obx(() {
+                            final isLoading =
+                                addshipController.isLoadingArea.value;
+                            final data =
+                                addshipController.areaDetailsData.value;
+                            final error = addshipController.errorMessage.value;
+
+                            if (isLoading) {
+                              Center(
+                                  child: CircularProgressIndicator.adaptive());
+                            }
+
+                            return CommonTextfiled(
+                              isEnable: false,
+                              hintTxt: data?.areaName ??
+                                  (error.isNotEmpty ? error : 'Aera'),
+                              textInputAction: TextInputAction.next,
+                              controller: addshipController
+                                  .existingSenderInfoAreaController,
+                            );
+                          }),
                           // Obx(() => CommonDropdown<AreaList>(
                           //       hint: 'Select Area',
                           //       selectedValue:
@@ -255,6 +276,14 @@ class AddAddressView extends GetView {
                         spacing: 5,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          dropdownText('Customer Name'),
+                          CommonTextfiled(
+                            hintTxt: 'Customer Name',
+                            textInputAction: TextInputAction.next,
+                            validator: utils.validateText,
+                            controller:
+                                addshipController.senderInfoNameController,
+                          ),
                           dropdownText('Company Name'),
                           CommonTextfiled(
                             hintTxt: 'Company Name',
