@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
@@ -37,23 +39,25 @@ class AddAddressView extends GetView {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Obx(
-                    () => Radio<String>(
-                      value: "1",
+                    () => Radio(
+                      value: 0,
                       groupValue: addshipController.addressType.value,
                       activeColor: themes.orangeColor,
                       onChanged: (value) {
                         addshipController.addressType.value = value!;
+                        log(value.toString());
                       },
                     ),
                   ),
                   Text("New Address"),
                   Obx(() {
-                    return Radio<String>(
-                      value: "2",
+                    return Radio(
+                      value: 1,
                       groupValue: addshipController.addressType.value,
                       activeColor: themes.grayColor,
                       onChanged: (value) {
                         addshipController.addressType.value = value!;
+                        log(addshipController.addressType.value.toString());
                       },
                     );
                   }),
@@ -64,7 +68,7 @@ class AddAddressView extends GetView {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Obx(() {
-                    if (addshipController.addressType.value == "2") {
+                    if (addshipController.addressType.value == 1) {
                       //ext add
                       return Column(
                         spacing: 5.h,

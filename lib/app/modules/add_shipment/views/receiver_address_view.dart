@@ -35,7 +35,7 @@ class ReceiverAddressView extends GetView {
                   children: [
                     Obx(
                       () => Radio<String>(
-                        value: "1",
+                        value: "0",
                         groupValue:
                             addshipController.receviverAddressType.value,
                         activeColor: themes.orangeColor,
@@ -47,7 +47,7 @@ class ReceiverAddressView extends GetView {
                     Text("New Address"),
                     Obx(() {
                       return Radio<String>(
-                        value: "2",
+                        value: "1",
                         groupValue:
                             addshipController.receviverAddressType.value,
                         activeColor: themes.grayColor,
@@ -63,7 +63,7 @@ class ReceiverAddressView extends GetView {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() {
-                      if (addshipController.receviverAddressType.value == "2") {
+                      if (addshipController.receviverAddressType.value == "1") {
                         //ext add
                         return Column(
                           spacing: 5.h,
@@ -256,13 +256,13 @@ class ReceiverAddressView extends GetView {
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
                               controller: addshipController
-                                  .senderInfoCompanyNameController,
+                                  .receiverInfoCompanyNameController,
                             ),
                             dropdownText(zip),
                             CommonTextfiled(
                               hintTxt: zip,
                               controller:
-                                  addshipController.senderInfoZipController,
+                                  addshipController.receiverInfoZipController,
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
                               keyboardType: TextInputType.number,
@@ -299,8 +299,8 @@ class ReceiverAddressView extends GetView {
                                 hintTxt: data?.stateName ??
                                     (error.isNotEmpty ? error : 'State'),
                                 textInputAction: TextInputAction.next,
-                                controller:
-                                    addshipController.senderInfoStateController,
+                                controller: addshipController
+                                    .receiverInfoStateController,
                               );
                             }),
                             dropdownText(city),
@@ -323,8 +323,8 @@ class ReceiverAddressView extends GetView {
                                 hintTxt: data?.cityName ??
                                     (error.isNotEmpty ? error : 'City'),
                                 textInputAction: TextInputAction.next,
-                                controller:
-                                    addshipController.senderInfoCityController,
+                                controller: addshipController
+                                    .receiverInfoCityController,
                               );
                             }),
                             dropdownText('Select Aera'),

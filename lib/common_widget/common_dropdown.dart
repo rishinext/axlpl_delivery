@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,11 +52,18 @@ class CommonDropdown<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownSearch<String>(
+    return DropdownSearch(
       items: items.map(itemLabel).toList(),
       selectedItem: selectedValue != null
-          ? itemLabel(items.firstWhere((e) => itemValue(e) == selectedValue,
-              orElse: () => items.first))
+          ? () {
+              try {
+                return itemLabel(items.firstWhere(
+                  (e) => itemValue(e) == selectedValue,
+                ));
+              } catch (_) {
+                return itemLabel(items.first);
+              }
+            }()
           : null,
       dropdownDecoratorProps: DropDownDecoratorProps(
         dropdownSearchDecoration: InputDecoration(
@@ -77,7 +86,7 @@ class CommonDropdown<T> extends StatelessWidget {
       onChanged: (label) {
         final matchedItem = items.firstWhere(
           (item) => itemLabel(item) == label,
-          orElse: () => items.first,
+          orElse: () => items.first, // return first item to match T type
         );
         onChanged(itemValue(matchedItem));
       },

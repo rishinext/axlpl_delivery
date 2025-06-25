@@ -453,6 +453,44 @@ class ApiServices {
     return _api.post(addShipmentPoint, body, token: token);
   }
 
+  Future<APIResponse> getShipmentCalculation(
+    final custID,
+    final cateID,
+    final commID,
+    final netWeight,
+    final grossWeight,
+    final paymentMode,
+    final invoiceValue,
+    final insuranceByAxlpl,
+    final policyNo,
+    final numberOfParcel,
+    final expDate,
+    final policyValue,
+    final senderZip,
+    final receiverZip,
+  ) async {
+    final body = {
+      'customer_id': custID,
+      'category_id': cateID,
+      'commodity_id': commID,
+      'net_weight': netWeight,
+      'gross_weight': grossWeight,
+      'payment_mode': paymentMode,
+      'invoice_value': invoiceValue,
+      'insurance_by_AXLPL': insuranceByAxlpl,
+      'policy_no': policyNo,
+      'number_of_parcel': numberOfParcel,
+      'policy_expirydate': expDate,
+      'policy_value': policyValue,
+      'sender_zipcode': senderZip,
+      'receiver_zipcode': receiverZip
+    };
+    return _api.post(
+      getShipmentCalclulationPoint,
+      body,
+    );
+  }
+
   Future<APIResponse> changePassword(
     String id,
     String oldPassword,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
@@ -28,26 +30,28 @@ class AddDifferentAddressView extends GetView {
                 children: [
                   dropdownText('Diffrent Delivery Address'),
                   Radio<String>(
-                    value: "NO",
+                    value: "0",
                     groupValue: addshipController.diffrentAddressType.value,
                     activeColor: themes.grayColor,
                     onChanged: (value) {
                       addshipController.diffrentAddressType.value = value!;
+                      log(addshipController.diffrentAddressType.value);
                     },
                   ),
                   Text("NO"),
                   Radio<String>(
-                    value: "YES",
+                    value: "1",
                     groupValue: addshipController.diffrentAddressType.value,
                     activeColor: themes.darkCyanBlue,
                     onChanged: (value) {
                       addshipController.diffrentAddressType.value = value!;
+                      log(addshipController.diffrentAddressType.value);
                     },
                   ),
                   Text("YES"),
                 ],
               ),
-              addshipController.diffrentAddressType.value == "YES"
+              addshipController.diffrentAddressType.value == "1"
                   ? Container(
                       decoration: BoxDecoration(
                           color: themes.whiteColor,

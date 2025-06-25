@@ -70,8 +70,9 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         items: controller.customerList,
                         itemLabel: (c) => c.companyName ?? 'Unknown',
                         itemValue: (c) => c.id.toString(),
-                        onChanged: (val) =>
-                            controller.selectedCustomer.value = val,
+                        onChanged: (val) {
+                          return controller.selectedCustomer.value = val;
+                        },
                       );
                     }),
                   // DropdownSearch<String>(
@@ -230,15 +231,15 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         child: CommonTextfiled(
                           controller: addshipController.grossWeightController,
                           onChanged: (p0) {
-                            addshipController.calculateGrossWeight(
-                              netWeight:
-                                  addshipController.netWeightController.text,
-                              grossWeight:
-                                  addshipController.grossWeightController.text,
-                              status: 'global',
-                              productID: addshipController.selectedCommodity
-                                  .toString(),
-                            );
+                            // addshipController.calculateGrossWeight(
+                            //   netWeight:
+                            //       addshipController.netWeightController.text,
+                            //   grossWeight:
+                            //       addshipController.grossWeightController.text,
+                            //   status: 'global',
+                            //   productID: addshipController.selectedCommodity
+                            //       .toString(),
+                            // );
                           },
                           hintTxt: "Enter Gross weight",
                           keyboardType: TextInputType.number,
@@ -295,23 +296,25 @@ class AddShipmentView extends GetView<AddShipmentController> {
                       dropdownText('Insurance by AXLPL : '),
                       Spacer(),
                       Expanded(
-                        child: Radio<String>(
-                          value: "YES",
+                        child: Radio(
+                          value: 0,
                           groupValue: addshipController.insuranceType.value,
                           activeColor: themes.orangeColor,
                           onChanged: (value) {
                             addshipController.insuranceType.value = value!;
+                            log(value.toString());
                           },
                         ),
                       ),
                       Expanded(child: Text("YES")),
                       Expanded(
-                        child: Radio<String>(
-                          value: "NO",
+                        child: Radio(
+                          value: 1,
                           groupValue: addshipController.insuranceType.value,
                           activeColor: themes.grayColor,
                           onChanged: (value) {
                             addshipController.insuranceType.value = value!;
+                            log(value.toString());
                           },
                         ),
                       ),
@@ -322,12 +325,18 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     'Policy No',
                     style: themes.fontSize14_400,
                   ),
-                  CommonTextfiled(
-                    hintTxt: 'Enter Policy No',
-                    controller: addshipController.policyNoController,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
-                    validator: utils.validateText,
+                  Obx(
+                    () => CommonTextfiled(
+                        isEnable: addshipController.insuranceType.value == 1
+                            ? true
+                            : false,
+                        hintTxt: 'Enter Policy No',
+                        controller: addshipController.policyNoController,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        validator: addshipController.insuranceType.value == 1
+                            ? utils.validateText
+                            : null),
                   ),
                   Text(
                     'Expire Date',
@@ -336,6 +345,9 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   Obx(
                     () => CommonTextfiled(
                       isReadOnly: true,
+                      isEnable: addshipController.insuranceType.value == 1
+                          ? true
+                          : false,
                       sufixIcon: IconButton(
                           onPressed: () async {
                             await addshipController.pickDate(
@@ -349,9 +361,27 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     'Insurance Value (₹)',
                     style: themes.fontSize14_400,
                   ),
+                  Obx(
+                    () => CommonTextfiled(
+                      isEnable: addshipController.insuranceType.value == 1
+                          ? true
+                          : false,
+                      controller: addshipController.insuranceValueController,
+                      hintTxt: 'Enter Insurance Value',
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      validator: addshipController.insuranceType.value == 1
+                          ? utils.validateText
+                          : null,
+                    ),
+                  ),
+                  Text(
+                    'Invoice Value',
+                    style: themes.fontSize14_400,
+                  ),
                   CommonTextfiled(
-                    controller: addshipController.insuranceValueController,
-                    hintTxt: 'Enter Insurance Value',
+                    controller: addshipController.invoiceValueController,
+                    hintTxt: 'Enter Invoice Value',
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: utils.validateText,

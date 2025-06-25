@@ -29,3 +29,4 @@ const String trackPoint = 'track';
 const String uploadPickupPoint = 'uploadPickup';
 const String getPaymentModePoint = 'get_payment_modes';
 const String uploadInvoicePoint = 'uploadInvoiceFiles';
+const String getShipmentCalclulationPoint = 'getShipmentPaymentInformation';

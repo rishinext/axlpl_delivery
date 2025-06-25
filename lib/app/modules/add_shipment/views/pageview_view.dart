@@ -1,7 +1,7 @@
 import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
-import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
+import 'package:axlpl_delivery/app/modules/add_shipment/views/add_sender_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_different_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_payment_info_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_shipment_view.dart';

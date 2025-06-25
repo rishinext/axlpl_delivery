@@ -5,6 +5,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
+import 'package:axlpl_delivery/app/data/models/shipment_cal_model.dart';
 import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -252,31 +253,49 @@ class AddShipmentRepo {
     }
   }
 
-  Future<bool?> grossCalculationRepo(
-    String netWeight,
-    String grossWeight,
-    String status,
-    String productID,
+  Future<List<PaymentInformation>?> shipmentCalculationRepo(
+    final custID,
+    final cateID,
+    final commID,
+    final netWeight,
+    final grossWeight,
+    final paymentMode,
+    final invoiceValue,
+    final insuranceByAxlpl,
+    final policyNo,
+    final numberOfParcel,
+    final expDate,
+    final policyValue,
+    final senderZip,
+    final receiverZip,
   ) async {
     try {
-      final response = await _apiServices.grossCalculation(
+      final response = await _apiServices.getShipmentCalculation(
+        custID,
+        cateID,
+        commID,
         netWeight,
         grossWeight,
-        status,
-        productID,
+        paymentMode,
+        invoiceValue,
+        insuranceByAxlpl,
+        policyNo,
+        numberOfParcel,
+        expDate,
+        policyValue,
+        senderZip,
+        receiverZip,
       );
 
       return response.when(
         success: (body) {
-          final grossCal = CommonModel.fromJson(body);
-          if (grossCal.status == "fail") {
-            // 🔥 fix check
-            Utils().logInfo(grossCal.message.toString());
-            return false; // fail condition
+          final grossCal = ShipmentCalModel.fromJson(body);
+          if (grossCal.status == success) {
+            return grossCal.paymentInformation;
           } else {
             Utils().logInfo(grossCal.message.toString());
-            return true; // success
           }
+          return [];
         },
         error: (error) {
           throw Exception("Gross Calculation API Failed: ${error.toString()}");
@@ -284,7 +303,7 @@ class AddShipmentRepo {
       );
     } catch (e) {
       Utils().logError(e.toString());
-      return null; // 🛡️ safe fallback
     }
+    return null;
   }
 }

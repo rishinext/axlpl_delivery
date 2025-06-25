@@ -4,13 +4,16 @@ import 'dart:math';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
+import 'package:axlpl_delivery/app/data/models/shipment_cal_model.dart';
 import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
-import 'package:axlpl_delivery/app/modules/add_shipment/views/add_address_view.dart';
+import 'package:axlpl_delivery/app/modules/add_shipment/views/add_sender_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_different_address_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_payment_info_view.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_shipment_view.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_datepicker.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -26,11 +29,14 @@ class AddShipmentController extends GetxController {
   final categoryList = <CategoryList>[].obs;
   final commodityList = <CommodityList>[].obs;
   final serviceTypeList = <ServiceTypeList>[].obs;
+  final shipmentCalList = <PaymentInformation>[].obs;
   final areaList = <AreaList>[].obs;
   final areaListDiff = <AreaList>[].obs;
+
   var pincodeDetailsData = Rxn<GetPincodeDetailsModel>(null);
   var areaDetailsData = Rxn<GetPincodeDetailsModel>(null);
   var pincodeDataDiff = Rxn<GetPincodeDetailsModel>(null);
+
   final paymentModes = [
     {'id': '1', 'name': 'Prepaid'},
     {'id': '2', 'name': 'To Pay'},
@@ -59,6 +65,7 @@ class AddShipmentController extends GetxController {
   final TextEditingController noOfParcelController = TextEditingController();
   final TextEditingController policyNoController = TextEditingController();
   final TextEditingController invoiceNoController = TextEditingController();
+  final TextEditingController invoiceValueController = TextEditingController();
   final TextEditingController insuranceValueController =
       TextEditingController();
   final TextEditingController remarkController = TextEditingController();
@@ -174,26 +181,39 @@ class AddShipmentController extends GetxController {
   final isLoadingDiffPincode = false.obs;
   final isLoadingArea = false.obs;
   final isLoadingDiffArea = false.obs;
+  var isShipmentCal = Status.initial.obs;
 
-  var selectedCustomer = Rxn<String>();
-  var selectedExitingCustomer = Rxn<String>();
-  var selectedReceiverCustomer = Rxn<String>();
-  var selectedCategory = Rxn<String>();
+  var selectedCustomer = Rxn();
+  var selectedExitingCustomer = Rxn();
+  var selectedReceiverCustomer = Rxn();
+  var selectedCategory = Rxn();
 
-  var selectedCommodity = Rxn<String>();
+  var selectedCommodity = Rxn();
 
-  var selectedServiceType = Rxn<String>();
+  var selectedServiceType = Rxn();
 
-  var selectedArea = Rxn<String>();
-  var selectedDiffrentArea = Rxn<String>();
+  var selectedArea = Rxn();
+  var selectedDiffrentArea = Rxn();
 
-  var selectedPaymentModeId = Rxn<String>();
-  var selectedSubPaymentId = Rxn<String>();
+  var selectedPaymentModeId = Rxn();
+  var selectedPaymentMode = Rxn<PaymentMode>();
+  var selectedSubPaymentMode = Rxn<PaymentMode>();
+  void setSelectedPaymentMode(PaymentMode? mode) async {
+    selectedPaymentMode.value = mode;
+    // selectedSubPaymentMode.value = null; // reset sub mode selection
+    // optional call
+  }
 
-  RxString insuranceType = 'YES'.obs;
-  RxString diffrentAddressType = 'NO'.obs;
-  RxString addressType = '2'.obs;
-  RxString receviverAddressType = '2'.obs;
+  void setSelectedSubPaymentMode(PaymentMode? mode) {
+    selectedSubPaymentMode.value = mode;
+  }
+
+  var selectedSubPaymentId = Rxn();
+
+  var insuranceType = 0.obs;
+  RxString diffrentAddressType = '0'.obs;
+  var addressType = 1.obs;
+  var receviverAddressType = '1'.obs;
   var currentPage = 0.obs;
   RxInt totalPage = 5.obs;
   final errorMessage = RxString('');
@@ -401,31 +421,103 @@ class AddShipmentController extends GetxController {
     }
   }
 
-  Future<void> calculateGrossWeight({
-    required String netWeight,
-    required String grossWeight,
-    required String status,
-    required String productID,
-  }) async {
+  // Future<void> shipmentCal(
+  //   final custID,
+  //   final cateID,
+  //   final commID,
+  //   final netWeight,
+  //   final grossWeight,
+  //   final paymentMode,
+  //   final invoiceValue,
+  //   final insuranceByAxlpl,
+  //   final policyNo,
+  //   final numberOfParcel,
+  //   final expDate,
+  //   final policyValue,
+  //   final senderZip,
+  //   final receiverZip,
+  // ) async {
+  //   isShipmentCal.value = Status.loading;
+  //   try {
+  //     final data = await addShipmentRepo.shipmentCalculationRepo(
+  //       custID,
+  //       cateID,
+  //       commID,
+  //       netWeight,
+  //       grossWeight,
+  //       paymentMode,
+  //       invoiceValue,
+  //       insuranceByAxlpl,
+  //       policyNo,
+  //       numberOfParcel,
+  //       expDate,
+  //       policyValue,
+  //       senderZip,
+  //       receiverZip,
+  //     );
+  //     shipmentCalList.value = data ?? [];
+  //     isShipmentCal.value = Status.success;
+  //   } catch (e) {
+  //     shipmentCalList.value = [];
+  //     isShipmentCal.value = Status.error;
+  //     Utils().logError(
+  //       'shipmentCal fetch failed $e',
+  //     );
+  //   }
+  // }
+  Future<void> shipmentCal(
+    final custID,
+    final cateID,
+    final commID,
+    final netWeight,
+    final grossWeight,
+    final paymentMode,
+    final invoiceValue,
+    final insuranceByAxlpl,
+    final policyNo,
+    final numberOfParcel,
+    final expDate,
+    final policyValue,
+    final senderZip,
+    final receiverZip,
+  ) async {
+    isShipmentCal.value = Status.loading;
     try {
-      final result = await addShipmentRepo.grossCalculationRepo(
+      final data = await addShipmentRepo.shipmentCalculationRepo(
+        custID,
+        cateID,
+        commID,
         netWeight,
         grossWeight,
-        status,
-        productID,
+        paymentMode,
+        invoiceValue,
+        insuranceByAxlpl,
+        policyNo,
+        numberOfParcel,
+        expDate,
+        policyValue,
+        senderZip,
+        receiverZip,
       );
+      shipmentCalList.value = data ?? [];
 
-      if (result == false) {
-        // Handle gross weight validation failed
-        print('Gross weight should be greater than Net weight!');
-      } else if (result == true) {
-        // Success case, continue
-      } else {
-        // Null or unknown error
-        print('Gross weight should be greater than Net weight!');
+      if (shipmentCalList.isNotEmpty) {
+        final paymentInfo = shipmentCalList.first;
+
+        shipmentChargeController.text = paymentInfo.shipmentCharges ?? '';
+        insuranceChargeController.text = paymentInfo.insuranceCharges ?? '';
+        odaChargeController.text = paymentInfo.additionalAxlplInsurance ?? '';
+        gstChargeController.text = paymentInfo.tax ?? '';
+        headlingChargeController.text = paymentInfo.handlingCharges ?? '';
+        totalChargeController.text = paymentInfo.totalCharges ?? '';
+        grandeChargeController.text = paymentInfo.grandTotal ?? '';
       }
+
+      isShipmentCal.value = Status.success;
     } catch (e) {
-      print('Gross weight should be greater than Net weight!');
+      shipmentCalList.value = [];
+      isShipmentCal.value = Status.error;
+      Utils().logError('shipmentCal fetch failed $e');
     }
   }
 
@@ -465,74 +557,76 @@ class AddShipmentController extends GetxController {
     try {
       final shipment = ShipmentModel(
         shipmentId: '',
-        customerId: selectedCustomer.value ?? '0',
-        categoryId: selectedCategory.value ?? '0',
-        productId: selectedCommodity.value ?? '0',
-        netWeight: netWeightController.text,
-        grossWeight: grossWeightController.text,
-        paymentMode: selectedPaymentModeId.value ?? "0",
-        serviceId: selectedServiceType.value,
-        invoiceValue: invoiceNoController.text,
+        customerId: int.parse(selectedCustomer.value) ?? 0,
+        categoryId: int.parse(selectedCategory.value) ?? 0,
+        productId: int.parse(selectedCommodity.value) ?? 0,
+        netWeight: int.tryParse(netWeightController.text) ?? 0,
+        grossWeight: int.tryParse(grossWeightController.text) ?? 0,
+        paymentMode: selectedPaymentModeId.value ?? 0,
+        serviceId: int.parse(selectedServiceType.value),
+        invoiceValue: int.tryParse(invoiceNoController.text),
         axlplInsurance: insuranceType.value,
-        policyNo: policyNoController.text,
+        policyNo: int.tryParse(policyNoController.text),
         expDate: expireDate.toString(),
-        insuranceValue: insuranceValueController.text,
+        insuranceValue: int.tryParse(insuranceValueController.text),
         shipmentStatus: '',
         calculationStatus: 'custom',
         addedBy: 1,
         addedByType: 'System',
         preAlertShipment: 0,
-        shipmentInvoiceNo: invoiceNoController.text,
+        shipmentInvoiceNo: int.tryParse(invoiceNoController.text),
         isAmtEditedByUser: 0,
         remark: remarkController.text,
         billTo: 2,
-        numberOfParcel: noOfParcelController.text,
+        numberOfParcel: int.tryParse(noOfParcelController.text),
         additionalAxlplInsurance: 0.00,
-        shipmentCharges: shipmentChargeController.text,
-        insuranceCharges: insuranceChargeController.text,
-        invoiceCharges: insuranceValueController.text,
-        handlingCharges: handlingChargeController.text,
-        tax: gstChargeController.text,
-        totalCharges: totalChargeController.text,
-        grandTotal: grandeChargeController.text,
+        shipmentCharges: int.tryParse(shipmentChargeController.text),
+        insuranceCharges: int.tryParse(insuranceChargeController.text),
+        invoiceCharges: int.tryParse(insuranceValueController.text),
+        handlingCharges: 100,
+        tax: 10,
+        totalCharges: 10,
+        grandTotal: 10,
         docketNo: docketNoController.text,
         shipmentDate: '',
-        senderName: senderInfoNameController.text,
-        senderCompanyName: senderInfoCompanyNameController.text,
+        senderName: senderInfoNameController.text ??
+            existingSenderInfoNameController.text,
+        senderCompanyName: senderInfoCompanyNameController.text ??
+            existingSenderInfoCompanyNameController.text,
         senderCountry: 1,
-        senderState: senderInfoStateController.text,
-        senderCity: senderInfoCityController.text,
-        senderArea: senderInfoAreaController.text,
-        senderPincode: senderInfoZipController.text,
-        senderAddress1: senderInfoAddress1Controller.text,
-        senderAddress2: senderInfoAddress2Controller.text,
-        senderMobile: senderInfoMobileController.text,
-        senderEmail: senderInfoEmailController.text,
-        senderSaveAddress: 1,
+        senderState: existingSenderInfoStateController.text,
+        senderCity: existingSenderInfoCityController.text,
+        senderArea: existingSenderInfoAreaController.text,
+        senderPincode: int.tryParse(existingSenderInfoZipController.text),
+        senderAddress1: existingSenderInfoAddress1Controller.text,
+        senderAddress2: existingSenderInfoAddress2Controller.text,
+        senderMobile: int.tryParse(existingSenderInfoMobileController.text),
+        senderEmail: existingSenderInfoEmailController.text,
+        senderSaveAddress: 0,
         senderIsNewSenderAddress: addressType.value,
         senderGstNo: senderInfoGstNoController.text,
-        senderCustomerId: selectedExitingCustomer.value,
-        receiverName: receiverInfoNameController.text,
+        senderCustomerId: int.tryParse(selectedExitingCustomer.value),
+        receiverName: receiverInfoCompanyNameController.text,
         receiverCompanyName: receiverInfoCompanyNameController.text,
         receiverCountry: 1,
         receiverState: receiverInfoStateController.text,
         receiverCity: receiverInfoCityController.text,
         receiverArea: receiverInfoAreaController.text,
-        receiverPincode: receiverInfoZipController.text,
+        receiverPincode: int.tryParse(receiverInfoZipController.text),
         receiverAddress1: receiverInfoAddress1Controller.text,
         receiverAddress2: receiverInfoAddress2Controller.text,
-        receiverMobile: receiverInfoMobileController.text,
+        receiverMobile: int.tryParse(receiverInfoMobileController.text),
         receiverEmail: receiverInfoEmailController.text,
         receiverSaveAddress: 1,
-        receiverIsNewReceiverAddress: receviverAddressType.value,
+        receiverIsNewReceiverAddress: int.parse(receviverAddressType.value),
         receiverGstNo: receiverInfoGstNoController.text,
-        receiverCustomerId: selectedReceiverCustomer.value,
-        isDiffAdd: receviverAddressType.value,
+        receiverCustomerId: int.parse(selectedReceiverCustomer.value),
+        isDiffAdd: int.parse(receviverAddressType.value),
         diffReceiverCountry: 0,
         diffReceiverState: diffrentStateController.text,
         diffReceiverCity: diffrentCityController.text,
         diffReceiverArea: diffrentAeraController.text,
-        diffReceiverPincode: diffrentZipController.text,
+        diffReceiverPincode: int.tryParse(diffrentZipController.text),
         diffReceiverAddress1: diffrentAddress1Controller.text,
         diffReceiverAddress2: diffrentAddress2Controller.text,
       );
@@ -654,6 +748,7 @@ class AddShipmentController extends GetxController {
     }
   }
 
+  final pickupController = Get.find<PickupController>();
   @override
   void onInit() {
     // TODO: implement onInit
@@ -662,6 +757,7 @@ class AddShipmentController extends GetxController {
     categoryListData();
     fetchServiceType();
     paymentModes.refresh();
+    pickupController.fetchPaymentModes();
     pageController.addListener(() {
       currentPage.value = pageController.page!.round();
     });

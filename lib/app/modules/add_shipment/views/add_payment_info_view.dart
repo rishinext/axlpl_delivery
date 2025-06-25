@@ -1,11 +1,14 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,6 +19,7 @@ class AddPaymentInfoView extends GetView {
   @override
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
+    final pickupController = Get.put(PickupController());
     return CommonScaffold(
         body: SingleChildScrollView(
       child: Column(
@@ -34,34 +38,167 @@ class AddPaymentInfoView extends GetView {
                     dropdownText('Payment Information'),
 
                     dropdownText('Payment Mode'),
-                    Obx(() => CommonDropdown<Map>(
-                          hint: 'Select Payment',
-                          selectedValue:
-                              addshipController.selectedPaymentModeId.value,
-                          isLoading: false,
-                          items: addshipController.paymentModes,
-                          itemLabel: (m) => m['name'] ?? '',
-                          itemValue: (m) => m['id'],
-                          onChanged: (val) {
-                            log(val.toString());
-                            addshipController.selectedPaymentModeId.value = val;
-                          },
-                        )),
+                    // Obx(() => CommonDropdown<Map>(
+                    //       hint: 'Select Payment',
+                    //       selectedValue:
+                    //           addshipController.selectedPaymentModeId.value,
+                    //       isLoading: false,
+                    //       items: addshipController.paymentModes,
+                    //       itemLabel: (m) => m['name'] ?? '',
+                    //       itemValue: (m) => m['id'],
+                    //       onChanged: (val) {
+                    //         log(val.toString());
+                    //         addshipController.selectedPaymentModeId.value = val;
+                    //         log(val.toString());
+                    //       },
+                    //     )),
+                    Obx(
+                      () {
+                        if (pickupController.isLoadingPayment.value) {
+                          return Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          );
+                        } else {
+                          return DropdownSearch<PaymentMode>(
+                            items: pickupController.paymentModes,
+                            selectedItem:
+                                addshipController.selectedPaymentMode.value,
+                            onChanged: (PaymentMode? newValue) {
+                              addshipController
+                                  .setSelectedPaymentMode(newValue);
+                              addshipController.shipmentCal(
+                                int.parse(
+                                    addshipController.selectedCustomer.value),
+                                int.parse(
+                                    addshipController.selectedCategory.value),
+                                int.parse(
+                                    addshipController.selectedCommodity.value),
+                                int.parse(addshipController
+                                    .netWeightController.text
+                                    .trim()),
+                                int.parse(addshipController
+                                    .grossWeightController.text
+                                    .trim()),
+                                addshipController.selectedPaymentMode.value?.id,
+                                addshipController.insuranceValueController.text
+                                    .trim(),
+                                addshipController.insuranceType.value,
+                                addshipController.policyNoController.text,
+                                int.parse(addshipController
+                                    .noOfParcelController.text
+                                    .trim()),
+                                addshipController.expireDate.value.toString(),
+                                addshipController.insuranceValueController.text
+                                    .trim(),
+                                addshipController
+                                    .existingSenderInfoZipController.text,
+                                addshipController
+                                    .receiverInfoZipController.text,
+                              );
+                            },
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                // labelText: 'Select Payment Mode',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 14),
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              fit: FlexFit.loose,
+                              showSearchBox: false,
+                              searchFieldProps: TextFieldProps(
+                                decoration: const InputDecoration(
+                                  hintText: 'Search...',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                              itemBuilder: (context, item, isSelected) {
+                                return ListTile(
+                                  selected: isSelected,
+                                  title: Text(item.name),
+                                );
+                              },
+                            ),
+                            dropdownBuilder: (context, selectedItem) => Text(
+                              selectedItem?.name ?? 'Select Payment Mode',
+                              style: TextStyle(
+                                  color: selectedItem == null
+                                      ? Colors.grey.shade600
+                                      : null),
+                            ),
+                          );
+                        }
+                      },
+                    ),
 
                     dropdownText('Sub Payment Info'),
-                    Obx(() => CommonDropdown<Map>(
-                          hint: 'Select Payment',
-                          selectedValue:
-                              addshipController.selectedSubPaymentId.value,
-                          isLoading: false,
-                          items: addshipController.subPaymentModes,
-                          itemLabel: (m) => m['name'] ?? '',
-                          itemValue: (m) => m['id'],
-                          onChanged: (val) {
-                            log(val.toString());
-                            addshipController.selectedSubPaymentId.value = val;
-                          },
-                        )),
+                    // Obx(() => CommonDropdown<Map>(
+                    //       hint: 'Select Payment',
+                    //       selectedValue:
+                    //           addshipController.selectedSubPaymentId.value,
+                    //       isLoading: false,
+                    //       items: addshipController.subPaymentModes,
+                    //       itemLabel: (m) => m['name'] ?? '',
+                    //       itemValue: (m) => m['id'],
+                    //       onChanged: (val) {
+                    //         log(val.toString());
+                    //         addshipController.selectedSubPaymentId.value = val;
+                    //       },
+                    //     )),
+                    Obx(
+                      () {
+                        if (pickupController.isLoadingPayment.value) {
+                          return Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          );
+                        } else {
+                          return DropdownSearch<PaymentMode>(
+                            items: pickupController.subPaymentModes,
+                            selectedItem:
+                                addshipController.selectedSubPaymentMode.value,
+                            onChanged: (PaymentMode? newValue) {
+                              addshipController
+                                  .setSelectedSubPaymentMode(newValue);
+                            },
+                            dropdownDecoratorProps: DropDownDecoratorProps(
+                              dropdownSearchDecoration: InputDecoration(
+                                // labelText: 'Select Payment Mode',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 14),
+                              ),
+                            ),
+                            popupProps: PopupProps.menu(
+                              fit: FlexFit.loose,
+                              showSearchBox: false,
+                              searchFieldProps: TextFieldProps(
+                                decoration: const InputDecoration(
+                                  hintText: 'Search...',
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                              itemBuilder: (context, item, isSelected) {
+                                return ListTile(
+                                  selected: isSelected,
+                                  title: Text(item.name),
+                                );
+                              },
+                            ),
+                            dropdownBuilder: (context, selectedItem) => Text(
+                              selectedItem?.name ?? 'Select SubPayment Mode',
+                              style: TextStyle(
+                                  color: selectedItem == null
+                                      ? Colors.grey.shade600
+                                      : null),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+
                     // Obx(
                     //   () => CommonDropdown(
                     //     hint: 'Select Customer',
@@ -85,27 +222,21 @@ class AddPaymentInfoView extends GetView {
                       keyboardType: TextInputType.number,
                       hintTxt: 'Shipment Charges',
                       controller: addshipController.shipmentChargeController,
-                      onChanged: (value) {
-                        addshipController.calculateGST();
-                      },
+                      onChanged: (value) {},
                     ),
                     dropdownText('Insurance Charges'),
                     CommonTextfiled(
                       keyboardType: TextInputType.number,
                       hintTxt: 'Insurance Charges',
                       controller: addshipController.insuranceChargeController,
-                      onChanged: (value) {
-                        addshipController.calculateGST();
-                      },
+                      onChanged: (value) {},
                     ),
                     dropdownText('ODA Charges'),
                     CommonTextfiled(
                       keyboardType: TextInputType.number,
                       hintTxt: 'ODA Charges',
                       controller: addshipController.odaChargeController,
-                      onChanged: (value) {
-                        addshipController.calculateGST();
-                      },
+                      onChanged: (value) {},
                     ),
                     dropdownText('Holiday Charges'),
                     CommonTextfiled(
@@ -118,9 +249,7 @@ class AddPaymentInfoView extends GetView {
                       keyboardType: TextInputType.number,
                       hintTxt: 'Handling Charges',
                       controller: addshipController.headlingChargeController,
-                      onChanged: (value) {
-                        addshipController.calculateGST();
-                      },
+                      onChanged: (value) {},
                     ),
                     dropdownText('Total Charges'),
                     CommonTextfiled(
