@@ -28,7 +28,7 @@ class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(HomeController());
+    final homeController = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
     final pickupController = Get.put(PickupController());
     final runningPickupDetailsController =
@@ -97,7 +97,7 @@ class HomeView extends GetView<HomeController> {
                         var scannedValue =
                             await Utils().scanAndPlaySound(context);
                         if (scannedValue != null && scannedValue != '-1') {
-                          controller.searchController.text = scannedValue;
+                          homeController.searchController.text = scannedValue;
 
                           Get.dialog(
                             const Center(
@@ -141,11 +141,12 @@ class HomeView extends GetView<HomeController> {
                                 // },
                                 color: themes.blueGray,
                                 title: runningDeliveryTxt,
-                                subTitle: controller.isLoading.value
-                                    ? controller
-                                        .dashboardDataModel.value?.totalDelivery
-                                        .toString()
-                                    : '0'.toUpperCase(),
+                                subTitle: homeController.isLoading.value
+                                    ? '...'
+                                    : homeController.dashboardDataModel.value
+                                            ?.totalPickup
+                                            ?.toString() ??
+                                        '0',
                               );
                             }),
                           ),
@@ -157,11 +158,12 @@ class HomeView extends GetView<HomeController> {
                               return HomeContainer(
                                 color: themes.lightCream,
                                 title: runningPickupTxt,
-                                subTitle: controller.isLoading.value
-                                    ? controller
-                                        .dashboardDataModel.value?.totalPickup
-                                        .toString()
-                                    : '0'.toUpperCase(),
+                                subTitle: homeController.isLoading.value
+                                    ? '...'
+                                    : homeController.dashboardDataModel.value
+                                            ?.totalDelivery
+                                            ?.toString() ??
+                                        '0',
                               );
                             }),
                           ),
@@ -272,7 +274,7 @@ class HomeView extends GetView<HomeController> {
                   },
                 ),
                 Obx(() {
-                  final rattingData = controller.rattingDataModel.value;
+                  final rattingData = homeController.rattingDataModel.value;
                   final imageUrl =
                       "${profileController.messangerDetail.value?.messangerdetail?.path ?? ''}${profileController.messangerDetail.value?.messangerdetail?.photo ?? ''}";
                   if (bottomController.isLoading.value) {
@@ -339,7 +341,7 @@ class HomeView extends GetView<HomeController> {
                                           style: themes.fontSize14_500,
                                         ),
                                         SizedBox(height: 4.h),
-                                        controller.isRattingData.value ==
+                                        homeController.isRattingData.value ==
                                                 Status.loading
                                             ? Center(
                                                 child: Text(
@@ -351,7 +353,7 @@ class HomeView extends GetView<HomeController> {
                                                 ),
                                               ))
                                             : Text(
-                                                controller.rattingDataModel
+                                                homeController.rattingDataModel
                                                         .value?.averageRating
                                                         ?.toStringAsFixed(1) ??
                                                     '0.0',
@@ -373,7 +375,7 @@ class HomeView extends GetView<HomeController> {
                                         ),
                                         SizedBox(height: 4.h),
                                         Text(
-                                          controller.rattingDataModel.value
+                                          homeController.rattingDataModel.value
                                                   ?.deliveredCount
                                                   .toString() ??
                                               '0',

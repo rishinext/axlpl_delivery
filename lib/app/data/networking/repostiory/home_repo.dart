@@ -25,39 +25,38 @@ class HomeRepository {
       if (userID != null && userID.isNotEmpty) {
         Utils().logInfo(
             "Calling API with: userID=$userID, branchID=$branchID, token=$token");
+
         final response = await _apiServices.getDashboardData(
           userID,
           branchID.toString(),
           token ?? "",
         );
+
+        DashboardDataModel? result;
+
         response.when(
           success: (data) {
             final dashboardData = DashboardDataModel.fromJson(data);
-            if (dashboardData.status == success) {
-              return dashboardData;
+            if (dashboardData.status == "success") {
+              result = dashboardData;
             } else {
               Utils().logInfo(
                   'API call successful but status is not "success" : ${dashboardData.status}');
-              return null;
             }
           },
           error: (error) {
-            Utils().logError(
-              error.toString(),
-            );
-            return null;
+            Utils().logError("API error: ${error.toString()}");
           },
         );
+
+        return result;
       } else {
-        Utils().logError(
-          "Error",
-        );
+        Utils().logError("userID is null or empty");
       }
     } catch (e) {
-      Utils().logError(
-        "$e",
-      );
+      Utils().logError("dashboardDataRepo error: $e");
     }
+
     return null;
   }
 

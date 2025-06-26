@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:math';
-
+import 'package:intl/intl.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
@@ -30,10 +30,12 @@ class AddShipmentController extends GetxController {
   final commodityList = <CommodityList>[].obs;
   final serviceTypeList = <ServiceTypeList>[].obs;
   final shipmentCalList = <PaymentInformation>[].obs;
-  final areaList = <AreaList>[].obs;
+  final senderAreaList = <AreaList>[].obs;
+  final receiverAreaList = <AreaList>[].obs;
   final areaListDiff = <AreaList>[].obs;
 
   var pincodeDetailsData = Rxn<GetPincodeDetailsModel>(null);
+  var pincodeReceiverDetailsData = Rxn<GetPincodeDetailsModel>(null);
   var areaDetailsData = Rxn<GetPincodeDetailsModel>(null);
   var pincodeDataDiff = Rxn<GetPincodeDetailsModel>(null);
 
@@ -142,6 +144,29 @@ class AddShipmentController extends GetxController {
       TextEditingController();
   final TextEditingController receiverInfoAreaController =
       TextEditingController();
+  final TextEditingController receiverExistingNameController =
+      TextEditingController();
+  final TextEditingController receiverExistingCompanyNameController =
+      TextEditingController();
+  final TextEditingController receiverExistingZipController =
+      TextEditingController();
+
+  final TextEditingController receiverExistingStateController =
+      TextEditingController();
+  final TextEditingController receiverExistingCityController =
+      TextEditingController();
+  final TextEditingController receiverExistingGstNoController =
+      TextEditingController();
+  final TextEditingController receiverExistingAddress1Controller =
+      TextEditingController();
+  final TextEditingController receiverExistingAddress2Controller =
+      TextEditingController();
+  final TextEditingController receiverExistingMobileController =
+      TextEditingController();
+  final TextEditingController receiverExistingEmailController =
+      TextEditingController();
+  final TextEditingController receiverExistingAreaController =
+      TextEditingController();
 
   final TextEditingController diffrentZipController = TextEditingController();
   final TextEditingController diffrentStateController = TextEditingController();
@@ -179,7 +204,8 @@ class AddShipmentController extends GetxController {
   final isServiceType = false.obs;
   final isLoadingPincode = false.obs;
   final isLoadingDiffPincode = false.obs;
-  final isLoadingArea = false.obs;
+  final isLoadingSenderArea = false.obs;
+  final isLoadingReceiverArea = false.obs;
   final isLoadingDiffArea = false.obs;
   var isShipmentCal = Status.initial.obs;
 
@@ -192,7 +218,8 @@ class AddShipmentController extends GetxController {
 
   var selectedServiceType = Rxn();
 
-  var selectedArea = Rxn();
+  var selectedReceiverArea = Rxn();
+  var selectedSenderArea = Rxn();
   var selectedDiffrentArea = Rxn();
 
   var selectedPaymentModeId = Rxn();
@@ -212,8 +239,8 @@ class AddShipmentController extends GetxController {
 
   var insuranceType = 0.obs;
   RxString diffrentAddressType = '0'.obs;
-  var addressType = 1.obs;
-  var receviverAddressType = '1'.obs;
+  var senderAddressType = 1.obs;
+  var receviverAddressType = 1.obs;
   var currentPage = 0.obs;
   RxInt totalPage = 5.obs;
   final errorMessage = RxString('');
@@ -329,12 +356,15 @@ class AddShipmentController extends GetxController {
           response.stateName != null &&
           response.cityName != null) {
         pincodeDetailsData.value = response;
+        pincodeReceiverDetailsData.value = response;
       } else {
         pincodeDetailsData.value = null; // clear invalid data
+        pincodeReceiverDetailsData.value = null;
         errorMessage.value = 'Invalid pincode!';
       }
     } catch (e) {
       pincodeDetailsData.value = null;
+      pincodeReceiverDetailsData.value = null;
       errorMessage.value = 'Pincode fetch failed!';
       Utils().logError(
         'Pincode Fetch Failed $e',
@@ -370,28 +400,41 @@ class AddShipmentController extends GetxController {
     }
   }
 
-  Future fetchAeraByZipData(final zip) async {
-    if (senderInfoZipController.text.isEmpty) return;
+  Future fetchSenderAreaByZip(String zip) async {
+    if (zip.isEmpty) return;
     try {
-      isLoadingArea(true);
-      selectedCommodity.value = null;
-      areaList.value = [];
+      isLoadingSenderArea(true);
+      senderAreaList.clear();
       final data = await addShipmentRepo.allAeraByZipRepo(zip);
       if (data == null || data.isEmpty) {
-        areaList.value = [];
-        Utils().logInfo('No Aera found ${senderInfoZipController.text}');
-        return;
+        Utils().logInfo('No Area found for sender zip $zip');
       } else {
-        areaList.value = data;
+        senderAreaList.value = data;
       }
-      areaList.value = data;
     } catch (error) {
-      areaList.value = [];
-      Utils().logError(
-        'Error getting customers $error',
-      );
+      senderAreaList.clear();
+      Utils().logError('Error getting sender areas $error');
     } finally {
-      isLoadingArea(false);
+      isLoadingSenderArea(false);
+    }
+  }
+
+  Future fetchReceiverAreaByZip(String zip) async {
+    if (zip.isEmpty) return;
+    try {
+      isLoadingReceiverArea(true);
+      receiverAreaList.clear();
+      final data = await addShipmentRepo.allAeraByZipRepo(zip);
+      if (data == null || data.isEmpty) {
+        Utils().logInfo('No Area found for receiver zip $zip');
+      } else {
+        receiverAreaList.value = data;
+      }
+    } catch (error) {
+      receiverAreaList.clear();
+      Utils().logError('Error getting receiver areas $error');
+    } finally {
+      isLoadingReceiverArea(false);
     }
   }
 
@@ -557,76 +600,83 @@ class AddShipmentController extends GetxController {
     try {
       final shipment = ShipmentModel(
         shipmentId: '',
-        customerId: int.parse(selectedCustomer.value) ?? 0,
-        categoryId: int.parse(selectedCategory.value) ?? 0,
-        productId: int.parse(selectedCommodity.value) ?? 0,
+        customerId: int.tryParse(selectedCustomer.value) ?? 0,
+        categoryId: int.tryParse(selectedCategory.value) ?? 0,
+        productId: int.tryParse(selectedCommodity.value) ?? 0,
         netWeight: int.tryParse(netWeightController.text) ?? 0,
         grossWeight: int.tryParse(grossWeightController.text) ?? 0,
-        paymentMode: selectedPaymentModeId.value ?? 0,
-        serviceId: int.parse(selectedServiceType.value),
-        invoiceValue: int.tryParse(invoiceNoController.text),
+        paymentMode: selectedPaymentMode.value?.id.toString() ??
+            'prepaid', // or use expected string id
+        serviceId: int.tryParse(selectedServiceType.value) ?? 0,
+        invoiceValue: int.tryParse(invoiceNoController.text) ?? 0,
         axlplInsurance: insuranceType.value,
-        policyNo: int.tryParse(policyNoController.text),
-        expDate: expireDate.toString(),
-        insuranceValue: int.tryParse(insuranceValueController.text),
-        shipmentStatus: '',
+        policyNo: insuranceType.value == 0
+            ? 0
+            : policyNoController.text, // keep as string (e.g., 'P-12345')
+        expDate: insuranceType.value == 0
+            ? 0
+            : DateFormat('yyyy-MM-dd').format(expireDate.value),
+        insuranceValue: insuranceType.value == 0
+            ? 0
+            : double.tryParse(insuranceValueController.text) ?? 0.0,
+        shipmentStatus: 'Approved', // match Postman or your logic
         calculationStatus: 'custom',
         addedBy: 1,
-        addedByType: 'System',
+        addedByType: '1', // as in Postman
         preAlertShipment: 0,
-        shipmentInvoiceNo: int.tryParse(invoiceNoController.text),
+        shipmentInvoiceNo: int.tryParse(invoiceNoController.text) ?? 0,
         isAmtEditedByUser: 0,
         remark: remarkController.text,
         billTo: 2,
-        numberOfParcel: int.tryParse(noOfParcelController.text),
-        additionalAxlplInsurance: 0.00,
-        shipmentCharges: int.tryParse(shipmentChargeController.text),
-        insuranceCharges: int.tryParse(insuranceChargeController.text),
-        invoiceCharges: int.tryParse(insuranceValueController.text),
-        handlingCharges: 100,
-        tax: 10,
-        totalCharges: 10,
-        grandTotal: 10,
+        numberOfParcel: int.tryParse(noOfParcelController.text) ?? 0,
+        additionalAxlplInsurance: 0.0,
+        shipmentCharges: double.tryParse(shipmentChargeController.text) ?? 0.0,
+        insuranceCharges:
+            double.tryParse(insuranceChargeController.text) ?? 0.0,
+        invoiceCharges: double.tryParse(insuranceValueController.text) ?? 0.0,
+        handlingCharges: double.tryParse(handlingChargeController.text) ?? 0.0,
+        tax: double.tryParse(gstChargeController.text) ?? 0.0,
+        totalCharges: double.tryParse(totalChargeController.text) ?? 0.0,
+        grandTotal: double.tryParse(grandeChargeController.text) ?? 0.0,
         docketNo: docketNoController.text,
-        shipmentDate: '',
-        senderName: senderInfoNameController.text ??
-            existingSenderInfoNameController.text,
-        senderCompanyName: senderInfoCompanyNameController.text ??
-            existingSenderInfoCompanyNameController.text,
+        shipmentDate: DateFormat('yyyy-MM-dd').format(selectedDate.value),
+
+        senderName: senderInfoNameController.text,
+        senderCompanyName: senderInfoCompanyNameController.text,
         senderCountry: 1,
-        senderState: existingSenderInfoStateController.text,
-        senderCity: existingSenderInfoCityController.text,
-        senderArea: existingSenderInfoAreaController.text,
-        senderPincode: int.tryParse(existingSenderInfoZipController.text),
-        senderAddress1: existingSenderInfoAddress1Controller.text,
-        senderAddress2: existingSenderInfoAddress2Controller.text,
-        senderMobile: int.tryParse(existingSenderInfoMobileController.text),
-        senderEmail: existingSenderInfoEmailController.text,
+        senderState: pincodeDetailsData.value?.stateId ?? 0,
+        senderCity: pincodeDetailsData.value?.cityId ?? 0,
+        senderArea: pincodeDetailsData.value?.areaId ?? 0,
+        senderPincode: int.tryParse(senderInfoZipController.text) ?? 0,
+        senderAddress1: senderInfoAddress1Controller.text,
+        senderAddress2: senderInfoAddress2Controller.text,
+        senderMobile: senderInfoMobileController.text,
+        senderEmail: senderInfoEmailController.text,
         senderSaveAddress: 0,
-        senderIsNewSenderAddress: addressType.value,
+        senderIsNewSenderAddress: senderAddressType.value ?? 0,
         senderGstNo: senderInfoGstNoController.text,
-        senderCustomerId: int.tryParse(selectedExitingCustomer.value),
+        senderCustomerId: int.tryParse(selectedCustomer.value) ?? 0,
         receiverName: receiverInfoCompanyNameController.text,
         receiverCompanyName: receiverInfoCompanyNameController.text,
         receiverCountry: 1,
-        receiverState: receiverInfoStateController.text,
-        receiverCity: receiverInfoCityController.text,
-        receiverArea: receiverInfoAreaController.text,
-        receiverPincode: int.tryParse(receiverInfoZipController.text),
+        receiverState: int.tryParse(receiverInfoStateController.text) ?? 0,
+        receiverCity: int.tryParse(receiverInfoCityController.text) ?? 0,
+        receiverArea: int.tryParse(receiverInfoAreaController.text) ?? 0,
+        receiverPincode: int.tryParse(receiverInfoZipController.text) ?? 0,
         receiverAddress1: receiverInfoAddress1Controller.text,
         receiverAddress2: receiverInfoAddress2Controller.text,
-        receiverMobile: int.tryParse(receiverInfoMobileController.text),
+        receiverMobile: receiverInfoMobileController.text,
         receiverEmail: receiverInfoEmailController.text,
         receiverSaveAddress: 1,
-        receiverIsNewReceiverAddress: int.parse(receviverAddressType.value),
+        receiverIsNewReceiverAddress: receviverAddressType.value ?? 0,
         receiverGstNo: receiverInfoGstNoController.text,
-        receiverCustomerId: int.parse(selectedReceiverCustomer.value),
-        isDiffAdd: int.parse(receviverAddressType.value),
-        diffReceiverCountry: 0,
-        diffReceiverState: diffrentStateController.text,
-        diffReceiverCity: diffrentCityController.text,
+        receiverCustomerId: int.tryParse(selectedReceiverCustomer.value) ?? 0,
+        isDiffAdd: receviverAddressType.value ?? 0,
+        diffReceiverCountry: 1,
+        diffReceiverState: int.tryParse(diffrentStateController.text) ?? 0,
+        diffReceiverCity: int.tryParse(diffrentCityController.text) ?? 0,
         diffReceiverArea: diffrentAeraController.text,
-        diffReceiverPincode: int.tryParse(diffrentZipController.text),
+        diffReceiverPincode: int.tryParse(diffrentZipController.text) ?? 0,
         diffReceiverAddress1: diffrentAddress1Controller.text,
         diffReceiverAddress2: diffrentAddress2Controller.text,
       );

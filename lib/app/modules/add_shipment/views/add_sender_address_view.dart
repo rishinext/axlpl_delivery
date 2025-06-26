@@ -41,10 +41,10 @@ class AddAddressView extends GetView {
                   Obx(
                     () => Radio(
                       value: 0,
-                      groupValue: addshipController.addressType.value,
+                      groupValue: addshipController.senderAddressType.value,
                       activeColor: themes.orangeColor,
                       onChanged: (value) {
-                        addshipController.addressType.value = value!;
+                        addshipController.senderAddressType.value = value!;
                         log(value.toString());
                       },
                     ),
@@ -53,11 +53,12 @@ class AddAddressView extends GetView {
                   Obx(() {
                     return Radio(
                       value: 1,
-                      groupValue: addshipController.addressType.value,
+                      groupValue: addshipController.senderAddressType.value,
                       activeColor: themes.grayColor,
                       onChanged: (value) {
-                        addshipController.addressType.value = value!;
-                        log(addshipController.addressType.value.toString());
+                        addshipController.senderAddressType.value = value!;
+                        log(addshipController.senderAddressType.value
+                            .toString());
                       },
                     );
                   }),
@@ -68,7 +69,7 @@ class AddAddressView extends GetView {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Obx(() {
-                    if (addshipController.addressType.value == 1) {
+                    if (addshipController.senderAddressType.value == 1) {
                       //ext add
                       return Column(
                         spacing: 5.h,
@@ -150,7 +151,7 @@ class AddAddressView extends GetView {
                               if (value?.length == 6) {
                                 addshipController
                                     .fetchPincodeDetailsSenderInfo(value!);
-                                addshipController.fetchAeraByZipData(value);
+                                addshipController.fetchSenderAreaByZip(value);
                               } else {
                                 // Optional: clear state/city if length < 6 again
                                 addshipController.pincodeDetailsData.value =
@@ -200,7 +201,7 @@ class AddAddressView extends GetView {
                           // ),
                           Obx(() {
                             final isLoading =
-                                addshipController.isLoadingArea.value;
+                                addshipController.isLoadingSenderArea.value;
                             final data =
                                 addshipController.areaDetailsData.value;
                             final error = addshipController.errorMessage.value;
@@ -308,7 +309,7 @@ class AddAddressView extends GetView {
                               if (value?.length == 6) {
                                 addshipController
                                     .fetchPincodeDetailsSenderInfo(value!);
-                                addshipController.fetchAeraByZipData(value);
+                                addshipController.fetchSenderAreaByZip(value);
                               } else {
                                 // Optional: clear state/city if length < 6 again
                                 addshipController.pincodeDetailsData.value =
@@ -329,7 +330,7 @@ class AddAddressView extends GetView {
                               Center(
                                   child: CircularProgressIndicator.adaptive());
                             }
-
+                            log(data?.stateId.toString() ?? 'N/A');
                             return CommonTextfiled(
                               isEnable: false,
                               hintTxt: data?.stateName ??
@@ -346,6 +347,7 @@ class AddAddressView extends GetView {
                             final data =
                                 addshipController.pincodeDetailsData.value;
                             final error = addshipController.errorMessage.value;
+                            log(data?.cityId.toString() ?? 'N/A');
 
                             if (isLoading) {
                               Center(
@@ -365,14 +367,14 @@ class AddAddressView extends GetView {
                           Obx(() => CommonDropdown<AreaList>(
                                 hint: 'Select Area',
                                 selectedValue:
-                                    addshipController.selectedArea.value,
+                                    addshipController.selectedSenderArea.value,
                                 isLoading:
-                                    addshipController.isLoadingArea.value,
-                                items: addshipController.areaList,
+                                    addshipController.isLoadingSenderArea.value,
+                                items: addshipController.senderAreaList,
                                 itemLabel: (c) => c.name ?? 'Unknown',
                                 itemValue: (c) => c.id.toString(),
-                                onChanged: (val) =>
-                                    addshipController.selectedArea.value = val,
+                                onChanged: (val) => addshipController
+                                    .selectedSenderArea.value = val,
                               )),
                           dropdownText('GST No'),
                           CommonTextfiled(

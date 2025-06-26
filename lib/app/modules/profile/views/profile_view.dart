@@ -106,6 +106,36 @@ class ProfileView extends GetView<ProfileController> {
                         );
                       }),
                     ),
+                    Center(
+                      child: Obx(() {
+                        final imageFile = controller.imageFile.value;
+                        final imageUrl =
+                            "${controller.messangerDetail.value?.messangerdetail?.path ?? ''}${controller.messangerDetail.value?.messangerdetail?.photo ?? ''}";
+                        final custImg =
+                            "${controller.customerDetail.value?.path ?? ''}${controller.customerDetail.value?.custProfileImg ?? ''}";
+
+                        return CircleAvatar(
+                          radius: 62,
+                          backgroundColor: themes.darkCyanBlue,
+                          child: CircleAvatar(
+                            radius: 60,
+                            backgroundColor: themes.whiteColor,
+                            child: imageFile == null && imageUrl.isEmpty
+                                ? Icon(
+                                    Icons.person,
+                                    size: 50,
+                                    color: themes.darkCyanBlue,
+                                  )
+                                : null,
+                            backgroundImage: imageFile != null
+                                ? FileImage(imageFile)
+                                : (imageUrl.isNotEmpty
+                                    ? NetworkImage(imageUrl)
+                                    : null),
+                          ),
+                        );
+                      }),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 60.h, left: 60.w),
                       child: IconButton(

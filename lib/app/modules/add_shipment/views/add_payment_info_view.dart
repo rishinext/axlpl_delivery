@@ -90,8 +90,7 @@ class AddPaymentInfoView extends GetView {
                                 addshipController.expireDate.value.toString(),
                                 addshipController.insuranceValueController.text
                                     .trim(),
-                                addshipController
-                                    .existingSenderInfoZipController.text,
+                                addshipController.senderInfoZipController.text,
                                 addshipController
                                     .receiverInfoZipController.text,
                               );

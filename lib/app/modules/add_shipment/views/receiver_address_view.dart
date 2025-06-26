@@ -34,8 +34,8 @@ class ReceiverAddressView extends GetView {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Obx(
-                      () => Radio<String>(
-                        value: "0",
+                      () => Radio(
+                        value: 0,
                         groupValue:
                             addshipController.receviverAddressType.value,
                         activeColor: themes.orangeColor,
@@ -46,8 +46,8 @@ class ReceiverAddressView extends GetView {
                     ),
                     Text("New Address"),
                     Obx(() {
-                      return Radio<String>(
-                        value: "1",
+                      return Radio(
+                        value: 1,
                         groupValue:
                             addshipController.receviverAddressType.value,
                         activeColor: themes.grayColor,
@@ -63,7 +63,7 @@ class ReceiverAddressView extends GetView {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() {
-                      if (addshipController.receviverAddressType.value == "1") {
+                      if (addshipController.receviverAddressType.value == 1) {
                         //ext add
                         return Column(
                           spacing: 5.h,
@@ -130,8 +130,8 @@ class ReceiverAddressView extends GetView {
                             dropdownText(zip),
                             CommonTextfiled(
                               hintTxt: zip,
-                              controller:
-                                  addshipController.receiverInfoZipController,
+                              controller: addshipController
+                                  .receiverExistingZipController,
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
                               keyboardType: TextInputType.number,
@@ -139,7 +139,8 @@ class ReceiverAddressView extends GetView {
                                 if (value?.length == 6) {
                                   addshipController
                                       .fetchPincodeDetailsSenderInfo(value!);
-                                  addshipController.fetchAeraByZipData(value);
+                                  addshipController
+                                      .fetchReceiverAreaByZip(value);
                                 } else {
                                   // Optional: clear state/city if length < 6 again
                                   addshipController.pincodeDetailsData.value =
@@ -153,8 +154,8 @@ class ReceiverAddressView extends GetView {
                               isEnable: false,
                               hintTxt: 'state',
                               textInputAction: TextInputAction.next,
-                              controller:
-                                  addshipController.receiverInfoStateController,
+                              controller: addshipController
+                                  .receiverExistingStateController,
                             ),
                             dropdownText(city),
                             Obx(() {
@@ -177,7 +178,7 @@ class ReceiverAddressView extends GetView {
                                     (error.isNotEmpty ? error : 'City'),
                                 textInputAction: TextInputAction.next,
                                 controller: addshipController
-                                    .receiverInfoCityController,
+                                    .receiverExistingCityController,
                               );
                             }),
                             dropdownText('Select Aera'),
@@ -186,8 +187,8 @@ class ReceiverAddressView extends GetView {
                               hintTxt: 'Area',
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
-                              controller:
-                                  addshipController.receiverInfoAreaController,
+                              controller: addshipController
+                                  .receiverExistingAreaController,
                             ),
                             // Obx(() => CommonDropdown<AreaList>(
                             //       hint: 'Select Area',
@@ -201,6 +202,146 @@ class ReceiverAddressView extends GetView {
                             //       onChanged: (val) =>
                             //           addshipController.selectedArea.value = val,
                             //     )),
+                            dropdownText('GST No'),
+                            CommonTextfiled(
+                              hintTxt: 'GST No',
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverExistingGstNoController,
+                            ),
+                            dropdownText('Address Line 1'),
+                            CommonTextfiled(
+                              hintTxt: 'Address Line 1',
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverExistingAddress1Controller,
+                            ),
+                            dropdownText('Address Line 2'),
+                            CommonTextfiled(
+                              hintTxt: 'Address Line 2',
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverExistingAddress2Controller,
+                            ),
+                            dropdownText('Mobile'),
+                            CommonTextfiled(
+                              hintTxt: 'Mobile',
+                              textInputAction: TextInputAction.next,
+                              keyboardType: TextInputType.phone,
+                              validator: utils.validatePhone,
+                              controller: addshipController
+                                  .receiverExistingMobileController,
+                            ),
+                            dropdownText("Email"),
+                            CommonTextfiled(
+                              hintTxt: 'Email',
+                              textInputAction: TextInputAction.done,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverExistingEmailController,
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          spacing: 5,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            dropdownText('Company Name'),
+                            CommonTextfiled(
+                              hintTxt: 'Company Name',
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverInfoCompanyNameController,
+                            ),
+                            dropdownText(zip),
+                            CommonTextfiled(
+                              hintTxt: zip,
+                              controller:
+                                  addshipController.receiverInfoZipController,
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                if (value?.length == 6) {
+                                  addshipController
+                                      .fetchPincodeDetailsSenderInfo(value!);
+                                  addshipController
+                                      .fetchReceiverAreaByZip(value);
+                                } else {
+                                  // Optional: clear state/city if length < 6 again
+                                  addshipController.pincodeDetailsData.value =
+                                      null;
+                                }
+                                return null;
+                              },
+                            ),
+                            dropdownText(state),
+                            Obx(() {
+                              final isLoading =
+                                  addshipController.isLoadingPincode.value;
+                              final data = addshipController
+                                  .pincodeReceiverDetailsData.value;
+                              final error =
+                                  addshipController.errorMessage.value;
+
+                              if (isLoading) {
+                                Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              }
+
+                              return CommonTextfiled(
+                                isEnable: false,
+                                hintTxt: data?.stateName ??
+                                    (error.isNotEmpty ? error : 'State'),
+                                textInputAction: TextInputAction.next,
+                                controller: addshipController
+                                    .receiverInfoStateController,
+                              );
+                            }),
+                            dropdownText(city),
+                            Obx(() {
+                              final isLoading =
+                                  addshipController.isLoadingPincode.value;
+                              final data = addshipController
+                                  .pincodeReceiverDetailsData.value;
+                              final error =
+                                  addshipController.errorMessage.value;
+
+                              if (isLoading) {
+                                Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              }
+
+                              return CommonTextfiled(
+                                isEnable: false,
+                                hintTxt: data?.cityName ??
+                                    (error.isNotEmpty ? error : 'City'),
+                                textInputAction: TextInputAction.next,
+                                controller: addshipController
+                                    .receiverInfoCityController,
+                              );
+                            }),
+                            dropdownText('Select Aera'),
+                            Obx(() => CommonDropdown<AreaList>(
+                                  hint: 'Select Area',
+                                  selectedValue: addshipController
+                                      .selectedReceiverArea.value,
+                                  isLoading: addshipController
+                                      .isLoadingReceiverArea.value,
+                                  items: addshipController.receiverAreaList,
+                                  itemLabel: (c) => c.name ?? 'Unknown',
+                                  itemValue: (c) => c.id.toString(),
+                                  onChanged: (val) => addshipController
+                                      .selectedReceiverArea.value = val,
+                                )),
                             dropdownText('GST No'),
                             CommonTextfiled(
                               hintTxt: 'GST No',
@@ -242,145 +383,6 @@ class ReceiverAddressView extends GetView {
                               validator: utils.validateText,
                               controller:
                                   addshipController.receiverInfoEmailController,
-                            ),
-                          ],
-                        );
-                      } else {
-                        return Column(
-                          spacing: 5,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            dropdownText('Company Name'),
-                            CommonTextfiled(
-                              hintTxt: 'Company Name',
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                              controller: addshipController
-                                  .receiverInfoCompanyNameController,
-                            ),
-                            dropdownText(zip),
-                            CommonTextfiled(
-                              hintTxt: zip,
-                              controller:
-                                  addshipController.receiverInfoZipController,
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                if (value?.length == 6) {
-                                  addshipController
-                                      .fetchPincodeDetailsSenderInfo(value!);
-                                  addshipController.fetchAeraByZipData(value);
-                                } else {
-                                  // Optional: clear state/city if length < 6 again
-                                  addshipController.pincodeDetailsData.value =
-                                      null;
-                                }
-                                return null;
-                              },
-                            ),
-                            dropdownText(state),
-                            Obx(() {
-                              final isLoading =
-                                  addshipController.isLoadingPincode.value;
-                              final data =
-                                  addshipController.pincodeDetailsData.value;
-                              final error =
-                                  addshipController.errorMessage.value;
-
-                              if (isLoading) {
-                                Center(
-                                    child:
-                                        CircularProgressIndicator.adaptive());
-                              }
-
-                              return CommonTextfiled(
-                                isEnable: false,
-                                hintTxt: data?.stateName ??
-                                    (error.isNotEmpty ? error : 'State'),
-                                textInputAction: TextInputAction.next,
-                                controller: addshipController
-                                    .receiverInfoStateController,
-                              );
-                            }),
-                            dropdownText(city),
-                            Obx(() {
-                              final isLoading =
-                                  addshipController.isLoadingPincode.value;
-                              final data =
-                                  addshipController.pincodeDetailsData.value;
-                              final error =
-                                  addshipController.errorMessage.value;
-
-                              if (isLoading) {
-                                Center(
-                                    child:
-                                        CircularProgressIndicator.adaptive());
-                              }
-
-                              return CommonTextfiled(
-                                isEnable: false,
-                                hintTxt: data?.cityName ??
-                                    (error.isNotEmpty ? error : 'City'),
-                                textInputAction: TextInputAction.next,
-                                controller: addshipController
-                                    .receiverInfoCityController,
-                              );
-                            }),
-                            dropdownText('Select Aera'),
-                            Obx(() => CommonDropdown<AreaList>(
-                                  hint: 'Select Area',
-                                  selectedValue:
-                                      addshipController.selectedArea.value,
-                                  isLoading:
-                                      addshipController.isLoadingArea.value,
-                                  items: addshipController.areaList,
-                                  itemLabel: (c) => c.name ?? 'Unknown',
-                                  itemValue: (c) => c.id.toString(),
-                                  onChanged: (val) => addshipController
-                                      .selectedArea.value = val,
-                                )),
-                            dropdownText('GST No'),
-                            CommonTextfiled(
-                              hintTxt: 'GST No',
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                              controller:
-                                  addshipController.senderInfoGstNoController,
-                            ),
-                            dropdownText('Address Line 1'),
-                            CommonTextfiled(
-                              hintTxt: 'Address Line 1',
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                              controller: addshipController
-                                  .senderInfoAddress1Controller,
-                            ),
-                            dropdownText('Address Line 2'),
-                            CommonTextfiled(
-                              hintTxt: 'Address Line 2',
-                              textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
-                              controller: addshipController
-                                  .senderInfoAddress2Controller,
-                            ),
-                            dropdownText('Mobile'),
-                            CommonTextfiled(
-                              hintTxt: 'Mobile',
-                              textInputAction: TextInputAction.next,
-                              keyboardType: TextInputType.phone,
-                              validator: utils.validatePhone,
-                              controller:
-                                  addshipController.senderInfoMobileController,
-                            ),
-                            dropdownText("Email"),
-                            CommonTextfiled(
-                              hintTxt: 'Email',
-                              textInputAction: TextInputAction.done,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: utils.validateText,
-                              controller: addshipController
-                                  .senderInfoExitingEmailController,
                             ),
                           ],
                         ); // hides the dropdown

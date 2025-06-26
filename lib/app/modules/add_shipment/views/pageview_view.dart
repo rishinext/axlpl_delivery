@@ -36,14 +36,14 @@ class PageviewView extends GetView {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Add Details',
+                          'Add Shipment Details',
                           style: themes.fontSize14_500,
                         ),
-                        Text(
-                          'Lorem Ipsum is simply dummy text ',
-                          style: themes.fontSize14_500.copyWith(
-                              color: themes.grayColor, fontSize: 12.sp),
-                        )
+                        // Text(
+                        //   'Lorem Ipsum is simply dummy text ',
+                        //   style: themes.fontSize14_500.copyWith(
+                        //       color: themes.grayColor, fontSize: 12.sp),
+                        // )
                       ],
                     ),
                     CircleAvatar(

@@ -71,7 +71,11 @@ class ApiServices {
       'messanger_id': userID,
       'branch_id': branchID,
     };
-    return _api.get(dashboardDataPoint, query: query, token: token);
+    return _api.get(
+      dashboardDataPoint,
+      query: query,
+      token: token,
+    );
   }
 
   Future<APIResponse> getCustomersList(

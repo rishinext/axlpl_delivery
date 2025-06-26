@@ -1,29 +1,44 @@
 import 'dart:developer';
 
+// To parse this JSON data, do
+//
+//     final dashboardDataModel = dashboardDataModelFromJson(jsonString);
+
+import 'dart:convert';
+
+DashboardDataModel dashboardDataModelFromJson(String str) =>
+    DashboardDataModel.fromJson(json.decode(str));
+
+String dashboardDataModelToJson(DashboardDataModel data) =>
+    json.encode(data.toJson());
+
 class DashboardDataModel {
+  String? status;
+  String? message;
+  String? totalPickup;
+  String? totalDelivery;
+
   DashboardDataModel({
-    required this.status,
-    required this.message,
-    required this.totalPickup,
-    required this.totalDelivery,
+    this.status,
+    this.message,
+    this.totalPickup,
+    this.totalDelivery,
   });
 
-  final String status;
-  final String message;
-  final String totalPickup;
-  final String totalDelivery;
+  factory DashboardDataModel.fromJson(Map<String, dynamic> json) =>
+      DashboardDataModel(
+        status: json["status"],
+        message: json["message"],
+        totalPickup: json["totalPickup"],
+        totalDelivery: json["totalDelivery"],
+      );
 
-  factory DashboardDataModel.fromJson(Map<String, dynamic> json) {
-    log("Parsing JSON: $json"); // Debug log to see what's inside JSON
-
-    return DashboardDataModel(
-      status: json["status"] ?? "", // Ensure it doesn't break if key is missing
-      message: json["message"] ?? "",
-      totalPickup:
-          json["totalPickup"]?.toString() ?? "0", // Convert to string if needed
-      totalDelivery: json["totalDelivery"]?.toString() ?? "0",
-    );
-  }
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "totalPickup": totalPickup,
+        "totalDelivery": totalDelivery,
+      };
 }
 
 /*

@@ -20,20 +20,20 @@ class HomeController extends GetxController {
   Future<void> getDashborad() async {
     isLoading.value = true;
     try {
+      Utils().logInfo("Fetching dashboard data...");
       final data = await homeRepo.dashboardDataRepo();
+
       if (data != null) {
+        Utils().logInfo("Dashboard data received: ${data.toString()}");
         dashboardDataModel.value = data;
-        Utils().logInfo("Dashboard data retrieved successfully");
       } else {
         Utils().logError(
-          "Dashboard data is null",
-        );
+            "Dashboard data is null - check repository logs for details");
       }
     } catch (error) {
       Utils().logError(
-        'Error getting dashboard $error',
+        'Error getting dashboard: $error',
       );
-      // Log the stack trace
     } finally {
       isLoading.value = false;
     }
