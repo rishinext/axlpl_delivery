@@ -26,6 +26,7 @@ class AddShipmentController extends GetxController {
   // ShipmentRequestModel shipmentData = ShipmentRequestModel();
 
   final customerList = <CustomersList>[].obs;
+  final customerReceiverList = <CustomersList>[].obs;
   final categoryList = <CategoryList>[].obs;
   final commodityList = <CommodityList>[].obs;
   final serviceTypeList = <ServiceTypeList>[].obs;
@@ -225,6 +226,15 @@ class AddShipmentController extends GetxController {
   var selectedPaymentModeId = Rxn();
   var selectedPaymentMode = Rxn<PaymentMode>();
   var selectedSubPaymentMode = Rxn<PaymentMode>();
+
+  var selectedSenderStateId = 0.obs;
+  var selectedSenderCityId = 0.obs;
+  var selectedSenderAreaId = 0.obs;
+
+  var selectedReceiverStateId = 0.obs;
+  var selectedReceiverCityId = 0.obs;
+  var selectedReceiverAreaId = 0.obs;
+
   void setSelectedPaymentMode(PaymentMode? mode) async {
     selectedPaymentMode.value = mode;
     // selectedSubPaymentMode.value = null; // reset sub mode selection
@@ -238,7 +248,7 @@ class AddShipmentController extends GetxController {
   var selectedSubPaymentId = Rxn();
 
   var insuranceType = 0.obs;
-  RxString diffrentAddressType = '0'.obs;
+  var diffrentAddressType = 0.obs;
   var senderAddressType = 1.obs;
   var receviverAddressType = 1.obs;
   var currentPage = 0.obs;
@@ -275,7 +285,6 @@ class AddShipmentController extends GetxController {
     try {
       isLoadingCustomers(true);
 
-      isLoadingReceiverCustomer(true);
       final data = await addShipmentRepo.customerListRepo('version', nextID);
       customerList.value = data ?? [];
     } catch (e) {
@@ -285,6 +294,21 @@ class AddShipmentController extends GetxController {
       );
     } finally {
       isLoadingCustomers(false);
+    }
+  }
+
+  Future<void> fetchReciverCustomers([String nextID = '']) async {
+    try {
+      isLoadingReceiverCustomer(true);
+
+      final data = await addShipmentRepo.customerListRepo('version', nextID);
+      customerReceiverList.value = data ?? [];
+    } catch (e) {
+      customerReceiverList.value = [];
+      Utils().logError(
+        'Receiver Customer fetch failed $e',
+      );
+    } finally {
       isLoadingReceiverCustomer(false);
     }
   }
@@ -533,12 +557,12 @@ class AddShipmentController extends GetxController {
         netWeight,
         grossWeight,
         paymentMode,
-        invoiceValue,
+        invoiceValue ?? 0,
         insuranceByAxlpl,
-        policyNo,
+        policyNo ?? 0,
         numberOfParcel,
         expDate,
-        policyValue,
+        policyValue ?? 0,
         senderZip,
         receiverZip,
       );
@@ -549,11 +573,12 @@ class AddShipmentController extends GetxController {
 
         shipmentChargeController.text = paymentInfo.shipmentCharges ?? '';
         insuranceChargeController.text = paymentInfo.insuranceCharges ?? '';
-        odaChargeController.text = paymentInfo.additionalAxlplInsurance ?? '';
-        gstChargeController.text = paymentInfo.tax ?? '';
         headlingChargeController.text = paymentInfo.handlingCharges ?? '';
+        gstChargeController.text = paymentInfo.tax ?? '';
+
         totalChargeController.text = paymentInfo.totalCharges ?? '';
         grandeChargeController.text = paymentInfo.grandTotal ?? '';
+        //  odaChargeController.text = paymentInfo.additionalAxlplInsurance ?? 0;
       }
 
       isShipmentCal.value = Status.success;
@@ -614,7 +639,7 @@ class AddShipmentController extends GetxController {
             ? 0
             : policyNoController.text, // keep as string (e.g., 'P-12345')
         expDate: insuranceType.value == 0
-            ? 0
+            ? ''
             : DateFormat('yyyy-MM-dd').format(expireDate.value),
         insuranceValue: insuranceType.value == 0
             ? 0
@@ -622,7 +647,7 @@ class AddShipmentController extends GetxController {
         shipmentStatus: 'Approved', // match Postman or your logic
         calculationStatus: 'custom',
         addedBy: 1,
-        addedByType: '1', // as in Postman
+        addedByType: 1, // as in Postman
         preAlertShipment: 0,
         shipmentInvoiceNo: int.tryParse(invoiceNoController.text) ?? 0,
         isAmtEditedByUser: 0,
@@ -641,38 +666,70 @@ class AddShipmentController extends GetxController {
         docketNo: docketNoController.text,
         shipmentDate: DateFormat('yyyy-MM-dd').format(selectedDate.value),
 
-        senderName: senderInfoNameController.text,
-        senderCompanyName: senderInfoCompanyNameController.text,
+        senderName: senderAddressType.value == 0
+            ? senderInfoNameController.text
+            : existingSenderInfoNameController.text,
+        senderCompanyName: senderAddressType.value == 0
+            ? senderInfoCompanyNameController.text
+            : existingSenderInfoCompanyNameController.text,
         senderCountry: 1,
-        senderState: pincodeDetailsData.value?.stateId ?? 0,
-        senderCity: pincodeDetailsData.value?.cityId ?? 0,
-        senderArea: pincodeDetailsData.value?.areaId ?? 0,
-        senderPincode: int.tryParse(senderInfoZipController.text) ?? 0,
-        senderAddress1: senderInfoAddress1Controller.text,
-        senderAddress2: senderInfoAddress2Controller.text,
-        senderMobile: senderInfoMobileController.text,
-        senderEmail: senderInfoEmailController.text,
+        senderState: selectedSenderStateId.value,
+        senderCity: selectedSenderCityId.value,
+        senderArea: selectedSenderAreaId.value,
+        senderPincode: senderAddressType.value == 0
+            ? int.tryParse(senderInfoZipController.text)
+            : existingSenderInfoZipController.text,
+        senderAddress1: senderAddressType.value == 0
+            ? senderInfoAddress1Controller.text
+            : existingSenderInfoAddress1Controller.text,
+        senderAddress2: senderAddressType.value == 0
+            ? senderInfoAddress2Controller.text
+            : existingSenderInfoAddress2Controller.text,
+        senderMobile: senderAddressType.value == 0
+            ? int.tryParse(senderInfoMobileController.text)
+            : int.tryParse(existingSenderInfoMobileController.text),
+        senderEmail: senderAddressType.value == 0
+            ? senderInfoEmailController.text
+            : existingSenderInfoEmailController.text,
         senderSaveAddress: 0,
-        senderIsNewSenderAddress: senderAddressType.value ?? 0,
-        senderGstNo: senderInfoGstNoController.text,
+        senderIsNewSenderAddress: senderAddressType.value,
+        senderGstNo: senderAddressType.value == 0
+            ? senderInfoGstNoController.text
+            : existingSenderInfoGstNoController.text,
         senderCustomerId: int.tryParse(selectedCustomer.value) ?? 0,
-        receiverName: receiverInfoCompanyNameController.text,
-        receiverCompanyName: receiverInfoCompanyNameController.text,
+        receiverName: receviverAddressType.value == 0
+            ? receiverInfoCompanyNameController.text
+            : receiverExistingNameController.text,
+        receiverCompanyName: receviverAddressType.value == 0
+            ? receiverInfoCompanyNameController.text
+            : receiverExistingCompanyNameController.text,
         receiverCountry: 1,
-        receiverState: int.tryParse(receiverInfoStateController.text) ?? 0,
-        receiverCity: int.tryParse(receiverInfoCityController.text) ?? 0,
-        receiverArea: int.tryParse(receiverInfoAreaController.text) ?? 0,
-        receiverPincode: int.tryParse(receiverInfoZipController.text) ?? 0,
-        receiverAddress1: receiverInfoAddress1Controller.text,
-        receiverAddress2: receiverInfoAddress2Controller.text,
-        receiverMobile: receiverInfoMobileController.text,
-        receiverEmail: receiverInfoEmailController.text,
-        receiverSaveAddress: 1,
+        receiverState: selectedReceiverStateId.value,
+        receiverCity: selectedReceiverCityId.value,
+        receiverArea: selectedReceiverAreaId.value,
+        receiverPincode: receviverAddressType.value == 0
+            ? int.tryParse(receiverInfoZipController.text)
+            : int.tryParse(receiverExistingZipController.text),
+        receiverAddress1: receviverAddressType.value == 0
+            ? receiverInfoAddress1Controller.text
+            : receiverExistingAddress1Controller.text,
+        receiverAddress2: receviverAddressType.value == 0
+            ? receiverInfoAddress2Controller.text
+            : receiverExistingAddress2Controller.text,
+        receiverMobile: receviverAddressType.value == 0
+            ? int.tryParse(receiverInfoMobileController.text)
+            : int.tryParse(receiverExistingMobileController.text),
+        receiverEmail: receviverAddressType.value == 0
+            ? receiverInfoEmailController.text
+            : receiverExistingEmailController.text,
+        receiverSaveAddress: 0,
         receiverIsNewReceiverAddress: receviverAddressType.value ?? 0,
-        receiverGstNo: receiverInfoGstNoController.text,
-        receiverCustomerId: int.tryParse(selectedReceiverCustomer.value) ?? 0,
-        isDiffAdd: receviverAddressType.value ?? 0,
-        diffReceiverCountry: 1,
+        receiverGstNo: receviverAddressType.value == 0
+            ? receiverInfoGstNoController.text
+            : receiverExistingGstNoController.text,
+        receiverCustomerId: selectedReceiverCustomer.value ?? 0,
+        isDiffAdd: 0,
+        diffReceiverCountry: diffrentAddressType.value,
         diffReceiverState: int.tryParse(diffrentStateController.text) ?? 0,
         diffReceiverCity: int.tryParse(diffrentCityController.text) ?? 0,
         diffReceiverArea: diffrentAeraController.text,
@@ -684,8 +741,13 @@ class AddShipmentController extends GetxController {
       final response =
           await addShipmentRepo.addShipmentRepo(shipmentModel: shipment);
 
-      if (response == Status.success) {
-        Get.snackbar('Success', 'Shipment added successfully');
+      if (response == true) {
+        Get.snackbar(
+          'Success',
+          'Shipment added successfully',
+          backgroundColor: themes.darkCyanBlue,
+          colorText: themes.whiteColor,
+        );
       } else {
         Get.snackbar('Error', 'Failed to add shipment');
       }
@@ -804,6 +866,7 @@ class AddShipmentController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     fetchCustomers('0');
+    fetchReciverCustomers('0');
     categoryListData();
     fetchServiceType();
     paymentModes.refresh();

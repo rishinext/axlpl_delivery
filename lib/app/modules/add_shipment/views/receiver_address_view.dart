@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class ReceiverAddressView extends GetView {
   const ReceiverAddressView({super.key});
@@ -77,17 +78,18 @@ class ReceiverAddressView extends GetView {
                               isLoading: addshipController
                                   .isLoadingReceiverCustomer.value,
 
-                              // Dropdown items from customer IDs
-                              items: addshipController.customerList
+                              // Use customerReceiverList here, not receiverAreaList
+                              items: addshipController.customerReceiverList
                                   .map((e) => e.id!)
                                   .toList(),
 
-                              // Display company name from ID
                               itemLabel: (id) {
-                                final customer =
-                                    addshipController.customerList.firstWhere(
+                                final customer = addshipController
+                                    .customerReceiverList
+                                    .firstWhere(
                                   (e) => e.id == id,
-                                  orElse: () => CustomersList(),
+                                  orElse: () =>
+                                      CustomersList(), // Or provide a default customer object
                                 );
                                 return customer.companyName ?? 'Unknown';
                               },
@@ -98,34 +100,74 @@ class ReceiverAddressView extends GetView {
                                 addshipController
                                     .selectedReceiverCustomer.value = id;
 
-                                final selectedCustomer =
-                                    addshipController.customerList.firstWhere(
+                                final selectedCustomer = addshipController
+                                    .customerReceiverList
+                                    .firstWhere(
                                   (e) => e.id == id,
                                   orElse: () => CustomersList(),
                                 );
-                                addshipController.receiverInfoZipController
+
+                                addshipController.selectedReceiverStateId
+                                    .value = int.tryParse(
+                                        selectedCustomer.stateId ?? '0') ??
+                                    0;
+                                addshipController.selectedReceiverCityId.value =
+                                    int.tryParse(
+                                            selectedCustomer.cityId ?? '0') ??
+                                        0;
+                                addshipController.selectedReceiverAreaId.value =
+                                    int.tryParse(
+                                            selectedCustomer.areaId ?? '0') ??
+                                        0;
+
+                                addshipController.receiverExistingNameController
+                                    .text = selectedCustomer.fullName ?? '';
+                                addshipController
+                                    .receiverExistingCompanyNameController
+                                    .text = selectedCustomer.companyName ?? '';
+                                addshipController.receiverExistingZipController
                                     .text = selectedCustomer.pincode ?? '';
-                                addshipController.receiverInfoStateController
+                                addshipController
+                                    .receiverExistingStateController
                                     .text = selectedCustomer.stateName ?? '';
-                                addshipController.receiverInfoCityController
+                                addshipController.receiverExistingCityController
                                     .text = selectedCustomer.cityName ?? '';
-                                addshipController.receiverInfoMobileController
+                                addshipController
+                                    .receiverExistingMobileController
                                     .text = selectedCustomer.mobileNo ?? '';
-                                addshipController.receiverInfoEmailController
+                                addshipController
+                                    .receiverExistingEmailController
                                     .text = selectedCustomer.email ?? '';
-                                addshipController.receiverInfoAddress1Controller
+                                addshipController
+                                    .receiverExistingAddress1Controller
                                     .text = selectedCustomer.address1 ?? '';
-                                addshipController.receiverInfoAddress2Controller
+                                addshipController
+                                    .receiverExistingAddress2Controller
                                     .text = selectedCustomer.address2 ?? '';
-                                addshipController.receiverInfoGstNoController
+                                addshipController
+                                    .receiverExistingGstNoController
                                     .text = selectedCustomer.gstNo ?? '';
-                                addshipController.receiverInfoAreaController
+                                addshipController.receiverExistingAreaController
                                     .text = selectedCustomer.areaName ?? '';
-                                // addshipController.fetchAeraByZipData(
-                                //   addshipController
-                                //       .existingSenderInfoZipController.text,
-                                // );
                               },
+                            ),
+                            dropdownText('Name'),
+                            CommonTextfiled(
+                              isEnable: false,
+                              hintTxt: 'Name',
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverExistingNameController,
+                            ),
+                            dropdownText('Company Name'),
+                            CommonTextfiled(
+                              isEnable: false,
+                              hintTxt: 'Company Name',
+                              textInputAction: TextInputAction.next,
+                              validator: utils.validateText,
+                              controller: addshipController
+                                  .receiverExistingCompanyNameController,
                             ),
                             dropdownText(zip),
                             CommonTextfiled(
@@ -183,7 +225,7 @@ class ReceiverAddressView extends GetView {
                             }),
                             dropdownText('Select Aera'),
                             CommonTextfiled(
-                              isEnable: true,
+                              isEnable: false,
                               hintTxt: 'Area',
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,

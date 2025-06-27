@@ -29,29 +29,27 @@ class AddDifferentAddressView extends GetView {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   dropdownText('Diffrent Delivery Address'),
-                  Radio<String>(
-                    value: "0",
+                  Radio(
+                    value: 0,
                     groupValue: addshipController.diffrentAddressType.value,
                     activeColor: themes.grayColor,
                     onChanged: (value) {
                       addshipController.diffrentAddressType.value = value!;
-                      log(addshipController.diffrentAddressType.value);
                     },
                   ),
                   Text("NO"),
-                  Radio<String>(
-                    value: "1",
+                  Radio(
+                    value: 1,
                     groupValue: addshipController.diffrentAddressType.value,
                     activeColor: themes.darkCyanBlue,
                     onChanged: (value) {
                       addshipController.diffrentAddressType.value = value!;
-                      log(addshipController.diffrentAddressType.value);
                     },
                   ),
                   Text("YES"),
                 ],
               ),
-              addshipController.diffrentAddressType.value == "1"
+              addshipController.diffrentAddressType.value == 1
                   ? Container(
                       decoration: BoxDecoration(
                           color: themes.whiteColor,

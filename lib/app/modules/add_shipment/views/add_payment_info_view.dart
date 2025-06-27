@@ -80,19 +80,37 @@ class AddPaymentInfoView extends GetView {
                                     .grossWeightController.text
                                     .trim()),
                                 addshipController.selectedPaymentMode.value?.id,
-                                addshipController.insuranceValueController.text
-                                    .trim(),
+                                int.parse(addshipController
+                                    .invoiceValueController.text
+                                    .trim()),
                                 addshipController.insuranceType.value,
-                                addshipController.policyNoController.text,
+                                addshipController.policyNoController.text
+                                        .trim()
+                                        .isNotEmpty
+                                    ? addshipController.policyNoController.text
+                                    : 0,
                                 int.parse(addshipController
                                     .noOfParcelController.text
                                     .trim()),
                                 addshipController.expireDate.value.toString(),
                                 addshipController.insuranceValueController.text
-                                    .trim(),
-                                addshipController.senderInfoZipController.text,
-                                addshipController
-                                    .receiverInfoZipController.text,
+                                        .trim()
+                                        .isNotEmpty
+                                    ? int.tryParse(addshipController
+                                        .insuranceValueController.text
+                                        .trim())
+                                    : 0,
+                                addshipController.senderAddressType.value == 0
+                                    ? addshipController
+                                        .senderInfoZipController.text
+                                    : int.parse(addshipController
+                                        .existingSenderInfoZipController.text),
+                                addshipController.receviverAddressType.value ==
+                                        0
+                                    ? addshipController
+                                        .receiverInfoZipController.text
+                                    : addshipController
+                                        .receiverExistingZipController.text,
                               );
                             },
                             dropdownDecoratorProps: DropDownDecoratorProps(

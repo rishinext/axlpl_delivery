@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../controllers/add_shipment_controller.dart';
 
@@ -109,6 +110,25 @@ class AddAddressView extends GetView {
                                 (e) => e.id == id,
                                 orElse: () => CustomersList(),
                               );
+
+                              addshipController.selectedSenderStateId.value =
+                                  int.tryParse(
+                                          selectedCustomer.stateId ?? '0') ??
+                                      0;
+                              addshipController.selectedSenderCityId.value =
+                                  int.tryParse(
+                                          selectedCustomer.cityId ?? '0') ??
+                                      0;
+                              addshipController.selectedSenderAreaId.value =
+                                  int.tryParse(
+                                          selectedCustomer.areaId ?? '0') ??
+                                      0;
+                              log(selectedCustomer.stateId.toString());
+                              addshipController.existingSenderInfoNameController
+                                  .text = selectedCustomer.fullName ?? '';
+                              addshipController
+                                  .existingSenderInfoCompanyNameController
+                                  .text = selectedCustomer.companyName ?? '';
                               addshipController.existingSenderInfoZipController
                                   .text = selectedCustomer.pincode ?? '';
                               addshipController
@@ -138,6 +158,24 @@ class AddAddressView extends GetView {
                               //       .existingSenderInfoZipController.text,
                               // );
                             },
+                          ),
+                          dropdownText('Customer Name'),
+                          CommonTextfiled(
+                            isEnable: false,
+                            hintTxt: 'Customer Name',
+                            textInputAction: TextInputAction.next,
+                            validator: utils.validateText,
+                            controller: addshipController
+                                .existingSenderInfoNameController,
+                          ),
+                          dropdownText('Company Name'),
+                          CommonTextfiled(
+                            isEnable: false,
+                            hintTxt: 'Company Name',
+                            textInputAction: TextInputAction.next,
+                            validator: utils.validateText,
+                            controller: addshipController
+                                .existingSenderInfoCompanyNameController,
                           ),
                           dropdownText(zip),
                           CommonTextfiled(
@@ -330,7 +368,8 @@ class AddAddressView extends GetView {
                               Center(
                                   child: CircularProgressIndicator.adaptive());
                             }
-                            log(data?.stateId.toString() ?? 'N/A');
+                            log("state id : => ${data?.stateId.toString()}" ??
+                                'N/A');
                             return CommonTextfiled(
                               isEnable: false,
                               hintTxt: data?.stateName ??
@@ -415,8 +454,8 @@ class AddAddressView extends GetView {
                             textInputAction: TextInputAction.done,
                             keyboardType: TextInputType.emailAddress,
                             validator: utils.validateText,
-                            controller: addshipController
-                                .senderInfoExitingEmailController,
+                            controller:
+                                addshipController.senderInfoEmailController,
                           ),
                         ],
                       ); // hides the dropdown

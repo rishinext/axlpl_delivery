@@ -50,7 +50,7 @@ class PaymentInformation {
   String? grandTotal;
   String? invoiceCharges;
   String? calculationStatus;
-  String? additionalAxlplInsurance;
+  final additionalAxlplInsurance;
 
   PaymentInformation({
     this.shipmentId,
