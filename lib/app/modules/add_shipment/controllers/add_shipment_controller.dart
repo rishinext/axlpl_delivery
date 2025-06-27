@@ -235,6 +235,14 @@ class AddShipmentController extends GetxController {
   var selectedReceiverCityId = 0.obs;
   var selectedReceiverAreaId = 0.obs;
 
+  var selectedExistingSenderStateId = 0.obs;
+  var selectedExistingSenderCityId = 0.obs;
+  var selectedExistingSenderAreaId = 0.obs;
+
+  var selectedExistingReceiverStateId = 0.obs;
+  var selectedExistingReceiverCityId = 0.obs;
+  var selectedExistingReceiverAreaId = 0.obs;
+
   void setSelectedPaymentMode(PaymentMode? mode) async {
     selectedPaymentMode.value = mode;
     // selectedSubPaymentMode.value = null; // reset sub mode selection
@@ -635,9 +643,7 @@ class AddShipmentController extends GetxController {
         serviceId: int.tryParse(selectedServiceType.value) ?? 0,
         invoiceValue: int.tryParse(invoiceNoController.text) ?? 0,
         axlplInsurance: insuranceType.value,
-        policyNo: insuranceType.value == 0
-            ? 0
-            : policyNoController.text, // keep as string (e.g., 'P-12345')
+        policyNo: insuranceType.value == 0 ? 0 : policyNoController.text,
         expDate: insuranceType.value == 0
             ? ''
             : DateFormat('yyyy-MM-dd').format(expireDate.value),
@@ -673,9 +679,15 @@ class AddShipmentController extends GetxController {
             ? senderInfoCompanyNameController.text
             : existingSenderInfoCompanyNameController.text,
         senderCountry: 1,
-        senderState: selectedSenderStateId.value,
-        senderCity: selectedSenderCityId.value,
-        senderArea: selectedSenderAreaId.value,
+        senderState: senderAddressType.value == 1
+            ? selectedSenderStateId.value
+            : selectedSenderArea.value,
+        senderCity: senderAddressType.value == 1
+            ? selectedSenderCityId.value
+            : selectedExistingSenderCityId.value,
+        senderArea: senderAddressType.value == 1
+            ? selectedSenderAreaId.value
+            : selectedExistingSenderAreaId.value,
         senderPincode: senderAddressType.value == 0
             ? int.tryParse(senderInfoZipController.text)
             : existingSenderInfoZipController.text,
@@ -704,9 +716,15 @@ class AddShipmentController extends GetxController {
             ? receiverInfoCompanyNameController.text
             : receiverExistingCompanyNameController.text,
         receiverCountry: 1,
-        receiverState: selectedReceiverStateId.value,
-        receiverCity: selectedReceiverCityId.value,
-        receiverArea: selectedReceiverAreaId.value,
+        receiverState: receviverAddressType.value == 1
+            ? selectedReceiverStateId.value
+            : selectedExistingReceiverStateId.value,
+        receiverCity: receviverAddressType.value == 1
+            ? selectedReceiverCityId.value
+            : selectedExistingSenderCityId.value,
+        receiverArea: receviverAddressType.value == 1
+            ? selectedReceiverAreaId.value
+            : selectedReceiverArea.value,
         receiverPincode: receviverAddressType.value == 0
             ? int.tryParse(receiverInfoZipController.text)
             : int.tryParse(receiverExistingZipController.text),
@@ -723,7 +741,7 @@ class AddShipmentController extends GetxController {
             ? receiverInfoEmailController.text
             : receiverExistingEmailController.text,
         receiverSaveAddress: 0,
-        receiverIsNewReceiverAddress: receviverAddressType.value ?? 0,
+        receiverIsNewReceiverAddress: receviverAddressType.value,
         receiverGstNo: receviverAddressType.value == 0
             ? receiverInfoGstNoController.text
             : receiverExistingGstNoController.text,

@@ -337,7 +337,15 @@ class ReceiverAddressView extends GetView {
                                     child:
                                         CircularProgressIndicator.adaptive());
                               }
-
+                              addshipController
+                                      .selectedExistingReceiverStateId.value =
+                                  int.tryParse(data?.stateId ?? '0') ?? 0;
+                              addshipController
+                                      .selectedExistingReceiverCityId.value =
+                                  int.tryParse(data?.cityId ?? '0') ?? 0;
+                              addshipController
+                                      .selectedExistingSenderAreaId.value =
+                                  int.tryParse(data?.areaId ?? '0') ?? 0;
                               return CommonTextfiled(
                                 isEnable: false,
                                 hintTxt: data?.stateName ??
