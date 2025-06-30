@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:math';
+import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
@@ -204,6 +205,7 @@ class AddShipmentController extends GetxController {
   final isLoadingCommodity = false.obs;
   final isServiceType = false.obs;
   final isLoadingPincode = false.obs;
+  final isLoadingReceiverPincode = false.obs;
   final isLoadingDiffPincode = false.obs;
   final isLoadingSenderArea = false.obs;
   final isLoadingReceiverArea = false.obs;
@@ -403,6 +405,32 @@ class AddShipmentController extends GetxController {
       );
     } finally {
       isLoadingPincode.value = false;
+    }
+  }
+
+  Future<void> fetchPincodeDetailsReceiverInfo(String pincode) async {
+    errorMessage.value = '';
+    try {
+      isLoadingReceiverPincode.value = true;
+
+      final response = await addShipmentRepo.pincodeDetailsRepo(pincode);
+
+      if (response != null &&
+          response.stateName != null &&
+          response.cityName != null) {
+        pincodeReceiverDetailsData.value = response;
+      } else {
+        pincodeReceiverDetailsData.value = null;
+        errorMessage.value = 'Invalid pincode!';
+      }
+    } catch (e) {
+      pincodeReceiverDetailsData.value = null;
+      errorMessage.value = 'Pincode fetch failed!';
+      Utils().logError(
+        'Pincode Fetch Failed $e',
+      );
+    } finally {
+      isLoadingReceiverPincode.value = false;
     }
   }
 
@@ -630,10 +658,14 @@ class AddShipmentController extends GetxController {
   }
 
   Future<void> submitShipment() async {
+    final userData = await LocalStorage().getUserLocalData();
+    final userID = userData?.messangerdetail?.id?.toString() ??
+        userData?.customerdetail?.id.toString();
     try {
       final shipment = ShipmentModel(
         shipmentId: '',
-        customerId: int.tryParse(selectedCustomer.value) ?? 0,
+        customerId: int.tryParse(selectedCustomer.value ?? '') ??
+            int.tryParse(userID.toString()),
         categoryId: int.tryParse(selectedCategory.value) ?? 0,
         productId: int.tryParse(selectedCommodity.value) ?? 0,
         netWeight: int.tryParse(netWeightController.text) ?? 0,
@@ -679,13 +711,13 @@ class AddShipmentController extends GetxController {
             ? senderInfoCompanyNameController.text
             : existingSenderInfoCompanyNameController.text,
         senderCountry: 1,
-        senderState: senderAddressType.value == 1
+        senderState: senderAddressType.value == 0
             ? selectedSenderStateId.value
-            : selectedSenderArea.value,
-        senderCity: senderAddressType.value == 1
+            : selectedExistingSenderStateId.value,
+        senderCity: senderAddressType.value == 0
             ? selectedSenderCityId.value
             : selectedExistingSenderCityId.value,
-        senderArea: senderAddressType.value == 1
+        senderArea: senderAddressType.value == 0
             ? selectedSenderAreaId.value
             : selectedExistingSenderAreaId.value,
         senderPincode: senderAddressType.value == 0
@@ -708,7 +740,8 @@ class AddShipmentController extends GetxController {
         senderGstNo: senderAddressType.value == 0
             ? senderInfoGstNoController.text
             : existingSenderInfoGstNoController.text,
-        senderCustomerId: int.tryParse(selectedCustomer.value) ?? 0,
+        senderCustomerId: int.tryParse(selectedCustomer.value ?? '') ??
+            int.tryParse(userID.toString()),
         receiverName: receviverAddressType.value == 0
             ? receiverInfoCompanyNameController.text
             : receiverExistingNameController.text,
@@ -716,15 +749,16 @@ class AddShipmentController extends GetxController {
             ? receiverInfoCompanyNameController.text
             : receiverExistingCompanyNameController.text,
         receiverCountry: 1,
-        receiverState: receviverAddressType.value == 1
+        receiverState: receviverAddressType.value == 0
             ? selectedReceiverStateId.value
             : selectedExistingReceiverStateId.value,
-        receiverCity: receviverAddressType.value == 1
+
+        receiverCity: receviverAddressType.value == 0
             ? selectedReceiverCityId.value
-            : selectedExistingSenderCityId.value,
-        receiverArea: receviverAddressType.value == 1
+            : selectedExistingReceiverCityId.value,
+        receiverArea: receviverAddressType.value == 0
             ? selectedReceiverAreaId.value
-            : selectedReceiverArea.value,
+            : selectedExistingReceiverAreaId.value,
         receiverPincode: receviverAddressType.value == 0
             ? int.tryParse(receiverInfoZipController.text)
             : int.tryParse(receiverExistingZipController.text),
@@ -745,7 +779,7 @@ class AddShipmentController extends GetxController {
         receiverGstNo: receviverAddressType.value == 0
             ? receiverInfoGstNoController.text
             : receiverExistingGstNoController.text,
-        receiverCustomerId: selectedReceiverCustomer.value ?? 0,
+        receiverCustomerId: selectedReceiverCustomer.value ?? userID,
         isDiffAdd: 0,
         diffReceiverCountry: diffrentAddressType.value,
         diffReceiverState: int.tryParse(diffrentStateController.text) ?? 0,

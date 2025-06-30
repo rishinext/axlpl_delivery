@@ -111,18 +111,18 @@ class AddAddressView extends GetView {
                                 orElse: () => CustomersList(),
                               );
 
-                              addshipController.selectedSenderStateId.value =
-                                  int.tryParse(
-                                          selectedCustomer.stateId ?? '0') ??
-                                      0;
-                              addshipController.selectedSenderCityId.value =
-                                  int.tryParse(
-                                          selectedCustomer.cityId ?? '0') ??
-                                      0;
-                              addshipController.selectedSenderAreaId.value =
-                                  int.tryParse(
-                                          selectedCustomer.areaId ?? '0') ??
-                                      0;
+                              addshipController.selectedExistingSenderStateId
+                                  .value = int.tryParse(
+                                      selectedCustomer.stateId ?? '0') ??
+                                  0;
+                              addshipController.selectedExistingSenderCityId
+                                  .value = int.tryParse(
+                                      selectedCustomer.cityId ?? '0') ??
+                                  0;
+                              addshipController.selectedExistingSenderAreaId
+                                  .value = int.tryParse(
+                                      selectedCustomer.areaId ?? '0') ??
+                                  0;
                               log(selectedCustomer.stateId.toString());
                               addshipController.existingSenderInfoNameController
                                   .text = selectedCustomer.fullName ?? '';
@@ -319,6 +319,7 @@ class AddAddressView extends GetView {
                         spacing: 5,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          //new sender addresss
                           dropdownText('Customer Name'),
                           CommonTextfiled(
                             hintTxt: 'Customer Name',
@@ -380,6 +381,7 @@ class AddAddressView extends GetView {
                             );
                           }),
                           dropdownText(city),
+                          //new sender address
                           Obx(() {
                             final isLoading =
                                 addshipController.isLoadingPincode.value;
@@ -392,13 +394,11 @@ class AddAddressView extends GetView {
                               Center(
                                   child: CircularProgressIndicator.adaptive());
                             }
-                            addshipController
-                                    .selectedExistingSenderStateId.value =
+                            addshipController.selectedSenderStateId.value =
                                 int.tryParse(data?.stateId ?? '0') ?? 0;
-                            addshipController.selectedExistingReceiverCityId
-                                .value = int.tryParse(data?.cityId ?? '0') ?? 0;
-                            addshipController
-                                    .selectedExistingSenderAreaId.value =
+                            addshipController.selectedSenderCityId.value =
+                                int.tryParse(data?.cityId ?? '0') ?? 0;
+                            addshipController.selectedSenderAreaId.value =
                                 int.tryParse(
                                       data?.areaId ?? '0',
                                     ) ??

@@ -46,23 +46,57 @@ class HomeView extends GetView<HomeController> {
           leading: Padding(
             padding: const EdgeInsets.only(left: 15),
             child: InkWell(
-              onTap: () => Get.toNamed(Routes.PROFILE),
-              child: Obx(
-                () {
-                  final imageUrl =
-                      "${profileController.messangerDetail.value?.messangerdetail?.path ?? ''}${profileController.messangerDetail.value?.messangerdetail?.photo ?? ''}";
+                onTap: () => Get.toNamed(Routes.PROFILE),
+                child: Obx(() {
+                  String? networkImageUrl;
+
+                  if (user?.role == 'massanger') {
+                    final messangerPath = profileController
+                        .messangerDetail.value?.messangerdetail?.path;
+                    final messangerPhoto = profileController
+                        .messangerDetail.value?.messangerdetail?.photo;
+                    if (messangerPath != null && messangerPhoto != null) {
+                      networkImageUrl = "$messangerPath$messangerPhoto";
+                    }
+                  } else {
+                    final customerPath =
+                        profileController.customerDetail.value?.path;
+                    final customerPhoto =
+                        profileController.customerDetail.value?.custProfileImg;
+                    if (customerPath != null && customerPhoto != null) {
+                      networkImageUrl = "$customerPath$customerPhoto";
+                    }
+                  }
+
+                  DecorationImage? decorationImage;
+                  if (networkImageUrl != null && networkImageUrl.isNotEmpty) {
+                    decorationImage = DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(networkImageUrl),
+                      onError: (exception, stackTrace) {
+                        Utils().log("Error loading image: $exception");
+                      },
+                    );
+                  }
+
                   return Container(
                     decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              imageUrl,
-                            )),
-                        shape: BoxShape.circle),
+                      color:
+                          decorationImage == null ? Colors.grey.shade300 : null,
+                      image: decorationImage,
+                      shape: BoxShape.circle,
+                      // Optional: Add a border
+                      border: Border.all(color: Colors.grey.shade400, width: 2),
+                    ),
+                    child: decorationImage == null
+                        ? Icon(
+                            Icons.person,
+                            size: 20,
+                            color: Colors.grey.shade600,
+                          )
+                        : null,
                   );
-                },
-              ),
-            ),
+                })),
           ),
           title: Image.asset(
             authLogo,
@@ -87,7 +121,6 @@ class HomeView extends GetView<HomeController> {
               spacing: 20,
               children: [
                 ContainerTextfiled(
-                  onChanged: (val) {},
                   prefixIcon: Icon(
                     CupertinoIcons.search,
                     color: themes.grayColor,

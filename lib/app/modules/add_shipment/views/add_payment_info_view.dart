@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
@@ -63,12 +64,21 @@ class AddPaymentInfoView extends GetView {
                             items: pickupController.paymentModes,
                             selectedItem:
                                 addshipController.selectedPaymentMode.value,
-                            onChanged: (PaymentMode? newValue) {
+                            onChanged: (PaymentMode? newValue) async {
+                              final userData =
+                                  await LocalStorage().getUserLocalData();
+                              final userID =
+                                  userData?.messangerdetail?.id?.toString() ??
+                                      userData?.customerdetail?.id.toString();
                               addshipController
                                   .setSelectedPaymentMode(newValue);
                               addshipController.shipmentCal(
-                                int.parse(
-                                    addshipController.selectedCustomer.value),
+                                // int.parse(
+                                //     addshipController.selectedCustomer.value),
+                                int.tryParse(addshipController
+                                            .selectedCustomer.value ??
+                                        '') ??
+                                    int.tryParse(userID.toString()),
                                 int.parse(
                                     addshipController.selectedCategory.value),
                                 int.parse(

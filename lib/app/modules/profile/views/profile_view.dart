@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/auth/controllers/auth_controller.dart';
 import 'package:axlpl_delivery/common_widget/change_password_dialog.dart';
@@ -25,9 +27,11 @@ class ProfileView extends GetView<ProfileController> {
     final authController = Get.put(AuthController());
     final profileController = Get.put(ProfileController());
     final user = bottomController.userData.value;
-
+    log("profile log of role${user?.role.toString()}");
     return CommonScaffold(
-        appBar: commonAppbar('Profile'),
+        appBar: commonAppbar(
+          'Profile',
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 20.w),
@@ -48,8 +52,8 @@ class ProfileView extends GetView<ProfileController> {
                               color: themes.whiteColor,
                             ),
                             onPressed: () {
-                              controller.editProfile;
                               controller.updateProfile();
+                              controller.editProfile();
                             },
                             label: Text(
                               'Save',
@@ -79,10 +83,38 @@ class ProfileView extends GetView<ProfileController> {
                     Center(
                       child: Obx(() {
                         final imageFile = controller.imageFile.value;
-                        final imageUrl =
-                            "${controller.messangerDetail.value?.messangerdetail?.path ?? ''}${controller.messangerDetail.value?.messangerdetail?.photo ?? ''}";
-                        final custImg =
-                            "${controller.customerDetail.value?.path ?? ''}${controller.customerDetail.value?.custProfileImg ?? ''}";
+
+                        // Determine the correct network image URL based on the user's role
+                        String? networkImageUrl;
+                        if (user?.role == 'massanger') {
+                          final messangerPath = controller
+                              .messangerDetail.value?.messangerdetail?.path;
+                          final messangerPhoto = controller
+                              .messangerDetail.value?.messangerdetail?.photo;
+                          if (messangerPath != null && messangerPhoto != null) {
+                            networkImageUrl = "$messangerPath$messangerPhoto";
+                          }
+                        } else {
+                          // Assuming any other role is a customer
+                          final customerPath =
+                              controller.customerDetail.value?.path;
+                          final customerPhoto =
+                              controller.customerDetail.value?.custProfileImg;
+                          if (customerPath != null && customerPhoto != null) {
+                            networkImageUrl = "$customerPath$customerPhoto";
+                          }
+                        }
+
+                        // Determine the final image provider
+                        ImageProvider? finalImage;
+                        if (imageFile != null) {
+                          finalImage =
+                              FileImage(imageFile); // Prioritize local file
+                        } else if (networkImageUrl != null &&
+                            networkImageUrl.isNotEmpty) {
+                          finalImage = NetworkImage(
+                              networkImageUrl); // Use network image if available
+                        }
 
                         return CircleAvatar(
                           radius: 62,
@@ -90,48 +122,16 @@ class ProfileView extends GetView<ProfileController> {
                           child: CircleAvatar(
                             radius: 60,
                             backgroundColor: themes.whiteColor,
-                            child: imageFile == null && imageUrl.isEmpty
+                            // Set the background image
+                            backgroundImage: finalImage,
+                            // Show an icon ONLY if there is no image at all
+                            child: finalImage == null
                                 ? Icon(
                                     Icons.person,
                                     size: 50,
                                     color: themes.darkCyanBlue,
                                   )
                                 : null,
-                            backgroundImage: imageFile != null
-                                ? FileImage(imageFile)
-                                : (imageUrl.isNotEmpty
-                                    ? NetworkImage(imageUrl)
-                                    : null),
-                          ),
-                        );
-                      }),
-                    ),
-                    Center(
-                      child: Obx(() {
-                        final imageFile = controller.imageFile.value;
-                        final imageUrl =
-                            "${controller.messangerDetail.value?.messangerdetail?.path ?? ''}${controller.messangerDetail.value?.messangerdetail?.photo ?? ''}";
-                        final custImg =
-                            "${controller.customerDetail.value?.path ?? ''}${controller.customerDetail.value?.custProfileImg ?? ''}";
-
-                        return CircleAvatar(
-                          radius: 62,
-                          backgroundColor: themes.darkCyanBlue,
-                          child: CircleAvatar(
-                            radius: 60,
-                            backgroundColor: themes.whiteColor,
-                            child: imageFile == null && imageUrl.isEmpty
-                                ? Icon(
-                                    Icons.person,
-                                    size: 50,
-                                    color: themes.darkCyanBlue,
-                                  )
-                                : null,
-                            backgroundImage: imageFile != null
-                                ? FileImage(imageFile)
-                                : (imageUrl.isNotEmpty
-                                    ? NetworkImage(imageUrl)
-                                    : null),
                           ),
                         );
                       }),

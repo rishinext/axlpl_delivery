@@ -70,6 +70,7 @@ class ReceiverAddressView extends GetView {
                           spacing: 5.h,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            //existing receiver
                             CommonDropdown<String>(
                               isSearchable: true,
                               hint: 'Select Customer',
@@ -107,18 +108,19 @@ class ReceiverAddressView extends GetView {
                                   orElse: () => CustomersList(),
                                 );
 
-                                addshipController.selectedReceiverStateId
+                                addshipController
+                                    .selectedExistingReceiverStateId
                                     .value = int.tryParse(
                                         selectedCustomer.stateId ?? '0') ??
                                     0;
-                                addshipController.selectedReceiverCityId.value =
-                                    int.tryParse(
-                                            selectedCustomer.cityId ?? '0') ??
-                                        0;
-                                addshipController.selectedReceiverAreaId.value =
-                                    int.tryParse(
-                                            selectedCustomer.areaId ?? '0') ??
-                                        0;
+                                addshipController.selectedExistingReceiverCityId
+                                    .value = int.tryParse(
+                                        selectedCustomer.cityId ?? '0') ??
+                                    0;
+                                addshipController.selectedExistingReceiverAreaId
+                                    .value = int.tryParse(
+                                        selectedCustomer.areaId ?? '0') ??
+                                    0;
 
                                 addshipController.receiverExistingNameController
                                     .text = selectedCustomer.fullName ?? '';
@@ -180,13 +182,13 @@ class ReceiverAddressView extends GetView {
                               onChanged: (value) {
                                 if (value?.length == 6) {
                                   addshipController
-                                      .fetchPincodeDetailsSenderInfo(value!);
+                                      .fetchPincodeDetailsReceiverInfo(value!);
                                   addshipController
                                       .fetchReceiverAreaByZip(value);
                                 } else {
                                   // Optional: clear state/city if length < 6 again
-                                  addshipController.pincodeDetailsData.value =
-                                      null;
+                                  addshipController
+                                      .pincodeReceiverDetailsData.value = null;
                                 }
                                 return null;
                               },
@@ -201,10 +203,10 @@ class ReceiverAddressView extends GetView {
                             ),
                             dropdownText(city),
                             Obx(() {
-                              final isLoading =
-                                  addshipController.isLoadingPincode.value;
-                              final data =
-                                  addshipController.pincodeDetailsData.value;
+                              final isLoading = addshipController
+                                  .isLoadingReceiverPincode.value;
+                              final data = addshipController
+                                  .pincodeReceiverDetailsData.value;
                               final error =
                                   addshipController.errorMessage.value;
 
@@ -312,21 +314,21 @@ class ReceiverAddressView extends GetView {
                               onChanged: (value) {
                                 if (value?.length == 6) {
                                   addshipController
-                                      .fetchPincodeDetailsSenderInfo(value!);
+                                      .fetchPincodeDetailsReceiverInfo(value!);
                                   addshipController
                                       .fetchReceiverAreaByZip(value);
                                 } else {
                                   // Optional: clear state/city if length < 6 again
-                                  addshipController.pincodeDetailsData.value =
-                                      null;
+                                  addshipController
+                                      .pincodeReceiverDetailsData.value = null;
                                 }
                                 return null;
                               },
                             ),
                             dropdownText(state),
                             Obx(() {
-                              final isLoading =
-                                  addshipController.isLoadingPincode.value;
+                              final isLoading = addshipController
+                                  .isLoadingReceiverPincode.value;
                               final data = addshipController
                                   .pincodeReceiverDetailsData.value;
                               final error =
@@ -337,14 +339,11 @@ class ReceiverAddressView extends GetView {
                                     child:
                                         CircularProgressIndicator.adaptive());
                               }
-                              addshipController
-                                      .selectedExistingReceiverStateId.value =
+                              addshipController.selectedReceiverStateId.value =
                                   int.tryParse(data?.stateId ?? '0') ?? 0;
-                              addshipController
-                                      .selectedExistingReceiverCityId.value =
+                              addshipController.selectedReceiverCityId.value =
                                   int.tryParse(data?.cityId ?? '0') ?? 0;
-                              addshipController
-                                      .selectedExistingSenderAreaId.value =
+                              addshipController.selectedReceiverAreaId.value =
                                   int.tryParse(data?.areaId ?? '0') ?? 0;
                               return CommonTextfiled(
                                 isEnable: false,
@@ -357,8 +356,8 @@ class ReceiverAddressView extends GetView {
                             }),
                             dropdownText(city),
                             Obx(() {
-                              final isLoading =
-                                  addshipController.isLoadingPincode.value;
+                              final isLoading = addshipController
+                                  .isLoadingReceiverPincode.value;
                               final data = addshipController
                                   .pincodeReceiverDetailsData.value;
                               final error =
