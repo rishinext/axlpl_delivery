@@ -10,6 +10,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
 
 void showPickDialog(
   final shipmentID,
@@ -20,6 +21,20 @@ void showPickDialog(
   final _formKey = GlobalKey<FormState>();
   final pickupController = Get.find<PickupController>();
   final historyController = Get.find<HistoryController>();
+  TextEditingController pinController = TextEditingController();
+  final defaultPinTheme = PinTheme(
+    width: 56,
+    height: 60,
+    textStyle: const TextStyle(
+      fontSize: 22,
+      color: Color.fromRGBO(30, 60, 87, 1),
+    ),
+    decoration: BoxDecoration(
+      color: themes.blueGray,
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.transparent),
+    ),
+  );
   Get.defaultDialog(
     title: "Payment Mode",
     content: Form(
@@ -128,6 +143,30 @@ void showPickDialog(
                   ),
                 );
               }),
+              dropdownText('Enter OTP'),
+              SizedBox(
+                width: double.infinity,
+                child: Pinput(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  hapticFeedbackType: HapticFeedbackType.lightImpact,
+                  length: 4,
+                  controller: pinController,
+                  defaultPinTheme: defaultPinTheme,
+                  focusedPinTheme: defaultPinTheme.copyWith(
+                    decoration: defaultPinTheme.decoration!.copyWith(
+                      border: Border.all(
+                        color: themes.darkCyanBlue,
+                      ),
+                    ),
+                  ),
+                  errorPinTheme: defaultPinTheme.copyWith(
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
             ],
           ),

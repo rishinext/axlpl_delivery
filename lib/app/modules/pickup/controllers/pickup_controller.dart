@@ -26,6 +26,7 @@ class PickupController extends GetxController {
   final shipmentController = TextEditingController();
   final amountController = TextEditingController();
   final TextEditingController pincodeController = TextEditingController();
+  final otpController = TextEditingController();
 
   var selectedPaymentModeId = Rxn<String>();
 
