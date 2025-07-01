@@ -5,6 +5,8 @@ import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/auth_repo.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
+import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,7 @@ class AuthController extends GetxController {
 
   TextEditingController mobileController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  final profileController = Get.put(ProfileController());
   Future<void> loginAuth(
     String mobile,
     String password,
@@ -35,8 +37,10 @@ class AuthController extends GetxController {
       final role = await storage.read(key: localStorage.userRole);
       if (role == 'messanger') {
         Get.offAllNamed(Routes.BOTTOMBAR);
+        profileController.fetchProfileData();
       } else if (role == 'customer') {
         Get.offAllNamed(Routes.BOTTOMBAR);
+        profileController.fetchProfileData();
       }
     } catch (e) {
       errorMessage.value = e.toString();

@@ -48,54 +48,78 @@ class HomeView extends GetView<HomeController> {
             child: InkWell(
                 onTap: () => Get.toNamed(Routes.PROFILE),
                 child: Obx(() {
-                  String? networkImageUrl;
-
-                  if (user?.role == 'massanger') {
-                    final messangerPath = profileController
-                        .messangerDetail.value?.messangerdetail?.path;
-                    final messangerPhoto = profileController
-                        .messangerDetail.value?.messangerdetail?.photo;
-                    if (messangerPath != null && messangerPhoto != null) {
-                      networkImageUrl = "$messangerPath$messangerPhoto";
-                    }
+                  if (profileController.isProfileLoading.value ==
+                      Status.loading) {
+                    return Container(
+                      width: 40, // Ensure loader has a size
+                      height: 40,
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Colors.grey.shade400, width: 2),
+                      ),
+                      child: Center(
+                        child: const CircularProgressIndicator.adaptive(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    );
                   } else {
-                    final customerPath =
-                        profileController.customerDetail.value?.path;
-                    final customerPhoto =
-                        profileController.customerDetail.value?.custProfileImg;
-                    if (customerPath != null && customerPhoto != null) {
-                      networkImageUrl = "$customerPath$customerPhoto";
-                    }
-                  }
+                    // 2. Once loading is complete, use your existing logic to show the image
+                    String? networkImageUrl;
 
-                  DecorationImage? decorationImage;
-                  if (networkImageUrl != null && networkImageUrl.isNotEmpty) {
-                    decorationImage = DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(networkImageUrl),
-                      onError: (exception, stackTrace) {
-                        Utils().log("Error loading image: $exception");
-                      },
+                    if (bottomController.userData.value?.role == 'messanger') {
+                      final messangerPath = profileController
+                          .messangerDetail.value?.messangerdetail?.path;
+                      final messangerPhoto = profileController
+                          .messangerDetail.value?.messangerdetail?.photo;
+                      if (messangerPath != null && messangerPhoto != null) {
+                        networkImageUrl = "$messangerPath$messangerPhoto";
+                      }
+                    } else {
+                      final customerPath =
+                          profileController.customerDetail.value?.path;
+                      final customerPhoto = profileController
+                          .customerDetail.value?.custProfileImg;
+                      if (customerPath != null && customerPhoto != null) {
+                        networkImageUrl = "$customerPath$customerPhoto";
+                      }
+                    }
+
+                    DecorationImage? decorationImage;
+                    if (networkImageUrl != null && networkImageUrl.isNotEmpty) {
+                      decorationImage = DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(networkImageUrl),
+                        onError: (exception, stackTrace) {
+                          // Utils().log("Error loading image: $exception");
+                          print("Error loading image: $exception");
+                        },
+                      );
+                    }
+
+                    return Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: decorationImage == null
+                            ? Colors.grey.shade300
+                            : null,
+                        image: decorationImage,
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Colors.grey.shade400, width: 2),
+                      ),
+                      child: decorationImage == null
+                          ? Icon(
+                              Icons.person,
+                              size: 20,
+                              color: Colors.grey.shade600,
+                            )
+                          : null,
                     );
                   }
-
-                  return Container(
-                    decoration: BoxDecoration(
-                      color:
-                          decorationImage == null ? Colors.grey.shade300 : null,
-                      image: decorationImage,
-                      shape: BoxShape.circle,
-                      // Optional: Add a border
-                      border: Border.all(color: Colors.grey.shade400, width: 2),
-                    ),
-                    child: decorationImage == null
-                        ? Icon(
-                            Icons.person,
-                            size: 20,
-                            color: Colors.grey.shade600,
-                          )
-                        : null,
-                  );
                 })),
           ),
           title: Image.asset(
@@ -177,7 +201,7 @@ class HomeView extends GetView<HomeController> {
                                 subTitle: homeController.isLoading.value
                                     ? '...'
                                     : homeController.dashboardDataModel.value
-                                            ?.totalPickup
+                                            ?.totalDelivery
                                             ?.toString() ??
                                         '0',
                               );
@@ -194,7 +218,7 @@ class HomeView extends GetView<HomeController> {
                                 subTitle: homeController.isLoading.value
                                     ? '...'
                                     : homeController.dashboardDataModel.value
-                                            ?.totalDelivery
+                                            ?.totalPickup
                                             ?.toString() ??
                                         '0',
                               );

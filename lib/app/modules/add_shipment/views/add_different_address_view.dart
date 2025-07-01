@@ -114,6 +114,16 @@ class AddDifferentAddressView extends GetView {
                               final error =
                                   addshipController.errorMessage.value;
 
+                              addshipController.selectedDiffStateId.value =
+                                  int.tryParse(data?.stateId ?? '0') ?? 0;
+                              addshipController.selectedDiffCityId.value =
+                                  int.tryParse(data?.cityId ?? '0') ?? 0;
+                              addshipController.selectedDiffAreaId.value =
+                                  int.tryParse(
+                                        data?.areaId ?? '0',
+                                      ) ??
+                                      0;
+
                               if (isLoading) {
                                 Center(
                                     child:
@@ -150,12 +160,16 @@ class AddDifferentAddressView extends GetView {
                             dropdownText('Address Line 1'),
                             CommonTextfiled(
                               hintTxt: 'Address Line 1',
+                              controller:
+                                  addshipController.diffrentAddress1Controller,
                               textInputAction: TextInputAction.next,
                               validator: utils.validateText,
                             ),
                             dropdownText('Address Line 2'),
                             CommonTextfiled(
                               hintTxt: 'Address Line 2',
+                              controller:
+                                  addshipController.diffrentAddress2Controller,
                               textInputAction: TextInputAction.done,
                               validator: utils.validateText,
                             ),

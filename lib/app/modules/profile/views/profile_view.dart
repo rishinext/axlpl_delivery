@@ -27,7 +27,7 @@ class ProfileView extends GetView<ProfileController> {
     final authController = Get.put(AuthController());
     final profileController = Get.put(ProfileController());
     final user = bottomController.userData.value;
-    log("profile log of role${user?.role.toString()}");
+
     return CommonScaffold(
         appBar: commonAppbar(
           'Profile',
@@ -83,10 +83,9 @@ class ProfileView extends GetView<ProfileController> {
                     Center(
                       child: Obx(() {
                         final imageFile = controller.imageFile.value;
-
-                        // Determine the correct network image URL based on the user's role
                         String? networkImageUrl;
-                        if (user?.role == 'massanger') {
+                        if (user?.role == 'messanger') {
+                          log("profile Role : ${user?.role.toString()}");
                           final messangerPath = controller
                               .messangerDetail.value?.messangerdetail?.path;
                           final messangerPhoto = controller
@@ -95,7 +94,6 @@ class ProfileView extends GetView<ProfileController> {
                             networkImageUrl = "$messangerPath$messangerPhoto";
                           }
                         } else {
-                          // Assuming any other role is a customer
                           final customerPath =
                               controller.customerDetail.value?.path;
                           final customerPhoto =
@@ -105,15 +103,14 @@ class ProfileView extends GetView<ProfileController> {
                           }
                         }
 
-                        // Determine the final image provider
                         ImageProvider? finalImage;
                         if (imageFile != null) {
-                          finalImage =
-                              FileImage(imageFile); // Prioritize local file
+                          finalImage = FileImage(imageFile);
                         } else if (networkImageUrl != null &&
                             networkImageUrl.isNotEmpty) {
                           finalImage = NetworkImage(
-                              networkImageUrl); // Use network image if available
+                            networkImageUrl,
+                          );
                         }
 
                         return CircleAvatar(

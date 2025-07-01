@@ -74,7 +74,7 @@ class ShipmentRecordView extends GetView<ShipmentRecordController> {
                         ),
                         IconButton(
                             onPressed: () {
-                              Clipboard.setData(new ClipboardData(
+                              Clipboard.setData(ClipboardData(
                                   text: record?.sId.toString() ?? 'N/A'));
                             },
                             icon: Icon(

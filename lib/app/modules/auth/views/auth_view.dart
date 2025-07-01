@@ -108,12 +108,12 @@ class AuthView extends GetView<AuthController> {
                         style:
                             TextStyle(color: themes.shineBlue, fontSize: 14.sp),
                       )),
-                  Center(
-                      child: Text(
-                    'New to AMBEX Express.?',
-                    style: themes.fontReboto16_600
-                        .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
-                  )),
+                  // Center(
+                  //     child: Text(
+                  //   'New to AMBEX Express.?',
+                  //   style: themes.fontReboto16_600
+                  //       .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
+                  // )),
                   /*
                   Row(
                     children: [

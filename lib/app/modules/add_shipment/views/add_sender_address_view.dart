@@ -179,6 +179,7 @@ class AddAddressView extends GetView {
                           ),
                           dropdownText(zip),
                           CommonTextfiled(
+                            isEnable: false,
                             hintTxt: zip,
                             controller: addshipController
                                 .existingSenderInfoZipController,

@@ -246,6 +246,7 @@ class AddPaymentInfoView extends GetView {
                     // ),
                     dropdownText('Shipment Charges'),
                     CommonTextfiled(
+                      isEnable: false,
                       keyboardType: TextInputType.number,
                       hintTxt: 'Shipment Charges',
                       controller: addshipController.shipmentChargeController,
@@ -253,6 +254,7 @@ class AddPaymentInfoView extends GetView {
                     ),
                     dropdownText('Insurance Charges'),
                     CommonTextfiled(
+                      isEnable: false,
                       keyboardType: TextInputType.number,
                       hintTxt: 'Insurance Charges',
                       controller: addshipController.insuranceChargeController,
@@ -260,6 +262,7 @@ class AddPaymentInfoView extends GetView {
                     ),
                     dropdownText('ODA Charges'),
                     CommonTextfiled(
+                      isEnable: false,
                       keyboardType: TextInputType.number,
                       hintTxt: 'ODA Charges',
                       controller: addshipController.odaChargeController,
@@ -267,16 +270,67 @@ class AddPaymentInfoView extends GetView {
                     ),
                     dropdownText('Holiday Charges'),
                     CommonTextfiled(
+                      isEnable: false,
                       keyboardType: TextInputType.number,
                       hintTxt: 'Holiday Charges',
                       controller: addshipController.holidayChargeController,
                     ),
                     dropdownText('Handling Charges'),
                     CommonTextfiled(
+                      isEnable: false,
                       keyboardType: TextInputType.number,
                       hintTxt: 'Handling Charges',
                       controller: addshipController.headlingChargeController,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        addshipController.shipmentCal(
+                          // int.parse(
+                          //     addshipController.selectedCustomer.value),
+                          int.tryParse(
+                                  addshipController.selectedCustomer.value ??
+                                      '') ??
+                              int.tryParse(addshipController.userId.toString()),
+                          int.parse(addshipController.selectedCategory.value),
+                          int.parse(addshipController.selectedCommodity.value),
+                          int.parse(addshipController.netWeightController.text
+                              .trim()),
+                          int.parse(addshipController.grossWeightController.text
+                              .trim()),
+                          addshipController.selectedPaymentMode.value?.id,
+                          int.parse(addshipController
+                              .invoiceValueController.text
+                              .trim()),
+                          addshipController.insuranceType.value,
+                          addshipController.policyNoController.text
+                                  .trim()
+                                  .isNotEmpty
+                              ? addshipController.policyNoController.text
+                              : 0,
+                          int.parse(addshipController.noOfParcelController.text
+                              .trim()),
+                          addshipController.expireDate.value.toString(),
+                          addshipController.insuranceValueController.text
+                                  .trim()
+                                  .isNotEmpty
+                              ? int.tryParse(addshipController
+                                  .insuranceValueController.text
+                                  .trim())
+                              : 0,
+                          addshipController.senderAddressType.value == 0
+                              ? addshipController.senderInfoZipController.text
+                              : int.parse(addshipController
+                                  .existingSenderInfoZipController.text),
+                          addshipController.receviverAddressType.value == 0
+                              ? addshipController.receiverInfoZipController.text
+                              : addshipController
+                                  .receiverExistingZipController.text,
+                        );
+                      },
+                    ),
+                    dropdownText('GST 18%'),
+                    CommonTextfiled(
+                      hintTxt: 'GST',
+                      controller: addshipController.gstChargeController,
+                      isEnable: false,
                     ),
                     dropdownText('Total Charges'),
                     CommonTextfiled(
@@ -285,11 +339,11 @@ class AddPaymentInfoView extends GetView {
                       isEnable: false,
                     ),
                     dropdownText(
-                      'GST 18%',
+                      'Grand Total',
                     ),
                     CommonTextfiled(
                       hintTxt: 'Grand Total',
-                      controller: addshipController.gstChargeController,
+                      controller: addshipController.grandeChargeController,
                       isEnable: false,
                     ),
                     dropdownText(

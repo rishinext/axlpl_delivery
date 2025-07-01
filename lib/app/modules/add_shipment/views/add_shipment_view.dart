@@ -75,6 +75,16 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         },
                       );
                     }),
+                  if (bottomController.userData.value?.role == 'customer')
+                    dropdownText('Company Name'),
+                  if (bottomController.userData.value?.role == 'customer')
+                    Obx(
+                      () => CommonTextfiled(
+                        hintTxt: bottomController
+                            .userData.value?.customerdetail?.companyName,
+                        isEnable: false,
+                      ),
+                    ),
                   // DropdownSearch<String>(
                   //   selectedItem: controller.selectedCustomer.value,
                   //   items: (filter, infiniteScrollProps) =>
@@ -83,7 +93,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   //     decoration: InputDecoration(
                   //       border: OutlineInputBorder(),
                   //     ),
-                  //   ),
+                  //   ),x
                   //   popupProps: PopupProps.menu(
                   //       fit: FlexFit.loose, constraints: BoxConstraints()),
                   // ),

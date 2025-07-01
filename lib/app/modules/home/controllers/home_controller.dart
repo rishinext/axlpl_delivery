@@ -2,6 +2,7 @@ import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/home_repo.dart';
+import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,7 @@ class HomeController extends GetxController {
   var isRattingData = Status.initial.obs;
 
   var scannedCode = ''.obs;
-
+  final profileController = Get.put(ProfileController());
   Future<void> getDashborad() async {
     isLoading.value = true;
     try {

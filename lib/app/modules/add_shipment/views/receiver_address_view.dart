@@ -305,6 +305,7 @@ class ReceiverAddressView extends GetView {
                             ),
                             dropdownText(zip),
                             CommonTextfiled(
+                              isEnable: false,
                               hintTxt: zip,
                               controller:
                                   addshipController.receiverInfoZipController,

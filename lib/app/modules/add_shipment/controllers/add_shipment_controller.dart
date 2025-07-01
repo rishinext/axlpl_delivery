@@ -26,6 +26,15 @@ class AddShipmentController extends GetxController {
   final addShipmentRepo = AddShipmentRepo();
   // ShipmentRequestModel shipmentData = ShipmentRequestModel();
 
+  String? userId;
+
+  Future<void> _loadUserId() async {
+    final userData = await LocalStorage().getUserLocalData();
+    userId = userData?.messangerdetail?.id?.toString() ??
+        userData?.customerdetail?.id.toString();
+    Utils().log("User ID loaded: $userId");
+  }
+
   final customerList = <CustomersList>[].obs;
   final customerReceiverList = <CustomersList>[].obs;
   final categoryList = <CategoryList>[].obs;
@@ -244,6 +253,10 @@ class AddShipmentController extends GetxController {
   var selectedExistingReceiverStateId = 0.obs;
   var selectedExistingReceiverCityId = 0.obs;
   var selectedExistingReceiverAreaId = 0.obs;
+
+  var selectedDiffStateId = 0.obs;
+  var selectedDiffCityId = 0.obs;
+  var selectedDiffAreaId = 0.obs;
 
   void setSelectedPaymentMode(PaymentMode? mode) async {
     selectedPaymentMode.value = mode;
@@ -682,7 +695,7 @@ class AddShipmentController extends GetxController {
         insuranceValue: insuranceType.value == 0
             ? 0
             : double.tryParse(insuranceValueController.text) ?? 0.0,
-        shipmentStatus: 'Approved', // match Postman or your logic
+        shipmentStatus: '', // match Postman or your logic
         calculationStatus: 'custom',
         addedBy: 1,
         addedByType: 1, // as in Postman
@@ -782,9 +795,9 @@ class AddShipmentController extends GetxController {
         receiverCustomerId: selectedReceiverCustomer.value ?? userID,
         isDiffAdd: 0,
         diffReceiverCountry: diffrentAddressType.value,
-        diffReceiverState: int.tryParse(diffrentStateController.text) ?? 0,
-        diffReceiverCity: int.tryParse(diffrentCityController.text) ?? 0,
-        diffReceiverArea: diffrentAeraController.text,
+        diffReceiverState: selectedDiffStateId.value,
+        diffReceiverCity: selectedDiffCityId.value,
+        diffReceiverArea: selectedDiffAreaId.value,
         diffReceiverPincode: int.tryParse(diffrentZipController.text) ?? 0,
         diffReceiverAddress1: diffrentAddress1Controller.text,
         diffReceiverAddress2: diffrentAddress2Controller.text,
@@ -805,7 +818,7 @@ class AddShipmentController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'Unexpected error occurred');
-      print('Shipment submission error: $e');
+      Utils().logError('Shipment submission error: $e');
     }
   }
   // void testAddShipment() async {
@@ -916,7 +929,7 @@ class AddShipmentController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    super.onInit();
+    _loadUserId();
     fetchCustomers('0');
     fetchReciverCustomers('0');
     categoryListData();
@@ -926,6 +939,7 @@ class AddShipmentController extends GetxController {
     pageController.addListener(() {
       currentPage.value = pageController.page!.round();
     });
+    super.onInit();
   }
 
   @override
