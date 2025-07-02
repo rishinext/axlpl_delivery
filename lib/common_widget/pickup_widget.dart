@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:axlpl_delivery/const/const.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,6 +29,8 @@ class PickupWidget extends StatelessWidget {
   final VoidCallback? openDialerTap;
   final VoidCallback? openMapTap;
   final VoidCallback? onTap;
+  final pickupTxt;
+  final networkImg;
 
   const PickupWidget({
     Key? key,
@@ -53,6 +56,8 @@ class PickupWidget extends StatelessWidget {
     this.openDialerTap,
     this.openMapTap,
     this.onTap,
+    this.pickupTxt,
+    this.networkImg,
   }) : super(key: key);
 
   @override
@@ -118,7 +123,7 @@ class PickupWidget extends StatelessWidget {
                               child: Text(
                                 companyName,
                                 style: themes.fontSize14_500
-                                    .copyWith(fontSize: 14.sp),
+                                    .copyWith(fontSize: 12.5.sp),
                                 overflow: TextOverflow.fade,
                               ),
                             ),
@@ -157,7 +162,9 @@ class PickupWidget extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 20.r,
-                              backgroundImage: AssetImage('assets/manimg.png'),
+                              backgroundImage: NetworkImage(
+                                networkImg ?? personImg,
+                              ),
                             ),
                             SizedBox(width: 8.w),
                             Column(
@@ -326,7 +333,8 @@ class PickupWidget extends StatelessWidget {
                       padding:
                           EdgeInsets.symmetric(horizontal: 30.w, vertical: 8.h),
                     ),
-                    child: Text('Pickup', style: TextStyle(fontSize: 13.sp)),
+                    child: Text(pickupTxt ?? '',
+                        style: TextStyle(fontSize: 13.sp)),
                   )
                 : SizedBox()
           ],

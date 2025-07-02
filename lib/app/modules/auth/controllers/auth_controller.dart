@@ -36,7 +36,7 @@ class AuthController extends GetxController {
       await _authRepo.loginRepo(mobile, password);
       final role = await storage.read(key: localStorage.userRole);
       if (role == 'messanger') {
-        Get.offAllNamed(Routes.BOTTOMBAR);
+        Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
         profileController.fetchProfileData();
       } else if (role == 'customer') {
         Get.offAllNamed(Routes.BOTTOMBAR);

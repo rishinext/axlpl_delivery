@@ -110,15 +110,15 @@ class ApiServices {
     final nextID,
     final token,
   ) {
-    final query = {
+    final body = {
       'messanger_id': id,
       'branch_id': brachID,
       'next_id': nextID,
       'token': token,
     };
-    return _api.get(
+    return _api.post(
       getAllDeliveryPoint,
-      query: query,
+      body,
       token: token,
     );
   }
@@ -583,6 +583,7 @@ class ApiServices {
     long,
     cashAmount,
     paymentMode,
+    final otp,
     token,
   ) async {
     final body = {
@@ -594,11 +595,24 @@ class ApiServices {
       'longitude': long,
       'cash_amount': cashAmount,
       'sub_payment_mode': paymentMode,
+      'pickup_otp ': otp,
     };
     return _api.post(
       uploadPickupPoint,
       body,
       token: token,
+    );
+  }
+
+  Future<APIResponse> getOtp(
+    final shipmentID,
+  ) async {
+    final body = {
+      'shipment_id': shipmentID,
+    };
+    return _api.post(
+      getOtpPoint,
+      body,
     );
   }
 

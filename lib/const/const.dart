@@ -14,3 +14,6 @@ String mobile = 'Mobile No';
 String changePass = 'Change Password';
 String privacy = 'Privacy & Policy';
 String myOrders = 'My Orders';
+
+var personImg =
+    'https://i0.wp.com/e-quester.com/wp-content/uploads/2021/11/placeholder-image-person-jpg.jpg?fit=820%2C678&ssl=1';

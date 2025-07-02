@@ -50,6 +50,42 @@ class PickupRepo {
     return null;
   }
 
+  Future<bool> getOtpRepo(final String? shipmentID) async {
+    if (shipmentID == null || shipmentID.isEmpty) {
+      Utils().log('Error: shipmentID is null or empty.');
+      return false;
+    }
+
+    try {
+      final response = await _apiServices.getOtp(shipmentID);
+      bool wasSuccess = false;
+
+      response.when(
+        success: (body) {
+          final data = CommonModel.fromJson(body);
+          if (data.status == 'success') {
+            Utils().log("OTP Sent Successfully: ${data.toJson()}");
+
+            wasSuccess = true;
+          } else {
+            Utils().log('API Error: status was not "success"');
+
+            wasSuccess = false;
+          }
+        },
+        error: (error) {
+          Utils().logError("Network/API Error: ${error.toString()}");
+          wasSuccess = false;
+        },
+      );
+      return wasSuccess;
+    } catch (e) {
+      Utils().logError("Exception in getOtpRepo: ${e.toString()}");
+
+      return false;
+    }
+  }
+
   Future<List<RunningDelivery>?> getAllDeliveryRepo(final nextID) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
@@ -137,6 +173,7 @@ class PickupRepo {
     final date,
     final cashAmount,
     final paymentMode,
+    final otp,
   ) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
@@ -156,6 +193,7 @@ class PickupRepo {
           location.longitude,
           cashAmount,
           paymentMode,
+          otp,
           token.toString(),
         );
 

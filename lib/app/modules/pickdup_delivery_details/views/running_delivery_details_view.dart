@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
@@ -6,6 +7,7 @@ import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controlle
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/invoice_image_dialog.dart';
+import 'package:axlpl_delivery/common_widget/otp_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/tracking_info_widget.dart';
 import 'package:axlpl_delivery/common_widget/transfer_dialog.dart';
@@ -58,7 +60,7 @@ class RunningDeliveryDetailsView
 
             final trackingStatus = controller.trackingStatus;
             final details = controller.shipmentDetail.value;
-            log(details?.invoiceNumber.toString() ?? 'N/A');
+            print(details?.invoiceNumber.toString() ?? 'N/A');
             if (controller.isTrackingLoading.value == Status.loading) {
               return Center(
                 child: CircularProgressIndicator.adaptive(),
@@ -101,13 +103,11 @@ class RunningDeliveryDetailsView
                         //   child: Image.asset(shopingIcon, width: 20.w),
                         // ),
                         // SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Shipment ID: ${shipmentID.toString()}',
-                            style: themes.fontSize14_500.copyWith(
-                                fontWeight: FontWeight.bold, fontSize: 12.sp),
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Text(
+                          'Shipment ID: \n${shipmentID.toString()}',
+                          style: themes.fontSize14_500.copyWith(
+                              fontWeight: FontWeight.bold, fontSize: 12.sp),
+                          overflow: TextOverflow.ellipsis,
                         ),
                         IconButton(
                             onPressed: () {
@@ -118,6 +118,7 @@ class RunningDeliveryDetailsView
                               Icons.copy,
                               size: 18,
                             )),
+                        Spacer(),
                         Container(
                           padding:
                               EdgeInsets.symmetric(horizontal: 10, vertical: 6),
@@ -603,23 +604,31 @@ class RunningDeliveryDetailsView
                                   },
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    details?.paymentMode != 'topay'
-                                        ? pickupController.uploadPickup(
-                                            shipmentID,
-                                            'Picked up',
-                                            date,
-                                            cashAmt,
-                                            paymentMode)
-                                        : showPickDialog(
-                                            shipmentID,
-                                            date,
-                                            pickupController
-                                                .amountController.text,
-                                            paymentMode == '0'
-                                                ? 'Select Payment Mode'
-                                                : paymentMode,
-                                          );
+                                  onPressed: () async {
+                                    // details?.paymentMode != 'topay'
+                                    //     ?
+                                    showOtpDialog(() {
+                                      pickupController.uploadPickup(
+                                          shipmentID,
+                                          'Picked up',
+                                          date,
+                                          // data.totalCharges,
+                                          '',
+                                          '',
+                                          pickupController.otpController.text);
+                                    }, pickupController.otpController);
+                                    await pickupController.getOtp(shipmentID);
+
+                                    // : showPickDialog(
+                                    //     shipmentID,
+                                    //     date,
+                                    //     pickupController
+                                    //         .amountController.text,
+                                    //     paymentMode == '0'
+                                    //         ? 'Select Payment Mode'
+                                    //         : paymentMode,
+                                    //     'Pickup',
+                                    //   );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: themes.whiteColor,

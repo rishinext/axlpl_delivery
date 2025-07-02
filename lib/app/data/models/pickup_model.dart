@@ -165,11 +165,20 @@ class RunningPickUp {
 class RunningDelivery {
   String? id;
   String? shipmentId;
+  String? messangerId;
+  String? messangerName;
+  String? paymentMode;
+  String? subPaymentMode;
+  String? axlplInsurance;
+  String? invoicePath;
+  String? invoiceFile;
+  String? totalCharges;
+  String? tax;
+  String? branchName;
   String? status;
   String? name;
   String? companyName;
   String? mobile;
-  String? paymentMode;
   DateTime? date;
   String? senderCityName;
   String? grandTotal;
@@ -179,15 +188,25 @@ class RunningDelivery {
   String? pincode;
   String? address1;
   String? address2;
+  String? receiverCityName;
 
   RunningDelivery({
     this.id,
     this.shipmentId,
+    this.messangerId,
+    this.messangerName,
+    this.paymentMode,
+    this.subPaymentMode,
+    this.axlplInsurance,
+    this.invoicePath,
+    this.invoiceFile,
+    this.totalCharges,
+    this.tax,
+    this.branchName,
     this.status,
     this.name,
     this.companyName,
     this.mobile,
-    this.paymentMode,
     this.date,
     this.senderCityName,
     this.grandTotal,
@@ -197,17 +216,27 @@ class RunningDelivery {
     this.pincode,
     this.address1,
     this.address2,
+    this.receiverCityName,
   });
 
   factory RunningDelivery.fromJson(Map<String, dynamic> json) =>
       RunningDelivery(
         id: json["id"],
         shipmentId: json["shipment_id"],
+        messangerId: json["messanger_id"],
+        messangerName: json["messanger_name"],
+        paymentMode: json["payment_mode"],
+        subPaymentMode: json["sub_payment_mode"],
+        axlplInsurance: json["axlpl_insurance"],
+        invoicePath: json["invoice_path"],
+        invoiceFile: json["invoice_file"],
+        totalCharges: json["total_charges"],
+        tax: json["tax"],
+        branchName: json["branch_name"],
         status: json["status"],
         name: json["name"],
         companyName: json["company_name"],
         mobile: json["mobile"],
-        paymentMode: json["payment_mode"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
         senderCityName: json["sender_city_name"],
         grandTotal: json["grand_total"],
@@ -217,16 +246,26 @@ class RunningDelivery {
         pincode: json["pincode"],
         address1: json["address1"],
         address2: json["address2"],
+        receiverCityName: json["receiver_city_name"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "shipment_id": shipmentId,
+        "messanger_id": messangerId,
+        "messanger_name": messangerName,
+        "payment_mode": paymentMode,
+        "sub_payment_mode": subPaymentMode,
+        "axlpl_insurance": axlplInsurance,
+        "invoice_path": invoicePath,
+        "invoice_file": invoiceFile,
+        "total_charges": totalCharges,
+        "tax": tax,
+        "branch_name": branchName,
         "status": status,
         "name": name,
         "company_name": companyName,
         "mobile": mobile,
-        "payment_mode": paymentMode,
         "date": date?.toIso8601String(),
         "sender_city_name": senderCityName,
         "grand_total": grandTotal,
@@ -236,6 +275,7 @@ class RunningDelivery {
         "pincode": pincode,
         "address1": address1,
         "address2": address2,
+        "receiver_city_name": receiverCityName,
       };
 }
 

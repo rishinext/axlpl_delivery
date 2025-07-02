@@ -12,6 +12,7 @@ import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
+import 'package:axlpl_delivery/common_widget/otp_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
 import 'package:axlpl_delivery/common_widget/yes_no_dialog.dart';
@@ -221,6 +222,7 @@ class PickupView extends GetView<PickupController> {
                                         ],
                                       ),
                                       child: PickupWidget(
+                                        pickupTxt: 'Pickup',
                                         onTap: () {
                                           runningController.fetchTrackingData(
                                               data.shipmentId.toString());
@@ -272,30 +274,37 @@ class PickupView extends GetView<PickupController> {
                                               data.address1.toString(),
                                               data.pincode.toString());
                                         },
-                                        pickUpTap: () {
-                                          data.paymentMode != 'topay'
-                                              ? yesNoDialog(
-                                                  () {
-                                                    pickupController
-                                                        .uploadPickup(
-                                                      data.shipmentId,
-                                                      'Picked up',
-                                                      data.date,
-                                                      data.totalCharges,
-                                                      'prepaid',
-                                                    );
-                                                    Get.back();
-                                                  },
-                                                )
-                                              : showPickDialog(
-                                                  data.shipmentId.toString(),
-                                                  data.date.toString(),
-                                                  pickupController
-                                                      .amountController.text,
-                                                  data.subPaymentMode == '0'
-                                                      ? 'Select Payment Mode'
-                                                      : data.subPaymentMode,
-                                                );
+                                        pickUpTap: () async {
+                                          // data.paymentMode != 'topay'
+                                          // ? yesNoDialog(
+                                          //     () {
+                                          //       pickupController
+                                          //           .uploadPickup(
+                                          //         data.shipmentId,
+                                          //         'Picked up',
+                                          //         data.date,
+                                          //         data.totalCharges,
+                                          //         'prepaid',
+
+                                          //       );
+                                          //       Get.back();
+                                          //     },
+                                          //   )
+                                          // :
+
+                                          showOtpDialog(() async {
+                                            pickupController.uploadPickup(
+                                                data.shipmentId,
+                                                'Picked up',
+                                                data.date,
+                                                // data.totalCharges,
+                                                '',
+                                                '',
+                                                pickupController
+                                                    .otpController.text);
+                                          }, pickupController.otpController);
+                                          await pickupController
+                                              .getOtp(data.shipmentId);
                                         },
                                         transferBtnColor: enableTransfer
                                             ? themes.whiteColor

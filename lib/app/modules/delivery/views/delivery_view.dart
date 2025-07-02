@@ -3,8 +3,13 @@ import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
+import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
+import 'package:axlpl_delivery/common_widget/otp_dialog.dart';
+import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
+import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
+import 'package:axlpl_delivery/common_widget/show_delivery_dialog.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +50,7 @@ class DeliveryView extends GetView<DeliveryController> {
               // ),
               ContainerTextfiled(
                 controller: deliveryController.pincodeController,
-                hintText: 'Enter your pin code',
+                hintText: 'Search Here',
                 onChanged: (value) {
                   deliveryController.filterByPincode(value!);
                   return null;
@@ -81,10 +86,10 @@ class DeliveryView extends GetView<DeliveryController> {
                   child: Icon(CupertinoIcons.qrcode_viewfinder),
                 ),
               ),
-              Text(
-                'Recent Selected Pin code',
-                style: themes.fontSize14_500,
-              ),
+              // Text(
+              //   'Recent Selected Pin code',
+              //   style: themes.fontSize14_500,
+              // ),
               SizedBox(
                 height: 505.h,
                 child: Obx(
@@ -116,40 +121,102 @@ class DeliveryView extends GetView<DeliveryController> {
                         itemBuilder: (context, index) {
                           final data =
                               deliveryController.filteredDeliveryList[index];
-                          return ListTile(
-                              tileColor: themes.whiteColor,
-                              dense: false,
-                              leading: CircleAvatar(
-                                backgroundColor: themes.blueGray,
-                                child: Image.asset(
-                                  gpsIcon,
-                                  width: 18.w,
+                          return Container(
+                            margin: EdgeInsets.all(8.w),
+                            padding: EdgeInsets.all(10.w),
+                            decoration: BoxDecoration(
+                              color: themes.whiteColor,
+                              borderRadius: BorderRadius.circular(15.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4.r,
+                                  offset: Offset(0, 3),
                                 ),
-                              ),
-                              title: Text(data.companyName.toString()),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(data.mobile.toString()),
-                                  Text(data.pincode.toString()),
-                                ],
-                              ),
-                              trailing: CircleAvatar(
-                                backgroundColor: themes.lightCream,
-                                // radius: 15,
-                                child: IconButton(
-                                  onPressed: () {
-                                    pickupController.openMapWithAddress(
-                                        data.companyName.toString(),
-                                        data.address1.toString(),
-                                        data.pincode.toString());
-                                  },
-                                  icon: Icon(
-                                    Icons.arrow_forward,
-                                    size: 20.w,
-                                  ),
-                                ),
-                              ));
+                              ],
+                            ),
+                            child: PickupWidget(
+                              onTap: () {
+                                runningController.fetchTrackingData(
+                                    data.shipmentId.toString());
+                                // Get.to(
+                                //   RunningDeliveryDetailsView(
+                                //     isShowInvoice: true,
+                                //     isShowTransfer: true,
+                                //   ),
+                                //   arguments: {
+                                //     'shipmentID': data.shipmentId.toString(),
+                                //     'status': data.status.toString(),
+                                //     'invoicePath': data.invoicePath,
+                                //     'invoicePhoto': data.invoiceFile,
+                                //     'paymentMode': data.paymentMode,
+                                //     'date': data.date,
+                                //     'cashAmt': data.totalCharges
+                                //   },
+                                // );
+                              },
+                              companyName: data.companyName.toString(),
+                              date: data.date.toString(),
+                              status: data.status.toString(),
+                              messangerName: '',
+                              address: data.address1.toString(),
+                              shipmentID: data.shipmentId.toString(),
+                              cityName: data.cityName.toString(),
+                              mobile: data.mobile.toString(),
+                              paymentType: data.paymentMode,
+                              statusColor: data.status == 'Picked up'
+                                  ? themes.greenColor
+                                  : themes.redColor,
+                              statusDotColor: themes.darkCyanBlue,
+                              showPickupBtn: true,
+                              showTrasferBtn: false,
+                              showDivider: true,
+                              openDialerTap: () {
+                                runningController
+                                    .makingPhoneCall(data.mobile.toString());
+                              },
+                              openMapTap: () {
+                                pickupController.openMapWithAddress(
+                                    data.companyName.toString(),
+                                    data.address1.toString(),
+                                    data.pincode.toString());
+                              },
+                              pickUpTap: () async {
+                                data.paymentMode == 'topay'
+                                    ? showDeliveryDialog(
+                                        data.shipmentId.toString(),
+                                        data.date.toString(),
+                                        deliveryController
+                                            .amountController.text,
+                                        data.subPaymentMode == '0' ||
+                                                data.subPaymentMode == ''
+                                            ? 'Select Payment Mode'
+                                            : data.subPaymentMode,
+                                        'Delivery',
+                                        () {},
+                                      )
+                                    : showOtpDialog(() async {
+                                        pickupController.uploadPickup(
+                                          data.shipmentId.toString(),
+                                          'Picked up',
+                                          data.date.toString(),
+                                          // data.totalCharges,
+                                          '',
+                                          '',
+                                          pickupController.otpController.text,
+                                        );
+                                      }, pickupController.otpController);
+
+                                await pickupController
+                                    .getOtp(data.shipmentId.toString());
+                              },
+                              transferBtnColor: null,
+                              transferTextColor: themes.darkCyanBlue,
+                              trasferTap: () {},
+                              transferBorderColor: themes.darkCyanBlue,
+                              pickupTxt: 'Delivery',
+                            ),
+                          );
                         },
                       );
                     } else {

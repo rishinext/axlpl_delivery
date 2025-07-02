@@ -1,22 +1,35 @@
+import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
+import 'package:axlpl_delivery/app/data/networking/api_client.dart';
+import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/pickup_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DeliveryController extends GetxController {
   final pickupRepo = PickupRepo();
-
+  final Dio dio = Dio();
+  ApiClient apiClient = ApiClient();
   //TODO: Implement DeliveryController
   var isDeliveryLoading = Status.initial.obs;
 
   final deliveryList = <RunningDelivery>[].obs;
   final RxList<RunningDelivery> filteredDeliveryList = <RunningDelivery>[].obs;
 
+  var subPaymentModes = <PaymentMode>[].obs;
+  var selectedSubPaymentMode = Rxn<PaymentMode>();
+  void setSelectedSubPaymentMode(PaymentMode? mode) {
+    selectedSubPaymentMode.value = mode;
+  }
+
   final TextEditingController pincodeController = TextEditingController();
 
-  Future<void> getPiData() async {
+  final amountController = TextEditingController();
+  var isLoadingPayment = false.obs;
+  Future<void> getDeliveryData() async {
     isDeliveryLoading.value = Status.loading;
     try {
       final success = await pickupRepo.getAllDeliveryRepo('0');
@@ -45,9 +58,28 @@ class DeliveryController extends GetxController {
     }
   }
 
+  Future<void> fetchPaymentModes() async {
+    isLoadingPayment.value = true;
+    try {
+      final response = await dio.get(apiClient.baseUrl + getPaymentModePoint);
+
+      if (response.statusCode == 200 && response.data['status'] == 'success') {
+        final data = PaymentModesResponse.fromJson(response.data);
+
+        subPaymentModes.value = data.data.subPaymentModes;
+      } else {
+        Get.snackbar('Error', 'Failed to fetch payment modes');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Dio Error: $e');
+    } finally {
+      isLoadingPayment.value = false;
+    }
+  }
+
   @override
   void onInit() {
-    getPiData();
+    // getDeliveryData();
     super.onInit();
   }
 }

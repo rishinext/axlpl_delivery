@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
+import 'package:axlpl_delivery/app/modules/delivery/controllers/delivery_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/pod/controllers/pod_controller.dart';
@@ -31,6 +32,7 @@ class HomeView extends GetView<HomeController> {
     final homeController = Get.put(HomeController());
     final bottomController = Get.put(BottombarController());
     final pickupController = Get.put(PickupController());
+    final deliveryController = Get.put(DeliveryController());
     final runningPickupDetailsController =
         Get.put(RunningDeliveryDetailsController());
     final profileController = Get.put(ProfileController());
@@ -256,8 +258,11 @@ class HomeView extends GetView<HomeController> {
                             child: HomeIconContainer(
                                 title: 'Delivery',
                                 Img: deliveryIcon,
-                                OnTap: () => Get.toNamed(Routes.DELIVERY,
-                                    arguments: ''))),
+                                OnTap: () {
+                                  deliveryController.getDeliveryData();
+                                  deliveryController.fetchPaymentModes();
+                                  Get.toNamed(Routes.DELIVERY, arguments: '');
+                                })),
                         SizedBox(
                           width: 10.w,
                         ),

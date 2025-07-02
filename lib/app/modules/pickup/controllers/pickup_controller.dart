@@ -46,9 +46,10 @@ class PickupController extends GetxController {
   var isUploadPickup = Status.initial.obs;
   var isMessangerLoading = Status.initial.obs;
   var isTrasferLoading = Status.initial.obs;
-  Rx<Status> isTransferLoading = Status.initial.obs;
-  RxBool isTransferSuccess = false.obs;
+  var isTransferLoading = Status.initial.obs;
+  var isTransferSuccess = false.obs;
   var isPaymentLoading = Status.initial.obs;
+  var isOtpLoading = Status.initial.obs;
 
   RxInt isSelected = 0.obs;
   var selectedPay = Rxn<String>();
@@ -171,16 +172,12 @@ class PickupController extends GetxController {
     final date,
     final cashAmount,
     final paymentMode,
+    final otp,
   ) async {
     isUploadPickup.value = Status.loading;
     try {
       final success = await pickupRepo.uploadPickupRepo(
-        shipmentID,
-        shipmentStatus,
-        date,
-        cashAmount,
-        paymentMode,
-      );
+          shipmentID, shipmentStatus, date, cashAmount, paymentMode, otp);
       if (success == true) {
         Get.snackbar(
           'success',
@@ -192,6 +189,8 @@ class PickupController extends GetxController {
         getPickupData();
         final historyController = Get.find<HistoryController>();
         historyController.getPickupHistory();
+        otpController.clear();
+        Get.back();
       } else {
         Get.snackbar(
           'fail',
@@ -209,6 +208,25 @@ class PickupController extends GetxController {
         backgroundColor: themes.redColor,
       );
       isUploadPickup.value = Status.error;
+    }
+  }
+
+  Future getOtp(final shipmentID) async {
+    isOtpLoading.value = Status.loading;
+    try {
+      final success = await pickupRepo.getOtpRepo(shipmentID);
+      if (success == true) {
+        Get.snackbar('OTP', 'OTP fetched successfully!');
+        isOtpLoading.value = Status.success;
+      } else {
+        Get.snackbar('Error', 'Failed to fetch OTP',
+            colorText: themes.whiteColor, backgroundColor: themes.darkCyanBlue);
+        isOtpLoading.value = Status.error;
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch OTP: $e',
+          backgroundColor: themes.redColor, colorText: themes.whiteColor);
+      isOtpLoading.value = Status.error;
     }
   }
 
