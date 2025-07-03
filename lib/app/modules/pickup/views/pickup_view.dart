@@ -222,6 +222,7 @@ class PickupView extends GetView<PickupController> {
                                         ],
                                       ),
                                       child: PickupWidget(
+                                        isShowPaymentType: false,
                                         pickupTxt: 'Pickup',
                                         onTap: () {
                                           runningController.fetchTrackingData(
@@ -232,6 +233,8 @@ class PickupView extends GetView<PickupController> {
                                               isShowTransfer: true,
                                             ),
                                             arguments: {
+                                              'messangerId':
+                                                  data.messangerId.toString(),
                                               'shipmentID':
                                                   data.shipmentId.toString(),
                                               'status': data.status.toString(),
@@ -275,34 +278,71 @@ class PickupView extends GetView<PickupController> {
                                               data.pincode.toString());
                                         },
                                         pickUpTap: () async {
-                                          // data.paymentMode != 'topay'
-                                          // ? yesNoDialog(
-                                          //     () {
-                                          //       pickupController
-                                          //           .uploadPickup(
-                                          //         data.shipmentId,
-                                          //         'Picked up',
-                                          //         data.date,
-                                          //         data.totalCharges,
-                                          //         'prepaid',
+                                          data.paymentMode != 'topay'
+                                              ?
+                                              // ? yesNoDialog(
+                                              //     () {
+                                              //       pickupController
+                                              //           .uploadPickup(
+                                              //         data.shipmentId,
+                                              //         'Picked up',
+                                              //         data.date,
+                                              //         data.totalCharges,
+                                              //         'prepaid',
 
-                                          //       );
-                                          //       Get.back();
-                                          //     },
-                                          //   )
-                                          // :
+                                              //       );
+                                              //       Get.back();
+                                              //     },
+                                              //   )
+                                              // :
 
-                                          showOtpDialog(() async {
-                                            pickupController.uploadPickup(
-                                                data.shipmentId,
-                                                'Picked up',
-                                                data.date,
-                                                // data.totalCharges,
-                                                '',
-                                                '',
-                                                pickupController
-                                                    .otpController.text);
-                                          }, pickupController.otpController);
+                                              showOtpDialog(
+                                                  () async {
+                                                    pickupController.uploadPickup(
+                                                        data.shipmentId,
+                                                        'Picked up',
+                                                        data.date,
+                                                        pickupController
+                                                            .amountController
+                                                            .text,
+                                                        pickupController
+                                                            .selectedSubPaymentMode
+                                                            .value
+                                                            ?.id,
+                                                        pickupController
+                                                            .otpController
+                                                            .text);
+                                                  },
+                                                  pickupController
+                                                      .otpController,
+                                                )
+                                              : showPickDialog(
+                                                  data.shipmentId,
+                                                  data.date,
+                                                  data.totalCharges,
+                                                  pickupController
+                                                          .selectedSubPaymentMode
+                                                          .value
+                                                          ?.name ??
+                                                      'Select Payment Mode',
+                                                  'Pickup',
+                                                  () {
+                                                    pickupController.uploadPickup(
+                                                        data.shipmentId,
+                                                        'Picked up',
+                                                        data.date,
+                                                        pickupController
+                                                            .amountController
+                                                            .text,
+                                                        pickupController
+                                                            .selectedSubPaymentMode
+                                                            .value
+                                                            ?.id,
+                                                        pickupController
+                                                            .otpController
+                                                            .text);
+                                                  },
+                                                );
                                           await pickupController
                                               .getOtp(data.shipmentId);
                                         },
@@ -432,8 +472,8 @@ class PickupView extends GetView<PickupController> {
                                 Status.error) {
                           return Center(
                               child: Text(
-                            'No Pickup History Data Found!',
-                            style: themes.fontReboto16_600,
+                            'No Picked-up Data Found!',
+                            style: themes.fontSize14_500,
                           ));
                         } else if (historyController.isPickedup.value ==
                             Status.success) {

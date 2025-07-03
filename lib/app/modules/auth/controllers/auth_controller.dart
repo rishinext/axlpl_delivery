@@ -39,7 +39,7 @@ class AuthController extends GetxController {
         Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
         profileController.fetchProfileData();
       } else if (role == 'customer') {
-        Get.offAllNamed(Routes.BOTTOMBAR);
+        Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
         profileController.fetchProfileData();
       }
     } catch (e) {

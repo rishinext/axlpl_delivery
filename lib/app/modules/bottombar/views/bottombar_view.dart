@@ -13,7 +13,7 @@ class BottombarView extends GetView<BottombarController> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(BottombarController());
-    final LoginModel? usersData = Get.arguments;
+    // final LoginModel? usersData = Get.arguments as LoginModel?;
 
     return Scaffold(
       body: Obx(() =>

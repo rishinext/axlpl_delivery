@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/modules/delivery/controllers/delivery_controller.dart';
+import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/pod/controllers/pod_controller.dart';
@@ -38,6 +39,7 @@ class HomeView extends GetView<HomeController> {
     final profileController = Get.put(ProfileController());
     final shipmentRecordController = Get.put(ShipmentRecordController());
     final podController = Get.put(PodController());
+    final historyController = Get.put(HistoryController());
     final MobileScannerController QRController = MobileScannerController();
     final user = bottomController.userData.value;
     return Scaffold(
@@ -261,6 +263,7 @@ class HomeView extends GetView<HomeController> {
                                 OnTap: () {
                                   deliveryController.getDeliveryData();
                                   deliveryController.fetchPaymentModes();
+                                  historyController.getDeliveryHistory('0');
                                   Get.toNamed(Routes.DELIVERY, arguments: '');
                                 })),
                         SizedBox(

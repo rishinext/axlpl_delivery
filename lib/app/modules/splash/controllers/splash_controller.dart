@@ -40,10 +40,10 @@ class SplashController extends GetxController {
       }
 
       if (role == "messanger") {
-        Get.offAllNamed(Routes.BOTTOMBAR);
+        Get.offAllNamed(Routes.BOTTOMBAR, arguments: userData);
         log('🤩 Messenger Login success 🤩');
       } else if (role == "customer") {
-        Get.offAllNamed(Routes.BOTTOMBAR);
+        Get.offAllNamed(Routes.BOTTOMBAR, arguments: userData);
         log('🤩 Customer Login success 🤩');
       } else {
         Get.offAllNamed(Routes.AUTH);

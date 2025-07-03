@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:axlpl_delivery/const/const.dart';
+import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +22,7 @@ class PickupWidget extends StatelessWidget {
   final bool showPickupBtn;
   final bool showTrasferBtn;
   final bool showDivider;
+  final bool? isShowPaymentType;
   final VoidCallback? pickUpTap;
   final VoidCallback? trasferTap;
   final Color? transferBtnColor;
@@ -58,6 +60,7 @@ class PickupWidget extends StatelessWidget {
     this.onTap,
     this.pickupTxt,
     this.networkImg,
+    this.isShowPaymentType,
   }) : super(key: key);
 
   @override
@@ -225,7 +228,7 @@ class PickupWidget extends StatelessWidget {
 
               /// Location, Phone, Payment
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
@@ -239,17 +242,29 @@ class PickupWidget extends StatelessWidget {
                       Text(cityName, style: TextStyle(fontSize: 12.sp)),
                     ],
                   ),
-                  Container(
-                    width: 6.w,
-                    height: 6.w,
-                    decoration: BoxDecoration(
-                      color: statusDotColor,
-                      shape: BoxShape.circle,
-                    ),
+
+                  // Container(
+                  //   width: 6.w,
+                  //   height: 6.w,
+                  //   decoration: BoxDecoration(
+                  //     color: statusDotColor,
+                  //     shape: BoxShape.circle,
+                  //   ),
+                  // ),
+                  Spacer(),
+                  Image.asset(
+                    axlplLogo,
+                    width: 20.w,
                   ),
-                  Text(
-                    'Axlpl Insurance',
-                    overflow: TextOverflow.fade,
+                  SizedBox(
+                    width: 10.w,
+                  ),
+                  SizedBox(
+                    width: isShowPaymentType == true ? 80.w : null,
+                    child: Text(
+                      'Axlpl Insurance',
+                      overflow: TextOverflow.fade,
+                    ),
                   ),
                   /*    InkWell(
                     onTap: openDialerTap,
@@ -272,19 +287,20 @@ class PickupWidget extends StatelessWidget {
                       ],
                     ),
                   ),*/
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: themes.blueGray,
-                        radius: 14.r,
-                        child: Icon(Icons.credit_card,
-                            size: 16.sp, color: Colors.indigo),
-                      ),
-                      SizedBox(width: 4.w),
-                      Text(paymentType ?? 'N/A',
-                          style: TextStyle(fontSize: 12.sp)),
-                    ],
-                  ),
+                  if (isShowPaymentType == true)
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: themes.blueGray,
+                          radius: 14.r,
+                          child: Icon(Icons.credit_card,
+                              size: 16.sp, color: Colors.indigo),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(paymentType ?? 'N/A',
+                            style: TextStyle(fontSize: 12.sp)),
+                      ],
+                    ),
                 ],
               ),
             ],

@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/app/data/networking/api_client.dart';
 import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/pickup_repo.dart';
+import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,10 @@ class DeliveryController extends GetxController {
   final pickupRepo = PickupRepo();
   final Dio dio = Dio();
   ApiClient apiClient = ApiClient();
+  final historyController = Get.put(HistoryController());
   //TODO: Implement DeliveryController
   var isDeliveryLoading = Status.initial.obs;
+  RxInt isSelected = 0.obs;
 
   final deliveryList = <RunningDelivery>[].obs;
   final RxList<RunningDelivery> filteredDeliveryList = <RunningDelivery>[].obs;
@@ -23,6 +26,10 @@ class DeliveryController extends GetxController {
   var selectedSubPaymentMode = Rxn<PaymentMode>();
   void setSelectedSubPaymentMode(PaymentMode? mode) {
     selectedSubPaymentMode.value = mode;
+  }
+
+  void selectedContainer(int index) {
+    isSelected.value = index;
   }
 
   final TextEditingController pincodeController = TextEditingController();
@@ -80,6 +87,7 @@ class DeliveryController extends GetxController {
   @override
   void onInit() {
     // getDeliveryData();
+    historyController.getDeliveryHistory('0');
     super.onInit();
   }
 }

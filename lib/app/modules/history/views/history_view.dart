@@ -102,7 +102,8 @@ class HistoryView extends GetView<HistoryController> {
                       ? SizedBox(
                           height: 490.h,
                           child: Obx(() {
-                            if (historyController.isLoading.value) {
+                            if (historyController.isDeliveredLoading.value ==
+                                Status.loading) {
                               return const Center(
                                   child: CircularProgressIndicator.adaptive());
                             }

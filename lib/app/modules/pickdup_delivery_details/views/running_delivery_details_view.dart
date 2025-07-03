@@ -46,6 +46,7 @@ class RunningDeliveryDetailsView
     final String? date = Get.arguments['date'] as String?;
     final String? cashAmt = Get.arguments['cashAmt'] as String?;
     final String? invoicePhoto = Get.arguments['invoicePhoto'] as String?;
+    final String? messengerId = Get.arguments['messangerId'] as String?;
     final profileController = Get.put(ProfileController());
     final pickupController = Get.put(PickupController());
 
@@ -432,7 +433,7 @@ class RunningDeliveryDetailsView
                                               },
                                               style: OutlinedButton.styleFrom(
                                                 side: BorderSide(
-                                                    color: themes.grayColor,
+                                                    color: themes.darkCyanBlue,
                                                     width: 1.w),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
@@ -542,7 +543,7 @@ class RunningDeliveryDetailsView
                                     final userId =
                                         pickupController.currentUserId.value;
                                     final enableTransfer =
-                                        details?.custId == userId;
+                                        messengerId.toString() == userId;
                                     return ElevatedButton(
                                       onPressed: enableTransfer
                                           ? () {
@@ -576,6 +577,9 @@ class RunningDeliveryDetailsView
                                             }
                                           : null,
                                       style: OutlinedButton.styleFrom(
+                                        backgroundColor: enableTransfer
+                                            ? themes.whiteColor
+                                            : themes.grayColor,
                                         foregroundColor: enableTransfer
                                             ? themes.darkCyanBlue
                                             : themes.grayColor,
@@ -605,30 +609,44 @@ class RunningDeliveryDetailsView
                                 ),
                                 ElevatedButton(
                                   onPressed: () async {
-                                    // details?.paymentMode != 'topay'
-                                    //     ?
-                                    showOtpDialog(() {
-                                      pickupController.uploadPickup(
-                                          shipmentID,
-                                          'Picked up',
-                                          date,
-                                          // data.totalCharges,
-                                          '',
-                                          '',
-                                          pickupController.otpController.text);
-                                    }, pickupController.otpController);
-                                    await pickupController.getOtp(shipmentID);
+                                    details?.paymentMode != 'topay'
+                                        ? showOtpDialog(() {
+                                            pickupController.uploadPickup(
+                                                details?.shipmentId.toString(),
+                                                'Picked up',
+                                                date,
+                                                pickupController
+                                                    .amountController.text,
+                                                pickupController
+                                                    .selectedSubPaymentMode
+                                                    .value
+                                                    ?.id,
+                                                pickupController
+                                                    .otpController.text);
+                                          }, pickupController.otpController)
+                                        : showPickDialog(
+                                            details?.shipmentId,
+                                            date,
+                                            details?.totalCharges,
+                                            details?.paymentMode.toString(),
+                                            'Pickup',
+                                            () {
+                                              pickupController.uploadPickup(
+                                                  details?.shipmentId,
+                                                  'Picked up',
+                                                  date,
+                                                  pickupController
+                                                      .amountController.text,
+                                                  pickupController
+                                                      .selectedSubPaymentMode
+                                                      .value
+                                                      ?.id,
+                                                  pickupController
+                                                      .otpController.text);
+                                            },
+                                          );
 
-                                    // : showPickDialog(
-                                    //     shipmentID,
-                                    //     date,
-                                    //     pickupController
-                                    //         .amountController.text,
-                                    //     paymentMode == '0'
-                                    //         ? 'Select Payment Mode'
-                                    //         : paymentMode,
-                                    //     'Pickup',
-                                    //   );
+                                    await pickupController.getOtp(shipmentID);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: themes.whiteColor,

@@ -17,15 +17,15 @@ class HistoryController extends GetxController {
   final zipcodeController = TextEditingController();
 
   RxInt isSelected = 0.obs;
-  RxBool isLoading = false.obs;
+  var isDeliveredLoading = Status.initial.obs;
   var isPickedup = Status.initial.obs;
 
   void selectedContainer(int index) {
     isSelected.value = index;
   }
 
-  Future<void> getHistory(final nextID) async {
-    isLoading.value = true;
+  Future<void> getDeliveryHistory(final nextID) async {
+    isDeliveredLoading.value = Status.loading;
 
     try {
       final success = await historyRepo.deliveryHistoryRepo(
@@ -35,18 +35,17 @@ class HistoryController extends GetxController {
 
       if (success != null) {
         historyList.value = success;
-        isLoading.value = false;
+        isDeliveredLoading.value = Status.success;
       } else {
         Utils().logInfo('No History Data Found');
-        isLoading.value = false;
+        isDeliveredLoading.value = Status.error;
+        historyList.value = [];
       }
     } catch (error) {
       Utils().logError(
         'Error getting history $error',
       );
       historyList.value = [];
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -75,7 +74,7 @@ class HistoryController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    getHistory('0');
+    getDeliveryHistory('0');
     getPickupHistory();
     super.onInit();
   }

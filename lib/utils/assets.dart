@@ -23,3 +23,4 @@ final privacyIcon = 'assets/privacyicon.png';
 final errorImg = 'assets/error.png';
 final noImg = 'assets/noimg.jpg';
 final orders = 'assets/orders.png';
+final axlplLogo = 'assets/axlplLogo.png';

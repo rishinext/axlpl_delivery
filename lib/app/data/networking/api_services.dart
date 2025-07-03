@@ -32,18 +32,22 @@ class ApiServices {
 
   Future<APIResponse> getDeliveryHistory(
     String userID,
-    String branchID,
     String zipcode,
-    String token,
+    String branchID,
     String nextID,
+    String token,
   ) async {
-    final body = {
+    final query = {
       'messanger_id': userID,
       'zipcode': zipcode,
       'branch_id': branchID,
       'next_id': nextID
     };
-    return _api.get(deliveryHistoryPoint, query: body, token: token);
+    return _api.get(
+      deliveryHistoryPoint,
+      query: query,
+      token: token,
+    );
   }
 
   Future<APIResponse> getPickupHistory(
