@@ -1,6 +1,6 @@
 import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
-import 'package:axlpl_delivery/app/data/networking/repostiory/history_repo.dart';
+import 'package:axlpl_delivery/app/data/networking/repostiory/delivery_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -10,8 +10,7 @@ import '../../../data/models/history_pickup_model.dart';
 class HistoryController extends GetxController {
   //TODO: Implement HistoryController
 
-  final historyRepo =
-      HistoryRepository(); // assuming you have a repository class
+  final historyRepo = DeliveryRepo(); // assuming you have a repository class
   final historyList = <HistoryDelivery>[].obs;
   final pickUpHistoryList = <HistoryPickup>[].obs;
   final zipcodeController = TextEditingController();

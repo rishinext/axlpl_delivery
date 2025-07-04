@@ -27,6 +27,7 @@ class PickupController extends GetxController {
   final amountController = TextEditingController();
   final TextEditingController pincodeController = TextEditingController();
   final otpController = TextEditingController();
+  final TextEditingController chequeNumberController = TextEditingController();
 
   var selectedPaymentModeId = Rxn<String>();
 
@@ -172,16 +173,26 @@ class PickupController extends GetxController {
     final date,
     final cashAmount,
     final paymentMode,
-    final otp,
-  ) async {
+    final otp, {
+    String? chequeNumber,
+  }) async {
     isUploadPickup.value = Status.loading;
     try {
       final success = await pickupRepo.uploadPickupRepo(
-          shipmentID, shipmentStatus, date, cashAmount, paymentMode, otp);
+        shipmentID,
+        shipmentStatus,
+        date,
+        cashAmount,
+        paymentMode,
+        otp,
+        // 2. PASS THE PARAMETER TO THE REPOSITORY CALL
+        chequeNumber: chequeNumber,
+      );
+
       if (success == true) {
         Get.snackbar(
-          'success',
-          'upload pickup Success!',
+          'Success',
+          'Upload pickup successful!',
           colorText: themes.whiteColor,
           backgroundColor: themes.darkCyanBlue,
         );
@@ -190,11 +201,11 @@ class PickupController extends GetxController {
         final historyController = Get.find<HistoryController>();
         historyController.getPickupHistory();
         otpController.clear();
-        Get.back();
+        Get.back(); // Navigate back on success
       } else {
         Get.snackbar(
-          'fail',
-          'upload pickup Failed!',
+          'Failed',
+          'Upload pickup failed. Please try again.',
           colorText: themes.whiteColor,
           backgroundColor: themes.redColor,
         );
@@ -202,8 +213,8 @@ class PickupController extends GetxController {
       }
     } catch (e) {
       Get.snackbar(
-        'fail',
-        'upload pickup Failed!',
+        'Error',
+        'An unexpected error occurred.',
         colorText: themes.whiteColor,
         backgroundColor: themes.redColor,
       );

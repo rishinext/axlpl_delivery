@@ -167,64 +167,68 @@ class PickupRepo {
     return null;
   }
 
-  Future<bool?> uploadPickupRepo(
+  Future<bool> uploadPickupRepo(
     final shipmentID,
     final shipmentStatus,
     final date,
     final cashAmount,
     final paymentMode,
-    final otp,
-  ) async {
+    final otp, {
+    // 1. ADD THE OPTIONAL NAMED PARAMETER HERE
+    String? chequeNumber,
+  }) async {
     try {
       final userData = await LocalStorage().getUserLocalData();
       final userID = userData?.messangerdetail?.id?.toString();
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
+      // A safer check for the userID
+      if (userID == null || userID.isEmpty) {
+        Utils().logError("User ID is null or empty, cannot upload pickup.");
+        return false;
+      }
+
       UserLocation location = await Utils().getUserLocation();
 
-      if (userID?.isNotEmpty == true || userID != null) {
-        final response = await _apiServices.uploadPickup(
-          shipmentID,
-          shipmentStatus,
-          userID,
-          date,
-          location.latitude,
-          location.longitude,
-          cashAmount,
-          paymentMode,
-          otp,
-          token.toString(),
-        );
+      final response = await _apiServices.uploadPickup(
+        shipmentID,
+        shipmentStatus,
+        userID,
+        date,
+        location.latitude,
+        location.longitude,
+        cashAmount,
+        paymentMode,
+        otp,
+        token.toString(),
+        // 2. PASS THE PARAMETER TO THE API SERVICE CALL
+        chequeNumber: chequeNumber,
+      );
 
-        bool isSuccess = false;
+      bool isSuccess = false;
 
-        response.when(
-          success: (body) {
-            final data = CommonModel.fromJson(body);
-            if (data.status == 'success') {
-              Utils().log(data.toJson());
-
-              isSuccess = true;
-            } else {
-              Utils().log('pickup error');
-              isSuccess = false;
-            }
-          },
-          error: (error) {
-            Utils().logError(error.toString());
+      response.when(
+        success: (body) {
+          final data = CommonModel.fromJson(body);
+          if (data.status == 'success') {
+            Utils().log(data.toJson());
+            isSuccess = true;
+          } else {
+            Utils().log('Pickup error: ${data.message}');
             isSuccess = false;
-          },
-        );
-
-        return isSuccess;
-      }
+          }
+        },
+        error: (error) {
+          Utils().logError(error.toString());
+          isSuccess = false;
+        },
+      );
+      return isSuccess;
     } catch (e) {
       Utils().logError(e.toString());
       return false;
     }
-
-    return false;
   }
 
   // Future<List<PaymentMode>?> getPaymentMode() async {

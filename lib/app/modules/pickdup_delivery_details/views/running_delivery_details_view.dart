@@ -298,6 +298,9 @@ class RunningDeliveryDetailsView
                         Text('Insurance Details',
                             style: themes.fontSize16_400
                                 .copyWith(fontWeight: FontWeight.bold)),
+                        SizedBox(
+                          height: 10.h,
+                        ),
                         infoRow('Insurance Value',
                             details?.insuranceValue?.toString() ?? 'N/A'),
                         Divider(),
@@ -417,6 +420,7 @@ class RunningDeliveryDetailsView
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        SizedBox(height: 8.h),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -623,30 +627,35 @@ class RunningDeliveryDetailsView
                                                     ?.id,
                                                 pickupController
                                                     .otpController.text);
+                                          }, () async {
+                                            await pickupController
+                                                .getOtp(details?.shipmentId);
                                           }, pickupController.otpController)
                                         : showPickDialog(
                                             details?.shipmentId,
                                             date,
                                             details?.totalCharges,
                                             details?.paymentMode.toString(),
-                                            'Pickup',
-                                            () {
-                                              pickupController.uploadPickup(
-                                                  details?.shipmentId,
-                                                  'Picked up',
-                                                  date,
-                                                  pickupController
-                                                      .amountController.text,
-                                                  pickupController
-                                                      .selectedSubPaymentMode
-                                                      .value
-                                                      ?.id,
-                                                  pickupController
-                                                      .otpController.text);
-                                            },
-                                          );
-
-                                    await pickupController.getOtp(shipmentID);
+                                            'Pickup', () {
+                                            pickupController.uploadPickup(
+                                              details?.shipmentId,
+                                              'Picked up',
+                                              date,
+                                              pickupController
+                                                  .amountController.text,
+                                              pickupController
+                                                  .selectedSubPaymentMode
+                                                  .value
+                                                  ?.id,
+                                              pickupController
+                                                  .otpController.text,
+                                              chequeNumber: pickupController
+                                                  .chequeNumberController.text,
+                                            );
+                                          }, () async {
+                                            await pickupController
+                                                .getOtp(shipmentID);
+                                          });
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: themes.whiteColor,

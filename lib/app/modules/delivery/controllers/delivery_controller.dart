@@ -3,6 +3,7 @@ import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_client.dart';
 import 'package:axlpl_delivery/app/data/networking/api_endpoint.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/data/networking/repostiory/delivery_repo.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/pickup_repo.dart';
 import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -12,11 +13,13 @@ import 'package:get/get.dart';
 
 class DeliveryController extends GetxController {
   final pickupRepo = PickupRepo();
+  final deliveryRepo = DeliveryRepo();
   final Dio dio = Dio();
   ApiClient apiClient = ApiClient();
   final historyController = Get.put(HistoryController());
   //TODO: Implement DeliveryController
   var isDeliveryLoading = Status.initial.obs;
+  var isUploadDelivery = Status.initial.obs;
   RxInt isSelected = 0.obs;
 
   final deliveryList = <RunningDelivery>[].obs;
@@ -33,9 +36,12 @@ class DeliveryController extends GetxController {
   }
 
   final TextEditingController pincodeController = TextEditingController();
+  final TextEditingController otpController = TextEditingController();
+  final TextEditingController chequeNumberController = TextEditingController();
 
   final amountController = TextEditingController();
   var isLoadingPayment = false.obs;
+
   Future<void> getDeliveryData() async {
     isDeliveryLoading.value = Status.loading;
     try {
@@ -52,6 +58,64 @@ class DeliveryController extends GetxController {
       deliveryList.value = [];
       filteredDeliveryList.value = [];
       isDeliveryLoading.value = Status.error;
+    }
+  }
+
+  Future<void> uploadDelivery(
+    shipmentID,
+    shipmentStatus,
+    id,
+    date,
+    cashAmount,
+    paymentMode,
+    subPaymentMode,
+    deliveryOtp, {
+    String? chequeNumber,
+  }) async {
+    isUploadDelivery.value = Status.loading;
+    try {
+      final success = await deliveryRepo.uploadDeliveryRepo(
+        shipmentID,
+        shipmentStatus,
+        id,
+        date,
+        cashAmount,
+        paymentMode,
+        subPaymentMode,
+        deliveryOtp,
+        chequeNumber: chequeNumber,
+      );
+
+      if (success == true) {
+        Get.snackbar(
+          'Success',
+          'Upload Delivery Successful!',
+          colorText: themes.whiteColor,
+          backgroundColor: themes.darkCyanBlue,
+        );
+        isUploadDelivery.value = Status.success;
+        getDeliveryData();
+        final historyController = Get.find<HistoryController>();
+        historyController.getDeliveryHistory('');
+        otpController.clear();
+        Get.back(); // Navigate back on success
+      } else {
+        Get.snackbar(
+          'Failed',
+          'Upload pickup failed. Please try again.',
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+        );
+        isUploadDelivery.value = Status.error;
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'An unexpected error occurred.',
+        colorText: themes.whiteColor,
+        backgroundColor: themes.redColor,
+      );
+      isUploadDelivery.value = Status.error;
     }
   }
 

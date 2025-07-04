@@ -1,11 +1,13 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/data/models/common_model.dart';
 import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
 import 'package:axlpl_delivery/app/data/models/history_pickup_model.dart';
+import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
-class HistoryRepository {
+class DeliveryRepo {
   final ApiServices _apiServices = ApiServices();
 
   Future<List<HistoryDelivery>?> deliveryHistoryRepo(
@@ -87,5 +89,72 @@ class HistoryRepository {
       );
     }
     return null;
+  }
+
+  Future<bool> uploadDeliveryRepo(
+    shipmentID,
+    shipmentStatus,
+    id,
+    date,
+    cashAmount,
+    paymentMode,
+    subPaymentMode,
+    deliveryOtp, {
+    // 1. ADD THE OPTIONAL NAMED PARAMETER HERE
+    String? chequeNumber,
+  }) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.messangerdetail?.id?.toString();
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+
+      // A safer check for the userID
+      if (userID == null || userID.isEmpty) {
+        Utils().logError("User ID is null or empty, cannot upload pickup.");
+        return false;
+      }
+
+      UserLocation location = await Utils().getUserLocation();
+
+      final response = await _apiServices.uploadDelivery(
+        shipmentID,
+        shipmentStatus,
+        id,
+        date,
+        location.latitude,
+        location.longitude,
+        cashAmount,
+        paymentMode,
+        subPaymentMode,
+        deliveryOtp,
+        token.toString(),
+        // 2. PASS THE PARAMETER TO THE API SERVICE CALL
+        chequeNumber: chequeNumber,
+      );
+
+      bool isSuccess = false;
+
+      response.when(
+        success: (body) {
+          final data = CommonModel.fromJson(body);
+          if (data.status == 'success') {
+            Utils().log(data.toJson());
+            isSuccess = true;
+          } else {
+            Utils().log('Pickup error: ${data.message}');
+            isSuccess = false;
+          }
+        },
+        error: (error) {
+          Utils().logError(error.toString());
+          isSuccess = false;
+        },
+      );
+      return isSuccess;
+    } catch (e) {
+      Utils().logError(e.toString());
+      return false;
+    }
   }
 }

@@ -588,8 +588,10 @@ class ApiServices {
     cashAmount,
     paymentMode,
     final otp,
-    token,
-  ) async {
+    token, {
+    // Start of optional named parameters
+    String? chequeNumber,
+  }) async {
     final body = {
       'shipment_id': shipmentID,
       'status': shipmentStatus,
@@ -599,10 +601,53 @@ class ApiServices {
       'longitude': long,
       'cash_amount': cashAmount,
       'sub_payment_mode': paymentMode,
-      'pickup_otp ': otp,
+      'pickup_otp': otp,
     };
+
+    if (chequeNumber != null && chequeNumber.isNotEmpty) {
+      body['cheque_number'] = chequeNumber;
+    }
+
     return _api.post(
       uploadPickupPoint,
+      body,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> uploadDelivery(
+    shipmentID,
+    shipmentStatus,
+    id,
+    date,
+    lat,
+    long,
+    cashAmount,
+    paymentMode,
+    subPaymentMode,
+    deliveryOtp,
+    token, {
+    // Start of optional named parameters
+    String? chequeNumber,
+  }) async {
+    final body = {
+      'shipment_id': shipmentID,
+      'status': shipmentStatus,
+      'messanger_id': id,
+      'date_time': date,
+      'latitude': lat,
+      'longitude': long,
+      'cash_amount': cashAmount,
+      'sub_payment_mode': paymentMode,
+      'pickup_otp': deliveryOtp,
+    };
+
+    if (chequeNumber != null && chequeNumber.isNotEmpty) {
+      body['cheque_number'] = chequeNumber;
+    }
+
+    return _api.post(
+      uploadDeliveryPoint,
       body,
       token: token,
     );

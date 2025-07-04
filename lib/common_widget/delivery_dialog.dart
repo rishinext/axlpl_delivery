@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/delivery/controllers/delivery_controller.dart';
 import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
@@ -17,6 +18,7 @@ void showDeliveryDialog(
   final dropdownHintTxt,
   final btnTxt,
   VoidCallback? onConfirmCallback,
+  VoidCallback? onSendOtpCallback,
 ) {
   final _formKey = GlobalKey<FormState>();
   final pickupController = Get.find<PickupController>();
@@ -70,44 +72,33 @@ void showDeliveryDialog(
                   return null;
                 },
               ),
-
-/*dropdownText('Payment Mode'),
-              Obx(() {
-                if (pickupController.isLoadingPayment.value) {
-                  return Center(child: CircularProgressIndicator());
-                }
-
-                return Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade400, width: 1),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 6,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<PaymentMode>(
-                      hint: Text('Payment Mode'),
-                      value: pickupController.selectedPaymentMode.value,
-                      items: pickupController.paymentModes
-                          .map((mode) => DropdownMenuItem(
-                                value: mode,
-                                child: Text(mode.name),
-                              ))
-                          .toList(),
-                      onChanged: (value) =>
-                          pickupController.setSelectedPaymentMode(value),
-                    ),
-                  ),
-                );
-              }),*/
+              dropdownText('Cheque Number'),
+              CommonTextfiled(
+                controller: pickupController.chequeNumberController,
+                obscureText: false,
+                hintTxt: 'Enter Cheque Number',
+                lableText: 'Enter Cheque Number',
+                keyboardType: TextInputType.text,
+              ),
+              Row(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Enter OTP'),
+                  Obx(() {
+                    return pickupController.isOtpLoading.value == Status.loading
+                        ? Center(child: CircularProgressIndicator.adaptive())
+                        : TextButton(
+                            onPressed: onSendOtpCallback,
+                            child: Text(
+                              'Send OTP',
+                              style: themes.fontSize14_500
+                                  .copyWith(color: themes.darkCyanBlue),
+                            ),
+                          );
+                  })
+                ],
+              ),
               dropdownText('Sub Payment Mode'),
               Obx(() {
                 if (deliveryController.isLoadingPayment.value) {

@@ -10,7 +10,7 @@ import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/otp_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
-import 'package:axlpl_delivery/common_widget/show_delivery_dialog.dart';
+import 'package:axlpl_delivery/common_widget/delivery_dialog.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -194,118 +194,168 @@ class DeliveryView extends GetView<DeliveryController> {
                             } else if (deliveryController
                                     .isDeliveryLoading.value ==
                                 Status.success) {
-                              return ListView.separated(
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: 1.h,
-                                ),
-                                itemCount: deliveryController
-                                    .filteredDeliveryList.length,
-                                shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final data = deliveryController
-                                      .filteredDeliveryList[index];
-                                  return Container(
-                                    margin: EdgeInsets.all(8.w),
-                                    padding: EdgeInsets.all(10.w),
-                                    decoration: BoxDecoration(
-                                      color: themes.whiteColor,
-                                      borderRadius: BorderRadius.circular(15.r),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 4.r,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: PickupWidget(
-                                      onTap: () {
-                                        runningController.fetchTrackingData(
-                                            data.shipmentId.toString());
-                                        // Get.to(
-                                        //   RunningDeliveryDetailsView(
-                                        //     isShowInvoice: true,
-                                        //     isShowTransfer: true,
-                                        //   ),
-                                        //   arguments: {
-                                        //     'shipmentID': data.shipmentId.toString(),
-                                        //     'status': data.status.toString(),
-                                        //     'invoicePath': data.invoicePath,
-                                        //     'invoicePhoto': data.invoiceFile,
-                                        //     'paymentMode': data.paymentMode,
-                                        //     'date': data.date,
-                                        //     'cashAmt': data.totalCharges
-                                        //   },
-                                        // );
-                                      },
-                                      isShowPaymentType: true,
-                                      companyName: data.companyName.toString(),
-                                      date: data.date.toString(),
-                                      status: data.status.toString(),
-                                      messangerName: '',
-                                      address: data.address1.toString(),
-                                      shipmentID: data.shipmentId.toString(),
-                                      cityName: data.cityName.toString(),
-                                      mobile: data.mobile.toString(),
-                                      paymentType: data.paymentMode,
-                                      statusColor: data.status == 'Picked up'
-                                          ? themes.greenColor
-                                          : themes.redColor,
-                                      statusDotColor: themes.darkCyanBlue,
-                                      showPickupBtn: true,
-                                      showTrasferBtn: false,
-                                      showDivider: true,
-                                      openDialerTap: () {
-                                        runningController.makingPhoneCall(
-                                            data.mobile.toString());
-                                      },
-                                      openMapTap: () {
-                                        pickupController.openMapWithAddress(
-                                            data.companyName.toString(),
-                                            data.address1.toString(),
-                                            data.pincode.toString());
-                                      },
-                                      pickUpTap: () async {
-                                        data.paymentMode == 'topay'
-                                            ? showDeliveryDialog(
-                                                data.shipmentId.toString(),
-                                                data.date.toString(),
-                                                deliveryController
-                                                    .amountController.text,
-                                                data.subPaymentMode == '0' ||
-                                                        data.subPaymentMode ==
-                                                            ''
-                                                    ? 'Select Payment Mode'
-                                                    : data.subPaymentMode,
-                                                'Delivery',
-                                                () {},
-                                              )
-                                            : showOtpDialog(() async {
-                                                pickupController.uploadPickup(
-                                                  data.shipmentId.toString(),
-                                                  'Picked up',
-                                                  data.date.toString(),
-                                                  // data.totalCharges,
-                                                  '',
-                                                  '',
-                                                  pickupController
-                                                      .otpController.text,
-                                                );
-                                              },
-                                                pickupController.otpController);
-
-                                        await pickupController
-                                            .getOtp(data.shipmentId.toString());
-                                      },
-                                      transferBtnColor: null,
-                                      transferTextColor: themes.darkCyanBlue,
-                                      trasferTap: () {},
-                                      transferBorderColor: themes.darkCyanBlue,
-                                      pickupTxt: 'Delivery',
-                                    ),
-                                  );
+                              return RefreshIndicator.adaptive(
+                                onRefresh: () async {
+                                  await deliveryController.getDeliveryData();
                                 },
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  itemCount: deliveryController
+                                      .filteredDeliveryList.length,
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final data = deliveryController
+                                        .filteredDeliveryList[index];
+                                    return Container(
+                                      margin: EdgeInsets.all(8.w),
+                                      padding: EdgeInsets.all(10.w),
+                                      decoration: BoxDecoration(
+                                        color: themes.whiteColor,
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 4.r,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: PickupWidget(
+                                        onTap: () {
+                                          runningController.fetchTrackingData(
+                                              data.shipmentId.toString());
+                                          // Get.to(
+                                          //   RunningDeliveryDetailsView(
+                                          //     isShowInvoice: true,
+                                          //     isShowTransfer: true,
+                                          //   ),
+                                          //   arguments: {
+                                          //     'shipmentID': data.shipmentId.toString(),
+                                          //     'status': data.status.toString(),
+                                          //     'invoicePath': data.invoicePath,
+                                          //     'invoicePhoto': data.invoiceFile,
+                                          //     'paymentMode': data.paymentMode,
+                                          //     'date': data.date,
+                                          //     'cashAmt': data.totalCharges
+                                          //   },
+                                          // );
+                                        },
+                                        isShowPaymentType: true,
+                                        companyName:
+                                            data.companyName.toString(),
+                                        date: data.date.toString(),
+                                        status: data.status.toString(),
+                                        messangerName: '',
+                                        address: data.address1.toString(),
+                                        shipmentID: data.shipmentId.toString(),
+                                        cityName: data.cityName.toString(),
+                                        mobile: data.mobile.toString(),
+                                        paymentType: data.paymentMode,
+                                        statusColor: data.status == 'Picked up'
+                                            ? themes.greenColor
+                                            : themes.redColor,
+                                        statusDotColor: themes.darkCyanBlue,
+                                        showPickupBtn: true,
+                                        showTrasferBtn: false,
+                                        showDivider: true,
+                                        openDialerTap: () {
+                                          runningController.makingPhoneCall(
+                                              data.mobile.toString());
+                                        },
+                                        openMapTap: () {
+                                          pickupController.openMapWithAddress(
+                                              data.companyName.toString(),
+                                              data.address1.toString(),
+                                              data.pincode.toString());
+                                        },
+                                        pickUpTap: () async {
+                                          data.paymentMode == 'topay'
+                                              ? showDeliveryDialog(
+                                                  data.shipmentId.toString(),
+                                                  data.date.toString(),
+                                                  deliveryController
+                                                      .amountController.text,
+                                                  data.subPaymentMode == '0' ||
+                                                          data.subPaymentMode ==
+                                                              ''
+                                                      ? 'Select Payment Mode'
+                                                      : data.subPaymentMode,
+                                                  'Delivery',
+                                                  () async {
+                                                    deliveryController
+                                                        .uploadDelivery(
+                                                      data.shipmentId
+                                                          .toString(),
+                                                      'Delivered',
+                                                      data.messangerId,
+                                                      data.date,
+                                                      deliveryController
+                                                          .amountController
+                                                          .text,
+                                                      data.paymentMode,
+                                                      deliveryController
+                                                          .selectedSubPaymentMode
+                                                          .value
+                                                          ?.id,
+                                                      deliveryController
+                                                          .otpController.text,
+                                                      chequeNumber:
+                                                          deliveryController
+                                                              .chequeNumberController
+                                                              .text,
+                                                    );
+                                                  },
+                                                  () async {
+                                                    await pickupController
+                                                        .getOtp(data.shipmentId
+                                                            .toString());
+                                                  },
+                                                )
+                                              : showOtpDialog(() async {
+                                                  deliveryController.uploadDelivery(
+                                                      data.shipmentId
+                                                          .toString(),
+                                                      'Delivered',
+                                                      data.messangerId,
+                                                      data.date,
+                                                      data.totalCharges
+                                                          .toString(),
+                                                      data.paymentMode,
+                                                      data.subPaymentMode ==
+                                                                  '0' ||
+                                                              data.subPaymentMode ==
+                                                                  ''
+                                                          ? 'Select Payment Mode'
+                                                          : data.subPaymentMode,
+                                                      deliveryController
+                                                          .otpController.text,
+                                                      chequeNumber:
+                                                          deliveryController
+                                                              .chequeNumberController
+                                                              .text);
+                                                }, () async {
+                                                  await pickupController.getOtp(
+                                                      data.shipmentId
+                                                          .toString());
+                                                },
+                                                  pickupController
+                                                      .otpController);
+                                        },
+                                        transferBtnColor: null,
+                                        transferTextColor: themes.darkCyanBlue,
+                                        trasferTap: () {},
+                                        transferBorderColor:
+                                            themes.darkCyanBlue,
+                                        pickupTxt: 'Delivery',
+                                      ),
+                                    );
+                                  },
+                                ),
                               );
                             } else {
                               return Center(
@@ -411,38 +461,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                             data.address1.toString(),
                                             data.pincode.toString());
                                       },
-                                      pickUpTap: () async {
-                                        data.paymentMode == 'topay'
-                                            ? showDeliveryDialog(
-                                                data.shipmentId.toString(),
-                                                data.date.toString(),
-                                                deliveryController
-                                                    .amountController.text,
-                                                data.subPaymentMode == '0' ||
-                                                        data.subPaymentMode ==
-                                                            ''
-                                                    ? 'Select Payment Mode'
-                                                    : data.subPaymentMode,
-                                                'Delivery',
-                                                () {},
-                                              )
-                                            : showOtpDialog(() async {
-                                                pickupController.uploadPickup(
-                                                  data.shipmentId.toString(),
-                                                  'Picked up',
-                                                  data.date.toString(),
-                                                  // data.totalCharges,
-                                                  '',
-                                                  '',
-                                                  pickupController
-                                                      .otpController.text,
-                                                );
-                                              },
-                                                pickupController.otpController);
-
-                                        await pickupController
-                                            .getOtp(data.shipmentId.toString());
-                                      },
+                                      pickUpTap: () async {},
                                       transferBtnColor: null,
                                       transferTextColor: themes.darkCyanBlue,
                                       trasferTap: () {},
