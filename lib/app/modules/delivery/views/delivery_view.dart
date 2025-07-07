@@ -280,20 +280,21 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   data.date.toString(),
                                                   deliveryController
                                                       .amountController.text,
-                                                  data.subPaymentMode == '0' ||
-                                                          data.subPaymentMode ==
-                                                              ''
-                                                      ? 'Select Payment Mode'
-                                                      : data.subPaymentMode,
+                                                  deliveryController
+                                                      .selectedSubPaymentMode
+                                                      .value
+                                                      ?.id,
                                                   'Delivery',
                                                   () async {
                                                     deliveryController
                                                         .uploadDelivery(
-                                                      data.shipmentId
-                                                          .toString(),
+                                                      data.shipmentId,
                                                       'Delivered',
-                                                      data.messangerId,
+                                                      deliveryController
+                                                          .currentUserId.value,
                                                       data.date,
+                                                      data.totalCharges
+                                                          .toString(),
                                                       deliveryController
                                                           .amountController
                                                           .text,
@@ -317,27 +318,29 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   },
                                                 )
                                               : showOtpDialog(() async {
-                                                  deliveryController.uploadDelivery(
-                                                      data.shipmentId
-                                                          .toString(),
-                                                      'Delivered',
-                                                      data.messangerId,
-                                                      data.date,
-                                                      data.totalCharges
-                                                          .toString(),
-                                                      data.paymentMode,
-                                                      data.subPaymentMode ==
-                                                                  '0' ||
-                                                              data.subPaymentMode ==
-                                                                  ''
-                                                          ? 'Select Payment Mode'
-                                                          : data.subPaymentMode,
-                                                      deliveryController
-                                                          .otpController.text,
-                                                      chequeNumber:
-                                                          deliveryController
-                                                              .chequeNumberController
-                                                              .text);
+                                                  deliveryController
+                                                      .uploadDelivery(
+                                                    data.shipmentId.toString(),
+                                                    'Delivered',
+                                                    data.messangerId,
+                                                    data.date,
+                                                    data.totalCharges
+                                                        .toString(),
+                                                    0,
+                                                    data.paymentMode,
+                                                    data.subPaymentMode ==
+                                                                '0' ||
+                                                            data.subPaymentMode ==
+                                                                ''
+                                                        ? 'Select Payment Mode'
+                                                        : data.subPaymentMode,
+                                                    deliveryController
+                                                        .otpController.text,
+                                                    chequeNumber:
+                                                        deliveryController
+                                                            .chequeNumberController
+                                                            .text,
+                                                  );
                                                 }, () async {
                                                   await pickupController.getOtp(
                                                       data.shipmentId

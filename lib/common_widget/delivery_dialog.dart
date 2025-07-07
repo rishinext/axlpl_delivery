@@ -38,13 +38,16 @@ void showDeliveryDialog(
       border: Border.all(color: Colors.transparent),
     ),
   );
-  Get.defaultDialog(
-    buttonColor: themes.darkCyanBlue,
-    title: "Payment Mode",
-    content: Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
+  BuildContext context = Get.context!;
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      backgroundColor: themes.whiteColor,
+      title: Text(
+        'Payment Details',
+        style: themes.fontSize18_600.copyWith(color: themes.darkCyanBlue),
+      ),
+      content: SingleChildScrollView(
         child: SizedBox(
           width: 400.w,
           child: Column(
@@ -53,7 +56,7 @@ void showDeliveryDialog(
             children: [
               const SizedBox(height: 10),
               CommonTextfiled(
-                controller: pickupController.amountController,
+                controller: deliveryController.amountController,
                 obscureText: false,
                 hintTxt: 'Enter Amount',
                 lableText: 'Enter Amount',
@@ -71,33 +74,6 @@ void showDeliveryDialog(
                   }
                   return null;
                 },
-              ),
-              dropdownText('Cheque Number'),
-              CommonTextfiled(
-                controller: pickupController.chequeNumberController,
-                obscureText: false,
-                hintTxt: 'Enter Cheque Number',
-                lableText: 'Enter Cheque Number',
-                keyboardType: TextInputType.text,
-              ),
-              Row(
-                // crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Enter OTP'),
-                  Obx(() {
-                    return pickupController.isOtpLoading.value == Status.loading
-                        ? Center(child: CircularProgressIndicator.adaptive())
-                        : TextButton(
-                            onPressed: onSendOtpCallback,
-                            child: Text(
-                              'Send OTP',
-                              style: themes.fontSize14_500
-                                  .copyWith(color: themes.darkCyanBlue),
-                            ),
-                          );
-                  })
-                ],
               ),
               dropdownText('Sub Payment Mode'),
               Obx(() {
@@ -122,7 +98,7 @@ void showDeliveryDialog(
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<PaymentMode>(
-                      hint: Text(dropdownHintTxt),
+                      hint: Text(dropdownHintTxt ?? 'Select Payment Mode'),
                       value: deliveryController.selectedSubPaymentMode.value,
                       items: deliveryController.subPaymentModes
                           .map((mode) => DropdownMenuItem(
@@ -130,20 +106,55 @@ void showDeliveryDialog(
                                 child: Text(mode.name),
                               ))
                           .toList(),
-                      onChanged: (value) =>
-                          deliveryController.setSelectedSubPaymentMode(value),
+                      onChanged: deliveryController.setSelectedSubPaymentMode,
                     ),
                   ),
                 );
               }),
-              dropdownText('Enter OTP'),
+              Obx(() {
+                if (deliveryController.selectedSubPaymentMode.value?.name ==
+                    'Cheque') {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      dropdownText('Cheque Number'),
+                      CommonTextfiled(
+                        controller: deliveryController.chequeNumberController,
+                        hintTxt: 'Enter Cheque Number',
+                        keyboardType: TextInputType.text,
+                      ),
+                    ],
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }),
+              Row(
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Enter OTP'),
+                  Obx(() {
+                    return pickupController.isOtpLoading.value == Status.loading
+                        ? Center(child: CircularProgressIndicator.adaptive())
+                        : TextButton(
+                            onPressed: onSendOtpCallback,
+                            child: Text(
+                              'Send OTP',
+                              style: themes.fontSize14_500
+                                  .copyWith(color: themes.darkCyanBlue),
+                            ),
+                          );
+                  })
+                ],
+              ),
               SizedBox(
                 width: double.infinity,
                 child: Pinput(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   hapticFeedbackType: HapticFeedbackType.lightImpact,
                   length: 4,
-                  controller: pinController,
+                  controller: deliveryController.otpController,
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: defaultPinTheme.copyWith(
                     decoration: defaultPinTheme.decoration!.copyWith(
@@ -165,11 +176,33 @@ void showDeliveryDialog(
           ),
         ),
       ),
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: themes.darkCyanBlue,
+            backgroundColor: themes.whiteColor,
+            side: BorderSide(color: themes.darkCyanBlue),
+          ),
+          onPressed: () => Get.back(),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              backgroundColor: themes.darkCyanBlue,
+              foregroundColor: themes.whiteColor),
+          onPressed: () {
+            if (deliveryController.otpController.text.length != 4) {
+              Get.snackbar('Invalid OTP', 'Please enter all 4 digits.',
+                  colorText: themes.whiteColor,
+                  backgroundColor: themes.redColor);
+              return;
+            }
+
+            onConfirmCallback?.call();
+          },
+          child: Text(btnTxt),
+        ),
+      ],
     ),
-    radius: 10,
-    textConfirm: btnTxt,
-    textCancel: "Cancel",
-    confirmTextColor: themes.whiteColor,
-    onConfirm: onConfirmCallback,
   );
 }

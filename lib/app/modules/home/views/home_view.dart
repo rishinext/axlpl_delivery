@@ -263,7 +263,7 @@ class HomeView extends GetView<HomeController> {
                                 OnTap: () {
                                   deliveryController.getDeliveryData();
                                   deliveryController.fetchPaymentModes();
-                                  historyController.getDeliveryHistory('0');
+                                  historyController.getDeliveryHistory();
                                   Get.toNamed(Routes.DELIVERY, arguments: '');
                                 })),
                         SizedBox(

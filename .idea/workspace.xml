@@ -4,22 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a34695b8-f86e-4fe4-82b5-decc75c7aeb4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/models/pickup_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/models/pickup_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/api_endpoint.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/api_endpoint.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/api_services.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/api_services.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/repostiory/pickup_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/repostiory/pickup_repo.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/repostiory/pod_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/repostiory/pod_repo.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/repostiory/tracking_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/repostiory/tracking_repo.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/pickup/views/pickup_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/pickup/views/pickup_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/pod/controllers/pod_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/pod/controllers/pod_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/running_delivery_details/controllers/running_delivery_details_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/running_delivery_details/controllers/running_delivery_details_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/running_delivery_details/views/running_delivery_details_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/running_delivery_details/views/running_delivery_details_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/common_widget/pickup_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/common_widget/pickup_dialog.dart" afterDir="false" />
-    </list>
+    <list default="true" id="a34695b8-f86e-4fe4-82b5-decc75c7aeb4" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

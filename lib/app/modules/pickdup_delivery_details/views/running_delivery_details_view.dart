@@ -631,31 +631,43 @@ class RunningDeliveryDetailsView
                                             await pickupController
                                                 .getOtp(details?.shipmentId);
                                           }, pickupController.otpController)
-                                        : showPickDialog(
-                                            details?.shipmentId,
-                                            date,
-                                            details?.totalCharges,
-                                            details?.paymentMode.toString(),
-                                            'Pickup', () {
-                                            pickupController.uploadPickup(
-                                              details?.shipmentId,
-                                              'Picked up',
-                                              date,
-                                              pickupController
-                                                  .amountController.text,
-                                              pickupController
-                                                  .selectedSubPaymentMode
-                                                  .value
-                                                  ?.id,
-                                              pickupController
-                                                  .otpController.text,
-                                              chequeNumber: pickupController
-                                                  .chequeNumberController.text,
-                                            );
-                                          }, () async {
-                                            await pickupController
-                                                .getOtp(shipmentID);
-                                          });
+                                        : showDialog(
+                                            context: context,
+                                            builder: (_) => PickDialog(
+                                              shipmentID: details?.shipmentId,
+                                              date: date,
+                                              amt: details?.totalCharges,
+                                              dropdownHintTxt: pickupController
+                                                      .selectedSubPaymentMode
+                                                      .value
+                                                      ?.name ??
+                                                  'Select Payment Mode',
+                                              btnTxt: 'Pickup',
+                                              onConfirmCallback: () {
+                                                pickupController.uploadPickup(
+                                                  details?.shipmentId,
+                                                  'Picked up',
+                                                  date,
+                                                  pickupController
+                                                      .amountController.text,
+                                                  pickupController
+                                                      .selectedSubPaymentMode
+                                                      .value
+                                                      ?.id,
+                                                  pickupController
+                                                      .otpController.text,
+                                                  chequeNumber: pickupController
+                                                      .chequeNumberController
+                                                      .text,
+                                                );
+                                                Get.back();
+                                              },
+                                              onSendOtpCallback: () async {
+                                                await pickupController.getOtp(
+                                                    details?.shipmentId);
+                                              },
+                                            ),
+                                          );
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: themes.whiteColor,

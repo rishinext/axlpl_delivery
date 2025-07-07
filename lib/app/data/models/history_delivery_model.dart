@@ -1,28 +1,30 @@
 // To parse this JSON data, do
 //
-//     final historyModel = historyModelFromJson(jsonString);
+//     final deliveryHistoryModel = deliveryHistoryModelFromJson(jsonString);
 
 import 'dart:convert';
 
-HistoryModel historyModelFromJson(String str) =>
-    HistoryModel.fromJson(json.decode(str));
+DeliveryHistoryModel deliveryHistoryModelFromJson(String str) =>
+    DeliveryHistoryModel.fromJson(json.decode(str));
 
-String historyModelToJson(HistoryModel data) => json.encode(data.toJson());
+String deliveryHistoryModelToJson(DeliveryHistoryModel data) =>
+    json.encode(data.toJson());
 
-class HistoryModel {
+class DeliveryHistoryModel {
   String? status;
   String? message;
   List<HistoryDelivery>? historyDelivery;
   List<Next>? next;
 
-  HistoryModel({
+  DeliveryHistoryModel({
     this.status,
     this.message,
     this.historyDelivery,
     this.next,
   });
 
-  factory HistoryModel.fromJson(Map<String, dynamic> json) => HistoryModel(
+  factory DeliveryHistoryModel.fromJson(Map<String, dynamic> json) =>
+      DeliveryHistoryModel(
         status: json["status"],
         message: json["message"],
         historyDelivery: json["HistoryDelivery"] == null
@@ -57,7 +59,6 @@ class HistoryDelivery {
   String? grandTotal;
   DateTime? date;
   String? senderCityName;
-  String? receiverCityName;
   String? areaId;
   String? areaName;
   String? pincode;
@@ -76,7 +77,6 @@ class HistoryDelivery {
     this.grandTotal,
     this.date,
     this.senderCityName,
-    this.receiverCityName,
     this.areaId,
     this.areaName,
     this.pincode,
@@ -97,7 +97,6 @@ class HistoryDelivery {
         grandTotal: json["grand_total"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
         senderCityName: json["sender_city_name"],
-        receiverCityName: json["receiver_city_name"],
         areaId: json["area_id"],
         areaName: json["area_name"],
         pincode: json["pincode"],
@@ -117,7 +116,6 @@ class HistoryDelivery {
         "grand_total": grandTotal,
         "date": date?.toIso8601String(),
         "sender_city_name": senderCityName,
-        "receiver_city_name": receiverCityName,
         "area_id": areaId,
         "area_name": areaName,
         "pincode": pincode,

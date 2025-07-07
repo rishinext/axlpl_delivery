@@ -1,4 +1,4 @@
-import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
+import 'package:axlpl_delivery/app/data/models/history_delivery_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/delivery_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -23,7 +23,7 @@ class HistoryController extends GetxController {
     isSelected.value = index;
   }
 
-  Future<void> getDeliveryHistory(final nextID) async {
+  Future<void> getDeliveryHistory({final nextID}) async {
     isDeliveredLoading.value = Status.loading;
 
     try {
@@ -36,7 +36,7 @@ class HistoryController extends GetxController {
         historyList.value = success;
         isDeliveredLoading.value = Status.success;
       } else {
-        Utils().logInfo('No History Data Found');
+        Utils().logInfo('No Delivery History Data Found');
         isDeliveredLoading.value = Status.error;
         historyList.value = [];
       }
@@ -73,7 +73,7 @@ class HistoryController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    getDeliveryHistory('0');
+    getDeliveryHistory();
     getPickupHistory();
     super.onInit();
   }

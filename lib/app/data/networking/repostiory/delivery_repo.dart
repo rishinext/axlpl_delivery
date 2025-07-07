@@ -1,6 +1,6 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
-import 'package:axlpl_delivery/app/data/models/history_dekivery_model.dart';
+import 'package:axlpl_delivery/app/data/models/history_delivery_model.dart';
 import 'package:axlpl_delivery/app/data/models/history_pickup_model.dart';
 import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
@@ -33,7 +33,7 @@ class DeliveryRepo {
         );
         return response.when(
           success: (body) {
-            final historyData = HistoryModel.fromJson(body);
+            final historyData = DeliveryHistoryModel.fromJson(body);
             if (historyData.status == success) {
               return historyData.historyDelivery;
             } else {
@@ -96,6 +96,7 @@ class DeliveryRepo {
     shipmentStatus,
     id,
     date,
+    amtPaid,
     cashAmount,
     paymentMode,
     subPaymentMode,
@@ -124,6 +125,7 @@ class DeliveryRepo {
         date,
         location.latitude,
         location.longitude,
+        amtPaid,
         cashAmount,
         paymentMode,
         subPaymentMode,
@@ -143,6 +145,7 @@ class DeliveryRepo {
             isSuccess = true;
           } else {
             Utils().log('Pickup error: ${data.message}');
+            Utils().log(data.toJson());
             isSuccess = false;
           }
         },

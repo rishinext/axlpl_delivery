@@ -622,6 +622,7 @@ class ApiServices {
     date,
     lat,
     long,
+    amtPaid,
     cashAmount,
     paymentMode,
     subPaymentMode,
@@ -637,14 +638,13 @@ class ApiServices {
       'date_time': date,
       'latitude': lat,
       'longitude': long,
+      'amount_paid': amtPaid,
       'cash_amount': cashAmount,
-      'sub_payment_mode': paymentMode,
+      'payment_method': paymentMode,
+      'sub_payment_mode': subPaymentMode,
       'pickup_otp': deliveryOtp,
+      'cheque_number': chequeNumber ?? 0,
     };
-
-    if (chequeNumber != null && chequeNumber.isNotEmpty) {
-      body['cheque_number'] = chequeNumber;
-    }
 
     return _api.post(
       uploadDeliveryPoint,

@@ -1,3 +1,4 @@
+import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_client.dart';
@@ -20,6 +21,7 @@ class DeliveryController extends GetxController {
   //TODO: Implement DeliveryController
   var isDeliveryLoading = Status.initial.obs;
   var isUploadDelivery = Status.initial.obs;
+  final currentUserId = ''.obs;
   RxInt isSelected = 0.obs;
 
   final deliveryList = <RunningDelivery>[].obs;
@@ -41,6 +43,11 @@ class DeliveryController extends GetxController {
 
   final amountController = TextEditingController();
   var isLoadingPayment = false.obs;
+
+  void initializeUserId() async {
+    final userData = await LocalStorage().getUserLocalData();
+    currentUserId.value = userData?.messangerdetail?.id.toString() ?? '-1';
+  }
 
   Future<void> getDeliveryData() async {
     isDeliveryLoading.value = Status.loading;
@@ -66,6 +73,7 @@ class DeliveryController extends GetxController {
     shipmentStatus,
     id,
     date,
+    amtPaid,
     cashAmount,
     paymentMode,
     subPaymentMode,
@@ -79,6 +87,7 @@ class DeliveryController extends GetxController {
         shipmentStatus,
         id,
         date,
+        amtPaid,
         cashAmount,
         paymentMode,
         subPaymentMode,
@@ -96,13 +105,13 @@ class DeliveryController extends GetxController {
         isUploadDelivery.value = Status.success;
         getDeliveryData();
         final historyController = Get.find<HistoryController>();
-        historyController.getDeliveryHistory('');
+        historyController.getDeliveryHistory();
         otpController.clear();
         Get.back(); // Navigate back on success
       } else {
         Get.snackbar(
           'Failed',
-          'Upload pickup failed. Please try again.',
+          'Upload Delivery failed. Please try again.',
           colorText: themes.whiteColor,
           backgroundColor: themes.redColor,
         );
@@ -151,7 +160,8 @@ class DeliveryController extends GetxController {
   @override
   void onInit() {
     // getDeliveryData();
-    historyController.getDeliveryHistory('0');
+    initializeUserId();
+    // historyController.getDeliveryHistory('0');
     super.onInit();
   }
 }
