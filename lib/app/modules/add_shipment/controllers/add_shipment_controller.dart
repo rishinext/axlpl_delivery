@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:math';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:intl/intl.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
@@ -220,6 +222,7 @@ class AddShipmentController extends GetxController {
   final isLoadingReceiverArea = false.obs;
   final isLoadingDiffArea = false.obs;
   var isShipmentCal = Status.initial.obs;
+  var isShipmentAdd = Status.initial.obs;
 
   var selectedCustomer = Rxn();
   var selectedExitingCustomer = Rxn();
@@ -674,6 +677,7 @@ class AddShipmentController extends GetxController {
     final userData = await LocalStorage().getUserLocalData();
     final userID = userData?.messangerdetail?.id?.toString() ??
         userData?.customerdetail?.id.toString();
+    isShipmentAdd.value = Status.loading;
     try {
       final shipment = ShipmentModel(
         shipmentId: '',
@@ -807,114 +811,30 @@ class AddShipmentController extends GetxController {
           await addShipmentRepo.addShipmentRepo(shipmentModel: shipment);
 
       if (response == true) {
+        isShipmentAdd.value = Status.success;
         Get.snackbar(
           'Success',
           'Shipment added successfully',
           backgroundColor: themes.darkCyanBlue,
           colorText: themes.whiteColor,
         );
+
+        final shipmentController = Get.put(ShipnowController());
+        shipmentController.fetchShipmentData('0');
+
+        Get.offAllNamed(Routes.BOTTOMBAR, arguments: userData);
       } else {
+        isShipmentAdd.value = Status.error;
         Get.snackbar('Error', 'Failed to add shipment');
       }
     } catch (e) {
+      isShipmentAdd.value = Status.error;
       Get.snackbar('Error', 'Unexpected error occurred');
       Utils().logError('Shipment submission error: $e');
+    } finally {
+      isShipmentAdd.value = Status.success;
     }
   }
-  // void testAddShipment() async {
-  //   final shipmentDetails = ShipmentDetails(
-  //     shipmentId: 12312345,
-  //     addedByType: 'System',
-  //     alertShipment: 0,
-  //     isAmtEditedByUser: 0,
-  //     // shipmentStatus: 'In Progress',
-  //     custId: 123, // <-- set actual customer id
-  //     addedBy: 0,
-  //     parcelDetail: '1'.trim(),
-  //     commodityID: 456, // <-- product id
-  //     categoryId: 789,
-  //     netWeight: 10.0,
-  //     grossWeight: 12.0,
-  //     paymentMode: 'prepaid',
-  //     serviceId: 1,
-  //     invoiceValue: 1000.0,
-  //     axlplInsurance: 0,
-  //     policyNo: 'POL123',
-  //     expDate: '2025-12-31',
-  //     insuranceValue: 500.0,
-  //     invoiceNumber: 1,
-  //     remark: 'fragile',
-  //     billTo: 'billtoName',
-  //     numberOfParcel: 1,
-  //     additionalAxlplInsurance: 0.0,
-  //     shipmentCharges: 100.0,
-  //     insuranceCharges: 50.0,
-  //     invoiceCharges: 0.0,
-  //     handlingCharges: 10.0,
-  //     tax: 18.0,
-  //     totalCharges: 178.0,
-  //     userId: 'user123',
-  //     customerId: 3306,
-  //     senderId: 123,
-  //     gst: 'GST123',
-  //     grandTotal: 178.0,
-  //   );
-
-  //   final sender = SenderData(
-  //     senderSaveAddress: 1,
-  //     senderIsNewSenderAddress: 1,
-  //     senderName: 'John Doe',
-  //     senderCustID: 1,
-  //     companyName: 'Sender Co',
-  //     mobile: '1234567890',
-  //     senderEmail: 'a@mail.com',
-  //     address1: '123 Street',
-  //     address2: 'Suite 1',
-  //     state: 4,
-  //     city: 817,
-  //     area: 63862,
-  //     pincode: '400002',
-  //     senderCountry: 1,
-  //     senderGst: '27AACPJ9801C1Z1',
-  //   );
-
-  //   final receiver = ReceiverData(
-  //     receiverSaveAddress: 1,
-  //     receiverNewAddress: 1,
-  //     receiverName: 'Jane Doe',
-  //     companyName: 'Receiver Co',
-  //     mobile: '0987654321',
-  //     address1: '456 Avenue',
-  //     address2: 'Apt 2',
-  //     receiverCountry: 1,
-  //     receiverEmail: 'rishi@version-next.com',
-  //     receiverGst: 122222,
-  //     receiverCustID: 624,
-  //     state: 'StateA',
-  //     city: 'CityB',
-  //     area: 'AreaC',
-  //     pincode: '654321',
-  //   );
-
-  //   final bool? response = await addShipmentRepo.addShipmentRepo(
-  //     shipmentDetails: shipmentDetails,
-  //     sender: sender,
-  //     receiver: receiver,
-  //     isDiffAdd: false,
-  //     docketNo: 'DCKT001',
-  //     shipmentDate: '2025-06-24',
-  //     // alertShipment: false, // Add required bools here
-  //     // isAmtEditedByUser: false,
-  //     // shipmentStatus: 'pending',
-  //     // calculationStatus: 'in_progress',
-  //   );
-
-  //   if (response == true) {
-  //     print("✅ Shipment added successfully.");
-  //   } else {
-  //     print("❌ Shipment add failed.");
-  //   }
-  // }
 
   void previousPage() {
     if (currentPage.value > 0) {

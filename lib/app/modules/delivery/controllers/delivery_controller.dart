@@ -29,8 +29,16 @@ class DeliveryController extends GetxController {
 
   var subPaymentModes = <PaymentMode>[].obs;
   var selectedSubPaymentMode = Rxn<PaymentMode>();
-  void setSelectedSubPaymentMode(PaymentMode? mode) {
-    selectedSubPaymentMode.value = mode;
+
+  final Map<String, Rxn<PaymentMode>> selectedSubPaymentModes = {};
+
+  Rxn<PaymentMode> getSelectedSubPaymentMode(String shipmentId) {
+    return selectedSubPaymentModes.putIfAbsent(
+        shipmentId, () => Rxn<PaymentMode>());
+  }
+
+  void setSelectedSubPaymentMode(String shipmentId, PaymentMode? mode) {
+    getSelectedSubPaymentMode(shipmentId).value = mode;
   }
 
   void selectedContainer(int index) {
@@ -40,6 +48,25 @@ class DeliveryController extends GetxController {
   final TextEditingController pincodeController = TextEditingController();
   final TextEditingController otpController = TextEditingController();
   final TextEditingController chequeNumberController = TextEditingController();
+
+  final Map<String, TextEditingController> amountControllers = {};
+  final Map<String, TextEditingController> chequeControllers = {};
+  final Map<String, TextEditingController> otpControllers = {};
+
+  TextEditingController getAmountController(String shipmentId) {
+    return amountControllers.putIfAbsent(
+        shipmentId, () => TextEditingController());
+  }
+
+  TextEditingController getChequeController(String shipmentId) {
+    return chequeControllers.putIfAbsent(
+        shipmentId, () => TextEditingController());
+  }
+
+  TextEditingController getOtpController(String shipmentId) {
+    return otpControllers.putIfAbsent(
+        shipmentId, () => TextEditingController());
+  }
 
   final amountController = TextEditingController();
   var isLoadingPayment = false.obs;
@@ -57,7 +84,14 @@ class DeliveryController extends GetxController {
         deliveryList.value = success;
         filteredDeliveryList.value = success;
         isDeliveryLoading.value = Status.success;
+        if (success.isNotEmpty) {
+          amountController.text = success.first.totalCharges.toString();
+        } else {
+          amountController.text;
+        }
       } else {
+        Utils().logInfo('No delivery Record Found!');
+        isDeliveryLoading.value = Status.error;
         Utils().logInfo('No delivery Record Found!');
       }
     } catch (e) {

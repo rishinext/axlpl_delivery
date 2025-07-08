@@ -19,7 +19,18 @@ class ShipnowController extends GetxController {
     try {
       isLoadingShipNow(true);
       final data = await shipNowRepo.customerListRepo(
-          nextID, '', '', '', '', '', '', '', '', '', '');
+        nextID,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      );
       allShipmentData.value = data ?? [];
       filterShipmentData(shipmentIDController.text); // apply filter immediately
     } catch (e) {

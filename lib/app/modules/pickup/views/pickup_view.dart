@@ -173,9 +173,7 @@ class PickupView extends GetView<PickupController> {
                           if (pickupController.isPickupLoading.value ==
                               Status.loading) {
                             return Center(
-                              child: CircularProgressIndicator.adaptive(
-                                backgroundColor: themes.darkCyanBlue,
-                              ),
+                              child: CircularProgressIndicator.adaptive(),
                             );
                           } else if (pickupController.isPickupLoading.value ==
                                   Status.error ||
@@ -292,79 +290,111 @@ class PickupView extends GetView<PickupController> {
                                               pickupData.pincode.toString());
                                         },
                                         pickUpTap: () async {
-                                          pickupData.paymentMode != 'topay'
-                                              ? showOtpDialog(
-                                                  () async {
+                                          pickupController.amountController =
+                                              pickupController
+                                                  .getAmountController(
+                                                      pickupData.shipmentId
+                                                          .toString());
+                                          final chequeController =
+                                              pickupController
+                                                  .getChequeController(
+                                                      pickupData.shipmentId
+                                                          .toString());
+                                          final otpController =
+                                              pickupController.getOtpController(
+                                                  pickupData.shipmentId
+                                                      .toString());
+                                          final selectedSubPaymentMode =
+                                              pickupController
+                                                  .getSelectedSubPaymentMode(
+                                                      pickupData.shipmentId
+                                                          .toString());
+
+                                          if (pickupData.paymentMode !=
+                                              'topay') {
+                                            showOtpDialog(
+                                              () async {
+                                                pickupController
+                                                        .amountController =
                                                     pickupController
-                                                        .uploadPickup(
-                                                      pickupData.shipmentId,
-                                                      'Picked up',
-                                                      pickupData.date,
-                                                      pickupController
-                                                          .amountController
-                                                          .text,
-                                                      pickupController
-                                                          .selectedSubPaymentMode
-                                                          .value
-                                                          ?.id,
-                                                      pickupController
-                                                          .otpController.text,
-                                                    );
-                                                  },
-                                                  () async {
-                                                    await pickupController
-                                                        .getOtp(pickupData
-                                                            .shipmentId);
-                                                  },
-                                                  pickupController
-                                                      .otpController,
-                                                )
-                                              : showDialog(
-                                                  context: context,
-                                                  builder: (_) => PickDialog(
-                                                    shipmentID:
-                                                        pickupData.shipmentId,
-                                                    date: pickupData.date,
-                                                    amt:
-                                                        pickupData.totalCharges,
-                                                    dropdownHintTxt: pickupController
-                                                            .selectedSubPaymentMode
-                                                            .value
-                                                            ?.name ??
+                                                        .getAmountController(
+                                                            pickupData
+                                                                .shipmentId
+                                                                .toString());
+
+                                                final otpController =
+                                                    pickupController
+                                                        .getOtpController(
+                                                            pickupData
+                                                                .shipmentId
+                                                                .toString());
+                                                final selectedSubPaymentMode =
+                                                    pickupController
+                                                        .getSelectedSubPaymentMode(
+                                                            pickupData
+                                                                .shipmentId
+                                                                .toString());
+                                                pickupController.uploadPickup(
+                                                    pickupData.shipmentId,
+                                                    'Picked up',
+                                                    pickupData.date,
+                                                    pickupController
+                                                        .amountController.text,
+                                                    selectedSubPaymentMode
+                                                        .value?.id,
+                                                    otpController.text,
+                                                    chequeNumber: '0');
+                                                Get.back();
+                                              },
+                                              () async {
+                                                await pickupController.getOtp(
+                                                    pickupData.shipmentId);
+                                              },
+                                              otpController,
+                                            );
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => PickDialog(
+                                                shipmentID:
+                                                    pickupData.shipmentId,
+                                                date: pickupData.date,
+                                                amt: pickupData.totalCharges,
+                                                dropdownHintTxt:
+                                                    selectedSubPaymentMode
+                                                            .value?.name ??
                                                         'Select Payment Mode',
-                                                    btnTxt: 'Pickup',
-                                                    onConfirmCallback: () {
-                                                      pickupController
-                                                          .uploadPickup(
-                                                        pickupData.shipmentId,
-                                                        'Picked up',
-                                                        pickupData.date,
-                                                        pickupController
-                                                            .amountController
-                                                            .text,
-                                                        pickupController
-                                                            .selectedSubPaymentMode
-                                                            .value
-                                                            ?.id,
-                                                        pickupController
-                                                            .otpController.text,
-                                                        chequeNumber:
-                                                            pickupController
-                                                                .chequeNumberController
-                                                                .text,
-                                                      );
-                                                      Get.back();
-                                                    },
-                                                    onSendOtpCallback:
-                                                        () async {
-                                                      await pickupController
-                                                          .getOtp(pickupData
-                                                              .shipmentId);
-                                                    },
-                                                  ),
-                                                );
-                                          // await pickupController
-                                          //     .getOtp(data.shipmentId);
+                                                btnTxt: 'Pickup',
+                                                amountController:
+                                                    pickupController
+                                                        .amountController,
+                                                chequeNumberController:
+                                                    chequeController,
+                                                otpController: otpController,
+                                                selectedSubPaymentMode:
+                                                    selectedSubPaymentMode,
+                                                onConfirmCallback: () {
+                                                  pickupController.uploadPickup(
+                                                    pickupData.shipmentId,
+                                                    'Picked up',
+                                                    pickupData.date,
+                                                    pickupController
+                                                        .amountController.text,
+                                                    selectedSubPaymentMode
+                                                        .value?.id,
+                                                    otpController.text,
+                                                    chequeNumber:
+                                                        chequeController.text,
+                                                  );
+                                                  Get.back();
+                                                },
+                                                onSendOtpCallback: () async {
+                                                  await pickupController.getOtp(
+                                                      pickupData.shipmentId);
+                                                },
+                                              ),
+                                            );
+                                          }
                                         },
                                         transferBtnColor: enableTransfer
                                             ? themes.whiteColor
@@ -486,9 +516,7 @@ class PickupView extends GetView<PickupController> {
                         if (historyController.isPickedup.value ==
                             Status.loading) {
                           return Center(
-                              child: CircularProgressIndicator.adaptive(
-                            backgroundColor: themes.darkCyanBlue,
-                          ));
+                              child: CircularProgressIndicator.adaptive());
                         } else if (historyController
                                 .pickUpHistoryList.isEmpty ||
                             historyController.isPickedup.value ==

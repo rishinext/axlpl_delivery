@@ -24,10 +24,30 @@ class PickupController extends GetxController {
   final shipmentRepo = ShipnowRepo();
 
   final shipmentController = TextEditingController();
-  final amountController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
   final TextEditingController pincodeController = TextEditingController();
   final otpController = TextEditingController();
   final TextEditingController chequeNumberController = TextEditingController();
+
+  final Map<String, TextEditingController> amountControllers = {};
+  final Map<String, TextEditingController> chequeControllers = {};
+  final Map<String, TextEditingController> otpControllers = {};
+  final Map<String, Rxn<PaymentMode>> selectedSubPaymentModes = {};
+
+  TextEditingController getAmountController(String shipmentId) =>
+      amountControllers.putIfAbsent(shipmentId, () => TextEditingController());
+
+  TextEditingController getChequeController(String shipmentId) =>
+      chequeControllers.putIfAbsent(shipmentId, () => TextEditingController());
+
+  TextEditingController getOtpController(String shipmentId) =>
+      otpControllers.putIfAbsent(shipmentId, () => TextEditingController());
+
+  Rxn<PaymentMode> getSelectedSubPaymentMode(String shipmentId) =>
+      selectedSubPaymentModes.putIfAbsent(shipmentId, () => Rxn<PaymentMode>());
+
+  void setSelectedSubPaymentMode(String shipmentId, PaymentMode? mode) =>
+      getSelectedSubPaymentMode(shipmentId).value = mode;
 
   var selectedPaymentModeId = Rxn<String>();
 
@@ -66,10 +86,6 @@ class PickupController extends GetxController {
     selectedPaymentMode.value = mode;
     selectedSubPaymentMode.value = null; // reset sub mode selection
     // optional call
-  }
-
-  void setSelectedSubPaymentMode(PaymentMode? mode) {
-    selectedSubPaymentMode.value = mode;
   }
 
   void initializeUserId() async {

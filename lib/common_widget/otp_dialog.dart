@@ -9,7 +9,7 @@ import 'package:pinput/pinput.dart';
 void showOtpDialog(
   VoidCallback? onConfirmCallback,
   VoidCallback? onOtpCallback,
-  final controller,
+  final TextEditingController otpController,
 ) {
   final pickupController = Get.find<PickupController>();
   final defaultPinTheme = PinTheme(
@@ -41,7 +41,7 @@ void showOtpDialog(
             Pinput(
               length: 4,
               defaultPinTheme: defaultPinTheme,
-              controller: controller,
+              controller: otpController,
               onCompleted: (pin) {
                 // Handle OTP submission
                 Utils().log('OTP entered: $pin');

@@ -208,7 +208,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                   shrinkWrap: true,
                                   physics: BouncingScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    final data = deliveryController
+                                    final deliveryData = deliveryController
                                         .filteredDeliveryList[index];
                                     return Container(
                                       margin: EdgeInsets.all(8.w),
@@ -228,126 +228,143 @@ class DeliveryView extends GetView<DeliveryController> {
                                       child: PickupWidget(
                                         onTap: () {
                                           runningController.fetchTrackingData(
-                                              data.shipmentId.toString());
-                                          // Get.to(
-                                          //   RunningDeliveryDetailsView(
-                                          //     isShowInvoice: true,
-                                          //     isShowTransfer: true,
-                                          //   ),
-                                          //   arguments: {
-                                          //     'shipmentID': data.shipmentId.toString(),
-                                          //     'status': data.status.toString(),
-                                          //     'invoicePath': data.invoicePath,
-                                          //     'invoicePhoto': data.invoiceFile,
-                                          //     'paymentMode': data.paymentMode,
-                                          //     'date': data.date,
-                                          //     'cashAmt': data.totalCharges
-                                          //   },
-                                          // );
+                                              deliveryData.shipmentId
+                                                  .toString());
                                         },
                                         isShowPaymentType: true,
                                         companyName:
-                                            data.companyName.toString(),
-                                        date: data.date.toString(),
-                                        status: data.status.toString(),
+                                            deliveryData.companyName.toString(),
+                                        date: deliveryData.date.toString(),
+                                        status: deliveryData.status.toString(),
                                         messangerName: '',
-                                        address: data.address1.toString(),
-                                        shipmentID: data.shipmentId.toString(),
-                                        cityName: data.cityName.toString(),
-                                        mobile: data.mobile.toString(),
-                                        paymentType: data.paymentMode,
-                                        statusColor: data.status == 'Picked up'
-                                            ? themes.greenColor
-                                            : themes.redColor,
+                                        address:
+                                            deliveryData.address1.toString(),
+                                        shipmentID:
+                                            deliveryData.shipmentId.toString(),
+                                        cityName:
+                                            deliveryData.cityName.toString(),
+                                        mobile: deliveryData.mobile.toString(),
+                                        paymentType: deliveryData.paymentMode,
+                                        statusColor:
+                                            deliveryData.status == 'Picked up'
+                                                ? themes.greenColor
+                                                : themes.redColor,
                                         statusDotColor: themes.darkCyanBlue,
                                         showPickupBtn: true,
                                         showTrasferBtn: false,
                                         showDivider: true,
                                         openDialerTap: () {
                                           runningController.makingPhoneCall(
-                                              data.mobile.toString());
+                                              deliveryData.mobile.toString());
                                         },
                                         openMapTap: () {
                                           pickupController.openMapWithAddress(
-                                              data.companyName.toString(),
-                                              data.address1.toString(),
-                                              data.pincode.toString());
+                                              deliveryData.companyName
+                                                  .toString(),
+                                              deliveryData.address1.toString(),
+                                              deliveryData.pincode.toString());
                                         },
                                         pickUpTap: () async {
-                                          data.paymentMode == 'topay'
-                                              ? showDeliveryDialog(
-                                                  data.shipmentId.toString(),
-                                                  data.date.toString(),
-                                                  deliveryController
-                                                      .amountController.text,
-                                                  deliveryController
-                                                      .selectedSubPaymentMode
-                                                      .value
-                                                      ?.id,
-                                                  'Delivery',
-                                                  () async {
-                                                    deliveryController
-                                                        .uploadDelivery(
-                                                      data.shipmentId,
-                                                      'Delivered',
-                                                      deliveryController
-                                                          .currentUserId.value,
-                                                      data.date,
-                                                      data.totalCharges
-                                                          .toString(),
-                                                      deliveryController
-                                                          .amountController
-                                                          .text,
-                                                      data.paymentMode,
-                                                      deliveryController
-                                                          .selectedSubPaymentMode
-                                                          .value
-                                                          ?.id,
-                                                      deliveryController
-                                                          .otpController.text,
-                                                      chequeNumber:
-                                                          deliveryController
-                                                              .chequeNumberController
-                                                              .text,
-                                                    );
-                                                  },
-                                                  () async {
-                                                    await pickupController
-                                                        .getOtp(data.shipmentId
-                                                            .toString());
-                                                  },
-                                                )
-                                              : showOtpDialog(() async {
+                                          final amountController =
+                                              deliveryController
+                                                  .getAmountController(
+                                                      deliveryData.shipmentId
+                                                          .toString());
+                                          final chequeController =
+                                              deliveryController
+                                                  .getChequeController(
+                                                      deliveryData.shipmentId
+                                                          .toString());
+                                          final otpController =
+                                              deliveryController
+                                                  .getOtpController(deliveryData
+                                                      .shipmentId
+                                                      .toString());
+
+                                          if (deliveryData.paymentMode ==
+                                              'topay') {
+                                            showDialog(
+                                              context: context,
+                                              builder: (_) => DeliveryDialog(
+                                                shipmentID: deliveryData
+                                                    .shipmentId
+                                                    .toString(),
+                                                date: deliveryData.date
+                                                    .toString(),
+                                                amountController:
+                                                    amountController,
+                                                chequeNumberController:
+                                                    chequeController,
+                                                otpController: otpController,
+                                                dropdownHintTxt:
+                                                    'Select Payment Mode',
+                                                btnTxt: 'Confirm',
+                                                onConfirmCallback: () {
                                                   deliveryController
                                                       .uploadDelivery(
-                                                    data.shipmentId.toString(),
+                                                    deliveryData.shipmentId,
                                                     'Delivered',
-                                                    data.messangerId,
-                                                    data.date,
-                                                    data.totalCharges
-                                                        .toString(),
-                                                    0,
-                                                    data.paymentMode,
-                                                    data.subPaymentMode ==
-                                                                '0' ||
-                                                            data.subPaymentMode ==
-                                                                ''
-                                                        ? 'Select Payment Mode'
-                                                        : data.subPaymentMode,
                                                     deliveryController
-                                                        .otpController.text,
+                                                        .currentUserId.value,
+                                                    deliveryData.date,
+                                                    deliveryData.totalCharges
+                                                        .toString(),
+                                                    amountController.text,
+                                                    deliveryData.paymentMode,
+                                                    deliveryController
+                                                        .getSelectedSubPaymentMode(
+                                                            deliveryData
+                                                                .shipmentId
+                                                                .toString())
+                                                        .value
+                                                        ?.id,
+                                                    otpController.text,
                                                     chequeNumber:
-                                                        deliveryController
-                                                            .chequeNumberController
-                                                            .text,
+                                                        chequeController.text,
                                                   );
-                                                }, () async {
+                                                },
+                                                onSendOtpCallback: () async {
                                                   await pickupController.getOtp(
-                                                      data.shipmentId
+                                                      deliveryData.shipmentId
                                                           .toString());
                                                 },
-                                                  pickupController
-                                                      .otpController);
+                                              ),
+                                            );
+                                          } else {
+                                            showOtpDialog(
+                                              () async {
+                                                await deliveryController
+                                                    .uploadDelivery(
+                                                  deliveryData.shipmentId
+                                                      .toString(),
+                                                  'Delivered',
+                                                  deliveryData.messangerId,
+                                                  deliveryData.date,
+                                                  deliveryData.totalCharges
+                                                      .toString(),
+                                                  0,
+                                                  deliveryData.paymentMode,
+                                                  deliveryData.subPaymentMode ==
+                                                              '0' ||
+                                                          deliveryData
+                                                                  .subPaymentMode ==
+                                                              ''
+                                                      ? 'Select Payment Mode'
+                                                      : deliveryData
+                                                          .subPaymentMode,
+                                                  otpController.text,
+                                                  chequeNumber:
+                                                      chequeController.text,
+                                                );
+                                              },
+                                              () async {
+                                                await pickupController.getOtp(
+                                                    deliveryData.shipmentId
+                                                        .toString());
+                                              },
+                                              otpController,
+                                            );
+                                          }
                                         },
                                         transferBtnColor: null,
                                         transferTextColor: themes.darkCyanBlue,

@@ -37,17 +37,18 @@ class RunningDeliveryDetailsView
   @override
   Widget build(BuildContext context) {
     StepperType type = StepperType.horizontal;
+    final args = Get.arguments as Map<String, dynamic>?;
 
-    final String? shipmentID = Get.arguments['shipmentID'] as String?;
-    final String? status = Get.arguments['status'] as String?;
-    final String? invoicePath = Get.arguments['invoicePath'] as String?;
+    final String? shipmentID = args?['shipmentID']?.toString();
+    final String? messengerId = args?['messangerId']?.toString();
+
+    final String? invoicePath = args?['invoicePath'] as String?;
     // final String? enableTransfer = Get.arguments['enableTransfer'] as String?;
-    final String? paymentMode = Get.arguments['paymentMode'] as String?;
-    final String? date = Get.arguments['date'] as String?;
-    final String? cashAmt = Get.arguments['cashAmt'] as String?;
-    final String? invoicePhoto = Get.arguments['invoicePhoto'] as String?;
-    final String? messengerId = Get.arguments['messangerId'] as String?;
-    final profileController = Get.put(ProfileController());
+
+    final String? date = args?['date'] as String?;
+
+    final String? invoicePhoto = args?['invoicePhoto'] as String?;
+
     final pickupController = Get.put(PickupController());
 
     return CommonScaffold(
@@ -613,61 +614,77 @@ class RunningDeliveryDetailsView
                                 ),
                                 ElevatedButton(
                                   onPressed: () async {
-                                    details?.paymentMode != 'topay'
-                                        ? showOtpDialog(() {
-                                            pickupController.uploadPickup(
-                                                details?.shipmentId.toString(),
-                                                'Picked up',
-                                                date,
-                                                pickupController
-                                                    .amountController.text,
-                                                pickupController
-                                                    .selectedSubPaymentMode
-                                                    .value
-                                                    ?.id,
-                                                pickupController
-                                                    .otpController.text);
-                                          }, () async {
-                                            await pickupController
-                                                .getOtp(details?.shipmentId);
-                                          }, pickupController.otpController)
-                                        : showDialog(
-                                            context: context,
-                                            builder: (_) => PickDialog(
-                                              shipmentID: details?.shipmentId,
-                                              date: date,
-                                              amt: details?.totalCharges,
-                                              dropdownHintTxt: pickupController
-                                                      .selectedSubPaymentMode
-                                                      .value
-                                                      ?.name ??
-                                                  'Select Payment Mode',
-                                              btnTxt: 'Pickup',
-                                              onConfirmCallback: () {
-                                                pickupController.uploadPickup(
-                                                  details?.shipmentId,
-                                                  'Picked up',
-                                                  date,
-                                                  pickupController
-                                                      .amountController.text,
-                                                  pickupController
-                                                      .selectedSubPaymentMode
-                                                      .value
-                                                      ?.id,
-                                                  pickupController
-                                                      .otpController.text,
-                                                  chequeNumber: pickupController
-                                                      .chequeNumberController
-                                                      .text,
-                                                );
-                                                Get.back();
-                                              },
-                                              onSendOtpCallback: () async {
-                                                await pickupController.getOtp(
-                                                    details?.shipmentId);
-                                              },
-                                            ),
+                                    final amountController =
+                                        pickupController.getAmountController(
+                                            shipmentID.toString());
+                                    final chequeController =
+                                        pickupController.getChequeController(
+                                            shipmentID.toString());
+                                    final otpController =
+                                        pickupController.getOtpController(
+                                            shipmentID.toString());
+                                    final selectedSubPaymentMode =
+                                        pickupController
+                                            .getSelectedSubPaymentMode(
+                                                shipmentID.toString());
+
+                                    if (details?.paymentMode.toString() !=
+                                        'topay') {
+                                      showOtpDialog(
+                                        () async {
+                                          pickupController.uploadPickup(
+                                            shipmentID,
+                                            'Picked up',
+                                            date,
+                                            amountController.text,
+                                            selectedSubPaymentMode.value?.id,
+                                            otpController.text,
                                           );
+                                        },
+                                        () async {
+                                          await pickupController
+                                              .getOtp(shipmentID);
+                                        },
+                                        otpController,
+                                      );
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => PickDialog(
+                                          shipmentID: shipmentID,
+                                          date: date,
+                                          amt: details?.totalCharges,
+                                          dropdownHintTxt:
+                                              selectedSubPaymentMode
+                                                      .value?.name ??
+                                                  'Select Payment Mode',
+                                          btnTxt: 'Pickup',
+                                          amountController: amountController,
+                                          chequeNumberController:
+                                              chequeController,
+                                          otpController: otpController,
+                                          selectedSubPaymentMode:
+                                              selectedSubPaymentMode,
+                                          onConfirmCallback: () {
+                                            pickupController.uploadPickup(
+                                              shipmentID,
+                                              'Picked up',
+                                              date,
+                                              amountController.text,
+                                              selectedSubPaymentMode.value?.id,
+                                              otpController.text,
+                                              chequeNumber:
+                                                  chequeController.text,
+                                            );
+                                            Get.back();
+                                          },
+                                          onSendOtpCallback: () async {
+                                            await pickupController
+                                                .getOtp(shipmentID);
+                                          },
+                                        ),
+                                      );
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
                                     foregroundColor: themes.whiteColor,

@@ -328,6 +328,11 @@ class PickDialog extends StatelessWidget {
   final shipmentID;
   final date;
   final amt;
+  final TextEditingController amountController;
+  final TextEditingController chequeNumberController;
+  final TextEditingController otpController;
+  final Rxn<PaymentMode> selectedSubPaymentMode;
+// add them to constructor and require them
   final dropdownHintTxt;
   final btnTxt;
   final VoidCallback onConfirmCallback;
@@ -342,6 +347,10 @@ class PickDialog extends StatelessWidget {
     required this.onConfirmCallback,
     this.onSendOtpCallback,
     super.key,
+    required this.amountController,
+    required this.chequeNumberController,
+    required this.otpController,
+    required this.selectedSubPaymentMode,
   });
 
   @override
@@ -351,10 +360,11 @@ class PickDialog extends StatelessWidget {
     final historyController = Get.put(HistoryController());
 
     // Pre-fill the amount
-    pickupController.amountController.text = amt.toString();
+    // pickupController.amountController.text = amt.toString();
     pickupController.chequeNumberController.clear();
     pickupController.otpController.clear();
-
+    final selectedSubPaymentMode =
+        pickupController.getSelectedSubPaymentMode(shipmentID);
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 60,
@@ -376,13 +386,12 @@ class PickDialog extends StatelessWidget {
         child: SizedBox(
           width: 400.w,
           child: Column(
+            spacing: 10.h,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Shipment ID: $shipmentID'),
-              Text('Date: $date'),
               const SizedBox(height: 10),
               CommonTextfiled(
-                controller: pickupController.amountController,
+                controller: amountController,
                 obscureText: false,
                 hintTxt: 'Enter Amount',
                 lableText: 'Enter Amount',
@@ -394,8 +403,8 @@ class PickDialog extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey.shade400, width: 1),
@@ -411,27 +420,28 @@ class PickDialog extends StatelessWidget {
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<PaymentMode>(
                       hint: Text(dropdownHintTxt),
-                      value: pickupController.selectedSubPaymentMode.value,
+                      value: selectedSubPaymentMode.value,
                       items: pickupController.subPaymentModes.map((mode) {
                         return DropdownMenuItem(
                           value: mode,
                           child: Text(mode.name),
                         );
                       }).toList(),
-                      onChanged: pickupController.setSelectedSubPaymentMode,
+                      onChanged: (value) => pickupController
+                          .setSelectedSubPaymentMode(shipmentID, value),
                     ),
                   ),
                 );
               }),
               Obx(() {
-                if (pickupController.selectedSubPaymentMode.value?.name ==
-                    'Cheque') {
+                final selectedMode = selectedSubPaymentMode.value;
+                if (selectedMode?.name == 'Cheque') {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       dropdownText('Cheque Number'),
                       CommonTextfiled(
-                        controller: pickupController.chequeNumberController,
+                        controller: chequeNumberController,
                         hintTxt: 'Enter Cheque Number',
                         keyboardType: TextInputType.text,
                       ),
@@ -465,7 +475,7 @@ class PickDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   hapticFeedbackType: HapticFeedbackType.lightImpact,
                   length: 4,
-                  controller: pickupController.otpController,
+                  controller: otpController,
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: defaultPinTheme.copyWith(
                     decoration: defaultPinTheme.decoration!.copyWith(
@@ -500,7 +510,9 @@ class PickDialog extends StatelessWidget {
             backgroundColor: themes.darkCyanBlue,
             foregroundColor: themes.whiteColor,
           ),
-          onPressed: onConfirmCallback,
+          onPressed: () {
+            onConfirmCallback.call();
+          },
           child: Text(btnTxt),
         ),
       ],

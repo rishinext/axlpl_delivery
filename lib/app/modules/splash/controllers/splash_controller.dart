@@ -16,10 +16,10 @@ class SplashController extends GetxController {
     // TODO: implement onInit
     super.onInit();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('🔔 Received a foreground message!');
-      print('Title: ${message.notification?.title}');
-      print('Body: ${message.notification?.body}');
-      print('Data: ${message.data}');
+      log('🔔 Received a foreground message!');
+      log('Title: ${message.notification?.title}');
+      log('Body: ${message.notification?.body}');
+      log('Data: ${message.data}');
 
       // Optional: show a local notification
       NotificationService.showNotification(message);

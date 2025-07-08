@@ -11,20 +11,33 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
-void showDeliveryDialog(
-  final shipmentID,
-  final date,
-  final amt,
-  final dropdownHintTxt,
-  final btnTxt,
-  VoidCallback? onConfirmCallback,
-  VoidCallback? onSendOtpCallback,
-) {
-  final _formKey = GlobalKey<FormState>();
-  final pickupController = Get.find<PickupController>();
+class DeliveryDialog extends StatelessWidget {
+  final String shipmentID;
+  final String date;
+  final TextEditingController amountController;
+  final TextEditingController chequeNumberController;
+  final TextEditingController otpController;
+  final String dropdownHintTxt;
+  final String btnTxt;
+  final VoidCallback? onConfirmCallback;
+  final VoidCallback? onSendOtpCallback;
+
+  DeliveryDialog({
+    required this.shipmentID,
+    required this.date,
+    required this.amountController,
+    required this.chequeNumberController,
+    required this.otpController,
+    required this.dropdownHintTxt,
+    required this.btnTxt,
+    this.onConfirmCallback,
+    this.onSendOtpCallback,
+  });
+
   final deliveryController = Get.put(DeliveryController());
+  final pickupController = Get.find<PickupController>();
   final historyController = Get.put(HistoryController());
-  TextEditingController pinController = TextEditingController();
+
   final defaultPinTheme = PinTheme(
     width: 56,
     height: 60,
@@ -38,10 +51,12 @@ void showDeliveryDialog(
       border: Border.all(color: Colors.transparent),
     ),
   );
-  BuildContext context = Get.context!;
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedSubPaymentMode =
+        deliveryController.getSelectedSubPaymentMode(shipmentID);
+    return AlertDialog(
       backgroundColor: themes.whiteColor,
       title: Text(
         'Payment Details',
@@ -51,12 +66,12 @@ void showDeliveryDialog(
         child: SizedBox(
           width: 400.w,
           child: Column(
-            spacing: 10,
+            spacing: 10.h,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
               CommonTextfiled(
-                controller: deliveryController.amountController,
+                controller: amountController,
                 obscureText: false,
                 hintTxt: 'Enter Amount',
                 lableText: 'Enter Amount',
@@ -80,13 +95,12 @@ void showDeliveryDialog(
                 if (deliveryController.isLoadingPayment.value) {
                   return Center(child: CircularProgressIndicator());
                 }
-
                 return Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade400, width: 1),
+                    border: Border.all(color: Colors.grey.shade400),
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
@@ -98,39 +112,39 @@ void showDeliveryDialog(
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<PaymentMode>(
-                      hint: Text(dropdownHintTxt ?? 'Select Payment Mode'),
-                      value: deliveryController.selectedSubPaymentMode.value,
+                      hint: Text(dropdownHintTxt),
+                      value: selectedSubPaymentMode.value,
                       items: deliveryController.subPaymentModes
                           .map((mode) => DropdownMenuItem(
                                 value: mode,
                                 child: Text(mode.name),
                               ))
                           .toList(),
-                      onChanged: deliveryController.setSelectedSubPaymentMode,
+                      onChanged: (val) => deliveryController
+                          .setSelectedSubPaymentMode(shipmentID, val),
                     ),
                   ),
                 );
               }),
               Obx(() {
-                if (deliveryController.selectedSubPaymentMode.value?.name ==
-                    'Cheque') {
+                final selectedMode = selectedSubPaymentMode.value;
+
+                if (selectedMode?.name == 'Cheque') {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       dropdownText('Cheque Number'),
                       CommonTextfiled(
-                        controller: deliveryController.chequeNumberController,
+                        controller: chequeNumberController,
                         hintTxt: 'Enter Cheque Number',
                         keyboardType: TextInputType.text,
                       ),
                     ],
                   );
-                } else {
-                  return const SizedBox.shrink();
                 }
+                return const SizedBox.shrink();
               }),
               Row(
-                // crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Enter OTP'),
@@ -145,7 +159,7 @@ void showDeliveryDialog(
                                   .copyWith(color: themes.darkCyanBlue),
                             ),
                           );
-                  })
+                  }),
                 ],
               ),
               SizedBox(
@@ -154,13 +168,11 @@ void showDeliveryDialog(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   hapticFeedbackType: HapticFeedbackType.lightImpact,
                   length: 4,
-                  controller: deliveryController.otpController,
+                  controller: otpController,
                   defaultPinTheme: defaultPinTheme,
                   focusedPinTheme: defaultPinTheme.copyWith(
                     decoration: defaultPinTheme.decoration!.copyWith(
-                      border: Border.all(
-                        color: themes.darkCyanBlue,
-                      ),
+                      border: Border.all(color: themes.darkCyanBlue),
                     ),
                   ),
                   errorPinTheme: defaultPinTheme.copyWith(
@@ -188,10 +200,11 @@ void showDeliveryDialog(
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: themes.darkCyanBlue,
-              foregroundColor: themes.whiteColor),
+            backgroundColor: themes.darkCyanBlue,
+            foregroundColor: themes.whiteColor,
+          ),
           onPressed: () {
-            if (deliveryController.otpController.text.length != 4) {
+            if (otpController.text.length != 4) {
               Get.snackbar('Invalid OTP', 'Please enter all 4 digits.',
                   colorText: themes.whiteColor,
                   backgroundColor: themes.redColor);
@@ -199,10 +212,11 @@ void showDeliveryDialog(
             }
 
             onConfirmCallback?.call();
+            Get.back();
           },
           child: Text(btnTxt),
         ),
       ],
-    ),
-  );
+    );
+  }
 }

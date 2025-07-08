@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/add_shipment_repo.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/add_sender_address_view.dart';
@@ -103,6 +104,8 @@ class PageviewView extends GetView {
                     Spacer(),
                     Expanded(
                       child: CommonButton(
+                          isLoading: addshipController.isShipmentAdd.value ==
+                              Status.loading,
                           onPressed: () {
                             addshipController.nextPage();
                           },
