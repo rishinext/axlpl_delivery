@@ -212,7 +212,6 @@ class DeliveryDialog extends StatelessWidget {
             }
 
             onConfirmCallback?.call();
-            Get.back();
           },
           child: Text(btnTxt),
         ),

@@ -322,6 +322,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     chequeNumber:
                                                         chequeController.text,
                                                   );
+                                                  Get.back(); // Close the dialog
                                                 },
                                                 onSendOtpCallback: () async {
                                                   await pickupController.getOtp(
@@ -338,24 +339,18 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   deliveryData.shipmentId
                                                       .toString(),
                                                   'Delivered',
-                                                  deliveryData.messangerId,
+                                                  deliveryController
+                                                      .currentUserId.value,
                                                   deliveryData.date,
                                                   deliveryData.totalCharges
                                                       .toString(),
                                                   0,
                                                   deliveryData.paymentMode,
-                                                  deliveryData.subPaymentMode ==
-                                                              '0' ||
-                                                          deliveryData
-                                                                  .subPaymentMode ==
-                                                              ''
-                                                      ? 'Select Payment Mode'
-                                                      : deliveryData
-                                                          .subPaymentMode,
+                                                  0,
                                                   otpController.text,
-                                                  chequeNumber:
-                                                      chequeController.text,
+                                                  chequeNumber: '0',
                                                 );
+                                                Get.back(); // Close the dialog
                                               },
                                               () async {
                                                 await pickupController.getOtp(

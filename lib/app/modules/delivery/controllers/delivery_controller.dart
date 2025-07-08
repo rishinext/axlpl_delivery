@@ -141,7 +141,7 @@ class DeliveryController extends GetxController {
         final historyController = Get.find<HistoryController>();
         historyController.getDeliveryHistory();
         otpController.clear();
-        Get.back(); // Navigate back on success
+        // Get.back(); // Navigate back on success
       } else {
         Get.snackbar(
           'Failed',
