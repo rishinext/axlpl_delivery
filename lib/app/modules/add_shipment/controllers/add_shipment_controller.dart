@@ -661,6 +661,11 @@ class AddShipmentController extends GetxController {
     final isValid = formKeys[current].currentState?.validate() ?? false;
     if (!isValid) return;
 
+    // Close keyboard when navigating
+    if (Get.context != null) {
+      FocusScope.of(Get.context!).unfocus();
+    }
+
     if (current == 4) {
       submitShipment();
     } else {
@@ -837,6 +842,11 @@ class AddShipmentController extends GetxController {
   }
 
   void previousPage() {
+    // Close keyboard when navigating
+    if (Get.context != null) {
+      FocusScope.of(Get.context!).unfocus();
+    }
+
     if (currentPage.value > 0) {
       pageController.previousPage(
         duration: Duration(milliseconds: 300),

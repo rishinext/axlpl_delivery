@@ -83,7 +83,7 @@ class CustomerTrackingDetailsView extends GetView {
                                   text: shipmentID.toString()));
                             },
                             icon: Icon(
-                              Icons.copy,
+                              Icons.abc,
                               size: 18,
                             )),
                         Container(

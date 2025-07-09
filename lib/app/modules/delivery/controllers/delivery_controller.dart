@@ -51,6 +51,8 @@ class DeliveryController extends GetxController {
 
   final Map<String, TextEditingController> amountControllers = {};
   final Map<String, TextEditingController> chequeControllers = {};
+  final Map<String, TextEditingController> accountControllers = {};
+  final Map<String, TextEditingController> onlineControllers = {};
   final Map<String, TextEditingController> otpControllers = {};
 
   TextEditingController getAmountController(String shipmentId) {
@@ -60,6 +62,16 @@ class DeliveryController extends GetxController {
 
   TextEditingController getChequeController(String shipmentId) {
     return chequeControllers.putIfAbsent(
+        shipmentId, () => TextEditingController());
+  }
+
+  TextEditingController getAccountController(String shipmentId) {
+    return accountControllers.putIfAbsent(
+        shipmentId, () => TextEditingController());
+  }
+
+  TextEditingController getOnlineController(String shipmentId) {
+    return onlineControllers.putIfAbsent(
         shipmentId, () => TextEditingController());
   }
 

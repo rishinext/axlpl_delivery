@@ -23,28 +23,29 @@ class HistoryController extends GetxController {
     isSelected.value = index;
   }
 
-  Future<void> getDeliveryHistory({final nextID}) async {
+  Future<void> getDeliveryHistory({final nextID = '0', final zip = '0'}) async {
     isDeliveredLoading.value = Status.loading;
 
     try {
       final success = await historyRepo.deliveryHistoryRepo(
-        zipcodeController,
+        zip,
         nextID,
       );
 
-      if (success != null) {
+      if (success != null && success.isNotEmpty) {
         historyList.value = success;
         isDeliveredLoading.value = Status.success;
       } else {
         Utils().logInfo('No Delivery History Data Found');
-        isDeliveredLoading.value = Status.error;
         historyList.value = [];
+        isDeliveredLoading.value = Status.error;
       }
     } catch (error) {
       Utils().logError(
         'Error getting history $error',
       );
       historyList.value = [];
+      isDeliveredLoading.value = Status.error;
     }
   }
 
@@ -54,11 +55,12 @@ class HistoryController extends GetxController {
     try {
       final success = await historyRepo.pickupHistoryRepo();
 
-      if (success != null) {
+      if (success != null && success.isNotEmpty) {
         pickUpHistoryList.value = success;
         isPickedup.value = Status.success;
       } else {
         Utils().logInfo('No Pickup History Data Found');
+        pickUpHistoryList.value = [];
         isPickedup.value = Status.error;
       }
     } catch (error) {

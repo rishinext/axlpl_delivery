@@ -4,7 +4,6 @@ import 'package:axlpl_delivery/app/data/models/history_delivery_model.dart';
 import 'package:axlpl_delivery/app/data/models/history_pickup_model.dart';
 import 'package:axlpl_delivery/app/data/models/lat_long_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
-import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
 class DeliveryRepo {
@@ -26,24 +25,25 @@ class DeliveryRepo {
       if (userID?.isNotEmpty == true || userID != null) {
         final response = await _apiServices.getDeliveryHistory(
           userID.toString(),
+          zipcode ?? '0',
           branchID.toString(),
-          zipcode,
-          token.toString(),
           nextID,
+          token.toString(),
         );
         return response.when(
           success: (body) {
             final historyData = DeliveryHistoryModel.fromJson(body);
-            if (historyData.status == success) {
+            if (historyData.status == "success") {
               return historyData.historyDelivery;
             } else {
               Utils().logInfo(
                   'API call successful but status is not "success" : ${historyData.status}');
+              return [];
             }
-            return [];
           },
           error: (error) {
-            throw Exception("History Failed: ${error.toString()}");
+            Utils().logError("History Failed: ${error.toString()}");
+            return [];
           },
         );
       }
@@ -70,16 +70,17 @@ class DeliveryRepo {
         return response.when(
           success: (body) {
             final historyData = HistoryPickupModel.fromJson(body);
-            if (historyData.status == success) {
+            if (historyData.status == "success") {
               return historyData.historyPickup;
             } else {
               Utils().logInfo(
                   'API call successful but status is not "success" : ${historyData.status}');
+              return [];
             }
-            return [];
           },
           error: (error) {
-            throw Exception("Pickup History Failed: ${error.toString()}");
+            Utils().logError("Pickup History Failed: ${error.toString()}");
+            return [];
           },
         );
       }

@@ -16,6 +16,8 @@ class DeliveryDialog extends StatelessWidget {
   final String date;
   final TextEditingController amountController;
   final TextEditingController chequeNumberController;
+  final TextEditingController accountNumberController;
+  final TextEditingController onlineNumberController;
   final TextEditingController otpController;
   final String dropdownHintTxt;
   final String btnTxt;
@@ -32,6 +34,8 @@ class DeliveryDialog extends StatelessWidget {
     required this.btnTxt,
     this.onConfirmCallback,
     this.onSendOtpCallback,
+    required this.accountNumberController,
+    required this.onlineNumberController,
   });
 
   final deliveryController = Get.put(DeliveryController());
@@ -129,7 +133,43 @@ class DeliveryDialog extends StatelessWidget {
               Obx(() {
                 final selectedMode = selectedSubPaymentMode.value;
 
-                if (selectedMode?.name == 'Cheque') {
+                if (selectedMode?.id == 'account') {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      dropdownText('Transaction ID'),
+                      CommonTextfiled(
+                        controller: accountNumberController,
+                        hintTxt: 'Enter Transaction ID',
+                        keyboardType: TextInputType.text,
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+              Obx(() {
+                final selectedMode = selectedSubPaymentMode.value;
+
+                if (selectedMode?.id == 'online') {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      dropdownText('Transaction ID'),
+                      CommonTextfiled(
+                        controller: onlineNumberController,
+                        hintTxt: 'Enter Transaction ID',
+                        keyboardType: TextInputType.text,
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              }),
+              Obx(() {
+                final selectedMode = selectedSubPaymentMode.value;
+
+                if (selectedMode?.id == 'cheque') {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

@@ -245,11 +245,8 @@ class DeliveryView extends GetView<DeliveryController> {
                                             deliveryData.cityName.toString(),
                                         mobile: deliveryData.mobile.toString(),
                                         paymentType: deliveryData.paymentMode,
-                                        statusColor:
-                                            deliveryData.status == 'Picked up'
-                                                ? themes.greenColor
-                                                : themes.redColor,
-                                        statusDotColor: themes.darkCyanBlue,
+                                        statusColor: themes.redColor,
+                                        statusDotColor: themes.redColor,
                                         showPickupBtn: true,
                                         showTrasferBtn: false,
                                         showDivider: true,
@@ -271,6 +268,16 @@ class DeliveryView extends GetView<DeliveryController> {
                                                       deliveryData.shipmentId
                                                           .toString());
                                           final chequeController =
+                                              deliveryController
+                                                  .getAccountController(
+                                                      deliveryData.shipmentId
+                                                          .toString());
+                                          final accountController =
+                                              deliveryController
+                                                  .getOnlineController(
+                                                      deliveryData.shipmentId
+                                                          .toString());
+                                          final onineController =
                                               deliveryController
                                                   .getChequeController(
                                                       deliveryData.shipmentId
@@ -295,6 +302,10 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     amountController,
                                                 chequeNumberController:
                                                     chequeController,
+                                                accountNumberController:
+                                                    accountController,
+                                                onlineNumberController:
+                                                    onineController,
                                                 otpController: otpController,
                                                 dropdownHintTxt:
                                                     'Select Payment Mode',
@@ -405,86 +416,94 @@ class DeliveryView extends GetView<DeliveryController> {
                             } else if (historyController
                                     .isDeliveredLoading.value ==
                                 Status.success) {
-                              return ListView.separated(
-                                separatorBuilder: (context, index) => SizedBox(
-                                  height: 1.h,
-                                ),
-                                itemCount: historyController.historyList.length,
-                                shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final data = deliveryController
-                                      .filteredDeliveryList[index];
-                                  return Container(
-                                    margin: EdgeInsets.all(8.w),
-                                    padding: EdgeInsets.all(10.w),
-                                    decoration: BoxDecoration(
-                                      color: themes.whiteColor,
-                                      borderRadius: BorderRadius.circular(15.r),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 4.r,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: PickupWidget(
-                                      onTap: () {
-                                        runningController.fetchTrackingData(
-                                            data.shipmentId.toString());
-                                        // Get.to(
-                                        //   RunningDeliveryDetailsView(
-                                        //     isShowInvoice: true,
-                                        //     isShowTransfer: true,
-                                        //   ),
-                                        //   arguments: {
-                                        //     'shipmentID': data.shipmentId.toString(),
-                                        //     'status': data.status.toString(),
-                                        //     'invoicePath': data.invoicePath,
-                                        //     'invoicePhoto': data.invoiceFile,
-                                        //     'paymentMode': data.paymentMode,
-                                        //     'date': data.date,
-                                        //     'cashAmt': data.totalCharges
-                                        //   },
-                                        // );
-                                      },
-                                      isShowPaymentType: true,
-                                      companyName: data.companyName.toString(),
-                                      date: data.date.toString(),
-                                      status: data.status.toString(),
-                                      messangerName: '',
-                                      address: data.address1.toString(),
-                                      shipmentID: data.shipmentId.toString(),
-                                      cityName: data.cityName.toString(),
-                                      mobile: data.mobile.toString(),
-                                      paymentType: data.paymentMode,
-                                      statusColor: data.status == 'Picked up'
-                                          ? themes.greenColor
-                                          : themes.redColor,
-                                      statusDotColor: themes.darkCyanBlue,
-                                      showPickupBtn: true,
-                                      showTrasferBtn: false,
-                                      showDivider: true,
-                                      openDialerTap: () {
-                                        runningController.makingPhoneCall(
-                                            data.mobile.toString());
-                                      },
-                                      openMapTap: () {
-                                        pickupController.openMapWithAddress(
+                              return RefreshIndicator.adaptive(
+                                onRefresh: () =>
+                                    historyController.getDeliveryHistory(),
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(
+                                    height: 1.h,
+                                  ),
+                                  itemCount:
+                                      historyController.historyList.length,
+                                  shrinkWrap: true,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final data =
+                                        historyController.historyList[index];
+
+                                    return Container(
+                                      margin: EdgeInsets.all(8.w),
+                                      padding: EdgeInsets.all(10.w),
+                                      decoration: BoxDecoration(
+                                        color: themes.whiteColor,
+                                        borderRadius:
+                                            BorderRadius.circular(15.r),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 4.r,
+                                            offset: Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: PickupWidget(
+                                        onTap: () {
+                                          runningController.fetchTrackingData(
+                                              data.shipmentId.toString());
+                                          // Get.to(
+                                          //   RunningDeliveryDetailsView(
+                                          //     isShowInvoice: true,
+                                          //     isShowTransfer: true,
+                                          //   ),
+                                          //   arguments: {
+                                          //     'shipmentID': data.shipmentId.toString(),
+                                          //     'status': data.status.toString(),
+                                          //     'invoicePath': data.invoicePath,
+                                          //     'invoicePhoto': data.invoiceFile,
+                                          //     'paymentMode': data.paymentMode,
+                                          //     'date': data.date,
+                                          //     'cashAmt': data.totalCharges
+                                          //   },
+                                          // );
+                                        },
+                                        isShowPaymentType: false,
+                                        companyName:
                                             data.companyName.toString(),
-                                            data.address1.toString(),
-                                            data.pincode.toString());
-                                      },
-                                      pickUpTap: () async {},
-                                      transferBtnColor: null,
-                                      transferTextColor: themes.darkCyanBlue,
-                                      trasferTap: () {},
-                                      transferBorderColor: themes.darkCyanBlue,
-                                      pickupTxt: 'Delivery',
-                                    ),
-                                  );
-                                },
+                                        date: data.date.toString(),
+                                        status: data.status.toString(),
+                                        messangerName: '',
+                                        address: data.address1.toString(),
+                                        shipmentID: data.shipmentId.toString(),
+                                        cityName: data.cityName.toString(),
+                                        mobile: data.mobile.toString(),
+                                        paymentType: data.paymentMode,
+                                        statusColor: themes.greenColor,
+                                        statusDotColor: themes.greenColor,
+                                        showPickupBtn: false,
+                                        showTrasferBtn: false,
+                                        showDivider: false,
+                                        openDialerTap: () {
+                                          runningController.makingPhoneCall(
+                                              data.mobile.toString());
+                                        },
+                                        openMapTap: () {
+                                          pickupController.openMapWithAddress(
+                                              data.companyName.toString(),
+                                              data.address1.toString(),
+                                              data.pincode.toString());
+                                        },
+                                        pickUpTap: () async {},
+                                        transferBtnColor: null,
+                                        transferTextColor: themes.darkCyanBlue,
+                                        trasferTap: () {},
+                                        transferBorderColor:
+                                            themes.darkCyanBlue,
+                                        pickupTxt: 'Delivery',
+                                      ),
+                                    );
+                                  },
+                                ),
                               );
                             } else {
                               return Center(

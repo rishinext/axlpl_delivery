@@ -106,7 +106,7 @@ class RunningDeliveryDetailsView
                         // ),
                         // SizedBox(width: 12),
                         Text(
-                          'Shipment ID: \n${shipmentID.toString()}',
+                          'Shipment ID: \n${details?.shipmentId ?? 'N/A'}',
                           style: themes.fontSize14_500.copyWith(
                               fontWeight: FontWeight.bold, fontSize: 12.sp),
                           overflow: TextOverflow.ellipsis,
@@ -466,12 +466,16 @@ class RunningDeliveryDetailsView
                                               ),
                                               onPressed: () {
                                                 final file =
-                                                    controller.getImage(
-                                                        shipmentID.toString());
+                                                    controller.getImage(details
+                                                            ?.shipmentId
+                                                            .toString() ??
+                                                        '0');
                                                 if (file != null) {
                                                   controller.uploadInvoice(
-                                                      shipmentID:
-                                                          shipmentID.toString(),
+                                                      shipmentID: details
+                                                              ?.shipmentId
+                                                              .toString() ??
+                                                          '0',
                                                       file: file);
                                                   controller.fetchTrackingData(
                                                       shipmentID.toString());
