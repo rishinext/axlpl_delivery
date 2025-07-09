@@ -12,12 +12,26 @@ class ShipnowController extends GetxController {
   final filteredShipmentData = <ShipmentDatum>[].obs;
 
   final isLoadingShipNow = false.obs;
+  final isLoadingMore = false.obs;
 
   final shipmentIDController = TextEditingController();
 
-  Future<void> fetchShipmentData(String nextID) async {
+  // Pagination variables
+  int currentPage = 0;
+  bool hasMoreData = true;
+  static const int pageSize = 10;
+
+  Future<void> fetchShipmentData(String nextID,
+      {bool isRefresh = false}) async {
     try {
-      isLoadingShipNow(true);
+      if (isRefresh) {
+        isLoadingShipNow(true);
+        currentPage = 0;
+        hasMoreData = true;
+      } else {
+        isLoadingMore(true);
+      }
+
       final data = await shipNowRepo.customerListRepo(
         nextID,
         '',
@@ -31,15 +45,43 @@ class ShipnowController extends GetxController {
         '',
         '',
       );
-      allShipmentData.value = data ?? [];
-      filterShipmentData(shipmentIDController.text); // apply filter immediately
+
+      final newItems = data ?? [];
+
+      if (isRefresh) {
+        allShipmentData.value = newItems;
+      } else {
+        allShipmentData.addAll(newItems);
+      }
+
+      // Check if we have more data
+      hasMoreData = newItems.length >= pageSize;
+
+      filterShipmentData(shipmentIDController.text);
     } catch (e) {
-      allShipmentData.clear();
-      filteredShipmentData.clear();
-      Utils().logError('Customer fetch failed $e');
+      if (isRefresh) {
+        allShipmentData.clear();
+        filteredShipmentData.clear();
+      }
+      Utils().logError('Shipment fetch failed $e');
     } finally {
-      isLoadingShipNow(false);
+      if (isRefresh) {
+        isLoadingShipNow(false);
+      } else {
+        isLoadingMore(false);
+      }
     }
+  }
+
+  Future<void> loadMoreData() async {
+    if (!hasMoreData || isLoadingMore.value) return;
+
+    currentPage++;
+    await fetchShipmentData(currentPage.toString(), isRefresh: false);
+  }
+
+  Future<void> refreshData() async {
+    await fetchShipmentData('0', isRefresh: true);
   }
 
   void filterShipmentData(String query) {
@@ -47,8 +89,6 @@ class ShipnowController extends GetxController {
       filteredShipmentData.value = allShipmentData;
     } else {
       filteredShipmentData.value = allShipmentData.where((data) {
-        // Customize condition according to your data structure:
-        // e.g. check shipmentId or origin fields contain the query string (case-insensitive)
         return data.shipmentId!.toLowerCase().contains(query.toLowerCase()) ||
             data.origin!.toLowerCase().contains(query.toLowerCase());
       }).toList();
@@ -57,12 +97,17 @@ class ShipnowController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     shipmentIDController.addListener(() {
       filterShipmentData(shipmentIDController.text);
     });
-    fetchShipmentData('1');
 
+    fetchShipmentData('0', isRefresh: true);
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    shipmentIDController.dispose();
+    super.onClose();
   }
 }

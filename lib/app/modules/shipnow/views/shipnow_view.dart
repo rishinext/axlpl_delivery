@@ -14,6 +14,19 @@ class ShipnowView extends GetView<ShipnowController> {
     final shipnowController = Get.put(ShipnowController());
     final runningController = Get.put(RunningDeliveryDetailsController());
     final theme = Themes();
+    final ScrollController scrollController = ScrollController();
+
+    // Infinite scroll listener
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 200 &&
+          shipnowController.hasMoreData &&
+          !shipnowController.isLoadingMore.value &&
+          !shipnowController.isLoadingShipNow.value) {
+        shipnowController.loadMoreData();
+      }
+    });
+
     return Scaffold(
         appBar: AppBar(
           /*   actions: [
@@ -55,76 +68,100 @@ class ShipnowView extends GetView<ShipnowController> {
 
                 if (shipnowController.filteredShipmentData.isNotEmpty) {
                   return Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: shipnowController.filteredShipmentData.length,
-                      padding: const EdgeInsets.all(8),
-                      itemBuilder: (context, index) {
-                        final shipment =
-                            shipnowController.filteredShipmentData[index];
-                        final status = shipment.shipmentStatus;
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: InkWell(
-                            onTap: () {
-                              runningController.fetchTrackingData(
-                                  shipment.shipmentId.toString());
-                              Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
-                                  arguments: {
-                                    'shipmentID': shipment.shipmentId,
-                                  });
-                            },
-                            child: ListTile(
-                              title: Text(
-                                "Create Date: ${shipment.createdDate?.toIso8601String().split('T')[0] ?? 'N/A'}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 5),
-                                  Text(
-                                      "Shipment ID: ${shipment.shipmentId ?? 'N/A'}"),
-                                  Text(
-                                      "Sender Company: ${shipment.senderCompanyName ?? 'N/A'}"),
-                                  Text(
-                                      "Receiver Company: ${shipment.receiverCompanyName ?? 'N/A'}"),
-                                  Text("Orgin: ${shipment.origin ?? ''}"),
-                                  Text(
-                                      'Destination: ${shipment.destination ?? ''}'),
-                                  Text(
-                                      'Sender Area: ${shipment.senderAreaname ?? ''}'),
-                                  Text(
-                                      'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Status:',
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: RichText(
-                                            text: TextSpan(children: [
-                                          TextSpan(
-                                              text: status,
-                                              style: theme.fontSize14_500
-                                                  .copyWith(
-                                                      color: status !=
-                                                              'Approved'
-                                                          ? theme.redColor
-                                                          : theme.greenColor))
-                                        ])),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                    child: RefreshIndicator(
+                      onRefresh: shipnowController.refreshData,
+                      child: ListView.builder(
+                        controller: scrollController,
+                        shrinkWrap: true,
+                        itemCount:
+                            shipnowController.filteredShipmentData.length +
+                                (shipnowController.hasMoreData ? 1 : 0),
+                        padding: const EdgeInsets.all(8),
+                        itemBuilder: (context, index) {
+                          // Show loading indicator at the end
+                          if (index ==
+                              shipnowController.filteredShipmentData.length) {
+                            return Obx(() => Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: shipnowController.isLoadingMore.value
+                                        ? const CircularProgressIndicator()
+                                        : const SizedBox.shrink(),
+                                  ),
+                                ));
+                          }
+
+                          final shipment =
+                              shipnowController.filteredShipmentData[index];
+                          final status = shipment.shipmentStatus;
+                          return Card(
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: InkWell(
+                              onTap: () {
+                                runningController.fetchTrackingData(
+                                    shipment.shipmentId.toString());
+                                Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
+                                    arguments: {
+                                      'shipmentID': shipment.shipmentId,
+                                    });
+                              },
+                              child: ListTile(
+                                title: Text(
+                                  "Create Date: " +
+                                      (shipment.createdDate != null
+                                          ? shipment.createdDate!
+                                              .toIso8601String()
+                                              .split('T')[0]
+                                          : 'N/A'),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 5),
+                                    Text(
+                                        "Shipment ID: ${shipment.shipmentId ?? 'N/A'}"),
+                                    Text(
+                                        "Sender Company: ${shipment.senderCompanyName ?? 'N/A'}"),
+                                    Text(
+                                        "Receiver Company: ${shipment.receiverCompanyName ?? 'N/A'}"),
+                                    Text("Orgin: ${shipment.origin ?? ''}"),
+                                    Text(
+                                        'Destination: ${shipment.destination ?? ''}'),
+                                    Text(
+                                        'Sender Area: ${shipment.senderAreaname ?? ''}'),
+                                    Text(
+                                        'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Status:',
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: RichText(
+                                              text: TextSpan(children: [
+                                            TextSpan(
+                                                text: status,
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                        color: status !=
+                                                                'Approved'
+                                                            ? theme.redColor
+                                                            : theme.greenColor))
+                                          ])),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   );
                 } else {
