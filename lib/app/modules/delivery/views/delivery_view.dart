@@ -272,16 +272,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   .getAccountController(
                                                       deliveryData.shipmentId
                                                           .toString());
-                                          final accountController =
-                                              deliveryController
-                                                  .getOnlineController(
-                                                      deliveryData.shipmentId
-                                                          .toString());
-                                          final onineController =
-                                              deliveryController
-                                                  .getChequeController(
-                                                      deliveryData.shipmentId
-                                                          .toString());
+
                                           final otpController =
                                               deliveryController
                                                   .getOtpController(deliveryData
@@ -302,10 +293,6 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     amountController,
                                                 chequeNumberController:
                                                     chequeController,
-                                                accountNumberController:
-                                                    accountController,
-                                                onlineNumberController:
-                                                    onineController,
                                                 otpController: otpController,
                                                 dropdownHintTxt:
                                                     'Select Payment Mode',

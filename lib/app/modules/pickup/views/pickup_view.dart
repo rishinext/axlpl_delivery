@@ -290,11 +290,16 @@ class PickupView extends GetView<PickupController> {
                                               pickupData.pincode.toString());
                                         },
                                         pickUpTap: () async {
+                                          // Set the amountController to the pickup's totalCharges before showing dialog
                                           pickupController.amountController =
                                               pickupController
                                                   .getAmountController(
                                                       pickupData.shipmentId
                                                           .toString());
+                                          pickupController.amountController
+                                              .text = pickupData.totalCharges
+                                                  ?.toString() ??
+                                              '';
                                           final chequeController =
                                               pickupController
                                                   .getChequeController(
@@ -309,7 +314,6 @@ class PickupView extends GetView<PickupController> {
                                                   .getSelectedSubPaymentMode(
                                                       pickupData.shipmentId
                                                           .toString());
-
                                           if (pickupData.paymentMode !=
                                               'topay') {
                                             showOtpDialog(
@@ -321,7 +325,11 @@ class PickupView extends GetView<PickupController> {
                                                             pickupData
                                                                 .shipmentId
                                                                 .toString());
-
+                                                pickupController
+                                                        .amountController.text =
+                                                    pickupData.totalCharges
+                                                            ?.toString() ??
+                                                        '';
                                                 final otpController =
                                                     pickupController
                                                         .getOtpController(
@@ -363,6 +371,8 @@ class PickupView extends GetView<PickupController> {
                                                 dropdownHintTxt:
                                                     selectedSubPaymentMode
                                                             .value?.name ??
+                                                        pickupData
+                                                            .subPaymentMode ??
                                                         'Select Payment Mode',
                                                 btnTxt: 'Pickup',
                                                 amountController:

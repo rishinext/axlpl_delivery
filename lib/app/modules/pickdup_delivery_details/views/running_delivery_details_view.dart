@@ -426,8 +426,8 @@ class RunningDeliveryDetailsView
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            OutlinedButton(
-                                              onPressed: () {
+                                            InkWell(
+                                              onTap: () {
                                                 controller.pickImage(
                                                     ImageSource.gallery,
                                                     (file) {
@@ -436,25 +436,20 @@ class RunningDeliveryDetailsView
                                                       file);
                                                 });
                                               },
-                                              style: OutlinedButton.styleFrom(
-                                                side: BorderSide(
-                                                    color: themes.darkCyanBlue,
-                                                    width: 1.w),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.r),
+                                              child: Container(
+                                                child: Icon(
+                                                  Icons.upload_file,
+                                                  color: themes.darkCyanBlue,
+                                                  size: 60.sp,
                                                 ),
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20.w,
-                                                    vertical: 8.h),
-                                              ),
-                                              child: Text(
-                                                'Choose',
-                                                style: themes.fontSize14_500
-                                                    .copyWith(
-                                                        color: themes
-                                                            .darkCyanBlue),
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8.r),
+                                                    border: Border.all(
+                                                        color:
+                                                            themes.darkCyanBlue,
+                                                        width: 1.w)),
                                               ),
                                             ),
                                             ElevatedButton(
@@ -483,6 +478,37 @@ class RunningDeliveryDetailsView
                                               },
                                               child: Text('UPLOAD'),
                                             ),
+                                            // OutlinedButton.icon(
+                                            //   onPressed: () {
+                                            //     controller.pickImage(
+                                            //         ImageSource.gallery,
+                                            //         (file) {
+                                            //       controller.setImage(
+                                            //           shipmentID.toString(),
+                                            //           file);
+                                            //     });
+                                            //   },
+                                            //   style: OutlinedButton.styleFrom(
+                                            //     side: BorderSide(
+                                            //         color: themes.darkCyanBlue,
+                                            //         width: 1.w),
+                                            //     shape: RoundedRectangleBorder(
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(
+                                            //               10.r),
+                                            //     ),
+                                            //     padding: EdgeInsets.symmetric(
+                                            //         horizontal: 20.w,
+                                            //         vertical: 8.h),
+                                            //   ),
+                                            //   label: Text(
+                                            //     'Choose',
+                                            //     style: themes.fontSize14_500
+                                            //         .copyWith(
+                                            //             color: themes
+                                            //                 .darkCyanBlue),
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                         SizedBox(height: 12.h),

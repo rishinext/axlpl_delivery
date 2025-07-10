@@ -435,14 +435,20 @@ class PickDialog extends StatelessWidget {
               }),
               Obx(() {
                 final selectedMode = selectedSubPaymentMode.value;
-                if (selectedMode?.name == 'Cheque') {
+                if (selectedMode?.id != 'cash') {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      dropdownText('Cheque Number'),
+                      dropdownText(
+                        selectedMode?.id == 'cheque'
+                            ? 'Cheque Number'
+                            : 'Transaction ID',
+                      ),
                       CommonTextfiled(
                         controller: chequeNumberController,
-                        hintTxt: 'Enter Cheque Number',
+                        hintTxt: selectedMode?.id == 'cheque'
+                            ? 'Enter Cheque Number'
+                            : 'Enter Transaction ID',
                         keyboardType: TextInputType.text,
                       ),
                     ],

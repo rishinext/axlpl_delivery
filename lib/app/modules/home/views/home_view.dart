@@ -197,9 +197,12 @@ class HomeView extends GetView<HomeController> {
                           Expanded(
                             child: Obx(() {
                               return HomeContainer(
-                                // onTap: () {
-                                //   Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS);
-                                // },
+                                onTap: () {
+                                  deliveryController.getDeliveryData();
+                                  deliveryController.fetchPaymentModes();
+                                  historyController.getDeliveryHistory();
+                                  Get.toNamed(Routes.DELIVERY);
+                                },
                                 color: themes.blueGray,
                                 title: runningDeliveryTxt,
                                 subTitle: homeController.isLoading.value
@@ -217,6 +220,11 @@ class HomeView extends GetView<HomeController> {
                           Expanded(
                             child: Obx(() {
                               return HomeContainer(
+                                onTap: () {
+                                  pickupController.getPickupData();
+                                  pickupController.fetchPaymentModes();
+                                  Get.toNamed(Routes.PICKUP);
+                                },
                                 color: themes.lightCream,
                                 title: runningPickupTxt,
                                 subTitle: homeController.isLoading.value
@@ -307,7 +315,7 @@ class HomeView extends GetView<HomeController> {
                             ))
                           : Expanded(
                               child: HomeIconContainer(
-                              title: 'Show Shipment',
+                              title: 'My Shipment',
                               Img: containerIcon,
                               OnTap: () => Get.toNamed(Routes.SHIPNOW),
                             )),
@@ -330,7 +338,7 @@ class HomeView extends GetView<HomeController> {
                         ? SizedBox(
                             width: 100.w,
                             child: HomeIconContainer(
-                              title: 'Show Shipment',
+                              title: 'My Shipment',
                               Img: containerIcon,
                               OnTap: () => Get.toNamed(Routes.SHIPNOW),
                             ),
@@ -462,7 +470,7 @@ class HomeView extends GetView<HomeController> {
                   } else {
                     return SizedBox.shrink();
                   }
-                })
+                }),
               ],
             ),
           ),
