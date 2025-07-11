@@ -121,17 +121,21 @@ class RunningDeliveryDetailsView
                               size: 18,
                             )),
                         Spacer(),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: themes.blueGray,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(
-                            details?.shipmentStatus.toString() ?? 'N/A',
-                            style: themes.fontSize14_500
-                                .copyWith(color: themes.darkCyanBlue),
+                        Flexible(
+                          flex: 5,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: themes.blueGray,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Text(
+                              overflow: TextOverflow.fade,
+                              details?.shipmentStatus.toString() ?? 'N/A',
+                              style: themes.fontSize14_500
+                                  .copyWith(color: themes.darkCyanBlue),
+                            ),
                           ),
                         ),
                       ],
@@ -422,131 +426,152 @@ class RunningDeliveryDetailsView
                                           CrossAxisAlignment.start,
                                       children: [
                                         SizedBox(height: 8.h),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                controller.pickImage(
-                                                    ImageSource.gallery,
-                                                    (file) {
-                                                  controller.setImage(
-                                                      shipmentID.toString(),
-                                                      file);
-                                                });
-                                              },
-                                              child: Container(
-                                                child: Icon(
-                                                  Icons.upload_file,
-                                                  color: themes.darkCyanBlue,
-                                                  size: 60.sp,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8.r),
-                                                    border: Border.all(
-                                                        color:
-                                                            themes.darkCyanBlue,
-                                                        width: 1.w)),
-                                              ),
-                                            ),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    themes.darkCyanBlue,
-                                                foregroundColor:
-                                                    themes.whiteColor,
-                                              ),
-                                              onPressed: () {
-                                                final file =
-                                                    controller.getImage(details
-                                                            ?.shipmentId
-                                                            .toString() ??
-                                                        '0');
-                                                if (file != null) {
-                                                  controller.uploadInvoice(
-                                                      shipmentID: details
-                                                              ?.shipmentId
-                                                              .toString() ??
-                                                          '0',
-                                                      file: file);
-                                                  controller.fetchTrackingData(
-                                                      shipmentID.toString());
-                                                }
-                                              },
-                                              child: Text('UPLOAD'),
-                                            ),
-                                            // OutlinedButton.icon(
-                                            //   onPressed: () {
-                                            //     controller.pickImage(
-                                            //         ImageSource.gallery,
-                                            //         (file) {
-                                            //       controller.setImage(
-                                            //           shipmentID.toString(),
-                                            //           file);
-                                            //     });
-                                            //   },
-                                            //   style: OutlinedButton.styleFrom(
-                                            //     side: BorderSide(
-                                            //         color: themes.darkCyanBlue,
-                                            //         width: 1.w),
-                                            //     shape: RoundedRectangleBorder(
-                                            //       borderRadius:
-                                            //           BorderRadius.circular(
-                                            //               10.r),
-                                            //     ),
-                                            //     padding: EdgeInsets.symmetric(
-                                            //         horizontal: 20.w,
-                                            //         vertical: 8.h),
-                                            //   ),
-                                            //   label: Text(
-                                            //     'Choose',
-                                            //     style: themes.fontSize14_500
-                                            //         .copyWith(
-                                            //             color: themes
-                                            //                 .darkCyanBlue),
-                                            //   ),
-                                            // ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 12.h),
                                         Obx(() {
                                           final file = controller
                                               .getImage(shipmentID.toString());
-                                          if (file == null) return SizedBox();
 
-                                          return Stack(
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                child: Image.file(file,
-                                                    width: 120,
-                                                    height: 120,
-                                                    fit: BoxFit.cover),
-                                              ),
-                                              Positioned(
-                                                top: 4,
-                                                right: 4,
-                                                child: GestureDetector(
-                                                  onTap: () => controller
-                                                      .removeImage(shipmentID
-                                                          .toString()),
+                                              if (file ==
+                                                  null) // No image selected, show upload icon
+                                                InkWell(
+                                                  onTap: () {
+                                                    controller.pickImage(
+                                                        ImageSource.gallery,
+                                                        (file) {
+                                                      controller.setImage(
+                                                          shipmentID.toString(),
+                                                          file);
+                                                    });
+                                                  },
                                                   child: Container(
                                                     decoration: BoxDecoration(
-                                                        color: Colors.black54,
-                                                        shape: BoxShape.circle),
-                                                    child: Icon(Icons.close,
-                                                        size: 20,
-                                                        color: Colors.white),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8.r),
+                                                      border: Border.all(
+                                                          color: themes
+                                                              .darkCyanBlue,
+                                                          width: 1.w),
+                                                    ),
+                                                    padding:
+                                                        EdgeInsets.all(12.w),
+                                                    child: Icon(
+                                                      Icons.upload_file,
+                                                      color:
+                                                          themes.darkCyanBlue,
+                                                      size: 60.sp,
+                                                    ),
                                                   ),
+                                                )
+                                              else // Image selected, show preview with remove button
+                                                Stack(
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      child: Image.file(
+                                                        file,
+                                                        width: 120,
+                                                        height: 120,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      top: 4,
+                                                      right: 4,
+                                                      child: GestureDetector(
+                                                        onTap: () => controller
+                                                            .removeImage(
+                                                                shipmentID
+                                                                    .toString()),
+                                                        child: Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                Colors.black54,
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                          padding:
+                                                              EdgeInsets.all(4),
+                                                          child: Icon(
+                                                            Icons.close,
+                                                            size: 20,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      themes.darkCyanBlue,
+                                                  foregroundColor:
+                                                      themes.whiteColor,
+                                                ),
+                                                onPressed: file == null
+                                                    ? null
+                                                    : () {
+                                                        controller
+                                                            .uploadInvoice(
+                                                          shipmentID: details
+                                                                  ?.shipmentId
+                                                                  .toString() ??
+                                                              '0',
+                                                          file: file,
+                                                        );
+                                                        controller
+                                                            .fetchTrackingData(
+                                                                shipmentID
+                                                                    .toString());
+                                                      },
+                                                child: Text('UPLOAD'),
                                               ),
                                             ],
                                           );
                                         }),
+                                        // SizedBox(height: 12.h),
+                                        // Obx(() {
+                                        //   final file = controller
+                                        //       .getImage(shipmentID.toString());
+                                        //   if (file == null) return SizedBox();
+
+                                        //   return Stack(
+                                        //     children: [
+                                        //       ClipRRect(
+                                        //         borderRadius:
+                                        //             BorderRadius.circular(8),
+                                        //         child: Image.file(file,
+                                        //             width: 120,
+                                        //             height: 120,
+                                        //             fit: BoxFit.cover),
+                                        //       ),
+                                        //       Positioned(
+                                        //         top: 4,
+                                        //         right: 4,
+                                        //         child: GestureDetector(
+                                        //           onTap: () => controller
+                                        //               .removeImage(shipmentID
+                                        //                   .toString()),
+                                        //           child: Container(
+                                        //             decoration: BoxDecoration(
+                                        //                 color: Colors.black54,
+                                        //                 shape: BoxShape.circle),
+                                        //             child: Icon(Icons.close,
+                                        //                 size: 20,
+                                        //                 color: Colors.white),
+                                        //           ),
+                                        //         ),
+                                        //       ),
+                                        //     ],
+                                        //   );
+                                        // }),
                                       ],
                                     ),
                             ],
@@ -667,6 +692,8 @@ class RunningDeliveryDetailsView
                                             'Picked up',
                                             date,
                                             amountController.text,
+                                            details?.paymentMode.toString() ??
+                                                'N/A',
                                             selectedSubPaymentMode.value?.id,
                                             otpController.text,
                                           );
@@ -701,6 +728,8 @@ class RunningDeliveryDetailsView
                                               'Picked up',
                                               date,
                                               amountController.text,
+                                              details?.paymentMode.toString() ??
+                                                  'N/A',
                                               selectedSubPaymentMode.value?.id,
                                               otpController.text,
                                               chequeNumber:

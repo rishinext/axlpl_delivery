@@ -189,6 +189,7 @@ class PickupController extends GetxController {
     final date,
     final cashAmount,
     final paymentMode,
+    final subPaymentMode,
     final otp, {
     String? chequeNumber,
   }) async {
@@ -200,6 +201,7 @@ class PickupController extends GetxController {
         date,
         cashAmount,
         paymentMode,
+        subPaymentMode,
         otp,
         // 2. PASS THE PARAMETER TO THE REPOSITORY CALL
         chequeNumber: chequeNumber,

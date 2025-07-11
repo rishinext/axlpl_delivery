@@ -322,30 +322,45 @@ class HomeView extends GetView<HomeController> {
                       SizedBox(
                         width: 10.w,
                       ),
-                      if (bottomController.userData.value?.role == 'messanger')
-                        Expanded(
-                            child: HomeIconContainer(
-                          OnTap: () => Get.toNamed(Routes.HISTORY),
-                          title: 'History',
-                          Img: history,
-                        )),
+                      Obx(
+                        () {
+                          return bottomController.userData.value?.role ==
+                                  'messanger'
+                              ? SizedBox(
+                                  width: 100.w,
+                                  child: HomeIconContainer(
+                                    title: 'My Shipment',
+                                    Img: containerIcon,
+                                    OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                                  ),
+                                )
+                              : SizedBox.shrink();
+                        },
+                      ),
+                      // if (bottomController.userData.value?.role == 'messanger')
+                      //   Expanded(
+                      //       child: HomeIconContainer(
+                      //     OnTap: () => Get.toNamed(Routes.HISTORY),
+                      //     title: 'History',
+                      //     Img: history,
+                      //   )),
                     ],
                   );
                 }),
-                Obx(
-                  () {
-                    return bottomController.userData.value?.role == 'messanger'
-                        ? SizedBox(
-                            width: 100.w,
-                            child: HomeIconContainer(
-                              title: 'My Shipment',
-                              Img: containerIcon,
-                              OnTap: () => Get.toNamed(Routes.SHIPNOW),
-                            ),
-                          )
-                        : SizedBox.shrink();
-                  },
-                ),
+                // Obx(
+                //   () {
+                //     return bottomController.userData.value?.role == 'messanger'
+                //         ? SizedBox(
+                //             width: 100.w,
+                //             child: HomeIconContainer(
+                //               title: 'My Shipment',
+                //               Img: containerIcon,
+                //               OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                //             ),
+                //           )
+                //         : SizedBox.shrink();
+                //   },
+                // ),
                 Obx(() {
                   final rattingData = homeController.rattingDataModel.value;
                   final imageUrl =

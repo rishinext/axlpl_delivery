@@ -44,20 +44,20 @@ class AddShipmentView extends GetView<AddShipmentController> {
                 spacing: 15,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Select Date',
-                    style: themes.fontSize14_400,
-                  ),
-                  CommonTextfiled(
-                    isReadOnly: true,
-                    sufixIcon: IconButton(
-                        onPressed: () async {
-                          await addshipController.pickDate(
-                              context, addshipController.selectedDate);
-                        },
-                        icon: Icon(CupertinoIcons.calendar_today)),
-                    hintTxt: formatDate(addshipController.selectedDate.value),
-                  ),
+                  // Text(
+                  //   'Select Date',
+                  //   style: themes.fontSize14_400,
+                  // ),
+                  // CommonTextfiled(
+                  //   isReadOnly: true,
+                  //   sufixIcon: IconButton(
+                  //       onPressed: () async {
+                  //         await addshipController.pickDate(
+                  //             context, addshipController.selectedDate);
+                  //       },
+                  //       icon: Icon(CupertinoIcons.calendar_today)),
+                  //   hintTxt: formatDate(addshipController.selectedDate.value),
+                  // ),
                   if (bottomController.userData.value?.role != 'customer')
                     dropdownText('Customer'),
                   if (bottomController.userData.value?.role != 'customer')
@@ -181,6 +181,11 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   dropdownText('Commodity'),
                   Obx(
                     () {
+                      if (controller.isLoadingCommodity.value) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                       final isCategorySelected =
                           controller.selectedCategory.value != null;
                       return GestureDetector(

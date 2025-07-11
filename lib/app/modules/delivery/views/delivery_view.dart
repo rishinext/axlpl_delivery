@@ -230,6 +230,20 @@ class DeliveryView extends GetView<DeliveryController> {
                                           runningController.fetchTrackingData(
                                               deliveryData.shipmentId
                                                   .toString());
+                                          Get.toNamed(
+                                            Routes.RUNNING_DELIVERY_DETAILS,
+                                            arguments: {
+                                              'shipmentID': deliveryData
+                                                  .shipmentId
+                                                  .toString(),
+                                              // 'status': data.status.toString(),
+                                              // 'invoicePath': data.invoicePath,
+                                              // 'invoicePhoto': data.invoiceFile,
+                                              // 'paymentMode': data.paymentMode,
+                                              // 'date': data.date,
+                                              // 'cashAmt': data.totalCharges
+                                            },
+                                          );
                                         },
                                         isShowPaymentType: true,
                                         companyName:
@@ -434,59 +448,76 @@ class DeliveryView extends GetView<DeliveryController> {
                                           ),
                                         ],
                                       ),
-                                      child: PickupWidget(
-                                        onTap: () {
-                                          runningController.fetchTrackingData(
-                                              data.shipmentId.toString());
-                                          // Get.to(
-                                          //   RunningDeliveryDetailsView(
-                                          //     isShowInvoice: true,
-                                          //     isShowTransfer: true,
-                                          //   ),
-                                          //   arguments: {
-                                          //     'shipmentID': data.shipmentId.toString(),
-                                          //     'status': data.status.toString(),
-                                          //     'invoicePath': data.invoicePath,
-                                          //     'invoicePhoto': data.invoiceFile,
-                                          //     'paymentMode': data.paymentMode,
-                                          //     'date': data.date,
-                                          //     'cashAmt': data.totalCharges
-                                          //   },
-                                          // );
-                                        },
-                                        isShowPaymentType: false,
-                                        companyName:
-                                            data.companyName.toString(),
-                                        date: data.date.toString(),
-                                        status: data.status.toString(),
-                                        messangerName: '',
-                                        address: data.address1.toString(),
-                                        shipmentID: data.shipmentId.toString(),
-                                        cityName: data.cityName.toString(),
-                                        mobile: data.mobile.toString(),
-                                        paymentType: data.paymentMode,
-                                        statusColor: themes.greenColor,
-                                        statusDotColor: themes.greenColor,
-                                        showPickupBtn: false,
-                                        showTrasferBtn: false,
-                                        showDivider: false,
-                                        openDialerTap: () {
-                                          runningController.makingPhoneCall(
-                                              data.mobile.toString());
-                                        },
-                                        openMapTap: () {
-                                          pickupController.openMapWithAddress(
+                                      child: InkWell(
+                                        child: PickupWidget(
+                                          onTap: () {
+                                            runningController.fetchTrackingData(
+                                                data.shipmentId.toString());
+                                            Get.toNamed(
+                                              Routes.RUNNING_DELIVERY_DETAILS,
+                                              arguments: {
+                                                'shipmentID':
+                                                    data.shipmentId.toString(),
+                                                // 'status': data.status.toString(),
+                                                // 'invoicePath': data.invoicePath,
+                                                // 'invoicePhoto': data.invoiceFile,
+                                                // 'paymentMode': data.paymentMode,
+                                                // 'date': data.date,
+                                                // 'cashAmt': data.totalCharges
+                                              },
+                                            );
+                                            // Get.to(
+                                            //   RunningDeliveryDetailsView(
+                                            //     isShowInvoice: true,
+                                            //     isShowTransfer: true,
+                                            //   ),
+                                            //   arguments: {
+                                            //     'shipmentID': data.shipmentId.toString(),
+                                            //     'status': data.status.toString(),
+                                            //     'invoicePath': data.invoicePath,
+                                            //     'invoicePhoto': data.invoiceFile,
+                                            //     'paymentMode': data.paymentMode,
+                                            //     'date': data.date,
+                                            //     'cashAmt': data.totalCharges
+                                            //   },
+                                            // );
+                                          },
+                                          isShowPaymentType: false,
+                                          companyName:
                                               data.companyName.toString(),
-                                              data.address1.toString(),
-                                              data.pincode.toString());
-                                        },
-                                        pickUpTap: () async {},
-                                        transferBtnColor: null,
-                                        transferTextColor: themes.darkCyanBlue,
-                                        trasferTap: () {},
-                                        transferBorderColor:
-                                            themes.darkCyanBlue,
-                                        pickupTxt: 'Delivery',
+                                          date: data.date.toString(),
+                                          status: data.status.toString(),
+                                          messangerName: '',
+                                          address: data.address1.toString(),
+                                          shipmentID:
+                                              data.shipmentId.toString(),
+                                          cityName: data.cityName.toString(),
+                                          mobile: data.mobile.toString(),
+                                          paymentType: data.paymentMode,
+                                          statusColor: themes.greenColor,
+                                          statusDotColor: themes.greenColor,
+                                          showPickupBtn: false,
+                                          showTrasferBtn: false,
+                                          showDivider: false,
+                                          openDialerTap: () {
+                                            runningController.makingPhoneCall(
+                                                data.mobile.toString());
+                                          },
+                                          openMapTap: () {
+                                            pickupController.openMapWithAddress(
+                                                data.companyName.toString(),
+                                                data.address1.toString(),
+                                                data.pincode.toString());
+                                          },
+                                          pickUpTap: () async {},
+                                          transferBtnColor: null,
+                                          transferTextColor:
+                                              themes.darkCyanBlue,
+                                          trasferTap: () {},
+                                          transferBorderColor:
+                                              themes.darkCyanBlue,
+                                          pickupTxt: 'Delivery',
+                                        ),
                                       ),
                                     );
                                   },

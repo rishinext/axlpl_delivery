@@ -53,6 +53,7 @@ void main() async {
     ScreenUtilInit(
       designSize: ScreenUtil.defaultSize,
       child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
         enableLog: true,
         defaultTransition: Transition.noTransition,
         title: "AXLPL Delivery",

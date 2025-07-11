@@ -173,6 +173,7 @@ class PickupRepo {
     final date,
     final cashAmount,
     final paymentMode,
+    final subpaymentMode,
     final otp, {
     // 1. ADD THE OPTIONAL NAMED PARAMETER HERE
     String? chequeNumber,
@@ -200,6 +201,7 @@ class PickupRepo {
         location.longitude,
         cashAmount,
         paymentMode,
+        subpaymentMode,
         otp,
         token.toString(),
         // 2. PASS THE PARAMETER TO THE API SERVICE CALL

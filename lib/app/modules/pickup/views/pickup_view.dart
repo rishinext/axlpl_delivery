@@ -348,8 +348,8 @@ class PickupView extends GetView<PickupController> {
                                                     pickupData.date,
                                                     pickupController
                                                         .amountController.text,
-                                                    selectedSubPaymentMode
-                                                        .value?.id,
+                                                    pickupData.paymentMode,
+                                                    0,
                                                     otpController.text,
                                                     chequeNumber: '0');
                                                 Get.back();
@@ -369,11 +369,7 @@ class PickupView extends GetView<PickupController> {
                                                 date: pickupData.date,
                                                 amt: pickupData.totalCharges,
                                                 dropdownHintTxt:
-                                                    selectedSubPaymentMode
-                                                            .value?.name ??
-                                                        pickupData
-                                                            .subPaymentMode ??
-                                                        'Select Payment Mode',
+                                                    'Select Payment Mode',
                                                 btnTxt: 'Pickup',
                                                 amountController:
                                                     pickupController
@@ -390,6 +386,7 @@ class PickupView extends GetView<PickupController> {
                                                     pickupData.date,
                                                     pickupController
                                                         .amountController.text,
+                                                    pickupData.paymentMode,
                                                     selectedSubPaymentMode
                                                         .value?.id,
                                                     otpController.text,

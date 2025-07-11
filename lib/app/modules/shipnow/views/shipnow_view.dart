@@ -1,6 +1,11 @@
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
+import 'package:axlpl_delivery/common_widget/common_appbar.dart';
+import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
+import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -27,38 +32,52 @@ class ShipnowView extends GetView<ShipnowController> {
       }
     });
 
-    return Scaffold(
-        appBar: AppBar(
-          /*   actions: [
-            PopupMenuButton(
-              itemBuilder: (context) => <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: 'CSV',
-                  child: Text('CSV'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'Excel',
-                  child: Text('Excel'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'PDF',
-                  child: Text('PDF'),
-                ),
-                PopupMenuItem<String>(
-                  value: 'Print',
-                  child: Text('Print'),
-                ),
-              ],
-            )
-          ],*/
-          title: const Text('My Shipments'),
-          centerTitle: true,
-        ),
+    return CommonScaffold(
+        appBar: commonAppbar('My Shipments'),
         body: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             spacing: 10,
             children: [
+              ContainerTextfiled(
+                controller: shipnowController.shipmentIDController,
+                hintText: 'Search Here',
+                onChanged: (value) {
+                  // shipnowController.filterByQuery(value!);
+                  return null;
+                },
+                suffixIcon: Icon(CupertinoIcons.search),
+                prefixIcon: InkWell(
+                  onTap: () async {
+                    var scannedValue = await Utils().scanAndPlaySound(context);
+                    if (scannedValue != null && scannedValue != '-1') {
+                      shipnowController.shipmentIDController.text =
+                          scannedValue;
+                      Get.dialog(
+                        const Center(
+                            child: CircularProgressIndicator.adaptive()),
+                        barrierDismissible: false,
+                      );
+
+                      await runningController.fetchTrackingData(scannedValue);
+                      Get.back(); // Close the dialog
+                      Get.toNamed(
+                        Routes.RUNNING_DELIVERY_DETAILS,
+                        arguments: {
+                          'shipmentID': scannedValue,
+                          // 'status': data.status.toString(),
+                          // 'invoicePath': data.invoicePath,
+                          // 'invoicePhoto': data.invoiceFile,
+                          // 'paymentMode': data.paymentMode,
+                          // 'date': data.date,
+                          // 'cashAmt': data.totalCharges
+                        },
+                      );
+                    }
+                  },
+                  child: Icon(CupertinoIcons.qrcode_viewfinder),
+                ),
+              ),
               Obx(() {
                 if (shipnowController.isLoadingShipNow.value) {
                   return const Center(

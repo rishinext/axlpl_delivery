@@ -176,6 +176,7 @@ class RunningDeliveryDetailsController extends GetxController {
 
         Get.snackbar("Success", message.value,
             backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
+        fetchTrackingData(shipmentID);
       } else {
         isInvoiceUpload.value = Status.error;
         message.value = repo.apiMessage ?? 'Upload failed';

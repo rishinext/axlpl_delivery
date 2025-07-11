@@ -587,6 +587,7 @@ class ApiServices {
     long,
     cashAmount,
     paymentMode,
+    subPaymentMode,
     final otp,
     token, {
     // Start of optional named parameters
@@ -600,7 +601,8 @@ class ApiServices {
       'latitude': lat,
       'longitude': long,
       'cash_amount': cashAmount,
-      'sub_payment_mode': paymentMode,
+      'payment_method': paymentMode,
+      'sub_payment_mode': subPaymentMode,
       'pickup_otp': otp,
     };
 
