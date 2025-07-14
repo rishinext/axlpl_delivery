@@ -80,7 +80,7 @@ class DeliveryController extends GetxController {
         shipmentId, () => TextEditingController());
   }
 
-  final amountController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
   var isLoadingPayment = false.obs;
 
   void initializeUserId() async {
@@ -96,15 +96,16 @@ class DeliveryController extends GetxController {
         deliveryList.value = success;
         filteredDeliveryList.value = success;
         isDeliveryLoading.value = Status.success;
-        if (success.isNotEmpty) {
-          amountController.text = success.first.totalCharges.toString();
-        } else {
-          amountController.text;
+
+        // Initialize amount controllers per shipment with totalCharges
+        for (var delivery in success) {
+          final controller =
+              getAmountController(delivery.shipmentId.toString());
+          controller.text = delivery.totalCharges.toString();
         }
       } else {
         Utils().logInfo('No delivery Record Found!');
         isDeliveryLoading.value = Status.error;
-        Utils().logInfo('No delivery Record Found!');
       }
     } catch (e) {
       Utils().logError(e.toString());
@@ -144,9 +145,9 @@ class DeliveryController extends GetxController {
       if (success == true) {
         Get.snackbar(
           'Success',
-          'Upload Delivery Successful!',
-          colorText: themes.whiteColor,
+          'Delivery uploaded successfully',
           backgroundColor: themes.darkCyanBlue,
+          colorText: themes.whiteColor,
         );
         isUploadDelivery.value = Status.success;
         getDeliveryData();
@@ -157,18 +158,18 @@ class DeliveryController extends GetxController {
       } else {
         Get.snackbar(
           'Failed',
-          'Upload Delivery failed. Please try again.',
-          colorText: themes.whiteColor,
+          'Delivery uploaded failed',
           backgroundColor: themes.redColor,
+          colorText: themes.whiteColor,
         );
         isUploadDelivery.value = Status.error;
       }
     } catch (e) {
       Get.snackbar(
-        'Error',
-        'An unexpected error occurred.',
-        colorText: themes.whiteColor,
+        'Failed',
+        e.toString(),
         backgroundColor: themes.redColor,
+        colorText: themes.whiteColor,
       );
       isUploadDelivery.value = Status.error;
     }

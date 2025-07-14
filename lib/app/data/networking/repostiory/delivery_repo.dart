@@ -111,7 +111,6 @@ class DeliveryRepo {
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
-      // A safer check for the userID
       if (userID == null || userID.isEmpty) {
         Utils().logError("User ID is null or empty, cannot upload pickup.");
         return false;
@@ -132,7 +131,6 @@ class DeliveryRepo {
         subPaymentMode,
         deliveryOtp,
         token.toString(),
-        // 2. PASS THE PARAMETER TO THE API SERVICE CALL
         chequeNumber: chequeNumber,
       );
 
@@ -145,7 +143,7 @@ class DeliveryRepo {
             Utils().log(data.toJson());
             isSuccess = true;
           } else {
-            Utils().log('Pickup error: ${data.message}');
+            Utils().log('Delivery error: ${data.message}');
             Utils().log(data.toJson());
             isSuccess = false;
           }

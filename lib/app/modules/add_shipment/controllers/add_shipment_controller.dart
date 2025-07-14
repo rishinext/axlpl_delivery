@@ -724,7 +724,7 @@ class AddShipmentController extends GetxController {
         totalCharges: double.tryParse(totalChargeController.text) ?? 0.0,
         grandTotal: double.tryParse(grandeChargeController.text) ?? 0.0,
         docketNo: docketNoController.text,
-        shipmentDate: DateTime.now().toIso8601String(),
+        shipmentDate: DateFormat('yyyy-MM-dd').format(selectedDate.value),
 
         senderName: senderAddressType.value == 0
             ? senderInfoNameController.text
@@ -875,13 +875,7 @@ class AddShipmentController extends GetxController {
   @override
   void onClose() {
     // TODO: implement onClose
-    shipmentChargeController.dispose();
-    insuranceChargeController.dispose();
-    odaChargeController.dispose();
-    holidayChargeController.dispose();
-    handlingChargeController.dispose();
-    totalChargeController.dispose();
-    gstChargeController.dispose();
+
     super.onClose();
     pageController.dispose();
   }

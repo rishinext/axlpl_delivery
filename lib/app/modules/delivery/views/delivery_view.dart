@@ -281,6 +281,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   .getAmountController(
                                                       deliveryData.shipmentId
                                                           .toString());
+
                                           final chequeController =
                                               deliveryController
                                                   .getAccountController(
@@ -321,7 +322,8 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     deliveryData.date,
                                                     deliveryData.totalCharges
                                                         .toString(),
-                                                    amountController.text,
+                                                    deliveryData.totalCharges
+                                                        .toString(),
                                                     deliveryData.paymentMode,
                                                     deliveryController
                                                         .getSelectedSubPaymentMode(
@@ -428,7 +430,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                   itemCount:
                                       historyController.historyList.length,
                                   shrinkWrap: true,
-                                  physics: BouncingScrollPhysics(),
+                                  physics: AlwaysScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final data =
                                         historyController.historyList[index];

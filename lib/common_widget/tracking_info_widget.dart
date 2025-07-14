@@ -38,7 +38,12 @@ Widget infoRow(String label, String value) {
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-      Text(value, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+      Text(value,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          )),
     ],
   );
 }

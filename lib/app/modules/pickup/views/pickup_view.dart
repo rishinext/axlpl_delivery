@@ -541,97 +541,92 @@ class PickupView extends GetView<PickupController> {
                           ));
                         } else if (historyController.isPickedup.value ==
                             Status.success) {
-                          return RefreshIndicator.adaptive(
-                            onRefresh: () =>
-                                historyController.getPickupHistory(),
-                            child: SizedBox(
-                              height: 500.h,
+                          return SizedBox(
+                            height: 500.h,
+                            child: RefreshIndicator.adaptive(
+                              onRefresh: () =>
+                                  historyController.getPickupHistory(),
                               child: ListView.separated(
                                 itemCount:
                                     historyController.pickUpHistoryList.length,
                                 shrinkWrap: true,
-                                physics: BouncingScrollPhysics(),
+                                physics: AlwaysScrollableScrollPhysics(),
                                 separatorBuilder: (context, index) =>
                                     SizedBox(),
                                 itemBuilder: (context, index) {
                                   var pickedUpData = historyController
                                       .pickUpHistoryList[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      runningController.fetchTrackingData(
-                                          pickedUpData.shipmentId.toString());
-                                      Get.to(
-                                        // Routes.RUNNING_DELIVERY_DETAILS,
-                                        RunningDeliveryDetailsView(
-                                          isShowInvoice: true,
-                                          isShowTransfer: false,
+                                  return Container(
+                                    margin: EdgeInsets.all(8.w),
+                                    padding: EdgeInsets.all(10.w),
+                                    decoration: BoxDecoration(
+                                      color: themes.whiteColor,
+                                      borderRadius: BorderRadius.circular(15.r),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          blurRadius: 4.r,
+                                          offset: Offset(0, 3),
                                         ),
-                                        arguments: {
-                                          'shipmentID': pickedUpData.shipmentId
-                                              .toString(),
-                                          'status':
-                                              pickedUpData.status.toString(),
-                                          'invoicePath':
-                                              pickedUpData.invoicePath,
-                                          'invoicePhoto':
-                                              pickedUpData.invoiceFile,
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: EdgeInsets.all(8.w),
-                                      padding: EdgeInsets.all(10.w),
-                                      decoration: BoxDecoration(
-                                        color: themes.whiteColor,
-                                        borderRadius:
-                                            BorderRadius.circular(15.r),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 4.r,
-                                            offset: Offset(0, 3),
+                                      ],
+                                    ),
+                                    child: PickupWidget(
+                                      onTap: () {
+                                        runningController.fetchTrackingData(
+                                            pickedUpData.shipmentId.toString());
+                                        Get.to(
+                                          // Routes.RUNNING_DELIVERY_DETAILS,
+                                          RunningDeliveryDetailsView(
+                                            isShowInvoice: true,
+                                            isShowTransfer: false,
                                           ),
-                                        ],
-                                      ),
-                                      child: PickupWidget(
-                                        paymentType: pickedUpData.paymentMode,
-                                        companyName:
+                                          arguments: {
+                                            'shipmentID': pickedUpData
+                                                .shipmentId
+                                                .toString(),
+                                            'status':
+                                                pickedUpData.status.toString(),
+                                            'invoicePath':
+                                                pickedUpData.invoicePath,
+                                            'invoicePhoto':
+                                                pickedUpData.invoiceFile,
+                                          },
+                                        );
+                                      },
+                                      paymentType: pickedUpData.paymentMode,
+                                      companyName:
+                                          pickedUpData.companyName.toString(),
+                                      date: pickedUpData.date.toString(),
+                                      status: pickedUpData.status.toString(),
+                                      messangerName:
+                                          pickedUpData.messangerName.toString(),
+                                      address: pickedUpData.address1.toString(),
+                                      shipmentID:
+                                          pickedUpData.shipmentId.toString(),
+                                      cityName:
+                                          pickedUpData.cityName.toString(),
+                                      mobile: pickedUpData.mobile.toString(),
+                                      statusColor:
+                                          pickedUpData.status == 'Picked up'
+                                              ? themes.greenColor
+                                              : themes.redColor,
+                                      statusDotColor:
+                                          pickedUpData.status == 'Picked up'
+                                              ? themes.greenColor
+                                              : themes.redColor,
+                                      showPickupBtn: false,
+                                      showTrasferBtn: false,
+                                      showDivider: false,
+                                      openMapTap: () {
+                                        pickupController.openMapWithAddress(
                                             pickedUpData.companyName.toString(),
-                                        date: pickedUpData.date.toString(),
-                                        status: pickedUpData.status.toString(),
-                                        messangerName: pickedUpData
-                                            .messangerName
-                                            .toString(),
-                                        address:
                                             pickedUpData.address1.toString(),
-                                        shipmentID:
-                                            pickedUpData.shipmentId.toString(),
-                                        cityName:
-                                            pickedUpData.cityName.toString(),
-                                        mobile: pickedUpData.mobile.toString(),
-                                        statusColor:
-                                            pickedUpData.status == 'Picked up'
-                                                ? themes.greenColor
-                                                : themes.redColor,
-                                        statusDotColor:
-                                            pickedUpData.status == 'Picked up'
-                                                ? themes.greenColor
-                                                : themes.redColor,
-                                        showPickupBtn: false,
-                                        showTrasferBtn: false,
-                                        showDivider: false,
-                                        openMapTap: () {
-                                          pickupController.openMapWithAddress(
-                                              pickedUpData.companyName
-                                                  .toString(),
-                                              pickedUpData.address1.toString(),
-                                              pickedUpData.pincode.toString());
-                                        },
-                                        openDialerTap: () {
-                                          runningController.makingPhoneCall(
-                                              pickedUpData.mobile.toString());
-                                        },
-                                      ),
+                                            pickedUpData.pincode.toString());
+                                      },
+                                      openDialerTap: () {
+                                        runningController.makingPhoneCall(
+                                            pickedUpData.mobile.toString());
+                                      },
                                     ),
                                   );
                                 },
