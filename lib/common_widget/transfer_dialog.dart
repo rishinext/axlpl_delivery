@@ -47,6 +47,7 @@ void showTransferDialog(VoidCallback ontap) {
       ),
       radius: 10,
       textConfirm: "Transfer",
+      buttonColor: themes.darkCyanBlue,
       textCancel: "Cancel",
       confirmTextColor: themes.whiteColor,
       onConfirm: ontap);

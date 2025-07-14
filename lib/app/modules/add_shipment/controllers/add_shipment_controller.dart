@@ -724,7 +724,7 @@ class AddShipmentController extends GetxController {
         totalCharges: double.tryParse(totalChargeController.text) ?? 0.0,
         grandTotal: double.tryParse(grandeChargeController.text) ?? 0.0,
         docketNo: docketNoController.text,
-        shipmentDate: DateTime.now(),
+        shipmentDate: DateTime.now().toIso8601String(),
 
         senderName: senderAddressType.value == 0
             ? senderInfoNameController.text

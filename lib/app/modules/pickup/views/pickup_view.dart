@@ -425,10 +425,12 @@ class PickupView extends GetView<PickupController> {
                                                             CrossAxisAlignment
                                                                 .start,
                                                         children: [
-                                                          const SizedBox(
-                                                              height: 10),
+                                                          // const SizedBox(
+                                                          //     height: 10),
                                                           dropdownText(
                                                               'Messanger List'),
+                                                          const SizedBox(
+                                                              height: 10),
                                                           Obx(
                                                             () => CommonDropdown<
                                                                 MessangerList>(
@@ -468,8 +470,12 @@ class PickupView extends GetView<PickupController> {
                                                     ),
                                                   ),
                                                   radius: 10,
+                                                  buttonColor:
+                                                      themes.darkCyanBlue,
                                                   textConfirm: "Transfer",
                                                   textCancel: "Cancel",
+                                                  cancelTextColor:
+                                                      themes.darkCyanBlue,
                                                   confirmTextColor:
                                                       themes.whiteColor,
                                                   onConfirm: () {
