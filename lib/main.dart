@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,6 +37,11 @@ void main() async {
     provisional: false,
     sound: true,
   );
+  await FlutterDownloader.initialize(
+      debug: true,
+      ignoreSsl:
+          true // option: set to false to disable working with http links (default: false)
+      );
 
   if (kDebugMode) {
     print('Permission granted: ${settings.authorizationStatus}');

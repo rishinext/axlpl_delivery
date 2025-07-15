@@ -3,11 +3,14 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
+import 'package:axlpl_delivery/common_widget/shipment_label_widget.dart';
+import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 import '../controllers/shipnow_controller.dart';
@@ -127,12 +130,7 @@ class ShipnowView extends GetView<ShipnowController> {
                               },
                               child: ListTile(
                                 title: Text(
-                                  "Create Date: " +
-                                      (shipment.createdDate != null
-                                          ? shipment.createdDate!
-                                              .toIso8601String()
-                                              .split('T')[0]
-                                          : 'N/A'),
+                                  "Shipment Date: ${shipment.createdDate != null ? DateFormat('dd-MM-yyyy').format(shipment.createdDate!) : 'N/A'}",
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
@@ -153,25 +151,83 @@ class ShipnowView extends GetView<ShipnowController> {
                                         'Sender Area: ${shipment.senderAreaname ?? ''}'),
                                     Text(
                                         'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
                                     Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          'Status:',
+                                        // Image.asset(
+                                        //   status == 'Approved'
+                                        //       ? appoved
+                                        //       : status == 'Pending'
+                                        //           ? historyIcon
+                                        //           : status == 'Picked up'
+                                        //               ? deliveryIcon
+                                        //               : cancle,
+                                        //   width: 25.w,
+                                        // ),
+                                        // Text(
+                                        //   'Status:',s
+                                        // ),
+                                        // SizedBox(
+                                        //   width: 8.w,
+                                        // ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: status != 'Approved'
+                                                ? Colors.orange[100]
+                                                : Colors.green[100],
+                                            borderRadius:
+                                                BorderRadius.circular(8.r),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: RichText(
+                                                text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: status,
+                                                  style: theme.fontSize14_500
+                                                      .copyWith(
+                                                          color: status !=
+                                                                  'Approved'
+                                                              ? Colors
+                                                                  .orange[900]
+                                                              : Colors
+                                                                  .green[900])),
+                                            ])),
+                                          ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: RichText(
-                                              text: TextSpan(children: [
-                                            TextSpan(
-                                                text: status,
-                                                style: theme.fontSize14_500
-                                                    .copyWith(
-                                                        color: status !=
-                                                                'Approved'
-                                                            ? theme.redColor
-                                                            : theme.greenColor))
-                                          ])),
-                                        ),
+                                        CircleAvatar(
+                                          radius: 15.h,
+                                          backgroundColor: theme.greenColor,
+                                          child: IconButton(
+                                            color: theme.orangeColor,
+                                            icon: Icon(
+                                              size: 20.sp,
+                                              Icons.print,
+                                              color: theme.whiteColor,
+                                            ),
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return ShipmentLabelDialog(
+                                                      labelCountController:
+                                                          controller
+                                                              .shipmentLabelCountController,
+                                                      onPrint: () {
+                                                        controller
+                                                            .downloadShipmentLable(
+                                                                shipment
+                                                                    .shipmentLabel);
+                                                      },
+                                                    );
+                                                  });
+                                            },
+                                          ),
+                                        )
                                       ],
                                     )
                                   ],

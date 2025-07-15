@@ -2,7 +2,10 @@ import 'package:axlpl_delivery/app/data/models/shipnow_data_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/shipnow_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class ShipnowController extends GetxController {
   //TODO: Implement ShipnowController
@@ -15,6 +18,8 @@ class ShipnowController extends GetxController {
   final isLoadingMore = false.obs;
 
   final shipmentIDController = TextEditingController();
+  final TextEditingController shipmentLabelCountController =
+      TextEditingController();
 
   // Pagination variables
   int currentPage = 0;
@@ -70,6 +75,26 @@ class ShipnowController extends GetxController {
       } else {
         isLoadingMore(false);
       }
+    }
+  }
+
+  Future<void> downloadShipmentLable(String url) async {
+    try {
+      final directory = await getExternalStorageDirectory();
+      final savedDir = directory?.path ?? '/storage/emulated/0/Download';
+
+      await FlutterDownloader.enqueue(
+        url: url,
+        headers: {}, // optional: header send with url (auth token etc)
+        savedDir: savedDir,
+        showNotification:
+            true, // show download progress in status bar (Android)
+        openFileFromNotification:
+            true, // click notification to open file (Android)
+      );
+    } catch (e) {
+      Utils().logError('Download failed: $e');
+      // Optionally show a snackbar or dialog here
     }
   }
 

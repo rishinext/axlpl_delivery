@@ -81,6 +81,7 @@ class ShipmentDatum {
   String? senderGstNo;
   String? receiverGstNo;
   String? shipmentStatus;
+  final shipmentLabel;
 
   ShipmentDatum({
     this.createdDate,
@@ -94,6 +95,7 @@ class ShipmentDatum {
     this.senderGstNo,
     this.receiverGstNo,
     this.shipmentStatus,
+    this.shipmentLabel,
   });
 
   factory ShipmentDatum.fromJson(Map<String, dynamic> json) => ShipmentDatum(
@@ -110,6 +112,7 @@ class ShipmentDatum {
         senderGstNo: json["sender_gst_no"],
         receiverGstNo: json["receiver_gst_no"],
         shipmentStatus: json["shipment_status"],
+        shipmentLabel: json["shipment_label"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -124,5 +127,6 @@ class ShipmentDatum {
         "sender_gst_no": senderGstNo,
         "receiver_gst_no": receiverGstNo,
         "shipment_status": shipmentStatus,
+        "shipment_label": shipmentLabel,
       };
 }

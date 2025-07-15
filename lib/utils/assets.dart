@@ -24,3 +24,6 @@ final errorImg = 'assets/error.png';
 final noImg = 'assets/noimg.jpg';
 final orders = 'assets/orders.png';
 final axlplLogo = 'assets/axlplLogo.png';
+final appoved = 'assets/approve.png';
+final hold = 'assets/hold.png';
+final cancle = 'assets/cancelled.png';
