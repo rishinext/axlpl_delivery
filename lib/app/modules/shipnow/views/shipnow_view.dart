@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
@@ -189,6 +191,7 @@ class ShipnowView extends GetView<ShipnowController> {
                                               TextSpan(
                                                   text: status,
                                                   style: theme.fontSize14_500
+                                                      .copyWith(fontSize: 12.sp)
                                                       .copyWith(
                                                           color: status !=
                                                                   'Approved'
@@ -199,35 +202,52 @@ class ShipnowView extends GetView<ShipnowController> {
                                             ])),
                                           ),
                                         ),
-                                        CircleAvatar(
-                                          radius: 15.h,
-                                          backgroundColor: theme.greenColor,
-                                          child: IconButton(
-                                            color: theme.orangeColor,
-                                            icon: Icon(
-                                              size: 20.sp,
-                                              Icons.print,
-                                              color: theme.whiteColor,
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
+                                        if (status == 'Approved')
+                                          CircleAvatar(
+                                            radius: 15.h,
+                                            backgroundColor: theme.greenColor,
+                                            child: IconButton(
+                                              color: theme.orangeColor,
+                                              icon: Icon(
+                                                size: 20.sp,
+                                                Icons.print,
+                                                color: theme.whiteColor,
+                                              ),
+                                              onPressed: () {
+                                                showDialog(
                                                   context: context,
                                                   builder: (context) {
+                                                    final labelController =
+                                                        shipnowController
+                                                            .getLableController(
+                                                                shipment
+                                                                    .shipmentId
+                                                                    .toString());
                                                     return ShipmentLabelDialog(
                                                       labelCountController:
-                                                          controller
-                                                              .shipmentLabelCountController,
+                                                          labelController,
                                                       onPrint: () {
+                                                        final shipmentId =
+                                                            shipment.shipmentId;
+                                                        final labelCount =
+                                                            labelController.text
+                                                                    .isNotEmpty
+                                                                ? labelController
+                                                                    .text
+                                                                : '1';
+                                                        final url =
+                                                            'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
                                                         controller
                                                             .downloadShipmentLable(
-                                                                shipment
-                                                                    .shipmentLabel);
+                                                                url);
+                                                        Get.back();
                                                       },
                                                     );
-                                                  });
-                                            },
-                                          ),
-                                        )
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          )
                                       ],
                                     )
                                   ],

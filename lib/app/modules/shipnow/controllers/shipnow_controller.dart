@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class ShipnowController extends GetxController {
+  final isDownloadingLabel = false.obs;
   //TODO: Implement ShipnowController
   final shipNowRepo = ShipnowRepo();
 
@@ -20,6 +21,12 @@ class ShipnowController extends GetxController {
   final shipmentIDController = TextEditingController();
   final TextEditingController shipmentLabelCountController =
       TextEditingController();
+
+  final Map<String, TextEditingController> shipmentLableControllers = {};
+
+  TextEditingController getLableController(String shipmentId) =>
+      shipmentLableControllers.putIfAbsent(
+          shipmentId, () => TextEditingController());
 
   // Pagination variables
   int currentPage = 0;
@@ -79,6 +86,7 @@ class ShipnowController extends GetxController {
   }
 
   Future<void> downloadShipmentLable(String url) async {
+    isDownloadingLabel.value = true;
     try {
       final directory = await getExternalStorageDirectory();
       final savedDir = directory?.path ?? '/storage/emulated/0/Download';
@@ -91,10 +99,14 @@ class ShipnowController extends GetxController {
             true, // show download progress in status bar (Android)
         openFileFromNotification:
             true, // click notification to open file (Android)
+        saveInPublicStorage: true, // Fix for public storage download
+        fileName: 'shipment_label.pdf',
       );
     } catch (e) {
       Utils().logError('Download failed: $e');
       // Optionally show a snackbar or dialog here
+    } finally {
+      isDownloadingLabel.value = false;
     }
   }
 
