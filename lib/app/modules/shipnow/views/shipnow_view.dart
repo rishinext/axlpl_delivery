@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/shipment_label_widget.dart';
-import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -238,7 +235,7 @@ class ShipnowView extends GetView<ShipnowController> {
                                                         final url =
                                                             'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
                                                         controller
-                                                            .downloadShipmentLable(
+                                                            .downloadShipmentLabel(
                                                                 url);
                                                         Get.back();
                                                       },
