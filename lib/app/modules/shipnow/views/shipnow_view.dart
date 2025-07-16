@@ -235,7 +235,7 @@ class ShipnowView extends GetView<ShipnowController> {
                                                         final url =
                                                             'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
                                                         controller
-                                                            .downloadShipmentLabel(
+                                                            .downloadShipmentLable(
                                                                 url);
                                                         Get.back();
                                                       },
