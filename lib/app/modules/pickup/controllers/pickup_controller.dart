@@ -203,7 +203,6 @@ class PickupController extends GetxController {
         paymentMode,
         subPaymentMode,
         otp,
-        // 2. PASS THE PARAMETER TO THE REPOSITORY CALL
         chequeNumber: chequeNumber,
       );
 
@@ -219,7 +218,10 @@ class PickupController extends GetxController {
         final historyController = Get.find<HistoryController>();
         historyController.getPickupHistory();
         otpController.clear();
-        Get.back(); // Navigate back on success
+        // Delay navigation to allow snackbar to show
+        Future.delayed(const Duration(seconds: 1), () {
+          Get.back(); // Navigate back on success
+        });
       } else {
         Get.snackbar(
           'Failed',

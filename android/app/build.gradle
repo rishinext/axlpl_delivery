@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.axlpl_delivery"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

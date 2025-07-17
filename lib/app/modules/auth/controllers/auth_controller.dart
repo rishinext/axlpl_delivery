@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
@@ -11,6 +12,7 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AuthController extends GetxController {
   //TODO: Implement AuthController
@@ -72,6 +74,20 @@ class AuthController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<bool> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      var status = await Permission.storage.status;
+      if (status.isGranted) {
+        return true;
+      } else {
+        status = await Permission.storage.request();
+        return status.isGranted;
+      }
+    }
+    // For other platforms like iOS, assume permission is granted or handled elsewhere.
+    return true;
   }
 
   @override

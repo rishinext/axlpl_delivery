@@ -393,7 +393,6 @@ class PickupView extends GetView<PickupController> {
                                                     chequeNumber:
                                                         chequeController.text,
                                                   );
-                                                  Get.back();
                                                 },
                                                 onSendOtpCallback: () async {
                                                   await pickupController.getOtp(

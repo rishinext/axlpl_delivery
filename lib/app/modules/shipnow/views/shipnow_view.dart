@@ -207,7 +207,7 @@ class ShipnowView extends GetView<ShipnowController> {
                                               color: theme.orangeColor,
                                               icon: Icon(
                                                 size: 20.sp,
-                                                Icons.print,
+                                                Icons.qr_code,
                                                 color: theme.whiteColor,
                                               ),
                                               onPressed: () {
@@ -236,7 +236,9 @@ class ShipnowView extends GetView<ShipnowController> {
                                                             'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
                                                         controller
                                                             .downloadShipmentLable(
-                                                                url);
+                                                                url,
+                                                                shipmentId
+                                                                    .toString());
                                                         Get.back();
                                                       },
                                                     );
