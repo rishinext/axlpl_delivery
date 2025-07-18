@@ -129,6 +129,19 @@ class DeliveryController extends GetxController {
   }) async {
     isUploadDelivery.value = Status.loading;
     try {
+      Utils().logInfo('Uploading delivery with data:');
+      Utils().logInfo({
+        'shipmentID': shipmentID,
+        'shipmentStatus': shipmentStatus,
+        'id': id,
+        'date': date,
+        'amtPaid': amtPaid,
+        'cashAmount': cashAmount,
+        'paymentMode': paymentMode,
+        'subPaymentMode': subPaymentMode,
+        'deliveryOtp': deliveryOtp,
+        'chequeNumber': chequeNumber,
+      });
       final success = await deliveryRepo.uploadDeliveryRepo(
         shipmentID,
         shipmentStatus,
@@ -154,7 +167,9 @@ class DeliveryController extends GetxController {
         final historyController = Get.find<HistoryController>();
         historyController.getDeliveryHistory();
         otpController.clear();
-        // Get.back(); // Navigate back on success
+        Future.delayed(const Duration(seconds: 1), () {
+          Get.back(); // Navigate back on success
+        });
       } else {
         Get.snackbar(
           'Failed',

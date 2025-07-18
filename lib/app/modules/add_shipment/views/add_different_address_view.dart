@@ -62,11 +62,12 @@ class AddDifferentAddressView extends GetView {
                           children: [
                             dropdownText(zip),
                             CommonTextfiled(
+                              // maxLength: 6,
                               hintTxt: zip,
                               controller:
                                   addshipController.diffrentZipController,
                               textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
+                              validator: utils.validateIndianZipcode,
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
                                 if (value?.length == 6) {

@@ -250,7 +250,7 @@ class DeliveryDialog extends StatelessWidget {
             backgroundColor: themes.darkCyanBlue,
             foregroundColor: themes.whiteColor,
           ),
-          onPressed: () {
+          onPressed: () async {
             if (otpController.text.length != 4) {
               Get.snackbar('Invalid OTP', 'Please enter all 4 digits.',
                   colorText: themes.whiteColor,
@@ -258,7 +258,10 @@ class DeliveryDialog extends StatelessWidget {
               return;
             }
 
-            onConfirmCallback?.call();
+            if (onConfirmCallback != null) {
+              onConfirmCallback!();
+              Get.back(); // Close dialog after upload completes
+            }
           },
           child: Text(btnTxt),
         ),

@@ -305,12 +305,12 @@ class ReceiverAddressView extends GetView {
                             ),
                             dropdownText(zip),
                             CommonTextfiled(
-                              isEnable: false,
+                              isEnable: true,
                               hintTxt: zip,
                               controller:
                                   addshipController.receiverInfoZipController,
                               textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
+                              validator: utils.validateIndianZipcode,
                               keyboardType: TextInputType.number,
                               onChanged: (value) {
                                 if (value?.length == 6) {
@@ -418,6 +418,7 @@ class ReceiverAddressView extends GetView {
                             ),
                             dropdownText('Mobile'),
                             CommonTextfiled(
+                              maxLength: 10,
                               hintTxt: 'Mobile',
                               textInputAction: TextInputAction.next,
                               keyboardType: TextInputType.phone,
@@ -430,7 +431,7 @@ class ReceiverAddressView extends GetView {
                               hintTxt: 'Email',
                               textInputAction: TextInputAction.done,
                               keyboardType: TextInputType.emailAddress,
-                              validator: utils.validateText,
+                              validator: utils.validateEmail,
                               controller:
                                   addshipController.receiverInfoEmailController,
                             ),

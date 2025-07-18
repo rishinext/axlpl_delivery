@@ -72,7 +72,7 @@ class Utils {
     if (value == null || value.isEmpty) {
       return 'Email ID is required';
     } else if (!emailExp.hasMatch(value)) {
-      return 'Enter a valid Email ID';
+      return 'Enter a valid @ Email ID';
     }
     return null;
   }
@@ -89,6 +89,29 @@ class Utils {
   String? validateText(String? value) {
     if (value == null || value.isEmpty) {
       return 'Value is required';
+    }
+    return null;
+  }
+
+  String? validateGST(String? value) {
+    // GSTIN format: 15 characters, first 2 digits are state code, next 10 are PAN, next 1 is entity code, next 1 is Z, last 1 is checksum
+    final RegExp gstExp =
+        RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
+    if (value == null || value.isEmpty) {
+      return 'GST number is required';
+    } else if (!gstExp.hasMatch(value)) {
+      return 'Enter a valid GST number (15 characters)';
+    }
+    return null;
+  }
+
+  String? validateIndianZipcode(String? value) {
+    // Indian PIN code: 6 digits, first digit 1-9
+    final RegExp pinExp = RegExp(r'^[1-9][0-9]{5}$');
+    if (value == null || value.isEmpty) {
+      return 'PIN code is required';
+    } else if (!pinExp.hasMatch(value)) {
+      return 'Enter a valid 6-digit PIN code';
     }
     return null;
   }

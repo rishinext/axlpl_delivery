@@ -21,6 +21,8 @@ class CommonTextfiled extends StatelessWidget {
   final isReadOnly;
   final isEnable;
   final maxLine;
+  final maxNumberOfLines;
+  final int? maxLength;
 
   CommonTextfiled({
     super.key,
@@ -39,6 +41,8 @@ class CommonTextfiled extends StatelessWidget {
     this.onSubmit,
     this.lableText,
     this.maxLine,
+    this.maxNumberOfLines,
+    this.maxLength,
   });
 
   @override
@@ -46,6 +50,7 @@ class CommonTextfiled extends StatelessWidget {
     Themes themes = Themes();
     return TextFormField(
       // maxLines: maxLine,
+      // maxLength: maxNumberOfLines ?? 1,
       enabled: isEnable,
       textInputAction: textInputAction,
       obscureText: obscureText,
@@ -55,6 +60,7 @@ class CommonTextfiled extends StatelessWidget {
       onChanged: onChanged,
       readOnly: isReadOnly,
       onFieldSubmitted: onSubmit,
+      maxLength: maxLength,
       decoration: InputDecoration(
         labelText: lableText,
         prefixText: prefixText,
@@ -67,6 +73,9 @@ class CommonTextfiled extends StatelessWidget {
         ),
       ),
       keyboardType: keyboardType,
+      inputFormatters: maxLength != null
+          ? [LengthLimitingTextInputFormatter(maxLength)]
+          : null,
     );
   }
 }

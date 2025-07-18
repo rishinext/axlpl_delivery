@@ -347,7 +347,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                             : false,
                         hintTxt: 'Enter Policy No',
                         controller: addshipController.policyNoController,
-                        keyboardType: TextInputType.number,
+                        // keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.next,
                         validator: addshipController.insuranceType.value == 1
                             ? utils.validateText
@@ -408,7 +408,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                   CommonTextfiled(
                     controller: addshipController.invoiceNoController,
                     hintTxt: 'Enter Invoice No',
-                    keyboardType: TextInputType.number,
+                    // keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
                     validator: utils.validateText,
                   ),

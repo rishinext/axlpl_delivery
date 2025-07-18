@@ -418,8 +418,14 @@ class RunningDeliveryDetailsView
                               Divider(),
                               details?.invoicePhoto != ''
                                   ? InvoiceImagePopup(
-                                      invoicePath: invoicePath.toString(),
-                                      invoicePhoto: invoicePhoto.toString(),
+                                      invoicePath:
+                                          details?.invoicePath.toString() ??
+                                              invoicePath ??
+                                              '',
+                                      invoicePhoto:
+                                          details?.invoicePhoto.toString() ??
+                                              invoicePhoto ??
+                                              '',
                                     )
                                   : Column(
                                       crossAxisAlignment:
@@ -526,10 +532,6 @@ class RunningDeliveryDetailsView
                                                               '0',
                                                           file: file,
                                                         );
-                                                        controller
-                                                            .fetchTrackingData(
-                                                                shipmentID
-                                                                    .toString());
                                                       },
                                                 child: Text('UPLOAD'),
                                               ),

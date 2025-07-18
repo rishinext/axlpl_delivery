@@ -293,6 +293,13 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   .getOtpController(deliveryData
                                                       .shipmentId
                                                       .toString());
+                                          final subPaymentMode =
+                                              deliveryController
+                                                  .getSelectedSubPaymentMode(
+                                                      deliveryData.shipmentId
+                                                          .toString())
+                                                  .value
+                                                  ?.id;
 
                                           if (deliveryData.paymentMode ==
                                               'topay') {
@@ -311,8 +318,8 @@ class DeliveryView extends GetView<DeliveryController> {
                                                 otpController: otpController,
                                                 dropdownHintTxt:
                                                     'Select Payment Mode',
-                                                btnTxt: 'Confirm',
-                                                onConfirmCallback: () {
+                                                btnTxt: 'Delivery',
+                                                onConfirmCallback: () async {
                                                   deliveryController
                                                       .uploadDelivery(
                                                     deliveryData.shipmentId,
@@ -322,21 +329,14 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     deliveryData.date,
                                                     deliveryData.totalCharges
                                                         .toString(),
-                                                    deliveryData.totalCharges
-                                                        .toString(),
+                                                    amountController.text,
                                                     deliveryData.paymentMode,
-                                                    deliveryController
-                                                        .getSelectedSubPaymentMode(
-                                                            deliveryData
-                                                                .shipmentId
-                                                                .toString())
-                                                        .value
-                                                        ?.id,
+                                                    subPaymentMode,
                                                     otpController.text,
                                                     chequeNumber:
                                                         chequeController.text,
                                                   );
-                                                  Get.back(); // Close the dialog
+                                                  Get.back(); // Close the dialog after uploadDelivery completes
                                                 },
                                                 onSendOtpCallback: () async {
                                                   await pickupController.getOtp(

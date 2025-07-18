@@ -218,7 +218,6 @@ class PickupController extends GetxController {
         final historyController = Get.find<HistoryController>();
         historyController.getPickupHistory();
         otpController.clear();
-        // Delay navigation to allow snackbar to show
         Future.delayed(const Duration(seconds: 1), () {
           Get.back(); // Navigate back on success
         });
