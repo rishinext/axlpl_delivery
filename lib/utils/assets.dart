@@ -1,4 +1,4 @@
-final splashIMG = 'assets/splash.jpg';
+final splashIMG = 'assets/splash.png';
 final authLogo = 'assets/logo.png';
 final loginIMG = 'assets/login.jpg';
 final gpsIcon = 'assets/gpsicon.png';

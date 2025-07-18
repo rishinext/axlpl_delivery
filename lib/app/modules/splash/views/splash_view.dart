@@ -25,21 +25,21 @@ class SplashView extends GetView<SplashController> {
           ),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              'See how truly integrated logistics delivers',
-              style: TextStyle(fontSize: 28, color: themes.whiteColor),
-            ),
-            // Text(
-            //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-            //     style: TextStyle(fontSize: 14, color: themes.grayColor))
-          ],
-        ),
-      ),
+      // child: Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.end,
+      //     children: [
+      //       Text(
+      //         'See how truly integrated logistics delivers',
+      //         style: TextStyle(fontSize: 28, color: themes.whiteColor),
+      //       ),
+      //       // Text(
+      //       //     'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      //       //     style: TextStyle(fontSize: 14, color: themes.grayColor))
+      //     ],
+      //   ),
+      // ),
     ));
   }
 }
