@@ -9,8 +9,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:isolate';
-import 'dart:ui';
 import 'app/routes/app_pages.dart';
 
 // core Flutter primitives

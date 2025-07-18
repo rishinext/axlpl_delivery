@@ -247,15 +247,16 @@ class PickupController extends GetxController {
     try {
       final success = await pickupRepo.getOtpRepo(shipmentID);
       if (success == true) {
-        Get.snackbar('OTP', 'OTP fetched successfully!');
+        Get.snackbar('OTP', 'OTP sended successfully!',
+            colorText: themes.whiteColor, backgroundColor: themes.darkCyanBlue);
         isOtpLoading.value = Status.success;
       } else {
-        Get.snackbar('Error', 'Failed to fetch OTP',
-            colorText: themes.whiteColor, backgroundColor: themes.darkCyanBlue);
+        Get.snackbar('Error', 'Failed to send OTP',
+            colorText: themes.whiteColor, backgroundColor: themes.redColor);
         isOtpLoading.value = Status.error;
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to fetch OTP: $e',
+      Get.snackbar('Error', 'Failed to send OTP: $e',
           backgroundColor: themes.redColor, colorText: themes.whiteColor);
       isOtpLoading.value = Status.error;
     }
@@ -273,17 +274,20 @@ class PickupController extends GetxController {
         'pickup',
       );
       if (success) {
-        Get.snackbar('Success', 'Shipment Transfer Success!');
+        Get.snackbar('Success', 'Shipment Transfer Success!',
+            colorText: themes.whiteColor, backgroundColor: themes.darkCyanBlue);
         isTransferLoading.value = Status.success;
         isTransferSuccess.value = true;
         getPickupData();
       } else {
-        Get.snackbar('Failed', 'Shipment Transfer Failed!');
+        Get.snackbar('Failed', 'Shipment Transfer Failed!',
+            colorText: themes.whiteColor, backgroundColor: themes.redColor);
         isTransferLoading.value = Status.error;
         isTransferSuccess.value = false;
       }
     } catch (e) {
-      Get.snackbar('Failed', 'Shipment Transfer Failed!');
+      Get.snackbar('Failed', 'Shipment Transfer Failed!',
+          colorText: themes.whiteColor, backgroundColor: themes.redColor);
       isTransferLoading.value = Status.error;
       isTransferSuccess.value = false;
     }
