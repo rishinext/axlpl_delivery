@@ -128,7 +128,7 @@ class HomeView extends GetView<HomeController> {
           ),
           title: Image.asset(
             authLogo,
-            width: 110.w,
+            width: 45.w,
           ),
           actions: [
             Padding(

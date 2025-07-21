@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/auth_repo.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
-import 'package:axlpl_delivery/common_widget/awsome_notification.dart';
+import 'package:axlpl_delivery/common_widget/local_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

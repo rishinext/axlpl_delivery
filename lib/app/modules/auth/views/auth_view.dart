@@ -48,7 +48,7 @@ class AuthView extends GetView<AuthController> {
                   Center(
                     child: Image.asset(
                       authLogo,
-                      width: 210.w,
+                      width: 100.w,
                     ),
                   ),
                   Text(

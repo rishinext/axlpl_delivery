@@ -1,6 +1,8 @@
 // notification_service.dart
 import 'dart:developer';
 
+import 'package:axlpl_delivery/utils/assets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -13,7 +15,7 @@ class NotificationService {
 
   static Future<void> init() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('ic_notification');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
@@ -59,6 +61,7 @@ class NotificationService {
           'High Importance Notifications',
           importance: Importance.max,
           priority: Priority.high,
+          color: Colors.white,
           actions: <AndroidNotificationAction>[
             AndroidNotificationAction('accept', 'Accept',
                 showsUserInterface: true),

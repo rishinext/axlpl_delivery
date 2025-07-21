@@ -1,5 +1,5 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
-import 'package:axlpl_delivery/common_widget/awsome_notification.dart';
+import 'package:axlpl_delivery/common_widget/local_notification.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -44,7 +44,7 @@ void main() async {
     carPlay: false,
     criticalAlert: false,
     provisional: false,
-    sound: true,
+    sound: false,
   );
 
   await FlutterDownloader.initialize(
