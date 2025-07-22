@@ -44,6 +44,7 @@ class NotificationView extends GetView<NotificationController> {
                   itemBuilder: (context, index) {
                     final data = controller.notiList[index];
                     return ListTile(
+                      onTap: () {},
                       tileColor: themes.whiteColor,
                       dense: false,
                       leading: CircleAvatar(

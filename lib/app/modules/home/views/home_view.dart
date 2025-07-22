@@ -78,7 +78,10 @@ class HomeView extends GetView<HomeController> {
                           .messangerDetail.value?.messangerdetail?.path;
                       final messangerPhoto = profileController
                           .messangerDetail.value?.messangerdetail?.photo;
-                      if (messangerPath != null && messangerPhoto != null) {
+                      if (messangerPath != null &&
+                          messangerPhoto != null &&
+                          messangerPath.trim().isNotEmpty &&
+                          messangerPhoto.trim().isNotEmpty) {
                         networkImageUrl = "$messangerPath$messangerPhoto";
                       }
                     } else {
@@ -86,13 +89,18 @@ class HomeView extends GetView<HomeController> {
                           profileController.customerDetail.value?.path;
                       final customerPhoto = profileController
                           .customerDetail.value?.custProfileImg;
-                      if (customerPath != null && customerPhoto != null) {
+                      if (customerPath != null &&
+                          customerPhoto != null &&
+                          customerPath.trim().isNotEmpty &&
+                          customerPhoto.trim().isNotEmpty) {
                         networkImageUrl = "$customerPath$customerPhoto";
                       }
                     }
 
                     DecorationImage? decorationImage;
-                    if (networkImageUrl != null && networkImageUrl.isNotEmpty) {
+                    if (networkImageUrl != null &&
+                        networkImageUrl.isNotEmpty &&
+                        networkImageUrl.trim() != '') {
                       decorationImage = DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(networkImageUrl),
@@ -113,13 +121,13 @@ class HomeView extends GetView<HomeController> {
                         image: decorationImage,
                         shape: BoxShape.circle,
                         border:
-                            Border.all(color: Colors.grey.shade400, width: 2),
+                            Border.all(color: themes.darkCyanBlue, width: 2),
                       ),
                       child: decorationImage == null
                           ? Icon(
                               Icons.person,
                               size: 20,
-                              color: Colors.grey.shade600,
+                              color: themes.darkCyanBlue,
                             )
                           : null,
                     );
@@ -362,9 +370,21 @@ class HomeView extends GetView<HomeController> {
                 //   },
                 // ),
                 Obx(() {
-                  final rattingData = homeController.rattingDataModel.value;
-                  final imageUrl =
-                      "${profileController.messangerDetail.value?.messangerdetail?.path ?? ''}${profileController.messangerDetail.value?.messangerdetail?.photo ?? ''}";
+                  final imageUrl = () {
+                    final messangerPath = profileController
+                        .messangerDetail.value?.messangerdetail?.path;
+                    final messangerPhoto = profileController
+                        .messangerDetail.value?.messangerdetail?.photo;
+
+                    if (messangerPath != null &&
+                        messangerPhoto != null &&
+                        messangerPath.trim().isNotEmpty &&
+                        messangerPhoto.trim().isNotEmpty) {
+                      return "$messangerPath$messangerPhoto";
+                    }
+                    return null;
+                  }();
+
                   if (bottomController.isLoading.value) {
                     return Center(
                       child: CircularProgressIndicator.adaptive(),
@@ -386,8 +406,20 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: NetworkImage(imageUrl)),
+                                  radius: 30,
+                                  backgroundColor: themes.grayColor,
+                                  backgroundImage:
+                                      imageUrl != null && imageUrl.isNotEmpty
+                                          ? NetworkImage(imageUrl)
+                                          : null,
+                                  child: imageUrl == null || imageUrl.isEmpty
+                                      ? Icon(
+                                          Icons.person,
+                                          size: 30,
+                                          color: themes.darkCyanBlue,
+                                        )
+                                      : null,
+                                ),
                                 SizedBox(height: 8.h),
                                 Obx(() {
                                   final user = bottomController.userData.value;
