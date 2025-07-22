@@ -1,7 +1,5 @@
 // notification_service.dart
-import 'dart:developer';
 
-import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
