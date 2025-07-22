@@ -90,7 +90,10 @@ class ProfileView extends GetView<ProfileController> {
                               .messangerDetail.value?.messangerdetail?.path;
                           final messangerPhoto = controller
                               .messangerDetail.value?.messangerdetail?.photo;
-                          if (messangerPath != null && messangerPhoto != null) {
+                          if (messangerPath != null &&
+                              messangerPhoto != null &&
+                              messangerPath.trim().isNotEmpty &&
+                              messangerPhoto.trim().isNotEmpty) {
                             networkImageUrl = "$messangerPath$messangerPhoto";
                           }
                         } else {
@@ -98,19 +101,27 @@ class ProfileView extends GetView<ProfileController> {
                               controller.customerDetail.value?.path;
                           final customerPhoto =
                               controller.customerDetail.value?.custProfileImg;
-                          if (customerPath != null && customerPhoto != null) {
+                          if (customerPath != null &&
+                              customerPhoto != null &&
+                              customerPath.trim().isNotEmpty &&
+                              customerPhoto.trim().isNotEmpty) {
                             networkImageUrl = "$customerPath$customerPhoto";
                           }
                         }
 
                         ImageProvider? finalImage;
+                        bool shouldShowPersonIcon = true;
+
                         if (imageFile != null) {
                           finalImage = FileImage(imageFile);
+                          shouldShowPersonIcon = false;
                         } else if (networkImageUrl != null &&
-                            networkImageUrl.isNotEmpty) {
+                            networkImageUrl.isNotEmpty &&
+                            networkImageUrl.trim() != '') {
                           finalImage = NetworkImage(
                             networkImageUrl,
                           );
+                          shouldShowPersonIcon = false;
                         }
 
                         return CircleAvatar(
@@ -121,8 +132,8 @@ class ProfileView extends GetView<ProfileController> {
                             backgroundColor: themes.whiteColor,
                             // Set the background image
                             backgroundImage: finalImage,
-                            // Show an icon ONLY if there is no image at all
-                            child: finalImage == null
+                            // Show an icon if there is no image or if the path is empty
+                            child: shouldShowPersonIcon
                                 ? Icon(
                                     Icons.person,
                                     size: 50,
