@@ -41,6 +41,7 @@ class NotificationModel {
 
 class NotificationList {
   String? notificationId;
+  String? shipmentId;
   String? title;
   String? message;
   String? messangerId;
@@ -55,6 +56,7 @@ class NotificationList {
 
   NotificationList.fromJson(Map<String, dynamic> json) {
     notificationId = json['notification_id'];
+    shipmentId = json['shipment_id'];
     title = json['title'];
     message = json['message'];
     messangerId = json['messanger_id'];
@@ -64,6 +66,7 @@ class NotificationList {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['notification_id'] = this.notificationId;
+    data['shipment_id'] = this.shipmentId;
     data['title'] = this.title;
     data['message'] = this.message;
     data['messanger_id'] = this.messangerId;

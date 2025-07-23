@@ -1,4 +1,5 @@
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/common_widget/error_screen.dart';
 import 'package:axlpl_delivery/common_widget/local_notification.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -75,13 +76,13 @@ void main() async {
         enableLog: true,
         defaultTransition: Transition.noTransition,
         title: "AXLPL Delivery",
-        // builder: (context, child) {
-        //   ErrorWidget.builder = (FlutterErrorDetails details) {
-        //     return ErrorScreen(); //
-        //   };
+        builder: (context, child) {
+          ErrorWidget.builder = (FlutterErrorDetails details) {
+            return ErrorScreen(); //
+          };
 
-        //   return child!;
-        // },
+          return child!;
+        },
         initialRoute: AppPages.INITIAL,
         getPages: AppPages.routes,
         theme: ThemeData(textTheme: GoogleFonts.workSansTextTheme()),

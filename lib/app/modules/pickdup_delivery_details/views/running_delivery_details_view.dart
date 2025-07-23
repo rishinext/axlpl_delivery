@@ -641,7 +641,7 @@ class RunningDeliveryDetailsView
                                       style: OutlinedButton.styleFrom(
                                         backgroundColor: enableTransfer
                                             ? themes.whiteColor
-                                            : themes.grayColor,
+                                            : themes.blueGray,
                                         foregroundColor: enableTransfer
                                             ? themes.darkCyanBlue
                                             : themes.grayColor,

@@ -40,6 +40,9 @@
                 <meta-data
     android:name="com.bbflight.background_downloader.channel.shipment_downloads"
     android:value="Shipment Downloads"/>
+    <meta-data
+    android:name="flutter_downloader_notification_icon"
+    android:resource="@drawable/ic_stat_notify"/>
         </provider> 
         <activity
             android:name=".MainActivity"

@@ -1,11 +1,14 @@
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/views/running_delivery_details_view.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 import '../controllers/notification_controller.dart';
@@ -14,6 +17,8 @@ class NotificationView extends GetView<NotificationController> {
   const NotificationView({super.key});
   @override
   Widget build(BuildContext context) {
+    final runningDeliveryController =
+        Get.put(RunningDeliveryDetailsController());
     return CommonScaffold(
         appBar: commonAppbar('Notifications'),
         body: Obx(
@@ -43,8 +48,29 @@ class NotificationView extends GetView<NotificationController> {
                   itemCount: controller.notiList.length,
                   itemBuilder: (context, index) {
                     final data = controller.notiList[index];
+                    String dateString = data.createdDate.toString();
+                    DateTime date = DateTime.parse(dateString);
+                    String formattedDate = DateFormat('d MMMM y').format(date);
                     return ListTile(
-                      onTap: () {},
+                      onTap: () async {
+                        runningDeliveryController
+                            .fetchTrackingData(data.shipmentId.toString());
+                        Get.to(
+                          RunningDeliveryDetailsView(
+                            isShowInvoice: true,
+                            isShowTransfer: true,
+                          ),
+                          arguments: {
+                            'shipmentID': data.shipmentId,
+                            // 'status': data.status.toString(),
+                            // 'invoicePath': data.invoicePath,
+                            // 'invoicePhoto': data.invoiceFile,
+                            // 'paymentMode': data.paymentMode,
+                            // 'date': data.date,
+                            // 'cashAmt': data.totalCharges
+                          },
+                        );
+                      },
                       tileColor: themes.whiteColor,
                       dense: false,
                       leading: CircleAvatar(
@@ -58,10 +84,21 @@ class NotificationView extends GetView<NotificationController> {
                         data.title.toString(),
                         style: themes.fontSize14_500.copyWith(),
                       ),
-                      subtitle: Text(data.message.toString()),
-                      trailing: Text(
-                        '${data.createdDate.toString().split(' ')[0]}',
-                        style: themes.fontSize14_400.copyWith(fontSize: 13.sp),
+                      subtitle: Column(
+                        spacing: 10,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(data.message.toString()),
+                          Text(
+                            formattedDate,
+                            style:
+                                themes.fontSize14_400.copyWith(fontSize: 13.sp),
+                          ),
+                        ],
+                      ),
+                      trailing: CircleAvatar(
+                        backgroundColor: themes.blueGray,
+                        child: Icon(Icons.arrow_forward),
                       ),
                     );
                   },
