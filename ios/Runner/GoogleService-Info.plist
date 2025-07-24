@@ -11,7 +11,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.axlplDelivery</string>
+	<string>com.axlpl.delivery</string>
 	<key>PROJECT_ID</key>
 	<string>myjainshasan-240a2</string>
 	<key>STORAGE_BUCKET</key>
@@ -27,7 +27,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:778652530713:ios:c4088ed51894239a051288</string>
+	<string>1:778652530713:ios:32b57689b7ecbc12051288</string>
 	<key>DATABASE_URL</key>
 	<string>https://myjainshasan-240a2.firebaseio.com</string>
 </dict>

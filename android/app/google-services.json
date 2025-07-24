@@ -8,6 +8,42 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:778652530713:android:d0515deb83e3fede051288",
+        "android_client_info": {
+          "package_name": "com.axlpl.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778652530713-nj739eqtnevorn9kols9ui3eshraog2m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUUF7qtn-_6mhDW0Ybm6bMIhafENO7FHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778652530713-nj739eqtnevorn9kols9ui3eshraog2m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "778652530713-7q5ivgu9deustu8inchbiqe2ganv19q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vnt.myjainshasan"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:778652530713:android:0ac76e042974173a051288",
         "android_client_info": {
           "package_name": "com.example.axlpl_delivery"
