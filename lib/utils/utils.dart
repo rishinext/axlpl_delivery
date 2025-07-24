@@ -163,7 +163,7 @@ class Utils {
   Future<String?> getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();
 
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid) { 
       final androidInfo = await deviceInfo.androidInfo;
       return androidInfo.id; // OR androidInfo.androidId (better)
     } else if (Platform.isIOS) {

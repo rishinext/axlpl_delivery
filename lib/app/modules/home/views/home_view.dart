@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+
 
 import '../controllers/home_controller.dart';
 
@@ -40,7 +40,7 @@ class HomeView extends GetView<HomeController> {
     final shipmentRecordController = Get.put(ShipmentRecordController());
     final podController = Get.put(PodController());
     final historyController = Get.put(HistoryController());
-    final MobileScannerController QRController = MobileScannerController();
+    
     final user = bottomController.userData.value;
     return Scaffold(
         backgroundColor: themes.lightWhite,

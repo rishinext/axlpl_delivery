@@ -7,7 +7,7 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-android {
+android { 
     namespace = "com.example.axlpl_delivery"
     compileSdk = 35
     ndkVersion = flutter.ndkVersion
