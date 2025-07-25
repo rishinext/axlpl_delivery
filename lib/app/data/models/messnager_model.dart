@@ -58,7 +58,7 @@ class MessangerList {
   });
 
   factory MessangerList.fromJson(Map<String, dynamic> json) => MessangerList(
-        id: json["id"],
+        id: json["id"] ?? '',
         name: json["name"],
         code: json["code"],
         phone: json["phone"],

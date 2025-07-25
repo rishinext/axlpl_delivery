@@ -1,5 +1,7 @@
 import 'dart:isolate';
 import 'dart:ui';
+import 'dart:io';
+import 'dart:async';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/common_widget/error_screen.dart';
@@ -36,6 +38,93 @@ void downloadCallback(String id, int status, int progress) {
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+// Helper function to wait for APNS token on iOS
+Future<void> _waitForAPNSToken(FirebaseMessaging messaging) async {
+  try {
+    // Try to get APNS token immediately
+    String? apnsToken = await messaging.getAPNSToken();
+
+    if (apnsToken != null) {
+      Utils().log("APNS Token available: $apnsToken");
+      return;
+    }
+
+    // If not available, wait with multiple retries
+    int retryCount = 0;
+    const maxRetries = 5;
+    const retryDelay = Duration(seconds: 2);
+
+    while (apnsToken == null && retryCount < maxRetries) {
+      await Future.delayed(retryDelay);
+      retryCount++;
+
+      try {
+        apnsToken = await messaging.getAPNSToken();
+        if (apnsToken != null) {
+          Utils()
+              .log("APNS Token available after retry $retryCount: $apnsToken");
+          return;
+        } else {
+          if (kDebugMode) {
+            print('APNS Token not available, retry $retryCount/$maxRetries');
+          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error getting APNS token on retry $retryCount: $e');
+        }
+      }
+    }
+
+    if (apnsToken == null) {
+      if (kDebugMode) {
+        print(
+            'APNS Token not available after $maxRetries retries. This is normal on iOS simulator.');
+      }
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('Error in APNS token setup: $e');
+    }
+  }
+}
+
+// Helper function to get FCM token
+Future<void> _getFCMToken(FirebaseMessaging messaging) async {
+  try {
+    String? token = await messaging.getToken();
+    if (token != null) {
+      Utils().log("FCM Token: $token");
+      await storage.write(key: _localStorage.fcmToken, value: token);
+    } else {
+      if (kDebugMode) {
+        print('FCM Token not available');
+      }
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      print('FCM Token not available yet: $e');
+    }
+
+    // For iOS, schedule a retry after a delay
+    if (Platform.isIOS) {
+      Timer(Duration(seconds: 5), () async {
+        try {
+          String? retryToken = await messaging.getToken();
+          if (retryToken != null) {
+            Utils().log("FCM Token (retry): $retryToken");
+            await storage.write(key: _localStorage.fcmToken, value: retryToken);
+          }
+        } catch (retryError) {
+          if (kDebugMode) {
+            print('FCM Token retry failed: $retryError');
+          }
+        }
+      });
+    }
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -55,6 +144,22 @@ void main() async {
     provisional: false,
     sound: true, // enable sound for iOS
   );
+
+  // iOS-specific setup
+  if (Platform.isIOS) {
+    print(
+        "iOS notification permission status: ${settings.authorizationStatus}");
+
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+    print("iOS foreground notification options set");
+
+    await _waitForAPNSToken(messaging);
+    print("APNS token setup complete");
+  }
   final DarwinInitializationSettings initSettingsIOS =
       DarwinInitializationSettings(
     requestAlertPermission: true,
@@ -90,22 +195,25 @@ void main() async {
 
   // Listen for FCM token refresh (APNS token available later on iOS)
   messaging.onTokenRefresh.listen((token) {
-    Utils().log("FCM Token: $token");
+    Utils().log("FCM Token refreshed: $token");
     storage.write(key: _localStorage.fcmToken, value: token);
   });
 
-  // Try to get initial token, but don't fail if APNS token isn't ready
-  try {
-    String? token = await messaging.getToken();
-    if (token != null) {
-      Utils().log("Initial FCM Token: $token");
-      await storage.write(key: _localStorage.fcmToken, value: token);
-    }
-  } catch (e) {
-    if (kDebugMode) {
-      print('FCM Token not available yet: $e');
-    }
+  // iOS-specific APNS token handling
+  if (Platform.isIOS) {
+    // Wait for APNS token to be available
+    await _waitForAPNSToken(messaging);
+
+    // Additional iOS-specific setup
+    await messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
+
+  // Try to get initial token, but don't fail if APNS token isn't ready
+  await _getFCMToken(messaging);
 
   if (kDebugMode) {
     print('Permission granted: ${settings.authorizationStatus}');

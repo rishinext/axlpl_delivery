@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -79,9 +81,20 @@ class AuthView extends GetView<AuthController> {
                               authController.isObsecureText.value =
                                   !authController.isObsecureText.value;
                             },
-                            child: Icon(authController.isObsecureText.value
-                                ? CupertinoIcons.eye_slash
-                                : CupertinoIcons.eye),
+                            child: Platform.isIOS
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Icon(
+                                      authController.isObsecureText.value
+                                          ? CupertinoIcons.eye_slash
+                                          : CupertinoIcons.eye,
+                                    ),
+                                  )
+                                : Icon(
+                                    authController.isObsecureText.value
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
                           ));
                     },
                   ),
@@ -101,13 +114,7 @@ class AuthView extends GetView<AuthController> {
                       },
                     );
                   }),
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Forgot Password ?',
-                        style:
-                            TextStyle(color: themes.shineBlue, fontSize: 14.sp),
-                      )),
+
                   // Center(
                   //     child: Text(
                   //   'New to AMBEX Express.?',

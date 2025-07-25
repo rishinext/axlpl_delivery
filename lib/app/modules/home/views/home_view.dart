@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
@@ -23,7 +24,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 
-
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -40,7 +40,7 @@ class HomeView extends GetView<HomeController> {
     final shipmentRecordController = Get.put(ShipmentRecordController());
     final podController = Get.put(PodController());
     final historyController = Get.put(HistoryController());
-    
+
     final user = bottomController.userData.value;
     return Scaffold(
         backgroundColor: themes.lightWhite,
@@ -267,6 +267,10 @@ class HomeView extends GetView<HomeController> {
                                 OnTap: () {
                                   pickupController.getPickupData();
                                   pickupController.fetchPaymentModes();
+                                  pickupController.getMessangerData(user
+                                          ?.messangerdetail?.routeId
+                                          .toString() ??
+                                      '0');
                                   Get.toNamed(Routes.PICKUP);
                                 })),
                         SizedBox(

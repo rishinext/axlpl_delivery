@@ -21,7 +21,7 @@ class CommonButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
         onPressed: onPressed,
         child: SizedBox(
-          height: 24, // Set a fixed height
+          // height: 24, // Set a fixed height
           child: isLoading == true
               ? Center(
                   child: SizedBox(

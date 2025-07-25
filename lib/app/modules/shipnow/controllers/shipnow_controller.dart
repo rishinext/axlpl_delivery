@@ -1,5 +1,6 @@
 import 'dart:isolate';
 import 'dart:ui';
+import 'dart:io';
 import 'package:axlpl_delivery/app/data/models/shipnow_data_model.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/shipnow_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:dio/dio.dart';
+import 'package:open_file/open_file.dart';
 
 class ShipnowController extends GetxController {
   final themes = Themes();
@@ -85,31 +88,25 @@ class ShipnowController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) {
-      DownloadTaskStatus status = DownloadTaskStatus.fromInt(data[1]);
 
-      if (status == DownloadTaskStatus.complete) {
-        Fluttertoast.showToast(
-            msg: "Label downloaded successfully Please check your downloads",
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: themes.darkCyanBlue,
-            textColor: themes.whiteColor,
-            fontSize: 16.0);
-      } else if (status == DownloadTaskStatus.failed) {
-        Fluttertoast.showToast(
-            msg: "Label download failed",
-            gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: themes.redColor,
-            textColor: themes.whiteColor,
-            fontSize: 16.0);
-      }
-    });
+    // Only setup flutter_downloader for Android
+    if (Platform.isAndroid) {
+      IsolateNameServer.registerPortWithName(
+          _port.sendPort, 'downloader_send_port');
+      _port.listen((dynamic data) {
+        DownloadTaskStatus status = DownloadTaskStatus.fromInt(data[1]);
 
-    FlutterDownloader.registerCallback(downloadCallback);
+        if (status == DownloadTaskStatus.complete) {
+          _showSuccessToast(
+              "Label downloaded successfully! Please check your downloads");
+        } else if (status == DownloadTaskStatus.failed) {
+          _showErrorToast("Label download failed");
+        }
+      });
+
+      FlutterDownloader.registerCallback(downloadCallback);
+    }
+
     shipmentIDController.addListener(() {
       filterShipmentData(shipmentIDController.text);
     });
@@ -119,7 +116,10 @@ class ShipnowController extends GetxController {
 
   @override
   void onClose() {
-    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    // Only cleanup flutter_downloader for Android
+    if (Platform.isAndroid) {
+      IsolateNameServer.removePortNameMapping('downloader_send_port');
+    }
     shipmentIDController.dispose();
     super.onClose();
   }
@@ -134,39 +134,134 @@ class ShipnowController extends GetxController {
   Future<void> downloadShipmentLable(String url, String fileName) async {
     isDownloadingLabel.value = true;
     try {
+      if (Platform.isIOS) {
+        // iOS-specific download using direct file write
+        await _downloadFileForIOS(url, fileName);
+      } else {
+        // Android download using flutter_downloader
+        await _downloadFileForAndroid(url, fileName);
+      }
+    } catch (e) {
+      print('Download error: $e');
+      _showErrorToast("Failed to start download: ${e.toString()}");
+    } finally {
+      isDownloadingLabel.value = false;
+    }
+  }
+
+  Future<void> _downloadFileForIOS(String url, String fileName) async {
+    try {
+      // Get the documents directory for iOS
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/$fileName-label.pdf';
+
+      // Use Dio for downloading
+      final dio = Dio();
+
+      _showSuccessToast("Label download started...");
+
+      await dio.download(
+        url,
+        filePath,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            final progress = (received / total * 100).toStringAsFixed(0);
+            print('Download progress: $progress%');
+          }
+        },
+      );
+
+      _showSuccessToast("Label downloaded successfully!");
+
+      // Show option to open the file
+      Get.dialog(
+        Platform.isIOS
+            ? CupertinoAlertDialog(
+                title: Text('Download Complete'),
+                content: Text(
+                    'Label downloaded successfully. Would you like to open it?'),
+                actions: [
+                  CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    onPressed: () => Get.back(),
+                    child: Text('Cancel'),
+                  ),
+                  CupertinoDialogAction(
+                    onPressed: () async {
+                      Get.back();
+                      await OpenFile.open(filePath);
+                    },
+                    child: Text('Open'),
+                  ),
+                ],
+              )
+            : AlertDialog(
+                title: Text('Download Complete'),
+                content: Text(
+                    'Label downloaded successfully. Would you like to open it?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Get.back(),
+                    child: Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      Get.back();
+                      await OpenFile.open(filePath);
+                    },
+                    child: Text('Open'),
+                  ),
+                ],
+              ),
+      );
+    } catch (e) {
+      print('iOS download error: $e');
+      throw Exception('iOS download failed: $e');
+    }
+  }
+
+  Future<void> _downloadFileForAndroid(String url, String fileName) async {
+    try {
       final directory = await getExternalStorageDirectory();
       final savedDir = directory?.path ?? '/storage/emulated/0/Download';
 
       await FlutterDownloader.enqueue(
         url: url,
-        headers: {}, // optional: header send with url (auth token etc)
+        headers: {},
         savedDir: savedDir,
-        showNotification:
-            true, // show download progress in status bar (Android)
-        openFileFromNotification:
-            true, // click notification to open file (Android)
-        saveInPublicStorage: true, // Fix for public storage download
-        fileName: '$fileName lable.pdf',
+        showNotification: true,
+        openFileFromNotification: true,
+        saveInPublicStorage: true,
+        fileName: '$fileName-label.pdf',
       );
-      Fluttertoast.showToast(
-          msg: "Lebel Downloading started",
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: themes.darkCyanBlue,
-          textColor: themes.whiteColor,
-          fontSize: 16.0);
+
+      _showSuccessToast("Label download started");
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Failed to start download",
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: themes.redColor,
-          textColor: themes.whiteColor,
-          fontSize: 16.0);
-      // Optionally show a snackbar or dialog here
-    } finally {
-      isDownloadingLabel.value = false;
+      print('Android download error: $e');
+      throw Exception('Android download failed: $e');
     }
+  }
+
+  void _showSuccessToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: themes.darkCyanBlue,
+      textColor: themes.whiteColor,
+      fontSize: 16.0,
+    );
+  }
+
+  void _showErrorToast(String message) {
+    Fluttertoast.showToast(
+      msg: message,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: themes.redColor,
+      textColor: themes.whiteColor,
+      fontSize: 16.0,
+    );
   }
 
   Future<void> loadMoreData() async {

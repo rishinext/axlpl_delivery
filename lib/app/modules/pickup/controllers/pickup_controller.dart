@@ -93,20 +93,22 @@ class PickupController extends GetxController {
     currentUserId.value = userData?.messangerdetail?.id.toString() ?? '-1';
   }
 
-  Future<void> getMessangerData() async {
+  Future<void> getMessangerData(final route) async {
     isMessangerLoading.value = Status.loading;
     try {
       final success = await pickupRepo.getMessangerRepo('0');
-      if (success != null) {
+      if (success != null && success.isNotEmpty) {
         messangerList.value = success;
-
         isMessangerLoading.value = Status.success;
       } else {
         Utils().logInfo('No messanger Data Found!');
+        messangerList.value = [];
+        isMessangerLoading.value = Status.error;
       }
     } catch (e) {
       Utils().logError(e.toString());
       messangerList.value = [];
+      isMessangerLoading.value = Status.error;
     }
   }
 
@@ -339,7 +341,7 @@ class PickupController extends GetxController {
     // TODO: implement onInit
     // getPickupData();
     // getPaymentModeData();
-    getMessangerData();
+    // getMessangerData();
     initializeUserId();
     super.onInit();
   }

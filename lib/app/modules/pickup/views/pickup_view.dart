@@ -10,12 +10,10 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
-import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/otp_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
-import 'package:axlpl_delivery/common_widget/yes_no_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -411,8 +409,8 @@ class PickupView extends GetView<PickupController> {
                                         trasferTap: enableTransfer
                                             ? () async {
                                                 // Load messengers first
-                                                await pickupController
-                                                    .getMessangerData();
+                                                // await pickupController
+                                                //     .getMessangerData();
 
                                                 Get.defaultDialog(
                                                   title: "Messangers",
@@ -445,15 +443,20 @@ class PickupView extends GetView<PickupController> {
                                                                   Status
                                                                       .loading) {
                                                                 return const Center(
-                                                                    child:
-                                                                        CircularProgressIndicator());
+                                                                    child: CircularProgressIndicator
+                                                                        .adaptive());
                                                               }
                                                               if (pickupController
-                                                                  .messangerList
-                                                                  .isEmpty) {
+                                                                          .isMessangerLoading
+                                                                          .value ==
+                                                                      Status
+                                                                          .error ||
+                                                                  pickupController
+                                                                      .messangerList
+                                                                      .isEmpty) {
                                                                 return const Center(
                                                                     child: Text(
-                                                                        'No messengers available'));
+                                                                        'No messengers available for transfer'));
                                                               }
                                                               return CommonDropdown<
                                                                   MessangerList>(

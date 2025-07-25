@@ -145,26 +145,32 @@ class PickupRepo {
         );
         return response.when(
           success: (body) {
+            // Handle empty response (status 204)
+            if (body == null || body.isEmpty) {
+              Utils().logInfo('API returned empty response (204 No Content)');
+              return [];
+            }
+
             final messangerdata = MessangerModel.fromJson(body);
-            if (messangerdata.messangersList != null) {
+            if (messangerdata.messangersList != null &&
+                messangerdata.messangersList!.isNotEmpty) {
               return messangerdata.messangersList;
             } else {
               Utils()
-                  .logInfo('API call successful but status is not "success"');
+                  .logInfo('API call successful but no messenger data found');
+              return [];
             }
-            return [];
           },
           error: (error) {
-            throw Exception("Get Messanger Failed: ${error.toString()}");
+            Utils().logError("Get Messanger Failed: ${error.toString()}");
+            return [];
           },
         );
       }
     } catch (e) {
-      Utils().logError(
-        "$e",
-      );
+      Utils().logError("Exception in getMessangerRepo: $e");
     }
-    return null;
+    return [];
   }
 
   Future<bool> uploadPickupRepo(
