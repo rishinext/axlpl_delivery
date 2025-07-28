@@ -1,12 +1,12 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
-import 'package:axlpl_delivery/app/modules/delivery/controllers/delivery_controller.dart';
-import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
-import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -356,8 +356,6 @@ class PickDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pickupController = Get.find<PickupController>();
-    final deliveryController = Get.put(DeliveryController());
-    final historyController = Get.put(HistoryController());
 
     // Pre-fill the amount
     // pickupController.amountController.text = amt.toString();
@@ -379,149 +377,234 @@ class PickDialog extends StatelessWidget {
       ),
     );
 
-    return AlertDialog(
-      backgroundColor: themes.whiteColor,
-      title: Text('Enter Payment Details', style: themes.fontReboto16_600),
-      content: SingleChildScrollView(
-        child: SizedBox(
-          width: 400.w,
-          child: Column(
-            spacing: 10.h,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              CommonTextfiled(
-                controller: amountController,
-                obscureText: false,
-                hintTxt: 'Enter Amount',
-                lableText: 'Enter Amount',
-                keyboardType: TextInputType.number,
-              ),
-              dropdownText('Sub Payment Mode'),
-              Obx(() {
-                if (pickupController.isLoadingPayment.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                return Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade400, width: 1),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade200,
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<PaymentMode>(
-                      hint: Text(dropdownHintTxt),
-                      value: selectedSubPaymentMode.value,
-                      items: pickupController.subPaymentModes.map((mode) {
-                        return DropdownMenuItem(
-                          value: mode,
-                          child: Text(mode.name),
-                        );
-                      }).toList(),
-                      onChanged: (value) => pickupController
-                          .setSelectedSubPaymentMode(shipmentID, value),
-                    ),
-                  ),
-                );
-              }),
-              Obx(() {
-                final selectedMode = selectedSubPaymentMode.value;
-                if (selectedMode?.id != 'cash') {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      dropdownText(
-                        selectedMode?.id == 'cheque'
-                            ? 'Cheque Number'
-                            : 'Transaction ID',
-                      ),
-                      CommonTextfiled(
-                        controller: chequeNumberController,
-                        hintTxt: selectedMode?.id == 'cheque'
-                            ? 'Enter Cheque Number'
-                            : 'Enter Transaction ID',
-                        keyboardType: TextInputType.text,
-                      ),
-                    ],
-                  );
-                }
-                return const SizedBox.shrink();
-              }),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Enter OTP'),
-                  Obx(() {
-                    return pickupController.isOtpLoading.value == Status.loading
-                        ? const Center(
-                            child: CircularProgressIndicator.adaptive())
-                        : TextButton(
-                            onPressed: onSendOtpCallback,
-                            child: Text(
-                              'Send OTP',
-                              style: themes.fontSize14_500
-                                  .copyWith(color: themes.darkCyanBlue),
-                            ),
-                          );
-                  }),
-                ],
-              ),
-              SizedBox(
+    // Build dialog content
+    Widget dialogContent = SingleChildScrollView(
+      child: SizedBox(
+        width: 400.w,
+        child: Column(
+          spacing: 10.h,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            CommonTextfiled(
+              controller: amountController,
+              obscureText: false,
+              hintTxt: 'Enter Amount',
+              lableText: 'Enter Amount',
+              keyboardType: TextInputType.number,
+            ),
+            dropdownText('Sub Payment Mode'),
+            Obx(() {
+              if (pickupController.isLoadingPayment.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return Container(
                 width: double.infinity,
-                child: Pinput(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  hapticFeedbackType: HapticFeedbackType.lightImpact,
-                  length: 4,
-                  controller: otpController,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: defaultPinTheme.copyWith(
-                    decoration: defaultPinTheme.decoration!.copyWith(
-                      border: Border.all(color: themes.darkCyanBlue),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade400, width: 1),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade200,
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
                     ),
+                  ],
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<PaymentMode>(
+                    hint: Text(dropdownHintTxt),
+                    value: selectedSubPaymentMode.value,
+                    items: pickupController.subPaymentModes.map((mode) {
+                      return DropdownMenuItem(
+                        value: mode,
+                        child: Text(mode.name),
+                      );
+                    }).toList(),
+                    onChanged: (value) => pickupController
+                        .setSelectedSubPaymentMode(shipmentID, value),
                   ),
-                  errorPinTheme: defaultPinTheme.copyWith(
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
+                ),
+              );
+            }),
+            Obx(() {
+              final selectedMode = selectedSubPaymentMode.value;
+              if (selectedMode?.id != 'cash') {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    dropdownText(
+                      selectedMode?.id == 'cheque'
+                          ? 'Cheque Number'
+                          : 'Transaction ID',
                     ),
+                    CommonTextfiled(
+                      controller: chequeNumberController,
+                      hintTxt: selectedMode?.id == 'cheque'
+                          ? 'Enter Cheque Number'
+                          : 'Enter Transaction ID',
+                      keyboardType: TextInputType.text,
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Enter OTP'),
+                Obx(() {
+                  return pickupController.isOtpLoading.value == Status.loading
+                      ? const Center(
+                          child: CircularProgressIndicator.adaptive())
+                      : TextButton(
+                          onPressed: onSendOtpCallback,
+                          child: Text(
+                            'Send OTP',
+                            style: themes.fontSize14_500
+                                .copyWith(color: themes.darkCyanBlue),
+                          ),
+                        );
+                }),
+              ],
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: Pinput(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                hapticFeedbackType: HapticFeedbackType.lightImpact,
+                length: 4,
+                controller: otpController,
+                defaultPinTheme: defaultPinTheme,
+                focusedPinTheme: defaultPinTheme.copyWith(
+                  decoration: defaultPinTheme.decoration!.copyWith(
+                    border: Border.all(color: themes.darkCyanBlue),
+                  ),
+                ),
+                errorPinTheme: defaultPinTheme.copyWith(
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-            ],
-          ),
+            ),
+            const SizedBox(height: 16),
+          ],
         ),
       ),
-      actions: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: themes.darkCyanBlue,
-            backgroundColor: themes.whiteColor,
-            side: BorderSide(color: themes.darkCyanBlue),
+    );
+
+    // Return platform-specific dialog
+    if (Platform.isIOS) {
+      return CupertinoAlertDialog(
+        title: Text('Enter Payment Details', style: themes.fontReboto16_600),
+        content: dialogContent,
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: themes.darkCyanBlue),
+            ),
           ),
-          onPressed: () => Get.back(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: themes.darkCyanBlue,
-            foregroundColor: themes.whiteColor,
+          CupertinoDialogAction(
+            onPressed: () {
+              onConfirmCallback.call();
+            },
+            child: Text(
+              btnTxt,
+              style: TextStyle(
+                color: themes.darkCyanBlue,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-          onPressed: () {
-            onConfirmCallback.call();
-          },
-          child: Text(btnTxt),
-        ),
-      ],
+        ],
+      );
+    } else {
+      return AlertDialog(
+        backgroundColor: themes.whiteColor,
+        title: Text('Enter Payment Details', style: themes.fontReboto16_600),
+        content: dialogContent,
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: themes.darkCyanBlue,
+              backgroundColor: themes.whiteColor,
+              side: BorderSide(color: themes.darkCyanBlue),
+            ),
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: themes.darkCyanBlue,
+              foregroundColor: themes.whiteColor,
+            ),
+            onPressed: () {
+              onConfirmCallback.call();
+            },
+            child: Text(btnTxt),
+          ),
+        ],
+      );
+    }
+  }
+}
+
+/// Helper function to show platform-specific pickup dialog
+void showPickupDialog({
+  required dynamic shipmentID,
+  required dynamic date,
+  required dynamic amt,
+  required TextEditingController amountController,
+  required TextEditingController chequeNumberController,
+  required TextEditingController otpController,
+  required Rxn<PaymentMode> selectedSubPaymentMode,
+  required String dropdownHintTxt,
+  required String btnTxt,
+  required VoidCallback onConfirmCallback,
+  VoidCallback? onSendOtpCallback,
+}) {
+  BuildContext context = Get.context!;
+
+  if (Platform.isIOS) {
+    showCupertinoDialog(
+      context: context,
+      builder: (_) => PickDialog(
+        shipmentID: shipmentID,
+        date: date,
+        amt: amt,
+        amountController: amountController,
+        chequeNumberController: chequeNumberController,
+        otpController: otpController,
+        selectedSubPaymentMode: selectedSubPaymentMode,
+        dropdownHintTxt: dropdownHintTxt,
+        btnTxt: btnTxt,
+        onConfirmCallback: onConfirmCallback,
+        onSendOtpCallback: onSendOtpCallback,
+      ),
+    );
+  } else {
+    showDialog(
+      context: context,
+      builder: (_) => PickDialog(
+        shipmentID: shipmentID,
+        date: date,
+        amt: amt,
+        amountController: amountController,
+        chequeNumberController: chequeNumberController,
+        otpController: otpController,
+        selectedSubPaymentMode: selectedSubPaymentMode,
+        dropdownHintTxt: dropdownHintTxt,
+        btnTxt: btnTxt,
+        onConfirmCallback: onConfirmCallback,
+        onSendOtpCallback: onSendOtpCallback,
+      ),
     );
   }
 }

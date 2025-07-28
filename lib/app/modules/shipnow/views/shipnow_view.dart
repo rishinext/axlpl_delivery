@@ -106,7 +106,8 @@ class ShipnowView extends GetView<ShipnowController> {
                                   padding: const EdgeInsets.all(16.0),
                                   child: Center(
                                     child: shipnowController.isLoadingMore.value
-                                        ? const CircularProgressIndicator()
+                                        ? const CircularProgressIndicator
+                                            .adaptive()
                                         : const SizedBox.shrink(),
                                   ),
                                 ));

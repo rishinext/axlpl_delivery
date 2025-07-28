@@ -4,11 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class CommonTextfiled extends StatelessWidget {
-  final textFieldFocusNode = FocusNode();
-  String? hintTxt;
+  final String? hintTxt;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
@@ -26,7 +24,7 @@ class CommonTextfiled extends StatelessWidget {
   final maxNumberOfLines;
   final int? maxLength;
 
-  CommonTextfiled({
+  const CommonTextfiled({
     super.key,
     this.hintTxt,
     this.controller,
@@ -75,7 +73,10 @@ class CommonTextfiled extends StatelessWidget {
             enabled: isEnable,
             readOnly: isReadOnly,
             maxLength: maxLength,
-            maxLines: maxLine ?? 1,
+            maxLines: obscureText
+                ? 1
+                : (maxLine ??
+                    1), // Fix: Ensure maxLines is 1 when obscureText is true
             onChanged: (value) {
               if (onChanged != null) {
                 onChanged!(value);
@@ -141,7 +142,10 @@ class CommonTextfiled extends StatelessWidget {
         readOnly: isReadOnly,
         onFieldSubmitted: onSubmit,
         maxLength: maxLength,
-        maxLines: maxLine,
+        maxLines: obscureText
+            ? 1
+            : (maxLine ??
+                1), // Fix: Ensure maxLines is 1 when obscureText is true
         decoration: InputDecoration(
           labelText: lableText,
           prefixText: prefixText,

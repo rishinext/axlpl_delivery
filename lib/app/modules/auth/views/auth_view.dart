@@ -81,20 +81,11 @@ class AuthView extends GetView<AuthController> {
                               authController.isObsecureText.value =
                                   !authController.isObsecureText.value;
                             },
-                            child: Platform.isIOS
-                                ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Icon(
-                                      authController.isObsecureText.value
-                                          ? CupertinoIcons.eye_slash
-                                          : CupertinoIcons.eye,
-                                    ),
-                                  )
-                                : Icon(
-                                    authController.isObsecureText.value
-                                        ? Icons.visibility_off
-                                        : Icons.visibility,
-                                  ),
+                            child: Icon(
+                              authController.isObsecureText.value
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
                           ));
                     },
                   ),

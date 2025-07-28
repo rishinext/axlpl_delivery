@@ -707,42 +707,37 @@ class RunningDeliveryDetailsView
                                         otpController,
                                       );
                                     } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (_) => PickDialog(
-                                          shipmentID: shipmentID,
-                                          date: date,
-                                          amt: details?.totalCharges,
-                                          dropdownHintTxt:
-                                              selectedSubPaymentMode
-                                                      .value?.name ??
-                                                  'Select Payment Mode',
-                                          btnTxt: 'Pickup',
-                                          amountController: amountController,
-                                          chequeNumberController:
-                                              chequeController,
-                                          otpController: otpController,
-                                          selectedSubPaymentMode:
-                                              selectedSubPaymentMode,
-                                          onConfirmCallback: () {
-                                            pickupController.uploadPickup(
-                                              shipmentID,
-                                              'Picked up',
-                                              date,
-                                              amountController.text,
-                                              details?.paymentMode.toString() ??
-                                                  'N/A',
-                                              selectedSubPaymentMode.value?.id,
-                                              otpController.text,
-                                              chequeNumber:
-                                                  chequeController.text,
-                                            );
-                                          },
-                                          onSendOtpCallback: () async {
-                                            await pickupController
-                                                .getOtp(shipmentID);
-                                          },
-                                        ),
+                                      showPickupDialog(
+                                        shipmentID: shipmentID,
+                                        date: date,
+                                        amt: details?.totalCharges,
+                                        dropdownHintTxt: selectedSubPaymentMode
+                                                .value?.name ??
+                                            'Select Payment Mode',
+                                        btnTxt: 'Pickup',
+                                        amountController: amountController,
+                                        chequeNumberController:
+                                            chequeController,
+                                        otpController: otpController,
+                                        selectedSubPaymentMode:
+                                            selectedSubPaymentMode,
+                                        onConfirmCallback: () {
+                                          pickupController.uploadPickup(
+                                            shipmentID,
+                                            'Picked up',
+                                            date,
+                                            amountController.text,
+                                            details?.paymentMode.toString() ??
+                                                'N/A',
+                                            selectedSubPaymentMode.value?.id,
+                                            otpController.text,
+                                            chequeNumber: chequeController.text,
+                                          );
+                                        },
+                                        onSendOtpCallback: () async {
+                                          await pickupController
+                                              .getOtp(shipmentID);
+                                        },
                                       );
                                     }
                                   },
