@@ -696,8 +696,40 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: GestureDetector(
+                    onTap: () {
+                      commonDialog(
+                          'Delete Account',
+                          'Are You sure you want to delete your account?',
+                          'Delete',
+                          'Cancel', () {
+                        controller.deleteAccount();
+                      }, icon: Icons.delete, iconColor: Colors.red);
+                    },
+                    child: ListTile(
+                        tileColor: themes.whiteColor,
+                        dense: false,
+                        leading: CircleAvatar(
+                          backgroundColor: themes.blueGray,
+                          child: Icon(Icons.delete_outline,
+                              color: themes.blackColor, size: 20.w),
+                        ),
+                        title: Text('Delete Your Account'),
+                        trailing: CircleAvatar(
+                          backgroundColor: themes.lightCream,
+                          // radius: 15,
+                          child: Icon(
+                            Icons.arrow_forward,
+                            size: 20.w,
+                          ),
+                        )),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: InkWell(
                     onTap: () => commonDialog(
+                      icon: Icons.logout,
                       'Logout',
                       'Are you sure you want to Logout?',
                       'Logout',

@@ -216,7 +216,7 @@ class ShipnowController extends GetxController {
       );
     } catch (e) {
       print('iOS download error: $e');
-      throw Exception('iOS download failed: $e');
+      _showErrorToast("Failed to start download: ${e.toString()}");
     }
   }
 

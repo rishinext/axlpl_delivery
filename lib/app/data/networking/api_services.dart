@@ -831,4 +831,20 @@ class ApiServices {
       getPaymentModePoint,
     );
   }
+
+  Future<APIResponse> deleteAccount(
+    final id,
+    final role,
+    final token,
+  ) {
+    final body = {
+      'id': id,
+      'user_role': role,
+    };
+    return _api.post(
+      deleteProfilePoint,
+      body,
+      token: token,
+    );
+  }
 }

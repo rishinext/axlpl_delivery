@@ -452,24 +452,10 @@ class RunningDeliveryDetailsView
                                                           file);
                                                     });
                                                   },
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8.r),
-                                                      border: Border.all(
-                                                          color: themes
-                                                              .darkCyanBlue,
-                                                          width: 1.w),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.all(12.w),
-                                                    child: Icon(
-                                                      Icons.upload_file,
-                                                      color:
-                                                          themes.darkCyanBlue,
-                                                      size: 60.sp,
-                                                    ),
+                                                  child: Icon(
+                                                    Icons.upload_file,
+                                                    color: themes.darkCyanBlue,
+                                                    size: 60.sp,
                                                   ),
                                                 )
                                               else // Image selected, show preview with remove button

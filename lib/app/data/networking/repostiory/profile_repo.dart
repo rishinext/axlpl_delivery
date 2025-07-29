@@ -187,4 +187,39 @@ class ProfileRepo {
     }
     return false;
   }
+
+  Future<bool> deleteAccountRepo() async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.messangerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+      final role = userData?.role.toString();
+
+      if (userID != null && userID.isNotEmpty) {
+        final response = await _apiServices.deleteAccount(userID, role, token);
+
+        return response.when(
+          success: (body) {
+            final deleteResponse = CommonModel.fromJson(body);
+            if (deleteResponse.status != "success") {
+              throw Exception(deleteResponse.message ??
+                  "DeleteAccount Failed: Unknown Error");
+            }
+            return true; // Account deletion was successful
+          },
+          error: (error) {
+            throw Exception("DeleteAccount Failed: ${error.toString()}");
+          },
+        );
+      } else {
+        Utils.instance.log("Delete account Failed: UserID not found");
+        return false; // User ID not found
+      }
+    } catch (e) {
+      Utils.instance.log("Error deleting account: $e");
+      return false; // Return false in case of an error
+    }
+  }
 }

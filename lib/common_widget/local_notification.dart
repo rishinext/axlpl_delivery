@@ -67,6 +67,7 @@ class NotificationService {
         android: AndroidNotificationDetails(
           'high_importance_channel',
           'High Importance Notifications',
+          icon: 'ic_notification',
           importance: Importance.max,
           priority: Priority.high,
           color: Colors.white,

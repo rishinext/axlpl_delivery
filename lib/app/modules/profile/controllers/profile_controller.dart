@@ -6,6 +6,7 @@ import 'package:axlpl_delivery/app/data/models/profile_data_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/profile_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +22,7 @@ class ProfileController extends GetxController {
   var errorMessage = ''.obs;
   final RxString successMessage = ''.obs;
   var isPsswordChange = false.obs;
+  var isDeleteAccount = false.obs;
 
   var isProfileLoading = Status.initial.obs;
   var isUpdateProfile = Status.initial.obs;
@@ -53,30 +55,105 @@ class ProfileController extends GetxController {
   }
 
   Future<void> showImageSourceDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Image Source'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Camera'),
-              onPressed: () {
-                Get.back();
-                _pickImage(ImageSource.camera);
-              },
+    if (Platform.isIOS) {
+      // iOS Cupertino Action Sheet
+      return showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoActionSheet(
+            title: const Text(
+              'Select Image Source',
+              style: TextStyle(fontSize: 16),
             ),
-            TextButton(
-              child: const Text('Gallery'),
-              onPressed: () {
-                Get.back();
-                _pickImage(ImageSource.gallery);
-              },
+            message: const Text(
+              'Choose where to pick your profile image from',
+              style: TextStyle(fontSize: 14),
             ),
-          ],
-        );
-      },
-    );
+            actions: <CupertinoActionSheetAction>[
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.camera, size: 20),
+                    SizedBox(width: 8),
+                    Text('Camera'),
+                  ],
+                ),
+              ),
+              CupertinoActionSheetAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.photo, size: 20),
+                    SizedBox(width: 8),
+                    Text('Photo Library'),
+                  ],
+                ),
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+          );
+        },
+      );
+    } else {
+      // Android Material Dialog
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.image, color: Colors.blue),
+                SizedBox(width: 12),
+                Text('Select Image Source'),
+              ],
+            ),
+            content: const Text('Choose where to pick your profile image from'),
+            actions: <Widget>[
+              TextButton.icon(
+                icon: const Icon(Icons.camera_alt, size: 20),
+                label: const Text('Camera'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.photo_library, size: 20),
+                label: const Text('Gallery'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -244,6 +321,30 @@ class ProfileController extends GetxController {
       Utils.instance.log("Error Feedaback: $e");
       isRatting.value = Status.error;
       errorMessage.value = 'Failed to Feedaback';
+    }
+  }
+
+  Future<void> deleteAccount() async {
+    errorMessage.value = '';
+    isDeleteAccount.value = true;
+
+    try {
+      final result = await profileRepo.deleteAccountRepo();
+
+      if (result) {
+        successMessage.value = 'Account deleted successfully';
+        Get.back();
+        Get.snackbar('', 'Account deleted successfully',
+            backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
+      } else {
+        errorMessage.value = 'Failed to delete account';
+        Get.back();
+        Get.snackbar('', errorMessage.toString(),
+            backgroundColor: themes.redColor, colorText: themes.whiteColor);
+      }
+    } catch (e) {
+      Utils.instance.log("Error deleting account: $e");
+      errorMessage.value = 'Failed to delete account';
     }
   }
 
