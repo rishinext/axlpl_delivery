@@ -8,15 +8,21 @@ class CommonButton extends StatelessWidget {
   String title;
   final bool? isLoading;
   final VoidCallback? onPressed;
-  CommonButton(
-      {super.key, required this.title, this.onPressed, this.isLoading});
+  final Color? backgroundColor;
+  CommonButton({
+    super.key,
+    required this.title,
+    this.onPressed,
+    this.isLoading,
+    this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: CupertinoButton(
-        color: themes.darkCyanBlue,
+        color: backgroundColor ?? themes.darkCyanBlue,
         focusColor: themes.whiteColor,
         borderRadius: BorderRadius.circular(20.r),
         onPressed: onPressed,

@@ -10,6 +10,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:get/get.dart';
 
@@ -89,20 +90,86 @@ class AuthView extends GetView<AuthController> {
                           ));
                     },
                   ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(() => Checkbox(
+                            value: authController.isTermsAccepted.value,
+                            onChanged: (value) {
+                              authController.isTermsAccepted.value =
+                                  value ?? false;
+                            },
+                            activeColor: themes.darkCyanBlue,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                          )),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: RichText(
+                            text: TextSpan(
+                              style: themes.fontSize14_500.copyWith(
+                                color: themes.blackColor,
+                              ),
+                              children: [
+                                const TextSpan(text: 'I agree to the '),
+                                WidgetSpan(
+                                  child: GestureDetector(
+                                    onTap: () => authController.urlLauncher(
+                                      'https://axlpl.com/terms.html',
+                                    ),
+                                    child: Text(
+                                      'Terms & Conditions',
+                                      style: themes.fontSize14_500.copyWith(
+                                        color: themes.darkCyanBlue,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: themes.darkCyanBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   Obx(() {
                     return CommonButton(
                       title: login,
                       isLoading: controller.isLoading.value,
-                      onPressed: () async {
-                        FocusScope.of(context).unfocus();
-                        if (authController.formKey.currentState?.validate() ==
-                            true) {
-                          authController.loginAuth(
-                            controller.mobileController.text,
-                            controller.passwordController.text,
-                          );
-                        }
-                      },
+                      // Visual feedback for disabled state
+                      backgroundColor: authController.isTermsAccepted.value
+                          ? themes.darkCyanBlue
+                          : themes.grayColor,
+                      onPressed: authController.isTermsAccepted.value
+                          ? () async {
+                              FocusScope.of(context).unfocus();
+                              if (authController.formKey.currentState
+                                      ?.validate() ==
+                                  true) {
+                                authController.loginAuth(
+                                  controller.mobileController.text,
+                                  controller.passwordController.text,
+                                );
+                              }
+                            }
+                          : () {
+                              Get.snackbar(
+                                'Terms & Conditions Required',
+                                'Please accept the Terms & Conditions to continue',
+                                backgroundColor: themes.redColor,
+                                colorText: themes.whiteColor,
+                                duration: const Duration(seconds: 3),
+                                snackPosition: SnackPosition.BOTTOM,
+                                margin: const EdgeInsets.all(16),
+                                icon: Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: themes.whiteColor,
+                                ),
+                              );
+                            },
                     );
                   }),
 

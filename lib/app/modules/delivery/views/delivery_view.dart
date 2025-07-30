@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/history/controllers/history_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
@@ -51,6 +53,11 @@ class DeliveryView extends GetView<DeliveryController> {
                 //     color: themes.grayColor,
                 //   ),
                 // ),
+                Platform.isIOS
+                    ? SizedBox(
+                        height: 5.h,
+                      )
+                    : const SizedBox.shrink(),
                 ContainerTextfiled(
                   controller: deliveryController.pincodeController,
                   hintText: 'Search Here',

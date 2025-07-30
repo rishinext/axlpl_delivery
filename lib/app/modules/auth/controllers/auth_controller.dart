@@ -9,10 +9,12 @@ import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_contr
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
+import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AuthController extends GetxController {
   //TODO: Implement AuthController
@@ -23,12 +25,14 @@ class AuthController extends GetxController {
   LocalStorage localStorage = LocalStorage();
 
   RxBool isObsecureText = true.obs;
+  RxBool isTermsAccepted = false.obs;
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
   TextEditingController mobileController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final profileController = Get.put(ProfileController());
+
   Future<void> loginAuth(
     String mobile,
     String password,
@@ -74,6 +78,41 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> urlLauncher(final urlLink) async {
+    try {
+      final Uri url = Uri.parse(urlLink);
+
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        // Fallback: Show a snackbar with the URL if launching fails
+        Get.snackbar(
+          'error',
+          'Visit: $urlLink',
+          backgroundColor: Themes().darkCyanBlue,
+          colorText: Themes().whiteColor,
+          duration: const Duration(seconds: 5),
+          snackPosition: SnackPosition.BOTTOM,
+          margin: const EdgeInsets.all(16),
+        );
+      }
+    } catch (e) {
+      // Error handling: Show error message
+      Get.snackbar(
+        'Error',
+        'Unable to open Terms & Conditions. Please visit axlpl.com/terms.html',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+      );
     }
   }
 

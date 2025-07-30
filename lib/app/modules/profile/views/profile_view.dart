@@ -675,6 +675,11 @@ class ProfileView extends GetView<ProfileController> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: ListTile(
+                      onTap: () {
+                        authController.urlLauncher(
+                          'https://axlpl.com/privacy.html',
+                        );
+                      },
                       tileColor: themes.whiteColor,
                       dense: false,
                       leading: CircleAvatar(

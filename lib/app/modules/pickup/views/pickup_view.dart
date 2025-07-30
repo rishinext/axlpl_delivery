@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/models/messnager_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
@@ -49,6 +50,11 @@ class PickupView extends GetView<PickupController> {
                 //     return null;
                 //   },
                 // ),
+                Platform.isIOS
+                    ? SizedBox(
+                        height: 5.h,
+                      )
+                    : const SizedBox.shrink(),
                 ContainerTextfiled(
                   controller: pickupController.pincodeController,
                   hintText: 'Search Here',
@@ -411,7 +417,6 @@ class PickupView extends GetView<PickupController> {
                                                   title: "Messangers",
                                                   content: SizedBox(
                                                     width: Get.width * 0.8,
-                                                    height: 200.h,
                                                     child: Padding(
                                                       padding:
                                                           const EdgeInsets.all(
@@ -429,59 +434,55 @@ class PickupView extends GetView<PickupController> {
                                                                 .fontSize14_500,
                                                           ),
                                                           const SizedBox(
-                                                              height: 10),
-                                                          Expanded(
-                                                            child: Obx(() {
-                                                              if (pickupController
-                                                                      .isMessangerLoading
-                                                                      .value ==
-                                                                  Status
-                                                                      .loading) {
-                                                                return const Center(
-                                                                    child: CircularProgressIndicator
-                                                                        .adaptive());
-                                                              }
-                                                              if (pickupController
-                                                                          .isMessangerLoading
-                                                                          .value ==
-                                                                      Status
-                                                                          .error ||
-                                                                  pickupController
-                                                                      .messangerList
-                                                                      .isEmpty) {
-                                                                return const Center(
-                                                                    child: Text(
-                                                                        'No messengers available for transfer'));
-                                                              }
-                                                              return CommonDropdown<
-                                                                  MessangerList>(
-                                                                isSearchable:
-                                                                    true,
-                                                                hint:
-                                                                    'Select Messanger',
-                                                                selectedValue:
-                                                                    pickupController
-                                                                        .selectedMessenger
-                                                                        .value,
-                                                                isLoading:
-                                                                    false,
-                                                                items: pickupController
-                                                                    .messangerList,
-                                                                itemLabel: (c) =>
-                                                                    c.name ??
-                                                                    'Unknown',
-                                                                itemValue: (c) => c
-                                                                    .id
-                                                                    .toString(),
-                                                                onChanged:
-                                                                    (val) {
+                                                              height: 16),
+                                                          Obx(() {
+                                                            if (pickupController
+                                                                    .isMessangerLoading
+                                                                    .value ==
+                                                                Status
+                                                                    .loading) {
+                                                              return const Center(
+                                                                  child: CircularProgressIndicator
+                                                                      .adaptive());
+                                                            }
+                                                            if (pickupController
+                                                                        .isMessangerLoading
+                                                                        .value ==
+                                                                    Status
+                                                                        .error ||
+                                                                pickupController
+                                                                    .messangerList
+                                                                    .isEmpty) {
+                                                              return const Center(
+                                                                  child: Text(
+                                                                      'No messengers available for transfer'));
+                                                            }
+                                                            return CommonDropdown<
+                                                                MessangerList>(
+                                                              isSearchable:
+                                                                  true,
+                                                              hint:
+                                                                  'Select Messanger',
+                                                              selectedValue:
                                                                   pickupController
                                                                       .selectedMessenger
-                                                                      .value = val!;
-                                                                },
-                                                              );
-                                                            }),
-                                                          ),
+                                                                      .value,
+                                                              isLoading: false,
+                                                              items: pickupController
+                                                                  .messangerList,
+                                                              itemLabel: (c) =>
+                                                                  c.name ??
+                                                                  'Unknown',
+                                                              itemValue: (c) => c
+                                                                  .id
+                                                                  .toString(),
+                                                              onChanged: (val) {
+                                                                pickupController
+                                                                    .selectedMessenger
+                                                                    .value = val!;
+                                                              },
+                                                            );
+                                                          }),
                                                         ],
                                                       ),
                                                     ),
