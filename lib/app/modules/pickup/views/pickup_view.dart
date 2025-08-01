@@ -295,15 +295,21 @@ class PickupView extends GetView<PickupController> {
                                         },
                                         pickUpTap: () async {
                                           // Set the amountController to the pickup's totalCharges before showing dialog
-                                          pickupController.amountController =
+                                          final shipmentAmountController =
                                               pickupController
                                                   .getAmountController(
                                                       pickupData.shipmentId
                                                           .toString());
-                                          pickupController.amountController
-                                              .text = pickupData.totalCharges
-                                                  ?.toString() ??
-                                              '';
+
+                                          // Initialize with total charges if not already set
+                                          if (shipmentAmountController
+                                              .text.isEmpty) {
+                                            shipmentAmountController.text =
+                                                pickupData.totalCharges
+                                                        ?.toString() ??
+                                                    '';
+                                          }
+
                                           final chequeController =
                                               pickupController
                                                   .getChequeController(
@@ -318,42 +324,31 @@ class PickupView extends GetView<PickupController> {
                                                   .getSelectedSubPaymentMode(
                                                       pickupData.shipmentId
                                                           .toString());
+
+                                          // Original condition: Only 'topay' shows pickup dialog, others show OTP dialog
                                           if (pickupData.paymentMode !=
                                               'topay') {
+                                            // For non-topay: Show simple OTP dialog
                                             showOtpDialog(
                                               () async {
-                                                pickupController
-                                                        .amountController =
-                                                    pickupController
-                                                        .getAmountController(
-                                                            pickupData
-                                                                .shipmentId
-                                                                .toString());
-                                                pickupController
-                                                        .amountController.text =
-                                                    pickupData.totalCharges
-                                                            ?.toString() ??
-                                                        '';
-                                                final otpController =
-                                                    pickupController
-                                                        .getOtpController(
-                                                            pickupData
-                                                                .shipmentId
-                                                                .toString());
-                                                final selectedSubPaymentMode =
-                                                    pickupController
-                                                        .getSelectedSubPaymentMode(
-                                                            pickupData
-                                                                .shipmentId
-                                                                .toString());
+                                                // Use the amount from the controller (preserves any user edits)
+                                                final finalAmount =
+                                                    shipmentAmountController
+                                                            .text.isNotEmpty
+                                                        ? shipmentAmountController
+                                                            .text
+                                                        : pickupData
+                                                                .totalCharges
+                                                                ?.toString() ??
+                                                            '';
+
                                                 pickupController.uploadPickup(
                                                     pickupData.shipmentId,
                                                     'Picked up',
                                                     pickupData.date,
-                                                    pickupController
-                                                        .amountController.text,
+                                                    finalAmount,
                                                     pickupData.paymentMode,
-                                                    0,
+                                                    0, // For non-topay, subPaymentMode is 0
                                                     otpController.text,
                                                     chequeNumber: '0');
                                                 Get.back();
@@ -365,6 +360,7 @@ class PickupView extends GetView<PickupController> {
                                               otpController,
                                             );
                                           } else {
+                                            // For topay: Show full pickup dialog with payment details
                                             showPickupDialog(
                                               shipmentID: pickupData.shipmentId,
                                               date: pickupData.date,
@@ -372,8 +368,8 @@ class PickupView extends GetView<PickupController> {
                                               dropdownHintTxt:
                                                   'Select Payment Mode',
                                               btnTxt: 'Pickup',
-                                              amountController: pickupController
-                                                  .amountController,
+                                              amountController:
+                                                  shipmentAmountController,
                                               chequeNumberController:
                                                   chequeController,
                                               otpController: otpController,
@@ -384,8 +380,8 @@ class PickupView extends GetView<PickupController> {
                                                   pickupData.shipmentId,
                                                   'Picked up',
                                                   pickupData.date,
-                                                  pickupController
-                                                      .amountController.text,
+                                                  shipmentAmountController
+                                                      .text, // Use edited amount
                                                   pickupData.paymentMode,
                                                   selectedSubPaymentMode
                                                       .value?.id,
@@ -393,6 +389,7 @@ class PickupView extends GetView<PickupController> {
                                                   chequeNumber:
                                                       chequeController.text,
                                                 );
+                                                Get.back();
                                               },
                                               onSendOtpCallback: () async {
                                                 await pickupController.getOtp(

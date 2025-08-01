@@ -349,30 +349,25 @@ class HomeView extends GetView<HomeController> {
                               : SizedBox.shrink();
                         },
                       ),
-                      // if (bottomController.userData.value?.role == 'messanger')
-                      //   Expanded(
-                      //       child: HomeIconContainer(
-                      //     OnTap: () => Get.toNamed(Routes.HISTORY),
-                      //     title: 'History',
-                      //     Img: history,
-                      //   )),
                     ],
                   );
                 }),
-                // Obx(
-                //   () {
-                //     return bottomController.userData.value?.role == 'messanger'
-                //         ? SizedBox(
-                //             width: 100.w,
-                //             child: HomeIconContainer(
-                //               title: 'My Shipment',
-                //               Img: containerIcon,
-                //               OnTap: () => Get.toNamed(Routes.SHIPNOW),
-                //             ),
-                //           )
-                //         : SizedBox.shrink();
-                //   },
-                // ),
+                Obx(
+                  () {
+                    if (bottomController.userData.value?.role == 'messanger') {
+                      return SizedBox(
+                        width: 100.w,
+                        child: HomeIconContainer(
+                          OnTap: () => Get.toNamed(Routes.HISTORY),
+                          title: 'History',
+                          Img: history,
+                        ),
+                      );
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                ),
                 Obx(() {
                   final imageUrl = () {
                     final messangerPath = profileController

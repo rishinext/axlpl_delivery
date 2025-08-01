@@ -644,7 +644,7 @@ class ApiServices {
       'cash_amount': cashAmount,
       'payment_method': paymentMode,
       'sub_payment_mode': subPaymentMode,
-      'pickup_otp': deliveryOtp,
+      'delivery_otp': deliveryOtp,
       'cheque_number': chequeNumber ?? 0,
     };
 

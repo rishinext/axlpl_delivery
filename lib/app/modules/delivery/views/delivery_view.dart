@@ -300,13 +300,6 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   .getOtpController(deliveryData
                                                       .shipmentId
                                                       .toString());
-                                          final subPaymentMode =
-                                              deliveryController
-                                                  .getSelectedSubPaymentMode(
-                                                      deliveryData.shipmentId
-                                                          .toString())
-                                                  .value
-                                                  ?.id;
 
                                           if (deliveryData.paymentMode ==
                                               'topay') {
@@ -327,6 +320,16 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     'Select Payment Mode',
                                                 btnTxt: 'Delivery',
                                                 onConfirmCallback: () async {
+                                                  // Get the selected sub payment mode inside the callback
+                                                  final subPaymentMode =
+                                                      deliveryController
+                                                          .getSelectedSubPaymentMode(
+                                                              deliveryData
+                                                                  .shipmentId
+                                                                  .toString())
+                                                          .value
+                                                          ?.id;
+
                                                   deliveryController
                                                       .uploadDelivery(
                                                     deliveryData.shipmentId,
