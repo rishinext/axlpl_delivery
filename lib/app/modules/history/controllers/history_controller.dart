@@ -1,5 +1,7 @@
 import 'package:axlpl_delivery/app/data/models/history_delivery_model.dart';
+import 'package:axlpl_delivery/app/data/models/transtion_history_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/data/networking/repostiory/cash_coll_repo.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/delivery_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,13 +13,18 @@ class HistoryController extends GetxController {
   //TODO: Implement HistoryController
 
   final historyRepo = DeliveryRepo(); // assuming you have a repository class
+  final cashLogRepo =
+      CashCollectionRepository(); // assuming you have a repository class
   final historyList = <HistoryDelivery>[].obs;
   final pickUpHistoryList = <HistoryPickup>[].obs;
+  final cashCollList = <CashLog>[].obs;
+
   final zipcodeController = TextEditingController();
 
   RxInt isSelected = 0.obs;
   var isDeliveredLoading = Status.initial.obs;
   var isPickedup = Status.initial.obs;
+  var isCashCollLoading = Status.initial.obs;
 
   void selectedContainer(int index) {
     isSelected.value = index;
@@ -72,11 +79,35 @@ class HistoryController extends GetxController {
     }
   }
 
+  Future<void> getCashCollectionHistory() async {
+    isCashCollLoading.value = Status.loading;
+
+    try {
+      final success = await cashLogRepo.cashCollRepo('0');
+
+      if (success != null && success.isNotEmpty) {
+        cashCollList.value = success;
+        isCashCollLoading.value = Status.success;
+      } else {
+        Utils().logInfo('No Cash Collection History Data Found');
+        cashCollList.value = [];
+        isCashCollLoading.value = Status.error;
+      }
+    } catch (error) {
+      Utils().logError(
+        'Error getting cash collection history $error',
+      );
+      cashCollList.value = [];
+      isCashCollLoading.value = Status.error;
+    }
+  }
+
   @override
   void onInit() {
     // TODO: implement onInit
     getDeliveryHistory();
     getPickupHistory();
+    // getCashCollectionHistory();
     super.onInit();
   }
 }

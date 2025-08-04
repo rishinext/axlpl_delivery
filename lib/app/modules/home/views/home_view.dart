@@ -358,8 +358,11 @@ class HomeView extends GetView<HomeController> {
                       return SizedBox(
                         width: 100.w,
                         child: HomeIconContainer(
-                          OnTap: () => Get.toNamed(Routes.HISTORY),
-                          title: 'History',
+                          OnTap: () {
+                            historyController.getCashCollectionHistory();
+                            Get.toNamed(Routes.HISTORY);
+                          },
+                          title: 'Cash Collection',
                           Img: history,
                         ),
                       );

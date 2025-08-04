@@ -832,6 +832,23 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> getCashCollectionLog(
+    final token,
+    final nextID,
+    final userID,
+  ) {
+    final body = {
+      'token': token,
+      'next_id': nextID,
+      'messanger_id': userID,
+    };
+    return _api.post(
+      getCashCollectionLogPoint,
+      body,
+      token: token,
+    );
+  }
+
   Future<APIResponse> deleteAccount(
     final id,
     final role,

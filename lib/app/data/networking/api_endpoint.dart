@@ -32,4 +32,5 @@ const String getOtpPoint = 'getOtp';
 const String getPaymentModePoint = 'get_payment_modes';
 const String uploadInvoicePoint = 'uploadInvoiceFiles';
 const String getShipmentCalclulationPoint = 'getShipmentPaymentInformation';
+const String getCashCollectionLogPoint = 'getCashCollectionLog';
 const String deleteProfilePoint = 'deleteProfile';
