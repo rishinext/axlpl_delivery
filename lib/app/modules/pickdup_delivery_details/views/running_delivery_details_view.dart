@@ -378,6 +378,61 @@ class RunningDeliveryDetailsView
                       ],
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: themes.whiteColor,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Collection Details',
+                            style: themes.fontSize16_400
+                                .copyWith(fontWeight: FontWeight.bold)),
+                        SizedBox(height: 10.h),
+                        controller.hasCashCollectionData
+                            ? Column(
+                                children: [
+                                  ...controller.cashCollectionData
+                                      .map((cashLog) {
+                                    return Column(
+                                      children: [
+                                        if (cashLog.createdDate != null) ...[
+                                          infoRow(
+                                              'Collected Date',
+                                              DateFormat('dd MMM yy').format(
+                                                  cashLog.createdDate!)),
+                                        ],
+                                        Divider(),
+                                        SizedBox(height: 6),
+                                        infoRow('Payment Mode',
+                                            cashLog.subPaymentMode ?? 'N/A'),
+                                        Divider(),
+                                        SizedBox(height: 6),
+                                        infoRow('Collected By',
+                                            cashLog.collectedBy ?? 'N/A'),
+                                        Divider(),
+                                        SizedBox(height: 6),
+                                        infoRow('Collected Amount',
+                                            '₹${cashLog.cashamount?.toString() ?? cashLog.amount?.toString() ?? 'N/A'}'),
+                                      ],
+                                    );
+                                  }).toList(),
+                                ],
+                              )
+                            : SizedBox.shrink()
+                      ],
+                    ),
+                  ),
                   isShowInvoice == true
                       ? Container(
                           margin:
@@ -397,6 +452,7 @@ class RunningDeliveryDetailsView
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              SizedBox(height: 8),
                               Text('Invoice Details',
                                   style: themes.fontSize16_400
                                       .copyWith(fontWeight: FontWeight.bold)),

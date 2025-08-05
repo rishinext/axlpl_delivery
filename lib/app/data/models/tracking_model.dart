@@ -5,6 +5,8 @@
 
 import 'dart:convert';
 
+import 'package:axlpl_delivery/app/data/models/transtion_history_model.dart';
+
 TrackingModel trackingModelFromJson(String str) =>
     TrackingModel.fromJson(json.decode(str));
 
@@ -52,12 +54,16 @@ class Tracking {
   ErDatum? senderData; // changed from List<ErDatum>? to ErDatum?
   ErDatum? receiverData; // same
   ShipmentDetails? shipmentDetails;
+  List<CashLog>? cashLog;
+  int? totalPaidAmount;
 
   Tracking({
     this.trackingStatus,
     this.senderData,
     this.receiverData,
     this.shipmentDetails,
+    this.cashLog,
+    this.totalPaidAmount,
   });
 
   factory Tracking.fromJson(Map<String, dynamic> json) => Tracking(
@@ -75,6 +81,11 @@ class Tracking {
         shipmentDetails: json["ShipmentDetails"] == null
             ? null
             : ShipmentDetails.fromJson(json["ShipmentDetails"]),
+        cashLog: json["CashLog"] == null
+            ? []
+            : List<CashLog>.from(
+                json["CashLog"]!.map((x) => CashLog.fromJson(x))),
+        totalPaidAmount: json["TotalPaidAmount"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -85,6 +96,10 @@ class Tracking {
         if (receiverData != null) "ReceiverData": receiverData!.toJson(),
         if (shipmentDetails != null)
           "ShipmentDetails": shipmentDetails!.toJson(),
+        "CashLog": cashLog == null
+            ? []
+            : List<dynamic>.from(cashLog!.map((x) => x.toJson())),
+        "TotalPaidAmount": totalPaidAmount,
       };
 }
 

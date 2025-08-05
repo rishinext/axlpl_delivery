@@ -1,4 +1,6 @@
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
@@ -16,6 +18,7 @@ class HistoryView extends GetView<HistoryController> {
   @override
   Widget build(BuildContext context) {
     final historyController = Get.put(HistoryController());
+    final runningController = Get.put(RunningDeliveryDetailsController());
     return CommonScaffold(
       appBar: commonAppbar('Cash Collection'),
       body: Padding(
@@ -341,6 +344,22 @@ class HistoryView extends GetView<HistoryController> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.r)),
                         child: ListTile(
+                          onTap: () {
+                            runningController
+                                .fetchTrackingData(cash.shipmentId.toString());
+                            Get.toNamed(
+                              Routes.RUNNING_DELIVERY_DETAILS,
+                              arguments: {
+                                'shipmentID': cash.shipmentId.toString(),
+                                // 'status': data.status.toString(),
+                                // 'invoicePath': data.invoicePath,
+                                // 'invoicePhoto': data.invoiceFile,
+                                // 'paymentMode': data.paymentMode,
+                                // 'date': data.date,
+                                // 'cashAmt': data.totalCharges
+                              },
+                            );
+                          },
                           tileColor: themes.whiteColor,
                           dense: false,
                           // leading: CircleAvatar(

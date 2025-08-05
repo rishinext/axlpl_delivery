@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/models/stepper_model.dart';
 import 'package:axlpl_delivery/app/data/models/tracking_model.dart';
+import 'package:axlpl_delivery/app/data/models/transtion_history_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/tracking_repo.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -22,6 +23,7 @@ class RunningDeliveryDetailsController extends GetxController {
   var trackingStatus = <dynamic>[].obs;
   var senderData = <dynamic>[].obs;
   var receiverData = <dynamic>[].obs;
+  var cashCollData = <CashLog>[].obs;
 
   var imageFile = Rx<File?>(null);
 
@@ -44,6 +46,24 @@ class RunningDeliveryDetailsController extends GetxController {
 
   File? getImage(String shipmentId) {
     return imageMap[shipmentId];
+  }
+
+  // Helper method to get cash collection data
+  List<CashLog> get cashCollectionData => cashCollData;
+
+  // Helper method to check if cash collection data exists
+  bool get hasCashCollectionData => cashCollData.isNotEmpty;
+
+  // Helper method to get total cash amount
+  double get totalCashAmount {
+    return cashCollData.fold(0.0, (sum, cash) {
+      try {
+        return sum +
+            (double.tryParse(cash.cashamount?.toString() ?? '0') ?? 0.0);
+      } catch (e) {
+        return sum;
+      }
+    });
   }
 
   final List<Map<String, dynamic>> stepsData = [
@@ -109,6 +129,7 @@ class RunningDeliveryDetailsController extends GetxController {
         List<TrackingStatus> trackingStatusList = [];
         List<ErDatum> senderDataList = [];
         List<ErDatum> receiverDataList = [];
+        List<CashLog> cashCollList = [];
         ShipmentDetails? shipmentDetails;
 
         for (var item in trackingList) {
@@ -124,7 +145,9 @@ class RunningDeliveryDetailsController extends GetxController {
           if (item.receiverData != null) {
             receiverDataList.add(item.receiverData!);
           }
-
+          if (item.cashLog != null && item.cashLog!.isNotEmpty) {
+            cashCollList.addAll(item.cashLog!);
+          }
           if (shipmentDetails == null && item.shipmentDetails != null) {
             shipmentDetails = item.shipmentDetails;
           }
@@ -133,6 +156,7 @@ class RunningDeliveryDetailsController extends GetxController {
         trackingStatus.value = trackingStatusList;
         senderData.value = senderDataList;
         receiverData.value = receiverDataList;
+        cashCollData.value = cashCollList;
         shipmentDetail.value = shipmentDetails;
         isTrackingLoading.value = Status.success;
 
@@ -141,14 +165,18 @@ class RunningDeliveryDetailsController extends GetxController {
       - Status Events: ${trackingStatusList.length}
       - Sender Data: ${senderDataList.length}
       - Receiver Data: ${receiverDataList.length}
+      - Cash Collection Data: ${cashCollList.length}
       - Shipment Details: ${shipmentDetails != null ? 'Available' : 'Not Available'}
+      
+      Cash Collection Details:
+      ${cashCollList.map((cash) => '  - Shipment: ${cash.shipmentId}, Amount: ₹${cash.cashamount}, Mode: ${cash.paymentMode}').join('\n')}
     """);
       } else {
         _clearAllData();
         isTrackingLoading.value = Status.error;
         Utils().logInfo("No tracking data found for shipment: $shipmentID");
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       _clearAllData();
       isTrackingLoading.value = Status.error;
       Utils().logError(
@@ -198,6 +226,7 @@ class RunningDeliveryDetailsController extends GetxController {
     trackingStatus.clear();
     senderData.clear();
     receiverData.clear();
+    cashCollData.clear(); // Also clear cash collection data
     shipmentDetail.value = null;
   }
 }

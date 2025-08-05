@@ -42,7 +42,7 @@ Widget infoRow(String label, String value) {
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 11.sp,
           )),
     ],
   );

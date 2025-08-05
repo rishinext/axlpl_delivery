@@ -53,6 +53,7 @@ class CashLog {
   String? paymentMode;
   String? subPaymentMode;
   DateTime? createdDate;
+  String? collectedBy;
 
   CashLog({
     this.shipmentId,
@@ -63,6 +64,7 @@ class CashLog {
     this.paymentMode,
     this.subPaymentMode,
     this.createdDate,
+    this.collectedBy,
   });
 
   factory CashLog.fromJson(Map<String, dynamic> json) => CashLog(
@@ -76,6 +78,7 @@ class CashLog {
         createdDate: json["created_date"] == null
             ? null
             : DateTime.parse(json["created_date"]),
+        collectedBy: json["colleted_by"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -87,5 +90,6 @@ class CashLog {
         "payment_mode": paymentMode,
         "sub_payment_mode": subPaymentMode,
         "created_date": createdDate?.toIso8601String(),
+        "colleted_by": collectedBy,
       };
 }
