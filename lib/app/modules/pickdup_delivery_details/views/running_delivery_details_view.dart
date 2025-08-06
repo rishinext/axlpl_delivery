@@ -1,9 +1,5 @@
-import 'dart:developer';
-import 'dart:math';
-
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
-import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/invoice_image_dialog.dart';
@@ -378,29 +374,30 @@ class RunningDeliveryDetailsView
                       ],
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: themes.whiteColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        )
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Collection Details',
-                            style: themes.fontSize16_400
-                                .copyWith(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 10.h),
-                        controller.hasCashCollectionData
-                            ? Column(
+                  controller.hasCashCollectionData
+                      ? Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: themes.whiteColor,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              )
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Collection Details',
+                                  style: themes.fontSize16_400
+                                      .copyWith(fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10.h),
+                              Column(
                                 children: [
                                   ...controller.cashCollectionData
                                       .map((cashLog) {
@@ -419,7 +416,7 @@ class RunningDeliveryDetailsView
                                         Divider(),
                                         SizedBox(height: 6),
                                         infoRow('Collected By',
-                                            cashLog.collectedBy ?? 'N/A'),
+                                            cashLog.colletedBy ?? 'N/A'),
                                         Divider(),
                                         SizedBox(height: 6),
                                         infoRow('Collected Amount',
@@ -429,10 +426,10 @@ class RunningDeliveryDetailsView
                                   }).toList(),
                                 ],
                               )
-                            : SizedBox.shrink()
-                      ],
-                    ),
-                  ),
+                            ],
+                          ),
+                        )
+                      : SizedBox.shrink(),
                   isShowInvoice == true
                       ? Container(
                           margin:

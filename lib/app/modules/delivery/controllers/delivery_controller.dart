@@ -167,9 +167,9 @@ class DeliveryController extends GetxController {
         final historyController = Get.find<HistoryController>();
         historyController.getDeliveryHistory();
         otpController.clear();
-        Future.delayed(const Duration(seconds: 1), () {
-          Get.back(); // Navigate back on success
-        });
+        // Future.delayed(const Duration(seconds: 1), () {
+        //   Get.back(); // Navigate back on success
+        // });
       } else {
         Get.snackbar(
           'Failed',

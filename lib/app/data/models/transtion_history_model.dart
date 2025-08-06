@@ -14,7 +14,7 @@ class CashCollectionLogModel {
   List<CashLog>? cashLog;
   String? status;
   String? message;
-  int? totalCashAmount;
+  double? totalCashAmount;
 
   CashCollectionLogModel({
     this.cashLog,
@@ -31,7 +31,7 @@ class CashCollectionLogModel {
                 json["CashLog"]!.map((x) => CashLog.fromJson(x))),
         status: json["status"],
         message: json["message"],
-        totalCashAmount: json["total_cash_amount"],
+        totalCashAmount: json["total_cash_amount"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,14 +46,14 @@ class CashCollectionLogModel {
 
 class CashLog {
   String? shipmentId;
-  double? amount;
+  final amount;
   int? cashamount;
   String? custId;
   String? customerName;
   String? paymentMode;
   String? subPaymentMode;
   DateTime? createdDate;
-  String? collectedBy;
+  String? colletedBy;
 
   CashLog({
     this.shipmentId,
@@ -64,13 +64,17 @@ class CashLog {
     this.paymentMode,
     this.subPaymentMode,
     this.createdDate,
-    this.collectedBy,
+    this.colletedBy,
   });
 
   factory CashLog.fromJson(Map<String, dynamic> json) => CashLog(
         shipmentId: json["shipment_id"],
         amount: json["amount"]?.toDouble(),
-        cashamount: json["cashamount"],
+        cashamount: json["cashamount"] != null
+            ? (json["cashamount"] is int
+                ? json["cashamount"]
+                : (json["cashamount"] as double).toInt())
+            : null,
         custId: json["cust_id"],
         customerName: json["customer_name"],
         paymentMode: json["payment_mode"],
@@ -78,7 +82,7 @@ class CashLog {
         createdDate: json["created_date"] == null
             ? null
             : DateTime.parse(json["created_date"]),
-        collectedBy: json["colleted_by"],
+        colletedBy: json["colleted_by"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -90,6 +94,6 @@ class CashLog {
         "payment_mode": paymentMode,
         "sub_payment_mode": subPaymentMode,
         "created_date": createdDate?.toIso8601String(),
-        "colleted_by": collectedBy,
+        "colleted_by": colletedBy,
       };
 }

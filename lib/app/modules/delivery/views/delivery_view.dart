@@ -6,14 +6,11 @@ import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
-import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/otp_dialog.dart';
-import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/pickup_widget.dart';
 import 'package:axlpl_delivery/common_widget/delivery_dialog.dart';
-import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -346,7 +343,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     chequeNumber:
                                                         chequeController.text,
                                                   );
-                                                  Get.back(); // Close the dialog after uploadDelivery completes
+                                                  Get.back();
                                                 },
                                                 onSendOtpCallback: () async {
                                                   await pickupController.getOtp(
