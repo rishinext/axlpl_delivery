@@ -8,6 +8,7 @@ import 'package:axlpl_delivery/app/data/networking/repostiory/profile_repo.dart'
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -61,9 +62,9 @@ class ProfileController extends GetxController {
         context: context,
         builder: (BuildContext context) {
           return CupertinoActionSheet(
-            title: const Text(
+            title: Text(
               'Select Image Source',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 14.sp),
             ),
             message: const Text(
               'Choose where to pick your profile image from',
@@ -115,11 +116,14 @@ class ProfileController extends GetxController {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Row(
+            title: Row(
               children: [
                 Icon(Icons.image, color: Colors.blue),
                 SizedBox(width: 12),
-                Text('Select Image Source'),
+                Text(
+                  'Select Image Source',
+                  style: TextStyle(fontSize: 14.sp),
+                ),
               ],
             ),
             content: const Text('Choose where to pick your profile image from'),
@@ -266,12 +270,27 @@ class ProfileController extends GetxController {
   Future<void> updateProfile() async {
     isUpdateProfile.value = Status.loading;
     try {
-      // If user picked a new file, pass File, else pass existing photo filename string
+      // Handle image file for both iOS and Android
       dynamic photoParam;
       if (imageFile.value != null) {
-        photoParam = imageFile.value; // File object
+        // Check if file exists and is readable
+        if (await imageFile.value!.exists()) {
+          photoParam = imageFile.value; // File object
+          log("New photo selected: ${photoParam!.path}");
+          log("File size: ${await photoParam.length()} bytes");
+        } else {
+          log("Selected file does not exist");
+          photoParam = null;
+        }
       } else {
-        photoParam = messangerDetail.value?.messangerdetail?.photo ?? '';
+        // For iOS compatibility, pass existing photo string instead of null
+        if (Platform.isIOS) {
+          photoParam = messangerDetail.value?.messangerdetail?.photo ?? '';
+          log("iOS: Keeping existing photo: $photoParam");
+        } else {
+          photoParam = null;
+          log("Android: No new photo selected, keeping existing photo");
+        }
       }
 
       final result = await profileRepo.updateProfile(
@@ -282,6 +301,8 @@ class ProfileController extends GetxController {
       );
 
       if (result) {
+        // Clear the image file after successful update
+        imageFile.value = null;
         await fetchProfileData();
         isUpdateProfile.value = Status.success;
         Get.snackbar('Success', 'Profile updated successfully',
@@ -292,7 +313,7 @@ class ProfileController extends GetxController {
     } catch (e) {
       Utils.instance.log("Error updating profile: $e");
       isUpdateProfile.value = Status.error;
-      errorMessage.value = 'Failed to update profile';
+      errorMessage.value = 'Failed to update profile: ${e.toString()}';
       Get.snackbar('Error', errorMessage.value,
           backgroundColor: themes.redColor, colorText: themes.whiteColor);
     }

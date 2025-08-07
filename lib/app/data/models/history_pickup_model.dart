@@ -59,6 +59,8 @@ class HistoryPickup {
   String? cityName;
   DateTime? date;
   String? receiverCityName;
+  String? paidAmount;
+  String? transtionId;
 
   HistoryPickup({
     this.id,
@@ -81,6 +83,8 @@ class HistoryPickup {
     this.cityName,
     this.date,
     this.receiverCityName,
+    this.paidAmount,
+    this.transtionId,
   });
 
   factory HistoryPickup.fromJson(Map<String, dynamic> json) => HistoryPickup(
@@ -104,6 +108,8 @@ class HistoryPickup {
         cityName: json["city_name"],
         date: json["date"] == null ? null : DateTime.parse(json["date"]),
         receiverCityName: json["receiver_city_name"],
+        paidAmount: json["paidAmount"],
+        transtionId: json["transaction_id"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -127,6 +133,8 @@ class HistoryPickup {
         "city_name": cityName,
         "date": date?.toIso8601String(),
         "receiver_city_name": receiverCityName,
+        "paidAmount": paidAmount,
+        "transaction_id": transtionId,
       };
 }
 

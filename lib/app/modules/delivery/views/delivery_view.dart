@@ -343,7 +343,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                     chequeNumber:
                                                         chequeController.text,
                                                   );
-                                                  Get.back();
+                                                  // Get.back();
                                                 },
                                                 onSendOtpCallback: () async {
                                                   await pickupController.getOtp(
@@ -355,23 +355,27 @@ class DeliveryView extends GetView<DeliveryController> {
                                           } else {
                                             showOtpDialog(
                                               () async {
-                                                await deliveryController
-                                                    .uploadDelivery(
-                                                  deliveryData.shipmentId
-                                                      .toString(),
-                                                  'Delivered',
-                                                  deliveryController
-                                                      .currentUserId.value,
-                                                  deliveryData.date,
-                                                  deliveryData.totalCharges
-                                                      .toString(),
-                                                  0,
-                                                  deliveryData.paymentMode,
-                                                  0,
-                                                  otpController.text,
-                                                  chequeNumber: '0',
-                                                );
-                                                // Get.back(); // Close the dialog
+                                                try {
+                                                  await deliveryController
+                                                      .uploadDelivery(
+                                                    deliveryData.shipmentId
+                                                        .toString(),
+                                                    'Delivered',
+                                                    deliveryController
+                                                        .currentUserId.value,
+                                                    deliveryData.date,
+                                                    deliveryData.totalCharges
+                                                        .toString(),
+                                                    0,
+                                                    deliveryData.paymentMode,
+                                                    0,
+                                                    otpController.text,
+                                                    chequeNumber: '0',
+                                                  );
+                                                } catch (e) {
+                                                  // Close dialog even if there's an error
+                                                  Navigator.of(context).pop();
+                                                }
                                               },
                                               () async {
                                                 await pickupController.getOtp(
