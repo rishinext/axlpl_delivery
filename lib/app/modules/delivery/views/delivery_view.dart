@@ -371,7 +371,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   otpController.text,
                                                   chequeNumber: '0',
                                                 );
-                                                Get.back(); // Close the dialog
+                                                // Get.back(); // Close the dialog
                                               },
                                               () async {
                                                 await pickupController.getOtp(
