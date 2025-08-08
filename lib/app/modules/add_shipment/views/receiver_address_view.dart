@@ -2,6 +2,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/controllers/add_shipment_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
+import 'package:axlpl_delivery/common_widget/paginated_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -10,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class ReceiverAddressView extends GetView {
   const ReceiverAddressView({super.key});
@@ -71,86 +71,86 @@ class ReceiverAddressView extends GetView {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //existing receiver
-                            CommonDropdown<String>(
-                              isSearchable: true,
+                            PaginatedDropdown<CustomersList>(
                               hint: 'Select Customer',
                               selectedValue: addshipController
-                                  .selectedReceiverCustomer.value,
+                                          .selectedReceiverCustomer.value !=
+                                      null
+                                  ? addshipController.customerReceiverList
+                                      .firstWhereOrNull(
+                                      (e) =>
+                                          e.id ==
+                                          addshipController
+                                              .selectedReceiverCustomer.value,
+                                    )
+                                  : null,
+                              items: addshipController.customerReceiverList,
+                              itemLabel: (customer) =>
+                                  customer.companyName ?? 'Unknown',
+                              itemValue: (customer) => customer.id,
                               isLoading: addshipController
                                   .isLoadingReceiverCustomer.value,
-
-                              // Use customerReceiverList here, not receiverAreaList
-                              items: addshipController.customerReceiverList
-                                  .map((e) => e.id!)
-                                  .toList(),
-
-                              itemLabel: (id) {
-                                final customer = addshipController
-                                    .customerReceiverList
-                                    .firstWhere(
-                                  (e) => e.id == id,
-                                  orElse: () =>
-                                      CustomersList(), // Or provide a default customer object
-                                );
-                                return customer.companyName ?? 'Unknown';
+                              isLoadingMore: addshipController
+                                  .isLoadingMoreReceiverCustomers.value,
+                              hasMoreData: addshipController
+                                  .hasMoreReceiverCustomers.value,
+                              onLoadMore: () async {
+                                await addshipController
+                                    .loadMoreReceiverCustomers();
                               },
+                              onChanged: (CustomersList? customer) {
+                                if (customer != null) {
+                                  addshipController.selectedReceiverCustomer
+                                      .value = customer.id;
 
-                              itemValue: (id) => id,
+                                  addshipController
+                                          .selectedExistingReceiverStateId
+                                          .value =
+                                      int.tryParse(customer.stateId ?? '0') ??
+                                          0;
+                                  addshipController
+                                          .selectedExistingReceiverCityId
+                                          .value =
+                                      int.tryParse(customer.cityId ?? '0') ?? 0;
+                                  addshipController
+                                          .selectedExistingReceiverAreaId
+                                          .value =
+                                      int.tryParse(customer.areaId ?? '0') ?? 0;
 
-                              onChanged: (id) {
-                                addshipController
-                                    .selectedReceiverCustomer.value = id;
-
-                                final selectedCustomer = addshipController
-                                    .customerReceiverList
-                                    .firstWhere(
-                                  (e) => e.id == id,
-                                  orElse: () => CustomersList(),
-                                );
-
-                                addshipController
-                                    .selectedExistingReceiverStateId
-                                    .value = int.tryParse(
-                                        selectedCustomer.stateId ?? '0') ??
-                                    0;
-                                addshipController.selectedExistingReceiverCityId
-                                    .value = int.tryParse(
-                                        selectedCustomer.cityId ?? '0') ??
-                                    0;
-                                addshipController.selectedExistingReceiverAreaId
-                                    .value = int.tryParse(
-                                        selectedCustomer.areaId ?? '0') ??
-                                    0;
-
-                                addshipController.receiverExistingNameController
-                                    .text = selectedCustomer.fullName ?? '';
-                                addshipController
-                                    .receiverExistingCompanyNameController
-                                    .text = selectedCustomer.companyName ?? '';
-                                addshipController.receiverExistingZipController
-                                    .text = selectedCustomer.pincode ?? '';
-                                addshipController
-                                    .receiverExistingStateController
-                                    .text = selectedCustomer.stateName ?? '';
-                                addshipController.receiverExistingCityController
-                                    .text = selectedCustomer.cityName ?? '';
-                                addshipController
-                                    .receiverExistingMobileController
-                                    .text = selectedCustomer.mobileNo ?? '';
-                                addshipController
-                                    .receiverExistingEmailController
-                                    .text = selectedCustomer.email ?? '';
-                                addshipController
-                                    .receiverExistingAddress1Controller
-                                    .text = selectedCustomer.address1 ?? '';
-                                addshipController
-                                    .receiverExistingAddress2Controller
-                                    .text = selectedCustomer.address2 ?? '';
-                                addshipController
-                                    .receiverExistingGstNoController
-                                    .text = selectedCustomer.gstNo ?? '';
-                                addshipController.receiverExistingAreaController
-                                    .text = selectedCustomer.areaName ?? '';
+                                  addshipController
+                                      .receiverExistingNameController
+                                      .text = customer.fullName ?? '';
+                                  addshipController
+                                      .receiverExistingCompanyNameController
+                                      .text = customer.companyName ?? '';
+                                  addshipController
+                                      .receiverExistingZipController
+                                      .text = customer.pincode ?? '';
+                                  addshipController
+                                      .receiverExistingStateController
+                                      .text = customer.stateName ?? '';
+                                  addshipController
+                                      .receiverExistingCityController
+                                      .text = customer.cityName ?? '';
+                                  addshipController
+                                      .receiverExistingMobileController
+                                      .text = customer.mobileNo ?? '';
+                                  addshipController
+                                      .receiverExistingEmailController
+                                      .text = customer.email ?? '';
+                                  addshipController
+                                      .receiverExistingAddress1Controller
+                                      .text = customer.address1 ?? '';
+                                  addshipController
+                                      .receiverExistingAddress2Controller
+                                      .text = customer.address2 ?? '';
+                                  addshipController
+                                      .receiverExistingGstNoController
+                                      .text = customer.gstNo ?? '';
+                                  addshipController
+                                      .receiverExistingAreaController
+                                      .text = customer.areaName ?? '';
+                                }
                               },
                             ),
                             dropdownText('Name'),

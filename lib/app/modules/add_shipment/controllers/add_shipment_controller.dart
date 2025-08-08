@@ -224,6 +224,20 @@ class AddShipmentController extends GetxController {
   var isShipmentCal = Status.initial.obs;
   var isShipmentAdd = Status.initial.obs;
 
+  // Pagination variables
+  final hasMoreCustomers = true.obs;
+  final hasMoreReceiverCustomers = true.obs;
+  final isLoadingMoreCustomers = false.obs;
+  final isLoadingMoreReceiverCustomers = false.obs;
+
+  // Category pagination variables
+  final hasMoreCategories = true.obs;
+  final isLoadingMoreCategories = false.obs;
+
+  // Commodity pagination variables
+  final hasMoreCommodities = true.obs;
+  final isLoadingMoreCommodities = false.obs;
+
   var selectedCustomer = Rxn();
   var selectedExitingCustomer = Rxn();
   var selectedReceiverCustomer = Rxn();
@@ -309,74 +323,234 @@ class AddShipmentController extends GetxController {
 
   Future<void> fetchCustomers([String nextID = '']) async {
     try {
-      isLoadingCustomers(true);
+      // If it's the first load (nextID is '0' or empty), show main loading
+      if (nextID == '0' || nextID.isEmpty) {
+        isLoadingCustomers(true);
+        customerList.clear(); // Clear existing data for fresh load
+        hasMoreCustomers.value = true; // Reset pagination flag
+      } else {
+        // If it's pagination, show loading more indicator
+        isLoadingMoreCustomers(true);
+      }
 
-      final data = await addShipmentRepo.customerListRepo('version', nextID);
-      customerList.value = data ?? [];
+      final data = await addShipmentRepo.customerListRepo('', nextID);
+
+      if (data != null && data.isNotEmpty) {
+        if (nextID == '0' || nextID.isEmpty) {
+          // First load - replace the list
+          customerList.value = data;
+        } else {
+          // Pagination - append to existing list
+          customerList.addAll(data);
+        }
+
+        // Check if there's more data to load
+        // If returned data is less than expected page size, assume no more data
+        hasMoreCustomers.value = data.length >= 10; // Assuming page size is 10
+      } else {
+        if (nextID == '0' || nextID.isEmpty) {
+          customerList.value = [];
+        }
+        hasMoreCustomers.value = false;
+      }
     } catch (e) {
-      customerList.value = [];
-      Utils().logError(
-        'Customer fetch failed $e',
-      );
+      if (nextID == '0' || nextID.isEmpty) {
+        customerList.value = [];
+      }
+      hasMoreCustomers.value = false;
+      Utils().logError('Customer fetch failed $e');
     } finally {
       isLoadingCustomers(false);
+      isLoadingMoreCustomers(false);
+    }
+  }
+
+  // Method to load more customers for pagination
+  Future<void> loadMoreCustomers() async {
+    if (!hasMoreCustomers.value || isLoadingMoreCustomers.value) {
+      return; // Already loading or no more data
+    }
+
+    if (customerList.isNotEmpty) {
+      final lastCustomer = customerList.last;
+      await fetchCustomers(lastCustomer.id ?? '');
     }
   }
 
   Future<void> fetchReciverCustomers([String nextID = '']) async {
     try {
-      isLoadingReceiverCustomer(true);
+      // If it's the first load (nextID is '0' or empty), show main loading
+      if (nextID == '0' || nextID.isEmpty) {
+        isLoadingReceiverCustomer(true);
+        customerReceiverList.clear(); // Clear existing data for fresh load
+        hasMoreReceiverCustomers.value = true; // Reset pagination flag
+      } else {
+        // If it's pagination, show loading more indicator
+        isLoadingMoreReceiverCustomers(true);
+      }
 
-      final data = await addShipmentRepo.customerListRepo('version', nextID);
-      customerReceiverList.value = data ?? [];
+      final data = await addShipmentRepo.customerListRepo('', nextID);
+
+      if (data != null && data.isNotEmpty) {
+        if (nextID == '0' || nextID.isEmpty) {
+          // First load - replace the list
+          customerReceiverList.value = data;
+        } else {
+          // Pagination - append to existing list
+          customerReceiverList.addAll(data);
+        }
+
+        // Check if there's more data to load
+        // If returned data is less than expected page size, assume no more data
+        hasMoreReceiverCustomers.value =
+            data.length >= 10; // Assuming page size is 10
+      } else {
+        if (nextID == '0' || nextID.isEmpty) {
+          customerReceiverList.value = [];
+        }
+        hasMoreReceiverCustomers.value = false;
+      }
     } catch (e) {
-      customerReceiverList.value = [];
+      if (nextID == '0' || nextID.isEmpty) {
+        customerReceiverList.value = [];
+      }
+      hasMoreReceiverCustomers.value = false;
       Utils().logError(
         'Receiver Customer fetch failed $e',
       );
     } finally {
       isLoadingReceiverCustomer(false);
+      isLoadingMoreReceiverCustomers(false);
     }
   }
 
-  Future categoryListData() async {
+  // Method to load more receiver customers for pagination
+  Future<void> loadMoreReceiverCustomers() async {
+    if (!hasMoreReceiverCustomers.value ||
+        isLoadingMoreReceiverCustomers.value) {
+      return; // Already loading or no more data
+    }
+
+    if (customerReceiverList.isNotEmpty) {
+      final lastCustomer = customerReceiverList.last;
+      await fetchReciverCustomers(lastCustomer.id ?? '');
+    }
+  }
+
+  Future categoryListData([String nextID = '']) async {
     try {
-      isLoadingCate(true);
-      final data = await addShipmentRepo.categoryListRepo('');
-      categoryList.value = data ?? [];
+      // If it's the first load (nextID is '0' or empty), show main loading
+      if (nextID == '0' || nextID.isEmpty) {
+        isLoadingCate(true);
+        categoryList.clear(); // Clear existing data for fresh load
+        hasMoreCategories.value = true; // Reset pagination flag
+      } else {
+        // If it's pagination, show loading more indicator
+        isLoadingMoreCategories(true);
+      }
+
+      final data = await addShipmentRepo.categoryListRepo(nextID);
+
+      if (data != null && data.isNotEmpty) {
+        if (nextID == '0' || nextID.isEmpty) {
+          // First load - replace the list
+          categoryList.value = data;
+        } else {
+          // Pagination - append to existing list
+          categoryList.addAll(data);
+        }
+
+        // Check if there's more data to load
+        // If returned data is less than expected page size, assume no more data
+        hasMoreCategories.value = data.length >= 10; // Assuming page size is 10
+      } else {
+        if (nextID == '0' || nextID.isEmpty) {
+          categoryList.value = [];
+        }
+        hasMoreCategories.value = false;
+      }
     } catch (error) {
-      categoryList.value = [];
-      Utils().logError(
-        'Error getting customers $error',
-      );
+      if (nextID == '0' || nextID.isEmpty) {
+        categoryList.value = [];
+      }
+      hasMoreCategories.value = false;
+      Utils().logError('Error getting categories $error');
     } finally {
       isLoadingCate(false);
+      isLoadingMoreCategories(false);
     }
   }
 
-  Future commodityListData(final cateID) async {
+  // Method to load more categories for pagination
+  Future<void> loadMoreCategories() async {
+    if (!hasMoreCategories.value || isLoadingMoreCategories.value) {
+      return; // Already loading or no more data
+    }
+
+    if (categoryList.isNotEmpty) {
+      final lastCategory = categoryList.last;
+      await categoryListData(lastCategory.id ?? '');
+    }
+  }
+
+  Future commodityListData(final cateID, [String nextID = '']) async {
     if (cateID.isEmpty) return;
     try {
-      isLoadingCommodity(true);
-      selectedCommodity.value = null;
-      commodityList.value = [];
-      final data = await addShipmentRepo.commodityListRepo('', cateID);
-      if (data == null || data.isEmpty) {
-        commodityList.value = [];
-        Utils().logInfo('No commodities found for category $cateID');
-        return;
+      // If it's the first load (nextID is '0' or empty), show main loading
+      if (nextID == '0' || nextID.isEmpty) {
+        isLoadingCommodity(true);
+        selectedCommodity.value = null;
+        commodityList.clear(); // Clear existing data for fresh load
+        hasMoreCommodities.value = true; // Reset pagination flag
       } else {
-        commodityList.value = data;
+        // If it's pagination, show loading more indicator
+        isLoadingMoreCommodities(true);
       }
-      commodityList.value = data;
+
+      final data = await addShipmentRepo.commodityListRepo(nextID, cateID);
+
+      if (data != null && data.isNotEmpty) {
+        if (nextID == '0' || nextID.isEmpty) {
+          // First load - replace the list
+          commodityList.value = data;
+        } else {
+          // Pagination - append to existing list
+          commodityList.addAll(data);
+        }
+
+        // Check if there's more data to load
+        // If returned data is less than expected page size, assume no more data
+        hasMoreCommodities.value =
+            data.length >= 10; // Assuming page size is 10
+      } else {
+        if (nextID == '0' || nextID.isEmpty) {
+          commodityList.value = [];
+          Utils().logInfo('No commodities found for category $cateID');
+        }
+        hasMoreCommodities.value = false;
+      }
     } catch (error) {
-      commodityList.value = [];
-      Utils().logError(
-        'Error getting customers $error',
-      );
+      if (nextID == '0' || nextID.isEmpty) {
+        commodityList.value = [];
+      }
+      hasMoreCommodities.value = false;
+      Utils().logError('Error getting commodities $error');
     } finally {
       isLoadingCommodity(false);
+      isLoadingMoreCommodities(false);
       commodityList.refresh();
+    }
+  }
+
+  // Method to load more commodities for pagination
+  Future<void> loadMoreCommodities(final cateID) async {
+    if (!hasMoreCommodities.value || isLoadingMoreCommodities.value) {
+      return; // Already loading or no more data
+    }
+
+    if (commodityList.isNotEmpty) {
+      final lastCommodity = commodityList.last;
+      await commodityListData(cateID, lastCommodity.id ?? '');
     }
   }
 

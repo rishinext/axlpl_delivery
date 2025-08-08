@@ -6,6 +6,7 @@ import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
+import 'package:axlpl_delivery/common_widget/paginated_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -62,16 +63,29 @@ class AddShipmentView extends GetView<AddShipmentController> {
                     dropdownText('Customer'),
                   if (bottomController.userData.value?.role != 'customer')
                     Obx(() {
-                      return CommonDropdown<CustomersList>(
-                        isSearchable: true,
+                      return PaginatedDropdown<CustomersList>(
                         hint: 'Select Customer',
-                        selectedValue: controller.selectedCustomer.value,
-                        isLoading: addshipController.isLoadingCustomers.value,
+                        selectedValue: controller.selectedCustomer.value != null
+                            ? controller.customerList.firstWhereOrNull(
+                                (e) =>
+                                    e.id == controller.selectedCustomer.value,
+                              )
+                            : null,
                         items: controller.customerList,
-                        itemLabel: (c) => c.companyName ?? 'Unknown',
-                        itemValue: (c) => c.id.toString(),
-                        onChanged: (val) {
-                          return controller.selectedCustomer.value = val;
+                        itemLabel: (customer) =>
+                            customer.companyName ?? 'Unknown',
+                        itemValue: (customer) => customer.id,
+                        isLoading: addshipController.isLoadingCustomers.value,
+                        isLoadingMore:
+                            addshipController.isLoadingMoreCustomers.value,
+                        hasMoreData: addshipController.hasMoreCustomers.value,
+                        onLoadMore: () async {
+                          await addshipController.loadMoreCustomers();
+                        },
+                        onChanged: (CustomersList? customer) {
+                          if (customer != null) {
+                            controller.selectedCustomer.value = customer.id;
+                          }
                         },
                       );
                     }),
@@ -105,24 +119,42 @@ class AddShipmentView extends GetView<AddShipmentController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             dropdownText('Category'),
-                            CommonDropdown<CategoryList>(
-                              isSearchable: true,
-                              hint: 'Select Category',
-                              selectedValue: controller.selectedCategory.value,
-                              isLoading: addshipController.isLoadingCate.value,
-                              items: controller.categoryList,
-                              itemLabel: (c) => c.name ?? 'Unknown',
-                              itemValue: (c) => c.id.toString(),
-                              onChanged: (val) {
-                                controller.selectedCategory.value = val;
-                                if (val != null) {
-                                  controller.selectedCommodity.value = null;
-
-                                  addshipController
-                                      .commodityListData(val.toString());
-                                }
-                              },
-                            ),
+                            Obx(() => PaginatedDropdown<CategoryList>(
+                                  hint: 'Select Category',
+                                  selectedValue:
+                                      controller.selectedCategory.value != null
+                                          ? controller.categoryList
+                                              .firstWhereOrNull(
+                                              (e) =>
+                                                  e.id ==
+                                                  controller
+                                                      .selectedCategory.value,
+                                            )
+                                          : null,
+                                  items: controller.categoryList,
+                                  itemLabel: (category) =>
+                                      category.name ?? 'Unknown',
+                                  itemValue: (category) => category.id,
+                                  isLoading:
+                                      addshipController.isLoadingCate.value,
+                                  isLoadingMore: addshipController
+                                      .isLoadingMoreCategories.value,
+                                  hasMoreData:
+                                      addshipController.hasMoreCategories.value,
+                                  onLoadMore: () async {
+                                    await addshipController
+                                        .loadMoreCategories();
+                                  },
+                                  onChanged: (CategoryList? category) {
+                                    if (category != null) {
+                                      controller.selectedCategory.value =
+                                          category.id;
+                                      controller.selectedCommodity.value = null;
+                                      addshipController.commodityListData(
+                                          category.id.toString(), '0');
+                                    }
+                                  },
+                                )),
                           ],
                         );
                       } else {
@@ -149,27 +181,46 @@ class AddShipmentView extends GetView<AddShipmentController> {
                                 behavior: HitTestBehavior.translucent,
                                 child: AbsorbPointer(
                                   absorbing: !isCustomerSelected,
-                                  child: CommonDropdown<CategoryList>(
-                                    isSearchable: true,
-                                    hint: 'Select Category',
-                                    selectedValue:
-                                        controller.selectedCategory.value,
-                                    isLoading:
-                                        addshipController.isLoadingCate.value,
-                                    items: controller.categoryList,
-                                    itemLabel: (c) => c.name ?? 'Unknown',
-                                    itemValue: (c) => c.id.toString(),
-                                    onChanged: (val) {
-                                      controller.selectedCategory.value = val;
-                                      if (val != null) {
-                                        controller.selectedCommodity.value =
-                                            null;
-
-                                        addshipController
-                                            .commodityListData(val.toString());
-                                      }
-                                    },
-                                  ),
+                                  child: Obx(() =>
+                                      PaginatedDropdown<CategoryList>(
+                                        hint: 'Select Category',
+                                        selectedValue:
+                                            controller.selectedCategory.value !=
+                                                    null
+                                                ? controller.categoryList
+                                                    .firstWhereOrNull(
+                                                    (e) =>
+                                                        e.id ==
+                                                        controller
+                                                            .selectedCategory
+                                                            .value,
+                                                  )
+                                                : null,
+                                        items: controller.categoryList,
+                                        itemLabel: (category) =>
+                                            category.name ?? 'Unknown',
+                                        itemValue: (category) => category.id,
+                                        isLoading: addshipController
+                                            .isLoadingCate.value,
+                                        isLoadingMore: addshipController
+                                            .isLoadingMoreCategories.value,
+                                        hasMoreData: addshipController
+                                            .hasMoreCategories.value,
+                                        onLoadMore: () async {
+                                          await addshipController
+                                              .loadMoreCategories();
+                                        },
+                                        onChanged: (CategoryList? category) {
+                                          if (category != null) {
+                                            controller.selectedCategory.value =
+                                                category.id;
+                                            controller.selectedCommodity.value =
+                                                null;
+                                            addshipController.commodityListData(
+                                                category.id.toString(), '0');
+                                          }
+                                        },
+                                      )),
                                 ),
                               );
                             }),
@@ -203,19 +254,44 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         behavior: HitTestBehavior.translucent,
                         child: AbsorbPointer(
                           absorbing: !isCategorySelected,
-                          child: CommonDropdown<CommodityList>(
-                            isSearchable: true,
-                            hint: 'Select Commodity',
-                            selectedValue:
-                                addshipController.selectedCommodity.value,
-                            isLoading:
-                                addshipController.isLoadingCommodity.value,
-                            items: addshipController.commodityList,
-                            itemLabel: (c) => c.name ?? 'Unknown',
-                            itemValue: (c) => c.id.toString(),
-                            onChanged: (val) =>
-                                addshipController.selectedCommodity.value = val,
-                          ),
+                          child: Obx(() => PaginatedDropdown<CommodityList>(
+                                hint: 'Select Commodity',
+                                selectedValue:
+                                    addshipController.selectedCommodity.value !=
+                                            null
+                                        ? addshipController.commodityList
+                                            .firstWhereOrNull(
+                                            (e) =>
+                                                e.id ==
+                                                addshipController
+                                                    .selectedCommodity.value,
+                                          )
+                                        : null,
+                                items: addshipController.commodityList,
+                                itemLabel: (commodity) =>
+                                    commodity.name ?? 'Unknown',
+                                itemValue: (commodity) => commodity.id,
+                                isLoading:
+                                    addshipController.isLoadingCommodity.value,
+                                isLoadingMore: addshipController
+                                    .isLoadingMoreCommodities.value,
+                                hasMoreData:
+                                    addshipController.hasMoreCommodities.value,
+                                onLoadMore: () async {
+                                  if (controller.selectedCategory.value !=
+                                      null) {
+                                    await addshipController.loadMoreCommodities(
+                                        controller.selectedCategory.value
+                                            .toString());
+                                  }
+                                },
+                                onChanged: (CommodityList? commodity) {
+                                  if (commodity != null) {
+                                    addshipController.selectedCommodity.value =
+                                        commodity.id;
+                                  }
+                                },
+                              )),
                         ),
                       );
                     },
@@ -255,6 +331,7 @@ class AddShipmentView extends GetView<AddShipmentController> {
                             //   productID: addshipController.selectedCommodity
                             //       .toString(),
                             // );
+                            return null;
                           },
                           hintTxt: "Enter Gross weight",
                           keyboardType: TextInputType.number,
