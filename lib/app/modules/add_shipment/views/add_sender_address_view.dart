@@ -413,19 +413,21 @@ class AddAddressView extends GetView {
                                   addshipController.senderInfoCityController,
                             );
                           }),
-                          dropdownText('Select Aera'),
-                          Obx(() => CommonDropdown<AreaList>(
-                                hint: 'Select Area',
-                                selectedValue:
-                                    addshipController.selectedSenderArea.value,
-                                isLoading:
-                                    addshipController.isLoadingSenderArea.value,
-                                items: addshipController.senderAreaList,
-                                itemLabel: (c) => c.name ?? 'Unknown',
-                                itemValue: (c) => c.id.toString(),
-                                onChanged: (val) => addshipController
-                                    .selectedSenderArea.value = val,
-                              )),
+                          dropdownText('Select Area'),
+                          Obx(() {
+                            return CommonDropdown<AreaList>(
+                              hint: 'Select Area',
+                              selectedValue:
+                                  addshipController.selectedSenderArea.value,
+                              isLoading:
+                                  addshipController.isLoadingSenderArea.value,
+                              items: addshipController.senderAreaList,
+                              itemLabel: (c) => c.name ?? 'Unknown',
+                              itemValue: (c) => c.id.toString(),
+                              onChanged: (val) => addshipController
+                                  .selectedSenderArea.value = val,
+                            );
+                          }),
                           dropdownText('GST No'),
                           CommonTextfiled(
                             hintTxt: 'GST No',

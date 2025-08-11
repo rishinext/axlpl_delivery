@@ -19,6 +19,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
 
@@ -26,6 +27,17 @@ import '../controllers/pickup_controller.dart';
 
 class PickupView extends GetView<PickupController> {
   const PickupView({super.key});
+
+  String formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return '';
+    try {
+      DateTime date = DateTime.parse(dateString);
+      return DateFormat('dd MMM yy').format(date); // Format as "11 Aug 25"
+    } catch (e) {
+      return dateString; // Return original if parsing fails
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final pickupController = Get.put(PickupController());
@@ -260,7 +272,8 @@ class PickupView extends GetView<PickupController> {
                                         },
                                         companyName:
                                             pickupData.companyName.toString(),
-                                        date: pickupData.date.toString(),
+                                        date: formatDate(
+                                            pickupData.date.toString()),
                                         status: pickupData.status.toString(),
                                         messangerName:
                                             pickupData.messangerName.toString(),
@@ -611,7 +624,8 @@ class PickupView extends GetView<PickupController> {
                                       paymentType: pickedUpData.paymentMode,
                                       companyName:
                                           pickedUpData.companyName.toString(),
-                                      date: pickedUpData.date.toString(),
+                                      date: formatDate(
+                                          pickedUpData.date.toString()),
                                       status: pickedUpData.status.toString(),
                                       messangerName:
                                           pickedUpData.messangerName.toString(),

@@ -403,12 +403,10 @@ class RunningDeliveryDetailsView
                                       .map((cashLog) {
                                     return Column(
                                       children: [
-                                        if (cashLog.createdDate != null) ...[
-                                          infoRow(
-                                              'Collected Date',
-                                              DateFormat('dd MMM yy').format(
-                                                  cashLog.createdDate!)),
-                                        ],
+                                        infoRow(
+                                            'Collected Date',
+                                            DateFormat('dd MMM yy')
+                                                .format(cashLog.createdDate!)),
                                         Divider(),
                                         SizedBox(height: 6),
                                         infoRow('Payment Mode',

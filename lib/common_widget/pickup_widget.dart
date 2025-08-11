@@ -3,6 +3,7 @@ import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -164,7 +165,7 @@ class PickupWidget extends StatelessWidget {
                         Row(
                           children: [
                             CircleAvatar(
-                              radius: 20.r,
+                              radius: 15.r,
                               backgroundImage: NetworkImage(
                                 networkImg ?? personImg,
                               ),
@@ -173,7 +174,7 @@ class PickupWidget extends StatelessWidget {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Messenger', style: themes.fontSize14_400),
+                                // Text('Messenger', style: themes.fontSize14_400),
                                 Text(
                                   messangerName,
                                   style: TextStyle(
@@ -213,11 +214,26 @@ class PickupWidget extends StatelessWidget {
                             ),
                           ],
                         ),
-
-                        Text(
-                          'Shipment ID: $shipmentID',
-                          style:
-                              TextStyle(fontSize: 12.sp, color: Colors.black54),
+                        SizedBox(
+                          height: 5.h,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'ID: $shipmentID',
+                              style: TextStyle(
+                                  fontSize: 12.sp, color: Colors.black54),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(new ClipboardData(
+                                      text: shipmentID.toString()));
+                                },
+                                icon: Icon(
+                                  Icons.copy,
+                                  size: 15.sp,
+                                )),
+                          ],
                         ),
                       ],
                     ),
@@ -238,7 +254,7 @@ class PickupWidget extends StatelessWidget {
                         child: Icon(Icons.location_on,
                             size: 16.sp, color: themes.darkCyanBlue),
                       ),
-                      SizedBox(width: 4.w),
+                      SizedBox(width: 6.w),
                       Text(cityName, style: TextStyle(fontSize: 12.sp)),
                     ],
                   ),
@@ -262,7 +278,7 @@ class PickupWidget extends StatelessWidget {
                   SizedBox(
                     width: isShowPaymentType == true ? 80.w : null,
                     child: Text(
-                      'Axlpl Insurance',
+                      'Insurance',
                       overflow: TextOverflow.fade,
                     ),
                   ),

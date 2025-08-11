@@ -39,7 +39,10 @@ class AuthController extends GetxController {
   ) async {
     isLoading.value = true;
     try {
-      await _authRepo.loginRepo(mobile, password);
+      await _authRepo.loginRepo(
+        mobile,
+        password,
+      );
       final role = await storage.read(key: localStorage.userRole);
       if (role == 'messanger') {
         // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
