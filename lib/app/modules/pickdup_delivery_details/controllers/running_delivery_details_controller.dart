@@ -127,8 +127,8 @@ class RunningDeliveryDetailsController extends GetxController {
 
       if (trackingList.isNotEmpty) {
         List<TrackingStatus> trackingStatusList = [];
-        List<ErDatum> senderDataList = [];
-        List<ErDatum> receiverDataList = [];
+        List<ErData> senderDataList = [];
+        List<ErData> receiverDataList = [];
         List<CashLog> cashCollList = [];
         ShipmentDetails? shipmentDetails;
 

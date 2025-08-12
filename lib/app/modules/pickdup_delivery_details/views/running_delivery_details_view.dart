@@ -94,45 +94,50 @@ class RunningDeliveryDetailsView
                         )
                       ],
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // CircleAvatar(
-                        //   backgroundColor: themes.blueGray,
-                        //   child: Image.asset(shopingIcon, width: 20.w),
-                        // ),
-                        // SizedBox(width: 12),
-                        Text(
-                          'Shipment ID: \n${details?.shipmentId ?? 'N/A'}',
-                          style: themes.fontSize14_500.copyWith(
-                              fontWeight: FontWeight.bold, fontSize: 12.sp),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Clipboard.setData(new ClipboardData(
-                                  text: shipmentID.toString()));
-                            },
-                            icon: Icon(
-                              Icons.copy,
-                              size: 18,
-                            )),
-                        Spacer(),
-                        Flexible(
-                          flex: 5,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: themes.blueGray,
-                              borderRadius: BorderRadius.circular(15),
+                        Row(
+                          children: [
+                            // CircleAvatar(
+                            //   backgroundColor: themes.blueGray,
+                            //   child: Image.asset(shopingIcon, width: 20.w),
+                            // ),
+                            // SizedBox(width: 12),
+                            Text(
+                              'Shipment ID: \n${details?.shipmentId ?? 'N/A'}',
+                              style: themes.fontSize14_500.copyWith(
+                                  fontWeight: FontWeight.bold, fontSize: 12.sp),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            child: Text(
-                              overflow: TextOverflow.fade,
-                              details?.shipmentStatus.toString() ?? 'N/A',
-                              style: themes.fontSize14_500
-                                  .copyWith(color: themes.darkCyanBlue),
+                            IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(new ClipboardData(
+                                      text: shipmentID.toString()));
+                                },
+                                icon: Icon(
+                                  Icons.copy,
+                                  size: 18,
+                                )),
+                            Spacer(),
+                            Flexible(
+                              flex: 5,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: themes.blueGray,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Text(
+                                  overflow: TextOverflow.fade,
+                                  details?.shipmentStatus.toString() ?? 'N/A',
+                                  style: themes.fontSize14_500
+                                      .copyWith(color: themes.darkCyanBlue),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -467,14 +472,14 @@ class RunningDeliveryDetailsView
                               //         ? 'N/A'
                               //         : '' ?? 'N/A'),
                               Divider(),
-                              details?.invoicePhoto != ''
+                              details?.invoiceFile != ''
                                   ? InvoiceImagePopup(
                                       invoicePath:
                                           details?.invoicePath.toString() ??
                                               invoicePath ??
                                               '',
                                       invoicePhoto:
-                                          details?.invoicePhoto.toString() ??
+                                          details?.invoiceFile.toString() ??
                                               invoicePhoto ??
                                               '',
                                     )
@@ -506,7 +511,7 @@ class RunningDeliveryDetailsView
                                                   child: Icon(
                                                     Icons.upload_file,
                                                     color: themes.darkCyanBlue,
-                                                    size: 60.sp,
+                                                    size: 40.sp,
                                                   ),
                                                 )
                                               else // Image selected, show preview with remove button

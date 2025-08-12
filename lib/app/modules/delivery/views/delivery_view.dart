@@ -15,6 +15,7 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
 
@@ -22,6 +23,17 @@ import '../controllers/delivery_controller.dart';
 
 class DeliveryView extends GetView<DeliveryController> {
   const DeliveryView({super.key});
+
+  String formatDate(String? dateString) {
+    if (dateString == null || dateString.isEmpty) return '';
+    try {
+      DateTime date = DateTime.parse(dateString);
+      return DateFormat('dd MMM yy').format(date); // Format as "12 Aug 25"
+    } catch (e) {
+      return dateString; // Return original if parsing fails
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final deliveryController = Get.put(DeliveryController());
@@ -252,7 +264,8 @@ class DeliveryView extends GetView<DeliveryController> {
                                         isShowPaymentType: true,
                                         companyName:
                                             deliveryData.companyName.toString(),
-                                        date: deliveryData.date.toString(),
+                                        date: formatDate(
+                                            deliveryData.date.toString()),
                                         status: deliveryData.status.toString(),
                                         messangerName: '',
                                         address:
@@ -497,7 +510,8 @@ class DeliveryView extends GetView<DeliveryController> {
                                           isShowPaymentType: false,
                                           companyName:
                                               data.companyName.toString(),
-                                          date: data.date.toString(),
+                                          date:
+                                              formatDate(data.date.toString()),
                                           status: data.status.toString(),
                                           messangerName: '',
                                           address: data.address1.toString(),

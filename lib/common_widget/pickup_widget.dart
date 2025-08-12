@@ -89,7 +89,7 @@ class PickupWidget extends StatelessWidget {
                       ),
                       SizedBox(height: 8.h),
                       SizedBox(
-                        height: 60.h,
+                        height: 65.h,
                         child: DottedLine(
                           direction: Axis.vertical,
                           dashLength: 4,
@@ -119,18 +119,32 @@ class PickupWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        /// Title, Date & Status
+                        Text(companyName,
+                            style: themes.fontSize14_500
+                                .copyWith(fontSize: 13.5.sp)),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: Text(
-                                companyName,
-                                style: themes.fontSize14_500
-                                    .copyWith(fontSize: 12.5.sp),
-                                overflow: TextOverflow.fade,
+                            Text(
+                              shipmentID,
+                              style: themes.fontSize14_500
+                                  .copyWith(fontSize: 13.5.sp),
+                              overflow: TextOverflow.fade,
+                            ),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Clipboard.setData(new ClipboardData(
+                                    text: shipmentID.toString()));
+                              },
+                              child: Icon(
+                                Icons.copy,
+                                size: 16.sp,
                               ),
                             ),
+                            Spacer(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
@@ -165,7 +179,7 @@ class PickupWidget extends StatelessWidget {
                         Row(
                           children: [
                             CircleAvatar(
-                              radius: 15.r,
+                              radius: 11.r,
                               backgroundImage: NetworkImage(
                                 networkImg ?? personImg,
                               ),
@@ -216,24 +230,6 @@ class PickupWidget extends StatelessWidget {
                         ),
                         SizedBox(
                           height: 5.h,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              'ID: $shipmentID',
-                              style: TextStyle(
-                                  fontSize: 12.sp, color: Colors.black54),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  Clipboard.setData(new ClipboardData(
-                                      text: shipmentID.toString()));
-                                },
-                                icon: Icon(
-                                  Icons.copy,
-                                  size: 15.sp,
-                                )),
-                          ],
                         ),
                       ],
                     ),

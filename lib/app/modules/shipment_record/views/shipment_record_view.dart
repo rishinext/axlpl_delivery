@@ -64,14 +64,18 @@ class ShipmentRecordView extends GetView<ShipmentRecordController> {
                         //   child: Image.asset(shopingIcon, width: 20.w),
                         // ),
                         // SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Shipment ID: ${record?.sId.toString()}',
-                            style: themes.fontSize14_500.copyWith(
-                                fontWeight: FontWeight.bold, fontSize: 12.sp),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
+                        RichText(
+                            text: TextSpan(
+                          text: 'Shipment ID: ',
+                          style:
+                              themes.fontSize14_500.copyWith(fontSize: 12.sp),
+                          children: [
+                            TextSpan(
+                              text: record?.sId.toString() ?? 'N/A',
+                            ),
+                          ],
+                        )),
+
                         IconButton(
                             onPressed: () {
                               Clipboard.setData(ClipboardData(
