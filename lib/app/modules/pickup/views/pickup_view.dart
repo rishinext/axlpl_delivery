@@ -275,6 +275,11 @@ class PickupView extends GetView<PickupController> {
                                         date: formatDate(
                                             pickupData.date.toString()),
                                         status: pickupData.status.toString(),
+                                        currentStatus:
+                                            pickupData.status.toString() ==
+                                                    'Pending'
+                                                ? 'Pick Up'
+                                                : pickupData.status.toString(),
                                         messangerName:
                                             pickupData.messangerName.toString(),
                                         address: pickupData.address1.toString(),
@@ -282,6 +287,9 @@ class PickupView extends GetView<PickupController> {
                                             pickupData.shipmentId.toString(),
                                         cityName:
                                             pickupData.cityName.toString(),
+                                        receiverCityName: pickupData
+                                            .receiverCityName
+                                            .toString(),
                                         mobile: pickupData.mobile.toString(),
                                         paymentType: pickupData.paymentMode,
                                         statusColor:
@@ -296,6 +304,7 @@ class PickupView extends GetView<PickupController> {
                                         showPickupBtn: true,
                                         showTrasferBtn: true,
                                         showDivider: true,
+                                        isShowMessenger: !enableTransfer,
                                         openDialerTap: () {
                                           runningController.makingPhoneCall(
                                               pickupData.mobile.toString());
@@ -627,6 +636,8 @@ class PickupView extends GetView<PickupController> {
                                       date: formatDate(
                                           pickedUpData.date.toString()),
                                       status: pickedUpData.status.toString(),
+                                      currentStatus:
+                                          pickedUpData.status.toString(),
                                       messangerName:
                                           pickedUpData.messangerName.toString(),
                                       address: pickedUpData.address1.toString(),
@@ -634,6 +645,9 @@ class PickupView extends GetView<PickupController> {
                                           pickedUpData.shipmentId.toString(),
                                       cityName:
                                           pickedUpData.cityName.toString(),
+                                      receiverCityName: pickedUpData
+                                          .receiverCityName
+                                          .toString(),
                                       mobile: pickedUpData.mobile.toString(),
                                       statusColor:
                                           pickedUpData.status == 'Picked up'

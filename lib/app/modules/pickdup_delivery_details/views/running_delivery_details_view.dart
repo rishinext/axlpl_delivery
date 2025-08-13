@@ -72,7 +72,7 @@ class RunningDeliveryDetailsView
               );
             } else if (controller.isTrackingLoading.value == Status.success) {
               String formattedDate = trackingStatus.isNotEmpty
-                  ? DateFormat('dd-MM-yyyy hh:mm a') //
+                  ? DateFormat('dd MMM yy') //
 
                       .format(trackingStatus[0].dateTime)
                   : 'No date available';
@@ -105,7 +105,7 @@ class RunningDeliveryDetailsView
                             // ),
                             // SizedBox(width: 12),
                             Text(
-                              'Shipment ID: \n${details?.shipmentId ?? 'N/A'}',
+                              '${details?.shipmentId ?? 'N/A'}',
                               style: themes.fontSize14_500.copyWith(
                                   fontWeight: FontWeight.bold, fontSize: 12.sp),
                               overflow: TextOverflow.ellipsis,

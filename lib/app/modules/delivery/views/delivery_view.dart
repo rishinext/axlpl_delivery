@@ -267,6 +267,8 @@ class DeliveryView extends GetView<DeliveryController> {
                                         date: formatDate(
                                             deliveryData.date.toString()),
                                         status: deliveryData.status.toString(),
+                                        currentStatus:
+                                            deliveryData.status.toString(),
                                         messangerName: '',
                                         address:
                                             deliveryData.address1.toString(),
@@ -274,6 +276,9 @@ class DeliveryView extends GetView<DeliveryController> {
                                             deliveryData.shipmentId.toString(),
                                         cityName:
                                             deliveryData.cityName.toString(),
+                                        receiverCityName: deliveryData
+                                            .receiverCityName
+                                            .toString(),
                                         mobile: deliveryData.mobile.toString(),
                                         paymentType: deliveryData.paymentMode,
                                         statusColor: themes.redColor,
@@ -513,11 +518,15 @@ class DeliveryView extends GetView<DeliveryController> {
                                           date:
                                               formatDate(data.date.toString()),
                                           status: data.status.toString(),
+                                          currentStatus: data.status.toString(),
                                           messangerName: '',
                                           address: data.address1.toString(),
                                           shipmentID:
                                               data.shipmentId.toString(),
-                                          cityName: data.cityName.toString(),
+                                          cityName:
+                                              data.senderCityName.toString(),
+                                          receiverCityName:
+                                              data.cityName.toString(),
                                           mobile: data.mobile.toString(),
                                           paymentType: data.paymentMode,
                                           statusColor: themes.greenColor,

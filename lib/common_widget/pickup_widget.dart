@@ -12,10 +12,12 @@ class PickupWidget extends StatelessWidget {
   final String companyName;
   final String date;
   final String status;
+  final String currentStatus;
   final String messangerName;
   final String address;
   final String shipmentID;
   final String cityName;
+  final String? receiverCityName;
   final String mobile;
   final String? paymentType;
   final Color statusColor;
@@ -24,6 +26,7 @@ class PickupWidget extends StatelessWidget {
   final bool showTrasferBtn;
   final bool showDivider;
   final bool? isShowPaymentType;
+  final isShowMessenger;
   final VoidCallback? pickUpTap;
   final VoidCallback? trasferTap;
   final Color? transferBtnColor;
@@ -40,10 +43,12 @@ class PickupWidget extends StatelessWidget {
     required this.companyName,
     required this.date,
     required this.status,
+    required this.currentStatus,
     required this.messangerName,
     required this.address,
     required this.shipmentID,
     required this.cityName,
+    required this.receiverCityName,
     required this.mobile,
     this.paymentType,
     required this.statusColor,
@@ -51,6 +56,7 @@ class PickupWidget extends StatelessWidget {
     required this.showPickupBtn,
     required this.showTrasferBtn,
     required this.showDivider,
+    this.isShowMessenger = false,
     this.pickUpTap,
     this.trasferTap,
     this.transferBtnColor,
@@ -74,174 +80,211 @@ class PickupWidget extends StatelessWidget {
         InkWell(
           onTap: onTap,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// First Row: Shipment ID, Date, Divider
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Timeline Icons
-                  Column(
+                  Text(
+                    'SID: $shipmentID',
+                    style: themes.fontSize14_500.copyWith(fontSize: 13.5.sp),
+                    overflow: TextOverflow.fade,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Clipboard.setData(
+                          ClipboardData(text: shipmentID.toString()));
+                    },
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    icon: Icon(
+                      Icons.copy,
+                      size: 16.sp,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(date,
+                      style: TextStyle(
+                          fontSize: 13.sp, fontWeight: FontWeight.w600)),
+                ],
+              ),
+
+              Divider(thickness: 1.h, height: 5.h),
+
+              SizedBox(
+                height: 10.h,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      companyName,
+                      style: themes.fontSize14_500.copyWith(
+                          fontSize: 13.5.sp, color: themes.darkCyanBlue),
+                    ),
+                  ),
+                  Row(
                     children: [
-                      CircleAvatar(
-                        radius: 14.r,
-                        backgroundColor: themes.blueGray,
-                        child: Icon(Icons.gps_fixed_sharp,
-                            size: 16.sp, color: themes.darkCyanBlue),
-                      ),
-                      SizedBox(height: 8.h),
-                      SizedBox(
-                        height: 65.h,
-                        child: DottedLine(
-                          direction: Axis.vertical,
-                          dashLength: 4,
-                          dashGapLength: 4,
-                          lineThickness: 2,
-                          dashColor: themes.darkCyanBlue,
+                      // Container(
+                      //   width: 6.w,
+                      //   height: 6.w,
+                      //   decoration: BoxDecoration(
+                      //     color: statusDotColor,
+                      //     shape: BoxShape.circle,
+                      //   ),
+                      // ),
+                      SizedBox(width: 4.w),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.orange[100],
+                          borderRadius: BorderRadius.circular(8.r),
                         ),
-                      ),
-                      SizedBox(height: 8.h),
-                      CircleAvatar(
-                        radius: 14.r,
-                        backgroundColor: themes.blueGray,
-                        child: Container(
-                          height: 10.h,
-                          decoration: BoxDecoration(
-                            color: themes.darkCyanBlue,
-                            shape: BoxShape.circle,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 5),
+                          child: Text(
+                            status,
+                            style: TextStyle(
+                              color: Colors.orange[900],
+                              fontSize: 11.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(width: 12.w),
+                ],
+              ),
 
-                  /// Info Section
+              SizedBox(height: 8.h),
+
+              /// Address below company name
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(companyName,
-                            style: themes.fontSize14_500
-                                .copyWith(fontSize: 13.5.sp)),
-                        Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              shipmentID,
-                              style: themes.fontSize14_500
-                                  .copyWith(fontSize: 13.5.sp),
-                              overflow: TextOverflow.fade,
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Clipboard.setData(new ClipboardData(
-                                    text: shipmentID.toString()));
-                              },
-                              child: Icon(
-                                Icons.copy,
-                                size: 16.sp,
-                              ),
-                            ),
-                            Spacer(),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(date, style: TextStyle(fontSize: 11.sp)),
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 6.w,
-                                      height: 6.w,
-                                      decoration: BoxDecoration(
-                                        color: statusDotColor,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    SizedBox(width: 4.w),
-                                    Text(
-                                      status,
-                                      style: TextStyle(
-                                        color: statusColor,
-                                        fontSize: 12.sp,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12.h),
-
-                        /// Messenger Info
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 11.r,
-                              backgroundImage: NetworkImage(
-                                networkImg ?? personImg,
-                              ),
-                            ),
-                            SizedBox(width: 8.w),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text('Messenger', style: themes.fontSize14_400),
-                                Text(
-                                  messangerName,
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 20.w,
-                            ),
-                            IconButton.outlined(
-                                onPressed: openDialerTap,
-                                icon: Icon(Icons.call))
-                          ],
-                        ),
-                        SizedBox(height: 10.h),
-
-                        /// Address Info
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                address,
-                                style: themes.fontSize14_500
-                                    .copyWith(fontSize: 14.sp),
-                              ),
-                            ),
-                            IconButton.filledTonal(
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    WidgetStateProperty.all(themes.blueGray),
-                              ),
-                              onPressed: openMapTap,
-                              icon: Icon(Icons.gps_fixed),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 5.h,
-                        ),
-                      ],
+                    child: Text(
+                      overflow: TextOverflow.fade,
+                      address,
+                      style: themes.fontSize14_500
+                          .copyWith(fontSize: 14.sp, color: themes.grayColor),
                     ),
+                  ),
+                  // SizedBox(
+                  //   child: IconButton.filledTonal(
+                  //     style: ButtonStyle(
+                  //       backgroundColor:
+                  //           WidgetStateProperty.all(themes.blueGray),
+                  //     ),
+                  //     onPressed: openMapTap,
+                  //     icon: Icon(Icons.gps_fixed),
+                  //   ),
+                  // ),
+                  InkWell(
+                    onTap: openMapTap,
+                    child: CircleAvatar(
+                        radius: 14.r,
+                        backgroundColor: themes.blueGray,
+                        child: Icon(Icons.gps_fixed,
+                            size: 16.sp, color: themes.darkCyanBlue)),
                   ),
                 ],
               ),
-              SizedBox(height: 16.h),
 
-              /// Location, Phone, Payment
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              SizedBox(height: 15.h),
+
+              /// Dotted Line as Row (Source to Destination)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 14.r,
+                      backgroundColor: themes.blueGray,
+                      child: Container(
+                        height: 10.h,
+                        decoration: BoxDecoration(
+                          color: themes.darkCyanBlue,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    Expanded(
+                      child: DottedLine(
+                        direction: Axis.horizontal,
+                        dashLength: 4,
+                        dashGapLength: 4,
+                        lineThickness: 2,
+                        dashColor: themes.darkCyanBlue,
+                      ),
+                    ),
+                    SizedBox(width: 8.w),
+                    CircleAvatar(
+                        radius: 14.r,
+                        backgroundColor: themes.blueGray,
+                        child: Icon(Icons.location_on,
+                            size: 16.sp, color: themes.darkCyanBlue)),
+
+                    // SizedBox(width: 8.w),
+                    // IconButton.filledTonal(
+                    //   style: ButtonStyle(
+                    //     backgroundColor: WidgetStateProperty.all(themes.blueGray),
+                    //   ),
+                    //   onPressed: openMapTap,
+                    //   icon: Icon(Icons.gps_fixed),
+                    // ),
+                  ],
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      cityName,
+                      style: themes.fontSize14_500.copyWith(fontSize: 12.sp),
+                    ),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: themes.blueGray,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        overflow: TextOverflow.fade,
+                        currentStatus.toString() ?? 'N/A',
+                        style: themes.fontSize14_500.copyWith(
+                            fontSize: 12.sp, color: themes.darkCyanBlue),
+                      ),
+                    ),
+                    // Text(currentStatus,
+                    //     style: themes.fontSize14_500
+                    //         .copyWith(fontSize: 12.sp, color: themes.redColor)),
+                    Text(receiverCityName ?? '',
+                        style: themes.fontSize14_500.copyWith(fontSize: 12.sp))
+                  ],
+                ),
+              ),
+
+              /// Messenger Info and Call Button
+
+              SizedBox(
+                height: 8.h,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 15.h),
+
+                  /// City Name and Insurance
                   Row(
                     children: [
                       CircleAvatar(
@@ -252,56 +295,21 @@ class PickupWidget extends StatelessWidget {
                       ),
                       SizedBox(width: 6.w),
                       Text(cityName, style: TextStyle(fontSize: 12.sp)),
-                    ],
-                  ),
-
-                  // Container(
-                  //   width: 6.w,
-                  //   height: 6.w,
-                  //   decoration: BoxDecoration(
-                  //     color: statusDotColor,
-                  //     shape: BoxShape.circle,
-                  //   ),
-                  // ),
-                  Spacer(),
-                  Image.asset(
-                    axlplLogo,
-                    width: 20.w,
-                  ),
-                  SizedBox(
-                    width: 10.w,
-                  ),
-                  SizedBox(
-                    width: isShowPaymentType == true ? 80.w : null,
-                    child: Text(
-                      'Insurance',
-                      overflow: TextOverflow.fade,
-                    ),
-                  ),
-                  /*    InkWell(
-                    onTap: openDialerTap,
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: themes.lightCream,
-                          radius: 14.r,
-                          child: Icon(
-                            Icons.phone,
-                            size: 16.sp,
-                            color: themes.redColor,
-                          ),
+                      Spacer(),
+                      Image.asset(
+                        axlplLogo,
+                        width: 20.w,
+                      ),
+                      SizedBox(width: 10.w),
+                      SizedBox(
+                        width: isShowPaymentType == true ? 80.w : null,
+                        child: Text(
+                          'Insurance',
+                          overflow: TextOverflow.fade,
                         ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          mobile,
-                          style: TextStyle(fontSize: 12.sp),
-                        ),
-                      ],
-                    ),
-                  ),*/
-                  if (isShowPaymentType == true)
-                    Row(
-                      children: [
+                      ),
+                      if (isShowPaymentType == true) ...[
+                        SizedBox(width: 10.w),
                         CircleAvatar(
                           backgroundColor: themes.blueGray,
                           radius: 14.r,
@@ -312,7 +320,8 @@ class PickupWidget extends StatelessWidget {
                         Text(paymentType ?? 'N/A',
                             style: TextStyle(fontSize: 12.sp)),
                       ],
-                    ),
+                    ],
+                  ),
                 ],
               ),
             ],
@@ -323,6 +332,7 @@ class PickupWidget extends StatelessWidget {
         showDivider ? Divider(thickness: 1.h) : SizedBox(),
 
         /// Action Buttons
+        ///   SizedBox(height: 12.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -366,7 +376,36 @@ class PickupWidget extends StatelessWidget {
                   )
                 : SizedBox()
           ],
-        )
+        ),
+        SizedBox(height: 12.h),
+        isShowMessenger
+            ? Row(
+                children: [
+                  CircleAvatar(
+                    radius: 8.r,
+                    backgroundImage: NetworkImage(
+                      networkImg ?? personImg,
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  InkWell(
+                    onTap: openDialerTap,
+                    child: Text(
+                      messangerName,
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  // Spacer(),
+                  // IconButton.outlined(
+                  //   onPressed: openDialerTap,
+                  //   icon: Icon(Icons.call),
+                  // ),
+                ],
+              )
+            : SizedBox.shrink(),
       ],
     );
   }
