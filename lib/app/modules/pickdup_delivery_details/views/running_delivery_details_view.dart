@@ -8,7 +8,6 @@ import 'package:axlpl_delivery/common_widget/pickup_dialog.dart';
 import 'package:axlpl_delivery/common_widget/tracking_info_widget.dart';
 import 'package:axlpl_delivery/common_widget/transfer_dialog.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
-import 'package:enhance_stepper/enhance_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,7 +31,6 @@ class RunningDeliveryDetailsView
   });
   @override
   Widget build(BuildContext context) {
-    StepperType type = StepperType.horizontal;
     final args = Get.arguments as Map<String, dynamic>?;
 
     final String? shipmentID = args?['shipmentID']?.toString();
@@ -55,8 +53,6 @@ class RunningDeliveryDetailsView
           () {
             final senderData = controller.senderData;
             final receiverData = controller.receiverData;
-
-            final trackingStatus = controller.trackingStatus;
             final details = controller.shipmentDetail.value;
             print(details?.invoiceNumber.toString() ?? 'N/A');
             if (controller.isTrackingLoading.value == Status.loading) {
@@ -71,11 +67,6 @@ class RunningDeliveryDetailsView
                 ),
               );
             } else if (controller.isTrackingLoading.value == Status.success) {
-              String formattedDate = trackingStatus.isNotEmpty
-                  ? DateFormat('dd MMM yy') //
-
-                      .format(trackingStatus[0].dateTime)
-                  : 'No date available';
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -803,136 +794,117 @@ class RunningDeliveryDetailsView
                   // Your stepper container remains unchanged
 
                   Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: themes.whiteColor,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 2),
-                          )
+                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: themes.whiteColor,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 6,
+                          offset: Offset(0, 2),
+                        )
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Tracking Status',
+                            style: themes.fontSize16_400.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          SizedBox(height: 16.h),
+                          // Custom Stepper using step_progress_indicator
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: controller.trackingStatus.length,
+                            itemBuilder: (context, index) {
+                              final step = controller.trackingStatus[index];
+                              final isLast =
+                                  index == controller.trackingStatus.length - 1;
+                              String stepFormattedDate =
+                                  DateFormat('dd MMM yy').format(step.dateTime);
+
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Step indicator column
+                                  Column(
+                                    children: [
+                                      // Step circle
+                                      Container(
+                                        width: 40.w,
+                                        height: 40.w,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: themes.blueGray,
+                                        ),
+                                        child: Icon(
+                                          Icons.gps_fixed,
+                                          color: themes.darkCyanBlue,
+                                          size: 20.sp,
+                                        ),
+                                      ),
+                                      // Connecting line (if not last item)
+                                      if (!isLast)
+                                        Container(
+                                          width: 2.w,
+                                          height: 60.h,
+                                          color: themes.blueGray,
+                                        ),
+                                    ],
+                                  ),
+                                  SizedBox(width: 16.w),
+                                  // Content column
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 8.h),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  step.status,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 14.sp,
+                                                    color: Colors.black87,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                stepFormattedDate,
+                                                style: TextStyle(
+                                                  fontSize: 12.sp,
+                                                  color: Colors.grey[600],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          if (!isLast) SizedBox(height: 20.h),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ],
                       ),
-                      child: EnhanceStepper(
-                        physics: ClampingScrollPhysics(),
-                        stepIconSize: 40, // Adjust size if needed
-                        stepIconBuilder: (stepIndex, stepState) => Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: stepState == StepState.complete
-                                ? themes
-                                    .blueGray // ✅ Change completed step color
-                                : Colors
-                                    .grey[300], // ✅ Change pending step color
-                          ),
-                          padding: EdgeInsets.all(
-                              10), // Adjust spacing inside circle
-                          child: Icon(
-                            Icons.gps_fixed,
-                            color: themes.darkCyanBlue,
-                            size: 20,
-                          ),
-                        ),
-                        type: StepperType.vertical,
-                        currentStep: controller.currentStep.value,
-                        // onStepTapped: (index) =>
-                        //     controller.currentStep.value = index,
-                        steps: controller.trackingStatus.map((step) {
-                          return EnhanceStep(
-                            isActive: true,
-                            state: StepState.complete,
-                            title: Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    step.status,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Text(
-                                  formattedDate,
-                                  style: TextStyle(
-                                      fontSize: 12, color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Text(
-                                //   trackingStatus[0].status,
-                                //   style: TextStyle(color: Colors.grey),
-                                // ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    // CircleAvatar(
-                                    //   // backgroundImage:
-                                    //   //     AssetImage(step["driverImage"]),
-                                    //   radius: 20,
-                                    // ),
-                                    SizedBox(width: 8),
-                                    // Column(
-                                    //   crossAxisAlignment:
-                                    //       CrossAxisAlignment.start,
-                                    //   children: [
-                                    //     Text(
-                                    //       "Driver",
-                                    //       style: TextStyle(color: Colors.grey),
-                                    //     ),
-                                    //     Text(
-                                    //       'driver name',
-                                    //       style: TextStyle(
-                                    //           fontWeight: FontWeight.bold),
-                                    //     ),
-                                    //   ],
-                                    // ),
-                                    Spacer(),
-                                    // InkWell(
-                                    //   onTap: () {
-                                    //     // controller.makingPhoneCall();
-                                    //   },
-                                    //   child: Container(
-                                    //     padding: EdgeInsets.symmetric(
-                                    //         horizontal: 12.w, vertical: 5.h),
-                                    //     decoration: BoxDecoration(
-                                    //       color: Colors.blue[100],
-                                    //       borderRadius:
-                                    //           BorderRadius.circular(20),
-                                    //     ),
-                                    //     child: Row(
-                                    //       children: [
-                                    //         Image.asset(
-                                    //           phoneIcon,
-                                    //           width: 15.w,
-                                    //         ),
-                                    //         SizedBox(width: 5),
-                                    //         Text('driver number',
-                                    //             style: themes.fontSize14_500
-                                    //                 .copyWith(
-                                    //                     fontSize: 14.sp,
-                                    //                     color: themes
-                                    //                         .darkCyanBlue)),
-                                    //       ],
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        controlsBuilder: (context, details) =>
-                            SizedBox(), // Hide buttons
-                      )
-
-                      // Hide buttons
-                      ),
+                    ),
+                  ),
 
                   SizedBox(height: 20),
                 ],
