@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
@@ -41,6 +43,11 @@ class ShipnowView extends GetView<ShipnowController> {
           child: Column(
             spacing: 10,
             children: [
+              Platform.isIOS
+                  ? SizedBox(
+                      height: 2.h,
+                    )
+                  : SizedBox.shrink(),
               ContainerTextfiled(
                 controller: shipnowController.shipmentIDController,
                 hintText: 'Search Here',
@@ -116,9 +123,21 @@ class ShipnowView extends GetView<ShipnowController> {
                           final shipment =
                               shipnowController.filteredShipmentData[index];
                           final status = shipment.shipmentStatus;
-                          return Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          return Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 4.w, vertical: 6.h),
+                            decoration: BoxDecoration(
+                              color: theme.whiteColor,
+                              borderRadius: BorderRadius.circular(16.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 12.r,
+                                  offset: Offset(0, 4),
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                            ),
                             child: InkWell(
                               onTap: () {
                                 runningController.fetchTrackingData(
@@ -128,89 +147,342 @@ class ShipnowView extends GetView<ShipnowController> {
                                       'shipmentID': shipment.shipmentId,
                                     });
                               },
-                              child: ListTile(
-                                title: Text(
-                                  "Shipment Date: ${shipment.createdDate != null ? DateFormat('dd-MM-yyyy').format(shipment.createdDate!) : 'N/A'}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Column(
+                              borderRadius: BorderRadius.circular(16.r),
+                              child: Padding(
+                                padding: EdgeInsets.all(16.w),
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const SizedBox(height: 5),
-                                    Text(
-                                        "Shipment ID: ${shipment.shipmentId ?? 'N/A'}"),
-                                    Text(
-                                        "Sender Company: ${shipment.senderCompanyName ?? 'N/A'}"),
-                                    Text(
-                                        "Receiver Company: ${shipment.receiverCompanyName ?? 'N/A'}"),
-                                    Text("Orgin: ${shipment.origin ?? ''}"),
-                                    Text(
-                                        'Destination: ${shipment.destination ?? ''}'),
-                                    Text(
-                                        'Sender Area: ${shipment.senderAreaname ?? ''}'),
-                                    Text(
-                                        'Receiver Area: ${shipment.receiverAreaname ?? ''}'),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
+                                    // Header Row with Date and Status
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        // Image.asset(
-                                        //   status == 'Approved'
-                                        //       ? appoved
-                                        //       : status == 'Pending'
-                                        //           ? historyIcon
-                                        //           : status == 'Picked up'
-                                        //               ? deliveryIcon
-                                        //               : cancle,
-                                        //   width: 25.w,
-                                        // ),
-                                        // Text(
-                                        //   'Status:',s
-                                        // ),
-                                        // SizedBox(
-                                        //   width: 8.w,
-                                        // ),
+                                        // Date Section
                                         Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w, vertical: 6.h),
                                           decoration: BoxDecoration(
-                                            color: status != 'Approved'
-                                                ? Colors.orange[100]
-                                                : Colors.green[100],
+                                            color: theme.darkCyanBlue
+                                                .withOpacity(0.1),
                                             borderRadius:
-                                                BorderRadius.circular(8.r),
+                                                BorderRadius.circular(20.r),
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: RichText(
-                                                text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: status,
-                                                  style: theme.fontSize14_500
-                                                      .copyWith(fontSize: 12.sp)
-                                                      .copyWith(
-                                                          color: status !=
-                                                                  'Approved'
-                                                              ? Colors
-                                                                  .orange[900]
-                                                              : Colors
-                                                                  .green[900])),
-                                            ])),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.calendar_today,
+                                                size: 14.sp,
+                                                color: theme.darkCyanBlue,
+                                              ),
+                                              SizedBox(width: 6.w),
+                                              Text(
+                                                "${shipment.createdDate != null ? DateFormat('dd MMM yy').format(shipment.createdDate!) : 'N/A'}",
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: theme.darkCyanBlue,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        if (status == 'Approved')
-                                          CircleAvatar(
-                                            radius: 15.h,
-                                            backgroundColor: theme.greenColor,
-                                            child: IconButton(
-                                              color: theme.orangeColor,
-                                              icon: Icon(
-                                                size: 20.sp,
-                                                Icons.qr_code,
-                                                color: theme.whiteColor,
+                                        // Status Badge
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w, vertical: 6.h),
+                                          decoration: BoxDecoration(
+                                            color: status == 'Approved'
+                                                ? Colors.green[50]
+                                                : status == 'Pending'
+                                                    ? Colors.orange[50]
+                                                    : Colors.red[50],
+                                            borderRadius:
+                                                BorderRadius.circular(20.r),
+                                            border: Border.all(
+                                              color: status == 'Approved'
+                                                  ? Colors.green[200]!
+                                                  : status == 'Pending'
+                                                      ? Colors.orange[200]!
+                                                      : Colors.red[200]!,
+                                              width: 1.w,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Container(
+                                                width: 6.w,
+                                                height: 6.w,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: status == 'Approved'
+                                                      ? Colors.green[600]
+                                                      : status == 'Pending'
+                                                          ? Colors.orange[600]
+                                                          : Colors.red[600],
+                                                ),
                                               ),
+                                              SizedBox(width: 6.w),
+                                              Text(
+                                                status ?? 'Unknown',
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: status == 'Approved'
+                                                      ? Colors.green[700]
+                                                      : status == 'Pending'
+                                                          ? Colors.orange[700]
+                                                          : Colors.red[700],
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 16.h),
+
+                                    // Shipment ID Row
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.local_shipping_outlined,
+                                          size: 18.sp,
+                                          color: theme.darkCyanBlue,
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          "ID: ",
+                                          style: theme.fontSize14_400.copyWith(
+                                            color: theme.grayColor,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${shipment.shipmentId ?? 'N/A'}",
+                                            style:
+                                                theme.fontSize14_500.copyWith(
+                                              color: theme.blackColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 12.h),
+
+                                    // Company Names Section
+                                    Container(
+                                      padding: EdgeInsets.all(12.w),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[50],
+                                        borderRadius:
+                                            BorderRadius.circular(12.r),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          // Sender
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue[100],
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.business,
+                                                  size: 14.sp,
+                                                  color: Colors.blue[700],
+                                                ),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "From",
+                                                      style: theme
+                                                          .fontSize14_400
+                                                          .copyWith(
+                                                        color: theme.grayColor,
+                                                        fontSize: 12.sp,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "${shipment.senderCompanyName ?? 'N/A'}",
+                                                      style: theme
+                                                          .fontSize14_500
+                                                          .copyWith(
+                                                        color: theme.blackColor,
+                                                      ),
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    if (shipment.senderAreaname
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                      Text(
+                                                        "${shipment.senderAreaname}",
+                                                        style: theme
+                                                            .fontSize14_400
+                                                            .copyWith(
+                                                          color:
+                                                              theme.grayColor,
+                                                          fontSize: 12.sp,
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 12.h),
+                                          // Arrow Divider
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Divider(
+                                                      color: Colors.grey[300])),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.w),
+                                                child: Icon(
+                                                  Icons.arrow_downward,
+                                                  size: 16.sp,
+                                                  color: theme.darkCyanBlue,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                  child: Divider(
+                                                      color: Colors.grey[300])),
+                                            ],
+                                          ),
+                                          SizedBox(height: 12.h),
+                                          // Receiver
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green[100],
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.location_on,
+                                                  size: 14.sp,
+                                                  color: Colors.green[700],
+                                                ),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "To",
+                                                      style: theme
+                                                          .fontSize14_400
+                                                          .copyWith(
+                                                        color: theme.grayColor,
+                                                        fontSize: 12.sp,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "${shipment.receiverCompanyName ?? 'N/A'}",
+                                                      style: theme
+                                                          .fontSize14_500
+                                                          .copyWith(
+                                                        color: theme.blackColor,
+                                                      ),
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    if (shipment
+                                                            .receiverAreaname
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                      Text(
+                                                        "${shipment.receiverAreaname}",
+                                                        style: theme
+                                                            .fontSize14_400
+                                                            .copyWith(
+                                                          color:
+                                                              theme.grayColor,
+                                                          fontSize: 12.sp,
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+
+                                    // Route Information
+                                    if (shipment.origin?.isNotEmpty == true ||
+                                        shipment.destination?.isNotEmpty ==
+                                            true)
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w, vertical: 8.h),
+                                        decoration: BoxDecoration(
+                                          color: theme.darkCyanBlue
+                                              .withOpacity(0.05),
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                          border: Border.all(
+                                            color: theme.darkCyanBlue
+                                                .withOpacity(0.1),
+                                            width: 1.w,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.route,
+                                              size: 16.sp,
+                                              color: theme.darkCyanBlue,
+                                            ),
+                                            SizedBox(width: 8.w),
+                                            Expanded(
+                                              child: Text(
+                                                "${shipment.origin ?? ''} ${shipment.origin?.isNotEmpty == true && shipment.destination?.isNotEmpty == true ? '→' : ''} ${shipment.destination ?? ''}",
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: theme.darkCyanBlue,
+                                                  fontSize: 13.sp,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                    // QR Code Button for Approved Status
+                                    if (status == 'Approved')
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 12.h),
+                                          Container(
+                                            width: double.infinity,
+                                            child: ElevatedButton.icon(
                                               onPressed: () {
                                                 showDialog(
                                                   context: context,
@@ -246,10 +518,36 @@ class ShipnowView extends GetView<ShipnowController> {
                                                   },
                                                 );
                                               },
+                                              icon: Icon(
+                                                Icons.qr_code,
+                                                size: 18.sp,
+                                                color: theme.whiteColor,
+                                              ),
+                                              label: Text(
+                                                'Generate Label',
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: theme.whiteColor,
+                                                ),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    theme.darkCyanBlue,
+                                                foregroundColor:
+                                                    theme.whiteColor,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 12.h),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.r),
+                                                ),
+                                                elevation: 2,
+                                              ),
                                             ),
-                                          )
-                                      ],
-                                    )
+                                          ),
+                                        ],
+                                      ),
                                   ],
                                 ),
                               ),

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
@@ -136,7 +137,7 @@ class HomeView extends GetView<HomeController> {
           ),
           title: Image.asset(
             authLogo,
-            width: 45.w,
+            width: Platform.isIOS ? 25.w : 45.w,
           ),
           actions: [
             Padding(

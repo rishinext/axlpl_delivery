@@ -812,7 +812,7 @@ class RunningDeliveryDetailsView
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Tracking Status',
+                            'Shipment Status',
                             style: themes.fontSize16_400.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 16.sp,
@@ -839,8 +839,8 @@ class RunningDeliveryDetailsView
                                     children: [
                                       // Step circle
                                       Container(
-                                        width: 40.w,
-                                        height: 40.w,
+                                        width: 35.w,
+                                        height: 35.w,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           color: themes.blueGray,
@@ -855,7 +855,7 @@ class RunningDeliveryDetailsView
                                       if (!isLast)
                                         Container(
                                           width: 2.w,
-                                          height: 60.h,
+                                          height: 35.h,
                                           color: themes.blueGray,
                                         ),
                                     ],

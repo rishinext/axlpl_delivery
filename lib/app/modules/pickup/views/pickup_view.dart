@@ -304,6 +304,10 @@ class PickupView extends GetView<PickupController> {
                                         showPickupBtn: true,
                                         showTrasferBtn: true,
                                         showDivider: true,
+                                        toPayIcon:
+                                            pickupData.paymentMode == 'topay'
+                                                ? Icons.account_balance_wallet
+                                                : Icons.credit_card,
                                         isShowMessenger: !enableTransfer,
                                         openDialerTap: () {
                                           runningController.makingPhoneCall(
@@ -660,6 +664,10 @@ class PickupView extends GetView<PickupController> {
                                       showPickupBtn: false,
                                       showTrasferBtn: false,
                                       showDivider: false,
+                                      toPayIcon:
+                                          pickedUpData.paymentMode == 'topay'
+                                              ? Icons.account_balance_wallet
+                                              : Icons.credit_card,
                                       openMapTap: () {
                                         pickupController.openMapWithAddress(
                                             pickedUpData.companyName.toString(),

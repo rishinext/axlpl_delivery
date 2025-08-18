@@ -281,6 +281,10 @@ class DeliveryView extends GetView<DeliveryController> {
                                             .toString(),
                                         mobile: deliveryData.mobile.toString(),
                                         paymentType: deliveryData.paymentMode,
+                                        toPayIcon:
+                                            deliveryData.paymentMode == 'topay'
+                                                ? Icons.account_balance_wallet
+                                                : Icons.credit_card,
                                         statusColor: themes.redColor,
                                         statusDotColor: themes.redColor,
                                         showPickupBtn: true,
@@ -534,6 +538,9 @@ class DeliveryView extends GetView<DeliveryController> {
                                           showPickupBtn: false,
                                           showTrasferBtn: false,
                                           showDivider: false,
+                                          toPayIcon: data.paymentMode == 'topay'
+                                              ? Icons.account_balance_wallet
+                                              : Icons.credit_card,
                                           openDialerTap: () {
                                             runningController.makingPhoneCall(
                                                 data.mobile.toString());

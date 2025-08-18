@@ -37,6 +37,7 @@ class PickupWidget extends StatelessWidget {
   final VoidCallback? onTap;
   final pickupTxt;
   final networkImg;
+  final toPayIcon;
 
   const PickupWidget({
     Key? key,
@@ -68,6 +69,7 @@ class PickupWidget extends StatelessWidget {
     this.pickupTxt,
     this.networkImg,
     this.isShowPaymentType,
+    this.toPayIcon,
   }) : super(key: key);
 
   @override
@@ -87,7 +89,7 @@ class PickupWidget extends StatelessWidget {
                 children: [
                   Text(
                     'SID: $shipmentID',
-                    style: themes.fontSize14_500.copyWith(fontSize: 13.5.sp),
+                    style: themes.fontSize14_500.copyWith(fontSize: 13.sp),
                     overflow: TextOverflow.fade,
                   ),
                   IconButton(
@@ -109,7 +111,7 @@ class PickupWidget extends StatelessWidget {
                 ],
               ),
 
-              Divider(thickness: 1.h, height: 5.h),
+              Divider(thickness: 1.h, height: 1.h),
 
               SizedBox(
                 height: 10.h,
@@ -118,21 +120,14 @@ class PickupWidget extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
+                      overflow: TextOverflow.clip,
                       companyName,
                       style: themes.fontSize14_500.copyWith(
-                          fontSize: 13.5.sp, color: themes.darkCyanBlue),
+                          fontSize: 12.5.sp, color: themes.darkCyanBlue),
                     ),
                   ),
                   Row(
                     children: [
-                      // Container(
-                      //   width: 6.w,
-                      //   height: 6.w,
-                      //   decoration: BoxDecoration(
-                      //     color: statusDotColor,
-                      //     shape: BoxShape.circle,
-                      //   ),
-                      // ),
                       SizedBox(width: 4.w),
                       Container(
                         decoration: BoxDecoration(
@@ -168,19 +163,9 @@ class PickupWidget extends StatelessWidget {
                       overflow: TextOverflow.fade,
                       address,
                       style: themes.fontSize14_500
-                          .copyWith(fontSize: 14.sp, color: themes.grayColor),
+                          .copyWith(fontSize: 12.5.sp, color: themes.grayColor),
                     ),
                   ),
-                  // SizedBox(
-                  //   child: IconButton.filledTonal(
-                  //     style: ButtonStyle(
-                  //       backgroundColor:
-                  //           WidgetStateProperty.all(themes.blueGray),
-                  //     ),
-                  //     onPressed: openMapTap,
-                  //     icon: Icon(Icons.gps_fixed),
-                  //   ),
-                  // ),
                   InkWell(
                     onTap: openMapTap,
                     child: CircleAvatar(
@@ -192,7 +177,7 @@ class PickupWidget extends StatelessWidget {
                 ],
               ),
 
-              SizedBox(height: 15.h),
+              SizedBox(height: 10.h),
 
               /// Dotted Line as Row (Source to Destination)
               Padding(
@@ -229,56 +214,52 @@ class PickupWidget extends StatelessWidget {
                         backgroundColor: themes.blueGray,
                         child: Icon(Icons.location_on,
                             size: 16.sp, color: themes.darkCyanBlue)),
-
-                    // SizedBox(width: 8.w),
-                    // IconButton.filledTonal(
-                    //   style: ButtonStyle(
-                    //     backgroundColor: WidgetStateProperty.all(themes.blueGray),
-                    //   ),
-                    //   onPressed: openMapTap,
-                    //   icon: Icon(Icons.gps_fixed),
-                    // ),
                   ],
                 ),
               ),
 
               Padding(
-                padding: const EdgeInsets.all(2.0),
+                padding: const EdgeInsets.all(0.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      cityName,
-                      style: themes.fontSize14_500.copyWith(fontSize: 12.sp),
+                    Expanded(
+                      child: Text(
+                        cityName,
+                        style: themes.fontSize14_500.copyWith(fontSize: 12.sp),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8.w),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
                       decoration: BoxDecoration(
                         color: themes.blueGray,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
-                        overflow: TextOverflow.fade,
-                        currentStatus.toString() ?? 'N/A',
+                        currentStatus,
                         style: themes.fontSize14_500.copyWith(
-                            fontSize: 12.sp, color: themes.darkCyanBlue),
+                          fontSize: 12.sp,
+                          color: themes.darkCyanBlue,
+                        ),
                       ),
                     ),
-                    // Text(currentStatus,
-                    //     style: themes.fontSize14_500
-                    //         .copyWith(fontSize: 12.sp, color: themes.redColor)),
-                    Text(receiverCityName ?? '',
-                        style: themes.fontSize14_500.copyWith(fontSize: 12.sp))
+                    Expanded(
+                      child: Text(
+                        receiverCityName ?? '',
+                        style: themes.fontSize14_500.copyWith(fontSize: 12.sp),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
                   ],
                 ),
               ),
 
               /// Messenger Info and Call Button
 
-              SizedBox(
-                height: 8.h,
-              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -313,7 +294,7 @@ class PickupWidget extends StatelessWidget {
                         CircleAvatar(
                           backgroundColor: themes.blueGray,
                           radius: 14.r,
-                          child: Icon(Icons.credit_card,
+                          child: Icon(toPayIcon ?? Icons.payment,
                               size: 16.sp, color: Colors.indigo),
                         ),
                         SizedBox(width: 4.w),
@@ -332,7 +313,6 @@ class PickupWidget extends StatelessWidget {
         showDivider ? Divider(thickness: 1.h) : SizedBox(),
 
         /// Action Buttons
-        ///   SizedBox(height: 12.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -398,11 +378,6 @@ class PickupWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // Spacer(),
-                  // IconButton.outlined(
-                  //   onPressed: openDialerTap,
-                  //   icon: Icon(Icons.call),
-                  // ),
                 ],
               )
             : SizedBox.shrink(),

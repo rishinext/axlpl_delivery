@@ -35,6 +35,11 @@ class PodView extends GetView<PodController> {
             child: Column(
               spacing: 20,
               children: [
+                Platform.isIOS
+                    ? SizedBox(
+                        height: 2.h,
+                      )
+                    : SizedBox.shrink(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
