@@ -91,45 +91,45 @@ class AuthView extends GetView<AuthController> {
                     },
                   ),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Obx(() => Checkbox(
-                            value: authController.isTermsAccepted.value,
-                            onChanged: (value) {
-                              authController.isTermsAccepted.value =
-                                  value ?? false;
-                            },
-                            activeColor: themes.darkCyanBlue,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
+                      Obx(() => Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Checkbox(
+                              value: authController.isTermsAccepted.value,
+                              onChanged: (value) {
+                                authController.isTermsAccepted.value =
+                                    value ?? false;
+                              },
+                              activeColor: themes.darkCyanBlue,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            ),
                           )),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 12.0),
-                          child: RichText(
-                            text: TextSpan(
-                              style: themes.fontSize14_500.copyWith(
-                                color: themes.blackColor,
-                              ),
-                              children: [
-                                const TextSpan(text: 'I agree to the '),
-                                WidgetSpan(
-                                  child: GestureDetector(
-                                    onTap: () => authController.urlLauncher(
-                                      'https://axlpl.com/terms.html',
-                                    ),
-                                    child: Text(
-                                      'Terms & Conditions',
-                                      style: themes.fontSize14_500.copyWith(
-                                        color: themes.darkCyanBlue,
-                                        decoration: TextDecoration.underline,
-                                        decorationColor: themes.darkCyanBlue,
-                                      ),
+                        child: RichText(
+                          text: TextSpan(
+                            style: themes.fontSize14_500.copyWith(
+                              color: themes.blackColor,
+                            ),
+                            children: [
+                              const TextSpan(text: 'I agree to the '),
+                              WidgetSpan(
+                                child: GestureDetector(
+                                  onTap: () => authController.urlLauncher(
+                                    'https://axlpl.com/terms.html',
+                                  ),
+                                  child: Text(
+                                    'Terms & Conditions',
+                                    style: themes.fontSize14_500.copyWith(
+                                      color: themes.darkCyanBlue,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: themes.darkCyanBlue,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

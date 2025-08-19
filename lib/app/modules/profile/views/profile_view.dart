@@ -146,15 +146,18 @@ class ProfileView extends GetView<ProfileController> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(top: 60.h, left: 60.w),
-                      child: IconButton(
-                        icon: Icon(
-                          CupertinoIcons.camera_circle,
-                          size: 35,
-                        ),
-                        onPressed: () =>
-                            controller.showImageSourceDialog(context),
-                        color: themes.whiteColor,
-                      ),
+                      child: Obx(() {
+                        return IconButton(
+                          icon: Icon(
+                            CupertinoIcons.camera_circle,
+                            size: 35,
+                          ),
+                          onPressed: controller.isEdit.value
+                              ? () => controller.showImageSourceDialog(context)
+                              : null,
+                          color: themes.whiteColor,
+                        );
+                      }),
                     )
                   ],
                 ),
@@ -187,7 +190,7 @@ class ProfileView extends GetView<ProfileController> {
                           if (controller.isProfileLoading.value ==
                               Status.loading) {
                             return const Center(
-                                child: CircularProgressIndicator());
+                                child: CircularProgressIndicator.adaptive());
                           } else if (controller.isProfileLoading.value ==
                               Status.error) {
                             return const Center(child: Text('No Data Found!'));
