@@ -62,7 +62,11 @@ class ApiServices {
       // 'zipcode': zipcode,
       'branch_id': branchID
     };
-    return _api.get(historyPickupPoint, query: body, token: token);
+    return _api.get(
+      historyPickupPoint,
+      query: body,
+      token: token,
+    );
   }
 
   Future<APIResponse> getDashboardData(

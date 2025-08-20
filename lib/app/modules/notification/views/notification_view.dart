@@ -38,70 +38,97 @@ class NotificationView extends GetView<NotificationController> {
               );
             } else if (controller.isNotificationLoading.value ==
                 Status.success) {
-              return Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: ListView.separated(
-                  separatorBuilder: (context, index) => SizedBox(
-                    height: 10.h,
-                  ),
-                  shrinkWrap: true,
-                  itemCount: controller.notiList.length,
-                  itemBuilder: (context, index) {
-                    final data = controller.notiList[index];
-                    String dateString = data.createdDate.toString();
-                    DateTime date = DateTime.parse(dateString);
-                    String formattedDate = DateFormat('d MMMM y').format(date);
-                    return ListTile(
-                      onTap: () async {
-                        runningDeliveryController
-                            .fetchTrackingData(data.shipmentId.toString());
-                        Get.to(
-                          RunningDeliveryDetailsView(
-                            isShowInvoice: true,
-                            isShowTransfer: true,
+              return RefreshIndicator(
+                onRefresh: () async {
+                  controller.refreshData();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.separated(
+                          controller: controller.scrollController,
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: 10.h,
                           ),
-                          arguments: {
-                            'shipmentID': data.shipmentId,
-                            // 'status': data.status.toString(),
-                            // 'invoicePath': data.invoicePath,
-                            // 'invoicePhoto': data.invoiceFile,
-                            // 'paymentMode': data.paymentMode,
-                            // 'date': data.date,
-                            // 'cashAmt': data.totalCharges
+                          itemCount: controller.notiList.length +
+                              (controller.hasMoreData.value ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == controller.notiList.length) {
+                              // Loading indicator at the bottom
+                              return Obx(
+                                  () => controller.isPaginationLoading.value
+                                      ? Padding(
+                                          padding: EdgeInsets.all(16.0),
+                                          child: Center(
+                                            child: CircularProgressIndicator
+                                                .adaptive(),
+                                          ),
+                                        )
+                                      : SizedBox.shrink());
+                            }
+
+                            final data = controller.notiList[index];
+                            String dateString = data.createdDate.toString();
+                            DateTime date = DateTime.parse(dateString);
+                            String formattedDate =
+                                DateFormat('d MMMM y').format(date);
+                            return ListTile(
+                              onTap: () async {
+                                runningDeliveryController.fetchTrackingData(
+                                    data.shipmentId.toString());
+                                Get.to(
+                                  RunningDeliveryDetailsView(
+                                    isShowInvoice: true,
+                                    isShowTransfer: true,
+                                  ),
+                                  arguments: {
+                                    'shipmentID': data.shipmentId,
+                                    // 'status': data.status.toString(),
+                                    // 'invoicePath': data.invoicePath,
+                                    // 'invoicePhoto': data.invoiceFile,
+                                    // 'paymentMode': data.paymentMode,
+                                    // 'date': data.date,
+                                    // 'cashAmt': data.totalCharges
+                                  },
+                                );
+                              },
+                              tileColor: themes.whiteColor,
+                              dense: false,
+                              leading: CircleAvatar(
+                                backgroundColor: themes.blueGray,
+                                child: Image.asset(
+                                  truckBlueIcon,
+                                  width: 18.w,
+                                ),
+                              ),
+                              title: Text(
+                                data.title.toString(),
+                                style: themes.fontSize14_500.copyWith(),
+                              ),
+                              subtitle: Column(
+                                spacing: 10,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(data.message.toString()),
+                                  Text(
+                                    formattedDate,
+                                    style: themes.fontSize14_400
+                                        .copyWith(fontSize: 13.sp),
+                                  ),
+                                ],
+                              ),
+                              trailing: CircleAvatar(
+                                backgroundColor: themes.blueGray,
+                                child: Icon(Icons.arrow_forward),
+                              ),
+                            );
                           },
-                        );
-                      },
-                      tileColor: themes.whiteColor,
-                      dense: false,
-                      leading: CircleAvatar(
-                        backgroundColor: themes.blueGray,
-                        child: Image.asset(
-                          truckBlueIcon,
-                          width: 18.w,
                         ),
                       ),
-                      title: Text(
-                        data.title.toString(),
-                        style: themes.fontSize14_500.copyWith(),
-                      ),
-                      subtitle: Column(
-                        spacing: 10,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(data.message.toString()),
-                          Text(
-                            formattedDate,
-                            style:
-                                themes.fontSize14_400.copyWith(fontSize: 13.sp),
-                          ),
-                        ],
-                      ),
-                      trailing: CircleAvatar(
-                        backgroundColor: themes.blueGray,
-                        child: Icon(Icons.arrow_forward),
-                      ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
               );
             } else {

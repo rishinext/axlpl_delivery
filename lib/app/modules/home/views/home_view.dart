@@ -231,6 +231,7 @@ class HomeView extends GetView<HomeController> {
                               return HomeContainer(
                                 onTap: () {
                                   pickupController.getPickupData();
+                                  historyController.getPickupHistory();
                                   pickupController.fetchPaymentModes();
                                   Get.toNamed(Routes.PICKUP);
                                 },
