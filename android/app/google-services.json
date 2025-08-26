@@ -77,6 +77,78 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778652530713:android:aaf0eae9f332a16d051288",
+        "android_client_info": {
+          "package_name": "com.vnt.axlpl.messanger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778652530713-nj739eqtnevorn9kols9ui3eshraog2m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUUF7qtn-_6mhDW0Ybm6bMIhafENO7FHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778652530713-nj739eqtnevorn9kols9ui3eshraog2m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "778652530713-7q5ivgu9deustu8inchbiqe2ganv19q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vnt.myjainshasan"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778652530713:android:eafd9c029854b4b0051288",
+        "android_client_info": {
+          "package_name": "com.vnt.axlpl.messenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778652530713-nj739eqtnevorn9kols9ui3eshraog2m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUUF7qtn-_6mhDW0Ybm6bMIhafENO7FHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "778652530713-nj739eqtnevorn9kols9ui3eshraog2m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "778652530713-7q5ivgu9deustu8inchbiqe2ganv19q6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vnt.myjainshasan"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

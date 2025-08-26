@@ -1,4 +1,4 @@
-package com.axlpl.axlpl_delivery
+package com.vnt.axlpl.messenger
 
 import io.flutter.embedding.android.FlutterActivity
 
