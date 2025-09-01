@@ -21,6 +21,8 @@ abstract class Routes {
   static const MYORDERS = _Paths.MYORDERS;
   static const CUSTOMER_TRACKING_DETAILS = _Paths.CUSTOMER_TRACKING_DETAILS;
   static const SHIPMENT_RECORD = _Paths.SHIPMENT_RECORD;
+  // static const REGISTAR = _Paths.REGISTAR;
+  static const REGISTER = _Paths.REGISTER;
 }
 
 abstract class _Paths {
@@ -43,4 +45,6 @@ abstract class _Paths {
   static const MYORDERS = '/myorders';
   static const CUSTOMER_TRACKING_DETAILS = '/customer-tracking-details';
   static const SHIPMENT_RECORD = '/shipment-record';
+  // static const REGISTAR = '/registar';
+  static const REGISTER = '/register';
 }

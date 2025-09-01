@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_textfiled.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -172,14 +173,12 @@ class AuthView extends GetView<AuthController> {
                             },
                     );
                   }),
-
-                  // Center(
-                  //     child: Text(
-                  //   'New to AMBEX Express.?',
-                  //   style: themes.fontReboto16_600
-                  //       .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
-                  // )),
-                  /*
+                  Center(
+                      child: Text(
+                    'New to AMBEX Express.?',
+                    style: themes.fontReboto16_600
+                        .copyWith(fontSize: 14.sp, fontWeight: FontWeight.w400),
+                  )),
                   Row(
                     children: [
                       Expanded(child: Divider()),
@@ -193,12 +192,16 @@ class AuthView extends GetView<AuthController> {
                             style: themes.fontReboto16_600
                                 .copyWith(color: themes.whiteColor),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.toNamed(
+                              Routes.REGISTER,
+                            );
+                          },
                         ),
                       ),
                       Expanded(child: Divider()),
                     ],
-                  ),*/
+                  ),
                 ],
               ),
             ),

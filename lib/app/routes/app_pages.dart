@@ -26,6 +26,9 @@ import '../modules/pod/bindings/pod_binding.dart';
 import '../modules/pod/views/pod_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
 import '../modules/profile/views/profile_view.dart';
+
+import '../modules/register/bindings/register_binding.dart';
+import '../modules/register/views/register_view.dart';
 import '../modules/shipment_record/bindings/shipment_record_binding.dart';
 import '../modules/shipment_record/views/shipment_record_view.dart';
 import '../modules/shipnow/bindings/shipnow_binding.dart';
@@ -129,6 +132,11 @@ class AppPages {
       name: _Paths.SHIPMENT_RECORD,
       page: () => const ShipmentRecordView(),
       binding: ShipmentRecordBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGISTER,
+      page: () => const RegisterView(),
+      binding: RegisterBinding(),
     ),
   ];
 }
