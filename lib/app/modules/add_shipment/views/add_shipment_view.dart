@@ -145,12 +145,16 @@ class AddShipmentView extends GetView<AddShipmentController> {
                                     await addshipController
                                         .loadMoreCategories();
                                   },
-                                  onChanged: (CategoryList? category) {
+                                  onChanged: (CategoryList? category) async {
                                     if (category != null) {
                                       controller.selectedCategory.value =
                                           category.id;
                                       controller.selectedCommodity.value = null;
-                                      addshipController.commodityListData(
+                                      await addshipController
+                                          .getContractDetails(
+                                              controller.selectedCustomer.value,
+                                              category.id.toString());
+                                      await addshipController.commodityListData(
                                           category.id.toString(), '0');
                                     }
                                   },
@@ -210,14 +214,22 @@ class AddShipmentView extends GetView<AddShipmentController> {
                                           await addshipController
                                               .loadMoreCategories();
                                         },
-                                        onChanged: (CategoryList? category) {
+                                        onChanged:
+                                            (CategoryList? category) async {
                                           if (category != null) {
                                             controller.selectedCategory.value =
                                                 category.id;
                                             controller.selectedCommodity.value =
                                                 null;
+                                            await addshipController
+                                                .getContractDetails(
+                                              controller.selectedCustomer.value,
+                                              category.id.toString(),
+                                            );
                                             addshipController.commodityListData(
-                                                category.id.toString(), '0');
+                                              category.id.toString(),
+                                              '0',
+                                            );
                                           }
                                         },
                                       )),

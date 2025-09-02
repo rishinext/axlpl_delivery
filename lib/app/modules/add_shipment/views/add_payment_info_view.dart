@@ -53,6 +53,7 @@ class AddPaymentInfoView extends GetView {
                     //         log(val.toString());
                     //       },
                     //     )),
+
                     Obx(
                       () {
                         if (pickupController.isLoadingPayment.value) {
@@ -149,7 +150,9 @@ class AddPaymentInfoView extends GetView {
                               },
                             ),
                             dropdownBuilder: (context, selectedItem) => Text(
-                              selectedItem?.name ?? 'Select Payment Mode',
+                              addshipController.contractsList.isNotEmpty
+                                  ? 'Contract'
+                                  : selectedItem?.name ?? 'Select Payment Mode',
                               style: TextStyle(
                                   color: selectedItem == null
                                       ? Colors.grey.shade600

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:math';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
+import 'package:axlpl_delivery/app/data/models/contract_details_model.dart';
 import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:intl/intl.dart';
@@ -41,6 +42,7 @@ class AddShipmentController extends GetxController {
   final customerReceiverList = <CustomersList>[].obs;
   final categoryList = <CategoryList>[].obs;
   final commodityList = <CommodityList>[].obs;
+  final contractsList = <Contract>[].obs;
   final serviceTypeList = <ServiceTypeList>[].obs;
   final shipmentCalList = <PaymentInformation>[].obs;
   final senderAreaList = <AreaList>[].obs;
@@ -223,6 +225,7 @@ class AddShipmentController extends GetxController {
   final isLoadingDiffArea = false.obs;
   var isShipmentCal = Status.initial.obs;
   var isShipmentAdd = Status.initial.obs;
+  var isContractDetails = Status.initial.obs;
 
   // Pagination variables
   final hasMoreCustomers = true.obs;
@@ -551,6 +554,25 @@ class AddShipmentController extends GetxController {
     if (commodityList.isNotEmpty) {
       final lastCommodity = commodityList.last;
       await commodityListData(cateID, lastCommodity.id ?? '');
+    }
+  }
+
+  Future<void> getContractDetails(
+    final customerID,
+    final categoryId,
+  ) async {
+    isContractDetails(Status.loading);
+    try {
+      final data = await addShipmentRepo.getContractDetailsRepo(
+        customerID,
+        categoryId,
+      );
+      contractsList.value = data; // already a list (never null)
+      isContractDetails(Status.success);
+    } catch (error) {
+      contractsList.value = [];
+      isContractDetails(Status.error);
+      Utils().logError('Error getting contract details: $error');
     }
   }
 

@@ -830,6 +830,22 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> getContractDetails(
+    final customerID,
+    final categoryID,
+    final token,
+  ) {
+    final body = {
+      'customer_id': customerID,
+      'category_id': categoryID,
+    };
+    return _api.post(
+      getContractDetailsPoint,
+      body,
+      token: token,
+    );
+  }
+
   Future<APIResponse> getPaymentMode() {
     return _api.get(
       getPaymentModePoint,
@@ -849,6 +865,24 @@ class ApiServices {
     return _api.post(
       getCashCollectionLogPoint,
       body,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> getCustomerCategory(
+    final token,
+  ) {
+    return _api.get(
+      getCustomerCategoryPoint,
+      token: token,
+    );
+  }
+
+  Future<APIResponse> getNatureOfBusiness(
+    final token,
+  ) {
+    return _api.get(
+      getNatureOfBusinessPoint,
       token: token,
     );
   }

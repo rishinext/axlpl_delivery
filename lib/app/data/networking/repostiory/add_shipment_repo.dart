@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/common_model.dart';
+import 'package:axlpl_delivery/app/data/models/contract_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_pincode_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/shipment_cal_model.dart';
 import 'package:axlpl_delivery/app/data/models/shipment_req_static_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
@@ -305,5 +307,48 @@ class AddShipmentRepo {
       Utils().logError(e.toString());
     }
     return null;
+  }
+
+  Future<List<Contract>> getContractDetailsRepo(
+    final customerID,
+    final categoryID,
+  ) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
+
+      final response = await _apiServices.getContractDetails(
+        customerID,
+        categoryID,
+        token?.toString() ?? '',
+      );
+
+      // Capture the result outside the callback and RETURN it.
+      return response.when(
+        success: (body) {
+          final model =
+              ContractsDeatilsModel.fromJson(body); // (fix typo if needed)
+          // Compare against the actual success value (string or enum)
+          final isOk = (model.status == 'success') ||
+              (model.status == Status.success.name);
+          if (isOk) {
+            return model.contracts ?? <Contract>[];
+          } else {
+            Utils().logInfo(
+              'API call ok but status not "success": ${model.status}',
+            );
+            return <Contract>[];
+          }
+        },
+        error: (err) {
+          Utils().logError('Contract Details Failed: $err');
+          return <Contract>[];
+        },
+      );
+    } catch (e) {
+      Utils().logError('getContractDetailsRepo exception: $e');
+      return <Contract>[];
+    }
   }
 }
