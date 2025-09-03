@@ -77,6 +77,28 @@ class Utils {
     return null;
   }
 
+  String? validateFax(String? value) {
+    // Accepts optional +, digits, spaces, dashes, parentheses, and dots, min 6 digits
+    final RegExp faxExp = RegExp(r'^\+?[\d\s\-().]{6,}$');
+    if (value == null || value.isEmpty) {
+      return 'Fax number is required';
+    } else if (!faxExp.hasMatch(value)) {
+      return 'Enter a valid fax number';
+    }
+    return null;
+  }
+
+  String? validatePan(String? value) {
+    // PAN: 5 uppercase letters, 4 digits, 1 uppercase letter
+    final RegExp panExp = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$');
+    if (value == null || value.isEmpty) {
+      return 'PAN number is required';
+    } else if (!panExp.hasMatch(value)) {
+      return 'Enter a valid PAN number';
+    }
+    return null;
+  }
+
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is required';
@@ -163,7 +185,7 @@ class Utils {
   Future<String?> getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();
 
-    if (Platform.isAndroid) { 
+    if (Platform.isAndroid) {
       final androidInfo = await deviceInfo.androidInfo;
       return androidInfo.id; // OR androidInfo.androidId (better)
     } else if (Platform.isIOS) {

@@ -157,11 +157,31 @@ class ApiServices {
     return _api.post(getPincodeDetailsPoint, body, token: token);
   }
 
+  Future<APIResponse> getPincodeDetailsRegister(String pincode) async {
+    final body = {
+      'pincode': pincode,
+    };
+    return _api.post(
+      getPincodeDetailsRegisterPoint,
+      body,
+    );
+  }
+
   Future<APIResponse> getAllAeraByZip(String token, String pincode) async {
     final body = {
       'pincode': pincode,
     };
     return _api.post(getAllAreaByZipcodePoint, body, token: token);
+  }
+
+  Future<APIResponse> getAllAeraByZipRegistration(String pincode) async {
+    final body = {
+      'pincode': pincode,
+    };
+    return _api.post(
+      getAllAeraByZipRegisterPoint,
+      body,
+    );
   }
 
   Future<APIResponse> getShipmentDataList(
@@ -200,6 +220,101 @@ class ApiServices {
   }
 
 // post call
+
+  Future<APIResponse> customerRegister(
+    final companyName,
+    final fullName,
+    final categoryID,
+    final natureBusinessID,
+    final email,
+    final mobile,
+    final telephone,
+    final faxNo,
+    final gstNo,
+    final panNo,
+    final axlplInsuranceValue,
+    final thirdPartyInsuranceValue,
+    final thirdPartyPolicyNo,
+    final thirdPartyExpDate,
+    final password,
+    final countryID,
+    final stateID,
+    final cityID,
+    final areaID,
+    final pincode,
+    final address1,
+    final address2,
+    final uploadProfile,
+    final uploadGst,
+    final uploadPan,
+  ) async {
+    // Convert files to MultipartFile (following your POD repo pattern)
+    MultipartFile? profileAttachment;
+    MultipartFile? gstAttachment;
+    MultipartFile? panAttachment;
+
+    // Profile is optional
+    if (uploadProfile != null) {
+      profileAttachment = await MultipartFile.fromFile(
+        uploadProfile.path,
+        filename: uploadProfile.path.split('/').last,
+      );
+    }
+
+    // GST is required
+    if (uploadGst != null) {
+      gstAttachment = await MultipartFile.fromFile(
+        uploadGst.path,
+        filename: uploadGst.path.split('/').last,
+      );
+    }
+
+    // PAN is required
+    if (uploadPan != null) {
+      panAttachment = await MultipartFile.fromFile(
+        uploadPan.path,
+        filename: uploadPan.path.split('/').last,
+      );
+    }
+
+    final body = FormData.fromMap({
+      // Match exact Postman field names
+      'company_name': companyName,
+      'full_name': fullName,
+      'category': categoryID,
+      'nature_of_business': natureBusinessID,
+      'reg_address1': address1, // Changed from 'registered_address1'
+      'reg_address2': address2, // Changed from 'registered_address2'
+      'country_id': countryID,
+      'state_id': stateID,
+      'city_id': cityID,
+      'area_id': areaID,
+      'branch_id': '1', // Changed from 'cust_branch_id'
+      'pincode': pincode,
+      'mobile_no': mobile,
+      'tel_no': telephone,
+      'fax_no': faxNo,
+      'email': email, // Changed from 'email_address'
+      'password': password,
+      'pan_no': panNo,
+      'gst_no': gstNo,
+      'axlpl_insurance_value': axlplInsuranceValue,
+      'third_party_insurance_value': thirdPartyInsuranceValue,
+      'third_party_policy_no': thirdPartyPolicyNo,
+      'third_party_exp_date': thirdPartyExpDate,
+      // Add files (required files should always be present)
+      'upload_gst': gstAttachment,
+      'upload_pancard': panAttachment,
+      // Optional profile image
+      if (profileAttachment != null) 'cust_profile_img': profileAttachment,
+    });
+
+    log('FormData fields: ${body.fields}');
+    log('FormData files: ${body.files.map((e) => e.key).toList()}');
+
+    return _api.post(customerRegisterPoint, body);
+  }
+
   Future<APIResponse> loginUserService(
     String mobile,
     // final email,

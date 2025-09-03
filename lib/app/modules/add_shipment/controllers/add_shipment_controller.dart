@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:math';
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/contract_details_model.dart';
 import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';

@@ -47,324 +47,391 @@ class RegisterView extends GetView<RegisterController> {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 15.h),
               child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 10.h,
-                  children: [
-                    /*
-                    Expanded(
-                      child: PageView(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        controller: controller.pageController,
-                        onPageChanged: (value) => controller.currentPage.value = value,
-                        physics: AlwaysScrollableScrollPhysics(),
-                        children: [
-                          Form(
-                            key: controller.formKeys[0],
-                            child: CustomerRegister1View(),
-                          ),
-                          Form(
-                            key: controller.formKeys[1],
-                            child: CustomerRegister2View(),
-                          ),
-                        ],
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 10.h,
+                    children: [
+                      /*
+                      Expanded(
+                        child: PageView(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          controller: controller.pageController,
+                          onPageChanged: (value) => controller.currentPage.value = value,
+                          physics: AlwaysScrollableScrollPhysics(),
+                          children: [
+                            Form(
+                              key: controller.formKeys[0],
+                              child: CustomerRegister1View(),
+                            ),
+                            Form(
+                              key: controller.formKeys[1],
+                              child: CustomerRegister2View(),
+                            ),
+                          ],
+                        ),
+                      ),*/
+                      CommonTextfiled(
+                        hintTxt: 'Company Name',
+                        controller: controller.companyNameController,
+                        validator: utils.validateText,
+                        textInputAction: TextInputAction.next,
                       ),
-                    ),*/
+                      CommonTextfiled(
+                        hintTxt: 'Full Name',
+                        controller: controller.fullNameController,
+                        validator: utils.validateText,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      Obx(() => PaginatedDropdown<RegisterCategoryList>(
+                          isSearchable: false,
+                          hint: 'Select Category',
+                          selectedValue: controller.selectedCategory.value,
+                          items: controller.registerCategoryList,
+                          itemLabel: (category) => category.name ?? 'Unknown',
+                          itemValue: (category) => category.value,
+                          isLoading: controller.isLoadingCate.value,
+                          onChanged: (RegisterCategoryList? category) {
+                            controller.selectedCategory.value = category;
+                          })),
+                      Obx(() => PaginatedDropdown<NatureOfBusiness>(
+                          isSearchable: false,
+                          hint: 'Select Nature of Business',
+                          selectedValue:
+                              controller.selectedNatureBusiness.value,
+                          items: controller.registerNatureBusinessList,
+                          itemLabel: (nature) => nature.name ?? 'Unknown',
+                          itemValue: (nature) => nature.value,
+                          isLoading: controller.isNatureBusinessLoading.value,
+                          onChanged: (NatureOfBusiness? nature) {
+                            controller.selectedNatureBusiness.value = nature;
+                          })),
+                      CommonTextfiled(
+                        hintTxt: 'Address',
+                        controller: controller.address1Controller,
+                        validator: utils.validateText,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Address 2',
+                        controller: controller.address2Controller,
+                        validator: utils.validateText,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: zip,
+                        controller: controller.zipController,
+                        textInputAction: TextInputAction.next,
+                        validator: utils.validateIndianZipcode,
+                        keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          if (value?.length == 6) {
+                            controller.fetchPincodeDetails(value!);
+                            controller.fetchAera(value);
+                          } else {
+                            // Optional: clear state/city if length < 6 again
+                            controller.pincodeDetailsData.value = null;
+                          }
+                          return null;
+                        },
+                      ),
 
-                    CommonTextfiled(
-                      hintTxt: 'Full Name',
-                    ),
-                    Obx(() => PaginatedDropdown<RegisterCategoryList>(
-                        isSearchable: false,
-                        hint: 'Select Category',
-                        selectedValue: controller.selectedCategory.value,
-                        items: controller.registerCategoryList,
-                        itemLabel: (category) => category.name ?? 'Unknown',
-                        itemValue: (category) => category.value,
-                        isLoading: controller.isLoadingCate.value,
-                        onChanged: (RegisterCategoryList? category) {
-                          controller.selectedCategory.value = category;
-                        })),
-                    Obx(() => PaginatedDropdown<NatureOfBusiness>(
-                        isSearchable: false,
-                        hint: 'Select Nature of Business',
-                        selectedValue: controller.selectedNatureBusiness.value,
-                        items: controller.registerNatureBusinessList,
-                        itemLabel: (nature) => nature.name ?? 'Unknown',
-                        itemValue: (nature) => nature.value,
-                        isLoading: controller.isNatureBusinessLoading.value,
-                        onChanged: (NatureOfBusiness? nature) {
-                          controller.selectedNatureBusiness.value = nature;
-                        })),
-                    CommonTextfiled(
-                      hintTxt: 'Address',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Address 2',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: zip,
-                      controller: controller.zipController,
-                      textInputAction: TextInputAction.next,
-                      validator: utils.validateIndianZipcode,
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        if (value?.length == 6) {
-                          controller.fetchPincodeDetails(value!);
-                          controller.fetchAera(value);
-                        } else {
-                          // Optional: clear state/city if length < 6 again
-                          controller.pincodeDetailsData.value = null;
+                      Obx(() {
+                        final isLoading = controller.isLoadingPincode.value;
+                        final data = controller.pincodeDetailsData.value;
+                        final error = controller.errorMessage.value;
+
+                        if (isLoading) {
+                          Center(child: CircularProgressIndicator.adaptive());
                         }
-                        return null;
-                      },
-                    ),
-                    dropdownText(state),
-                    Obx(() {
-                      final isLoading = controller.isLoadingPincode.value;
-                      final data = controller.pincodeDetailsData.value;
-                      final error = controller.errorMessage.value;
+                        log("state id : => ${data?.stateId.toString() ?? 'N/A'}");
+                        return CommonTextfiled(
+                          isEnable: false,
+                          hintTxt: data?.stateName ??
+                              (error.isNotEmpty ? error : 'State'),
+                          textInputAction: TextInputAction.next,
+                          controller: controller.stateController,
+                        );
+                      }),
 
-                      if (isLoading) {
-                        Center(child: CircularProgressIndicator.adaptive());
-                      }
-                      log("state id : => ${data?.stateId.toString() ?? 'N/A'}");
-                      return CommonTextfiled(
-                        isEnable: false,
-                        hintTxt: data?.stateName ??
-                            (error.isNotEmpty ? error : 'State'),
-                        textInputAction: TextInputAction.next,
-                        controller: controller.stateController,
-                      );
-                    }),
-                    dropdownText(city),
-                    //new sender address
-                    Obx(() {
-                      final isLoading = controller.isLoadingPincode.value;
-                      final data = controller.pincodeDetailsData.value;
-                      final error = controller.errorMessage.value;
-                      log(data?.cityId.toString() ?? 'N/A');
+                      //new sender address
+                      Obx(() {
+                        final isLoading = controller.isLoadingPincode.value;
+                        final data = controller.pincodeDetailsData.value;
+                        final error = controller.errorMessage.value;
+                        log(data?.cityId.toString() ?? 'N/A');
 
-                      if (isLoading) {
-                        Center(child: CircularProgressIndicator.adaptive());
-                      }
-                      controller.selectedSenderStateId.value =
-                          int.tryParse(data?.stateId ?? '0') ?? 0;
-                      controller.selectedSenderCityId.value =
-                          int.tryParse(data?.cityId ?? '0') ?? 0;
-                      controller.selectedSenderAreaId.value = int.tryParse(
-                            data?.areaId ?? '0',
-                          ) ??
-                          0;
-                      return CommonTextfiled(
-                        isEnable: false,
-                        hintTxt: data?.cityName ??
-                            (error.isNotEmpty ? error : 'City'),
+                        if (isLoading) {
+                          Center(child: CircularProgressIndicator.adaptive());
+                        }
+                        controller.selectedSenderStateId.value =
+                            int.tryParse(data?.stateId ?? '0') ?? 0;
+                        controller.selectedSenderCityId.value =
+                            int.tryParse(data?.cityId ?? '0') ?? 0;
+                        controller.selectedSenderAreaId.value = int.tryParse(
+                              data?.areaId ?? '0',
+                            ) ??
+                            0;
+                        return CommonTextfiled(
+                          isEnable: false,
+                          hintTxt: data?.cityName ??
+                              (error.isNotEmpty ? error : 'City'),
+                          textInputAction: TextInputAction.next,
+                          controller: controller.cityController,
+                        );
+                      }),
+
+                      /*   Obx(() {
+                        return CommonDropdown<AreaList>(
+                          hint: 'Select Area',
+                          selectedValue: controller.selectedSenderArea.value,
+                          isLoading: controller.isLoadingArea.value,
+                          items: controller.areaList,
+                          itemLabel: (c) => c.name ?? 'Unknown',
+                          itemValue: (c) => c.id.toString(),
+                          onChanged: (val) =>
+                              controller.selectedSenderArea.value = val,
+                        );
+                      }),*/
+                      Obx(() => PaginatedDropdown<AreaList>(
+                          isSearchable: false,
+                          hint: 'Select Area',
+                          selectedValue: controller.selectedSenderArea.value,
+                          items: controller.areaList,
+                          itemLabel: (aera) => aera.name ?? 'Unknown',
+                          itemValue: (aera) => aera.id.toString(),
+                          isLoading: controller.isLoadingArea.value,
+                          onChanged: (AreaList? area) {
+                            controller.selectedSenderArea.value = area;
+                          })),
+                      CommonTextfiled(
+                        hintTxt: 'Mobile No',
+                        controller: controller.mobileController,
+                        validator: utils.validatePhone,
                         textInputAction: TextInputAction.next,
-                        controller: controller.cityController,
-                      );
-                    }),
-                    dropdownText('Select Area'),
-                    Obx(() {
-                      return CommonDropdown<AreaList>(
-                        hint: 'Select Area',
-                        selectedValue: controller.selectedSenderArea.value,
-                        isLoading: controller.isLoadingArea.value,
-                        items: controller.areaList,
-                        itemLabel: (c) => c.name ?? 'Unknown',
-                        itemValue: (c) => c.id.toString(),
-                        onChanged: (val) =>
-                            controller.selectedSenderArea.value = val,
-                      );
-                    }),
-                    Text('dropdown with pagination'),
-                    CommonTextfiled(
-                      hintTxt: 'Mobile No',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Telephone No',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Fax No',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Email',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Password',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Pan No',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Gst No',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Third Party Insurance Value',
-                    ),
-                    CommonTextfiled(
-                      hintTxt: 'Third Party Policy No',
-                    ),
-                    Obx(
-                      () => CommonTextfiled(
-                        isReadOnly: true,
-                        sufixIcon: IconButton(
-                            onPressed: () async {
-                              await controller.pickDate(
-                                  context, controller.date);
-                            },
-                            icon: Icon(CupertinoIcons.calendar_today)),
-                        hintTxt: formatDate(controller.date.value),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: DottedBorder(
-                        borderType: BorderType.RRect,
-                        dashPattern: [8, 4],
-                        radius: Radius.circular(10.r),
-                        padding: EdgeInsets.all(2),
-                        color: themes.blueColor,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: themes.blueGray,
-                              borderRadius: BorderRadius.circular(10.r)),
-                          child: Padding(
-                              padding: const EdgeInsets.all(38.0).r,
-                              child: Obx(
-                                () {
-                                  if (controller.panFile.value == null) {
-                                    return InkWell(
-                                      onTap: () {
-                                        pickImage(ImageSource.gallery,
-                                            controller.panFile);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            uploadIcon,
-                                            width: 40.w,
-                                          ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          Text(
-                                            'Upload your Pancard',
-                                            style: themes.fontSize14_500,
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  } else {
-                                    return Stack(
-                                        fit: StackFit.loose,
-                                        alignment: Alignment.center,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
-                                            child: Image.file(
-                                              // width: 60.w,
-                                              height: 150.h,
-                                              File(
-                                                controller.panFile.value!.path,
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 5,
-                                            left: 160,
-                                            child: IconButton(
-                                              iconSize: 30,
-                                              onPressed: () {
-                                                controller.panFile.value = null;
-                                              },
-                                              icon: Icon(Icons.cancel),
-                                            ),
-                                          ),
-                                        ]);
-                                  }
-                                },
-                              )),
+                      CommonTextfiled(
+                        hintTxt: 'Telephone No',
+                        controller: controller.telePhoneController,
+                        validator: utils.validatePhone,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Fax No',
+                        controller: controller.faxController,
+                        validator: utils.validateText,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Email',
+                        controller: controller.emailController,
+                        validator: utils.validateEmail,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Password',
+                        controller: controller.passwordController,
+                        validator: utils.validatePassword,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Pan No',
+                        controller: controller.panController,
+                        validator: utils.validatePan,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Gst No',
+                        controller: controller.gstController,
+                        validator: utils.validateGST,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Third Party Insurance Value',
+                        controller: controller.insuranceController,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      CommonTextfiled(
+                        hintTxt: 'Third Party Policy No',
+                        controller: controller.thirdPartyPolicyController,
+                        validator: utils.validateText,
+                        textInputAction: TextInputAction.next,
+                      ),
+                      Obx(
+                        () => CommonTextfiled(
+                          isReadOnly: true,
+                          controller: controller.thirdDateController,
+                          sufixIcon: IconButton(
+                              onPressed: () async {
+                                await controller.pickDate(
+                                    context, controller.date);
+                              },
+                              icon: Icon(CupertinoIcons.calendar_today)),
+                          hintTxt: formatDate(controller.date.value),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: DottedBorder(
-                        borderType: BorderType.RRect,
-                        dashPattern: [8, 4],
-                        radius: Radius.circular(10.r),
-                        padding: EdgeInsets.all(2),
-                        color: themes.blueColor,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              color: themes.blueGray,
-                              borderRadius: BorderRadius.circular(10.r)),
-                          child: Padding(
-                              padding: const EdgeInsets.all(38.0).r,
-                              child: Obx(
-                                () {
-                                  if (controller.gstFile.value == null) {
-                                    return InkWell(
-                                      onTap: () {
-                                        pickImage(ImageSource.gallery,
-                                            controller.gstFile);
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Image.asset(
-                                            uploadIcon,
-                                            width: 40.w,
-                                          ),
-                                          SizedBox(
-                                            height: 5.h,
-                                          ),
-                                          Text(
-                                            'Upload your GST Certificate',
-                                            style: themes.fontSize14_500,
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  } else {
-                                    return Stack(
-                                        fit: StackFit.loose,
-                                        alignment: Alignment.center,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10.r),
-                                            child: Image.file(
-                                              // width: 60.w,
-                                              height: 150.h,
-                                              File(
-                                                controller.gstFile.value!.path,
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: DottedBorder(
+                          borderType: BorderType.RRect,
+                          dashPattern: [8, 4],
+                          radius: Radius.circular(10.r),
+                          padding: EdgeInsets.all(2),
+                          color: themes.blueColor,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: themes.blueGray,
+                                borderRadius: BorderRadius.circular(10.r)),
+                            child: Padding(
+                                padding: const EdgeInsets.all(38.0).r,
+                                child: Obx(
+                                  () {
+                                    if (controller.panFile.value == null) {
+                                      return InkWell(
+                                        onTap: () {
+                                          pickImage(ImageSource.gallery,
+                                              controller.panFile);
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Image.asset(
+                                              uploadIcon,
+                                              width: 40.w,
+                                            ),
+                                            SizedBox(
+                                              height: 5.h,
+                                            ),
+                                            Text(
+                                              'Upload your Pancard',
+                                              style: themes.fontSize14_500,
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      return Stack(
+                                          fit: StackFit.loose,
+                                          alignment: Alignment.center,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                              child: Image.file(
+                                                // width: 60.w,
+                                                height: 150.h,
+                                                File(
+                                                  controller
+                                                      .panFile.value!.path,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          Positioned(
-                                            top: 5,
-                                            left: 160,
-                                            child: IconButton(
-                                              iconSize: 30,
-                                              onPressed: () {
-                                                controller.gstFile.value = null;
-                                              },
-                                              icon: Icon(Icons.cancel),
+                                            Positioned(
+                                              top: 5,
+                                              left: 160,
+                                              child: IconButton(
+                                                iconSize: 30,
+                                                onPressed: () {
+                                                  controller.panFile.value =
+                                                      null;
+                                                },
+                                                icon: Icon(Icons.cancel),
+                                              ),
                                             ),
-                                          ),
-                                        ]);
-                                  }
-                                },
-                              )),
+                                          ]);
+                                    }
+                                  },
+                                )),
+                          ),
                         ),
                       ),
-                    ),
-                    CommonButton(title: 'Register', onPressed: () {})
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: DottedBorder(
+                          borderType: BorderType.RRect,
+                          dashPattern: [8, 4],
+                          radius: Radius.circular(10.r),
+                          padding: EdgeInsets.all(2),
+                          color: themes.blueColor,
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                color: themes.blueGray,
+                                borderRadius: BorderRadius.circular(10.r)),
+                            child: Padding(
+                                padding: const EdgeInsets.all(38.0).r,
+                                child: Obx(
+                                  () {
+                                    if (controller.gstFile.value == null) {
+                                      return InkWell(
+                                        onTap: () {
+                                          pickImage(ImageSource.gallery,
+                                              controller.gstFile);
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Image.asset(
+                                              uploadIcon,
+                                              width: 40.w,
+                                            ),
+                                            SizedBox(
+                                              height: 5.h,
+                                            ),
+                                            Text(
+                                              'Upload your GST Certificate',
+                                              style: themes.fontSize14_500,
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      return Stack(
+                                          fit: StackFit.loose,
+                                          alignment: Alignment.center,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.r),
+                                              child: Image.file(
+                                                // width: 60.w,
+                                                height: 150.h,
+                                                File(
+                                                  controller
+                                                      .gstFile.value!.path,
+                                                ),
+                                              ),
+                                            ),
+                                            Positioned(
+                                              top: 5,
+                                              left: 160,
+                                              child: IconButton(
+                                                iconSize: 30,
+                                                onPressed: () {
+                                                  controller.gstFile.value =
+                                                      null;
+                                                },
+                                                icon: Icon(Icons.cancel),
+                                              ),
+                                            ),
+                                          ]);
+                                    }
+                                  },
+                                )),
+                          ),
+                        ),
+                      ),
+                      CommonButton(
+                          title: 'Register',
+                          onPressed: () {
+                            FocusScope.of(context).unfocus();
+                            if (controller.formKey.currentState?.validate() ==
+                                true) {
+                              controller.register();
+                            }
+                          })
+                    ],
+                  ),
                 ),
               ),
             ),

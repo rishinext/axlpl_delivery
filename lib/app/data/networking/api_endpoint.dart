@@ -8,7 +8,10 @@ const String getCategoryListPoint = 'getCategory';
 const String getCommodityListPoint = 'getCommodity';
 const String getServiceTypePoint = 'getServices';
 const String getPincodeDetailsPoint = 'getPincodeDetail';
+const String getPincodeDetailsRegisterPoint = 'getPincodeDetailForRegistration';
 const String getAllAreaByZipcodePoint = 'getAllAreaByZipcode';
+const String getAllAeraByZipRegisterPoint =
+    'getAllAreaByZipcodeForRegistration';
 const String getShipmentDataListPoint = 'shipmentactivelist';
 const String addShipmentPoint = 'insertShipment';
 const String changePasswordPoint = 'changePassword';
