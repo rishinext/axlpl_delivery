@@ -194,28 +194,63 @@ class RegisterView extends GetView<RegisterController> {
                               controller.selectedSenderArea.value = val,
                         );
                       }),*/
-                      Obx(() => PaginatedDropdown<AreaList>(
-                          isSearchable: false,
-                          hint: 'Select Area',
-                          selectedValue: controller.selectedSenderArea.value,
-                          items: controller.areaList,
-                          itemLabel: (aera) => aera.name ?? 'Unknown',
-                          itemValue: (aera) => aera.id.toString(),
-                          isLoading: controller.isLoadingArea.value,
-                          onChanged: (AreaList? area) {
-                            controller.selectedSenderArea.value = area;
-                          })),
+                      Obx(() {
+                        return GestureDetector(
+                          onTap: () {
+                            // Check if zipcode length is not 6
+                            if (controller.zipController.text.length != 6) {
+                              Get.snackbar(
+                                'Enter Zipcode',
+                                'Please enter valid 6-digit zipcode',
+                                snackPosition: SnackPosition.TOP,
+                                backgroundColor: themes.redColor,
+                                colorText: themes.whiteColor,
+                              );
+                            }
+                            // If zipcode length is 6, the dropdown will be interactive (no AbsorbPointer)
+                          },
+                          child: AbsorbPointer(
+                            // Absorb pointer events only when zipcode length is not 6
+                            absorbing:
+                                controller.zipController.text.length != 6,
+                            child: PaginatedDropdown<AreaList>(
+                              isSearchable: false,
+                              hint: 'Select Area',
+
+                              selectedValue:
+                                  controller.selectedSenderArea.value,
+                              items: controller.zipController.text.length == 6
+                                  ? controller.areaList
+                                  : <AreaList>[], // Empty list when zipcode is invalid
+                              itemLabel: (area) => area.name ?? 'Unknown',
+                              itemValue: (area) => area.id.toString(),
+                              isLoading: controller.isLoadingArea.value,
+                              onChanged: (AreaList? area) {
+                                if (controller.zipController.text.length == 6) {
+                                  controller.selectedSenderArea.value = area;
+                                  // You might want to fetch area data here
+                                  // controller.fetchArea(controller.zipController.text);
+                                }
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+
                       CommonTextfiled(
                         hintTxt: 'Mobile No',
                         controller: controller.mobileController,
                         validator: utils.validatePhone,
                         textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        maxLength: 10,
                       ),
                       CommonTextfiled(
                         hintTxt: 'Telephone No',
                         controller: controller.telePhoneController,
                         validator: utils.validatePhone,
                         textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
                       ),
                       CommonTextfiled(
                         hintTxt: 'Fax No',
@@ -228,12 +263,14 @@ class RegisterView extends GetView<RegisterController> {
                         controller: controller.emailController,
                         validator: utils.validateEmail,
                         textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       CommonTextfiled(
                         hintTxt: 'Password',
                         controller: controller.passwordController,
                         validator: utils.validatePassword,
                         textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.visiblePassword,
                       ),
                       CommonTextfiled(
                         hintTxt: 'Pan No',
@@ -251,6 +288,7 @@ class RegisterView extends GetView<RegisterController> {
                         hintTxt: 'Third Party Insurance Value',
                         controller: controller.insuranceController,
                         textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
                       ),
                       CommonTextfiled(
                         hintTxt: 'Third Party Policy No',
@@ -423,6 +461,7 @@ class RegisterView extends GetView<RegisterController> {
                       ),
                       CommonButton(
                           title: 'Register',
+                          isLoading: controller.isRegistered.value,
                           onPressed: () {
                             FocusScope.of(context).unfocus();
                             if (controller.formKey.currentState?.validate() ==

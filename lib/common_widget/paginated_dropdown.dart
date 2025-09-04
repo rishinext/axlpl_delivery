@@ -131,7 +131,7 @@ class _PaginatedDropdownState<T> extends State<PaginatedDropdown<T>> {
         if (_isDropdownOpen) ...[
           SizedBox(height: 4.h),
           Container(
-            constraints: BoxConstraints(maxHeight: 200.h),
+            constraints: BoxConstraints(maxHeight: 140.h),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey.shade300),
               borderRadius: BorderRadius.circular(8.r),

@@ -229,22 +229,27 @@ void main() async {
   runApp(
     ScreenUtilInit(
       designSize: ScreenUtil.defaultSize,
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        enableLog: true,
-        defaultTransition: Transition.noTransition,
-        title: "AXLPL Delivery",
-        builder: (context, child) {
-          ErrorWidget.builder = (FlutterErrorDetails details) {
-            return ErrorScreen(); //
-          };
+      builder: (context, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          enableLog: true,
+          defaultTransition: Transition.noTransition,
+          title: "AXLPL Delivery",
+          builder: (context, child) {
+            ErrorWidget.builder = (FlutterErrorDetails details) {
+              return ErrorScreen();
+            };
 
-          return child!;
-        },
-        initialRoute: AppPages.INITIAL,
-        getPages: AppPages.routes,
-        theme: ThemeData(textTheme: GoogleFonts.workSansTextTheme()),
-      ),
+            if (Platform.isAndroid) {
+              return SafeArea(child: child!);
+            }
+            return child!;
+          },
+          initialRoute: AppPages.INITIAL,
+          getPages: AppPages.routes,
+          theme: ThemeData(textTheme: GoogleFonts.workSansTextTheme()),
+        );
+      },
     ),
   );
 }

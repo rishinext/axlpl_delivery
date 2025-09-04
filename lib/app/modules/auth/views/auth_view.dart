@@ -95,7 +95,7 @@ class AuthView extends GetView<AuthController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Obx(() => Padding(
-                            padding: const EdgeInsets.only(top: 5),
+                            padding: const EdgeInsets.only(top: 0),
                             child: Checkbox(
                               value: authController.isTermsAccepted.value,
                               onChanged: (value) {

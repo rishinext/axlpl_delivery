@@ -182,7 +182,7 @@ class RegisterController extends GetxController {
       isRegistered(false);
       Get.snackbar('Success', 'Registration completed successfully!',
           backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
-      Get.toNamed(Routes.AUTH);
+      Get.offAllNamed(Routes.AUTH);
     } catch (e) {
       isRegistered(false);
       print('Registration Error: $e');
