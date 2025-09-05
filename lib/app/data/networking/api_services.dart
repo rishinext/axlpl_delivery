@@ -697,6 +697,16 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> contractView(final custID) async {
+    final body = {
+      'customer_id': custID,
+    };
+    return _api.post(
+      contractViewPoint,
+      body,
+    );
+  }
+
   Future<APIResponse> uploadPickup(
     shipmentID,
     shipmentStatus,

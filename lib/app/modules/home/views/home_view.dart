@@ -16,6 +16,8 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
+import 'package:axlpl_delivery/common_widget/pdf_screen.dart';
+import 'package:axlpl_delivery/common_widget/pdf_view.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -351,13 +353,34 @@ class HomeView extends GetView<HomeController> {
                               : SizedBox.shrink();
                         },
                       ),
-                      SizedBox(
-                        width: 100.w,
-                        child: HomeIconContainer(
-                          title: 'Contract',
-                          Img: containerIcon,
-                          OnTap: () => Get.toNamed(Routes.SHIPNOW),
-                        ),
+                      Obx(
+                        () =>
+                            bottomController.userData.value?.role == 'messanger'
+                                ? SizedBox.shrink()
+                                : SizedBox(
+                                    width: 100.w,
+                                    child: HomeIconContainer(
+                                      title: 'My Contract',
+                                      Img: containerIcon,
+                                      OnTap: () {
+                                        // homeController.contractView();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => PdfScreen()
+                                              // PdfViewerPage(
+                                              //   pdfUrl: homeController
+                                              //           .contractDataModel
+                                              //           .value
+                                              //           ?.contracts?[0]
+                                              //           .viewLink ??
+                                              //       '',
+                                              // ),
+                                              ),
+                                        );
+                                      },
+                                    ),
+                                  ),
                       )
                     ],
                   );
