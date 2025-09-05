@@ -351,6 +351,14 @@ class HomeView extends GetView<HomeController> {
                               : SizedBox.shrink();
                         },
                       ),
+                      SizedBox(
+                        width: 100.w,
+                        child: HomeIconContainer(
+                          title: 'Contract',
+                          Img: containerIcon,
+                          OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                        ),
+                      )
                     ],
                   );
                 }),
