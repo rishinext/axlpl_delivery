@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/contract_details_model.dart';
 import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
@@ -222,6 +224,7 @@ class AddShipmentController extends GetxController {
   final isLoadingReceiverArea = false.obs;
   final isLoadingDiffArea = false.obs;
   var isShipmentCal = Status.initial.obs;
+  var isGorsssCal = Status.initial.obs;
   var isShipmentAdd = Status.initial.obs;
   var isContractDetails = Status.initial.obs;
 
@@ -835,6 +838,43 @@ class AddShipmentController extends GetxController {
     }
   }
 
+  Future<void> grossCalculation(
+    final netWeight,
+    final grossWeight,
+    final status,
+    final productID,
+    final contractWeight,
+    final contractRate,
+  ) async {
+    isGorsssCal.value = Status.loading;
+    try {
+      var data = await addShipmentRepo.gorssCalculationRepo(
+        netWeight,
+        grossWeight,
+        status,
+        productID,
+        contractWeight,
+        contractRate,
+      );
+
+      if (data != null) {
+        // ✅ Success
+        errorMessage.value = '';
+        isGorsssCal.value = Status.success;
+        log('Gross calculation success: ${data.toJson()}');
+      } else {
+        // ❌ API returned body but failed (e.g. `status != success`)
+        errorMessage.value = 'Gross calculation failed — check input weights.';
+        isGorsssCal.value = Status.error;
+      }
+    } catch (e) {
+      // ❌ Exception or API error
+      errorMessage.value = e.toString();
+      isGorsssCal.value = Status.error;
+      Utils().logError('Gross Cal fetch failed $e');
+    }
+  }
+
   Future<void> pickDate(BuildContext context, [final selectDate]) async {
     final DateTime? pickedDate = await holoDatePicker(
       context,
@@ -1021,7 +1061,7 @@ class AddShipmentController extends GetxController {
         final shipmentController = Get.put(ShipnowController());
         shipmentController.fetchShipmentData('0');
 
-        Get.offAllNamed(Routes.BOTTOMBAR, arguments: userData);
+        Get.offAllNamed(Routes.HOME, arguments: userData);
       } else {
         isShipmentAdd.value = Status.error;
         Get.snackbar('Error', 'Failed to add shipment');

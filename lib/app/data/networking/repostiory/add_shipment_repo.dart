@@ -309,6 +309,44 @@ class AddShipmentRepo {
     return null;
   }
 
+  Future gorssCalculationRepo(
+    final netWeight,
+    final grossWeight,
+    final status,
+    final productID,
+    final contractWeight,
+    final contractRate,
+  ) async {
+    try {
+      final response = await _apiServices.grossCalculation(
+        netWeight,
+        grossWeight,
+        status,
+        productID,
+        contractWeight,
+        contractRate,
+      );
+
+      return response.when(
+        success: (body) {
+          final grossCal = CommonModel.fromJson(body);
+          if (grossCal.status == success) {
+            return grossCal;
+          } else {
+            Utils().logInfo(grossCal.message.toString());
+          }
+          return null;
+        },
+        error: (error) {
+          throw Exception("Gross Calculation API Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      Utils().logError(e.toString());
+    }
+    return null;
+  }
+
   Future<List<Contract>> getContractDetailsRepo(
     final customerID,
     final categoryID,

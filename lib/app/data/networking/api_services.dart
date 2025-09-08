@@ -888,12 +888,16 @@ class ApiServices {
     final grossWeight,
     final status,
     final productID,
+    final contractWeight,
+    final contractRate,
   ) {
     final body = {
       'net_weight': netWeight,
       'gross_weight': grossWeight,
-      'status': status,
+      'calculation_status': status,
       'product_id': productID,
+      'contract_weight': contractWeight,
+      'contract_rate': contractRate,
     };
     return _api.post(
       grosssCalculationPoint,

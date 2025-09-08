@@ -21,6 +21,8 @@ class CommonTextfiled extends StatelessWidget {
   final maxLine;
   final maxNumberOfLines;
   final int? maxLength;
+  final String? errorText; //
+  final String? forceErrorText;
 
   const CommonTextfiled({
     super.key,
@@ -41,6 +43,8 @@ class CommonTextfiled extends StatelessWidget {
     this.maxLine,
     this.maxNumberOfLines,
     this.maxLength,
+    this.forceErrorText,
+    this.errorText,
   });
 
   @override
@@ -70,6 +74,7 @@ class CommonTextfiled extends StatelessWidget {
         hintStyle: themes.fontSize16_400.copyWith(color: themes.grayColor),
         suffixIcon: sufixIcon,
         prefixIcon: prefixIcon,
+        errorText: forceErrorText ?? errorText,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12.0.r),
         ),

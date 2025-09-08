@@ -4,6 +4,7 @@ import 'package:axlpl_delivery/app/data/models/category&comodity_list_model.dart
 import 'package:axlpl_delivery/app/data/models/customers_list_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
+import 'package:axlpl_delivery/app/modules/home/controllers/home_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_dropdown.dart';
 import 'package:axlpl_delivery/common_widget/paginated_dropdown.dart';
@@ -26,6 +27,8 @@ class AddShipmentView extends GetView<AddShipmentController> {
   Widget build(BuildContext context) {
     final addshipController = Get.put(AddShipmentController());
     final bottomController = Get.put(BottombarController());
+    final homeController = Get.put(HomeController());
+    final details = homeController.contractDataModel.value?.contracts?[0];
     final Utils utils = Utils();
     String formatDate(DateTime date) {
       return DateFormat('dd/MM/yyyy').format(date); // Format the date
@@ -331,45 +334,63 @@ class AddShipmentView extends GetView<AddShipmentController> {
                         ),
                       ),
                       Expanded(
-                        child: CommonTextfiled(
-                          controller: addshipController.grossWeightController,
-                          onChanged: (p0) {
-                            // addshipController.calculateGrossWeight(
-                            //   netWeight:
-                            //       addshipController.netWeightController.text,
-                            //   grossWeight:
-                            //       addshipController.grossWeightController.text,
-                            //   status: 'global',
-                            //   productID: addshipController.selectedCommodity
-                            //       .toString(),
-                            // );
-                            return null;
-                          },
-                          hintTxt: "Enter Gross weight",
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          sufixIcon: InkWell(
-                              child: Icon(CupertinoIcons.calendar_today)),
-                          validator: (value) {
-                            final net = double.tryParse(
-                                addshipController.netWeightController.text);
-                            final gross = double.tryParse(value ?? '');
+                        child: Obx(() => CommonTextfiled(
+                              controller:
+                                  addshipController.grossWeightController,
+                              onChanged: (p0) {
+                                // Clear previous error when user starts typing
+                                addshipController.errorMessage.value = '';
 
-                            if (value == null || value.isEmpty) {
-                              return 'Gross weight is required';
-                            }
+                                addshipController.grossCalculation(
+                                  controller.netWeightController.text,
+                                  controller.grossWeightController.text,
+                                  'contract',
+                                  controller.selectedCategory.value.toString(),
+                                  homeController.contractDataModel.value
+                                      ?.contracts?[0].active
+                                      .toString(),
+                                  homeController.contractDataModel.value
+                                      ?.contracts?[0].weight
+                                      .toString(),
+                                );
+                                return null;
+                              },
+                              hintTxt: "Enter Gross weight",
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              sufixIcon: InkWell(
+                                  child: Icon(CupertinoIcons.calendar_today)),
+                              // Show API error if exists, otherwise use regular validation
+                              forceErrorText: addshipController
+                                      .errorMessage.value.isNotEmpty
+                                  ? addshipController.errorMessage.value
+                                  : null,
+                              validator: (value) {
+                                // Skip validation if API error exists
+                                if (addshipController
+                                    .errorMessage.value.isNotEmpty) {
+                                  return null; // Error already shown via forceErrorText
+                                }
 
-                            if (net == null) return 'Net weight is invalid';
-                            if (gross == null)
-                              return 'Gross weight must be a number';
+                                final net = double.tryParse(
+                                    addshipController.netWeightController.text);
+                                final gross = double.tryParse(value ?? '');
 
-                            if (gross <= net) {
-                              return 'Gross weight must be greater than net weight';
-                            }
+                                if (value == null || value.isEmpty) {
+                                  return 'Gross weight is required';
+                                }
 
-                            return null; //
-                          },
-                        ),
+                                if (net == null) return 'Net weight is invalid';
+                                if (gross == null)
+                                  return 'Gross weight must be a number';
+
+                                if (gross <= net) {
+                                  return 'Gross weight must be greater than net weight';
+                                }
+
+                                return null;
+                              },
+                            )),
                       )
                     ],
                   ),

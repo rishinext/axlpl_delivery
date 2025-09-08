@@ -53,7 +53,7 @@ class _PdfScreenState extends State<PdfScreen> {
                   SizedBox(width: 12),
                   Expanded(
                       child: infoCard('End Date',
-                          '${details?.endDate.toString() ?? "N/A"}g')),
+                          '${details?.endDate.toString() ?? "N/A"}')),
                 ],
               ),
               SizedBox(height: 12),
@@ -91,7 +91,7 @@ class _PdfScreenState extends State<PdfScreen> {
                   SizedBox(
                       width: 150.w,
                       child: CommonButton(
-                        title: 'View',
+                        title: 'View PDF',
                         backgroundColor: themes.darkCyanBlue,
                         onPressed: () {
                           Navigator.push(
