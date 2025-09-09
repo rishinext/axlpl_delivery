@@ -864,11 +864,12 @@ class AddShipmentController extends GetxController {
         log('Gross calculation success: ${data.toJson()}');
       } else {
         // ❌ API returned body but failed (e.g. `status != success`)
-        errorMessage.value = 'Gross calculation failed — check input weights.';
+        errorMessage.value = 'Gross Weight exceed';
         isGorsssCal.value = Status.error;
       }
     } catch (e) {
       // ❌ Exception or API error
+
       errorMessage.value = e.toString();
       isGorsssCal.value = Status.error;
       Utils().logError('Gross Cal fetch failed $e');

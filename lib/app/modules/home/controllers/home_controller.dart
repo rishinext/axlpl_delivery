@@ -1,4 +1,6 @@
 import 'package:axlpl_delivery/app/data/models/contract_view_model.dart';
+import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
+import 'package:axlpl_delivery/app/data/models/customer_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
@@ -13,17 +15,20 @@ class HomeController extends GetxController {
 
   TextEditingController searchController = TextEditingController();
   Rxn<DashboardDataModel> dashboardDataModel = Rxn<DashboardDataModel>();
+  Rxn<DashboardData> customerDashboardDataModel = Rxn<DashboardData>();
 
   Rxn<RattingDataModel> rattingDataModel = Rxn<RattingDataModel>();
 
   Rxn<ContractViewModel> contractDataModel = Rxn<ContractViewModel>();
 
   RxBool isLoading = false.obs;
+  var isCustomerDashboard = Status.initial.obs;
   var isContractLoading = Status.initial.obs;
   var isRattingData = Status.initial.obs;
 
   var scannedCode = ''.obs;
   final profileController = Get.put(ProfileController());
+
   Future<void> getDashborad() async {
     isLoading.value = true;
     try {
@@ -43,6 +48,28 @@ class HomeController extends GetxController {
       );
     } finally {
       isLoading.value = false;
+    }
+  }
+
+// Your existing function is fine.
+  Future<void> getCustomerDashborad() async {
+    isCustomerDashboard.value = Status.loading;
+    try {
+      Utils().logInfo("Fetching customer dashboard data...");
+      final data = await homeRepo.customerDashboardDataRepo();
+
+      if (data != null) {
+        Utils().logInfo("Customer Dashboard data received: ${data.toString()}");
+        customerDashboardDataModel.value = data;
+        isCustomerDashboard.value = Status.success;
+      } else {
+        Utils().logError(
+            "Dashboard data is null - check repository logs for details");
+        isCustomerDashboard.value = Status.error;
+      }
+    } catch (error) {
+      Utils().logError('Error getting dashboard: $error');
+      isCustomerDashboard.value = Status.error;
     }
   }
 
@@ -95,6 +122,7 @@ class HomeController extends GetxController {
   void onInit() {
     // TODO: implement onInit
     getDashborad();
+    getCustomerDashborad();
     getRattingData();
     contractView();
     super.onInit();

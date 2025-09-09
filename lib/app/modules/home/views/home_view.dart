@@ -251,7 +251,51 @@ class HomeView extends GetView<HomeController> {
                         ],
                       );
                     } else {
-                      return SizedBox();
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Obx(() {
+                              return HomeContainer(
+                                onTap: () {},
+                                color: themes.blueGray,
+                                title: 'Out for Delivery',
+                                subTitle:
+                                    homeController.isCustomerDashboard.value ==
+                                            Status.loading
+                                        ? '...'
+                                        : homeController
+                                                .customerDashboardDataModel
+                                                .value
+                                                ?.outForDeliveryCount
+                                                ?.toString() ??
+                                            '0',
+                              );
+                            }),
+                          ),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          Expanded(
+                            child: Obx(() {
+                              return HomeContainer(
+                                  onTap: () {},
+                                  color: themes.lightCream,
+                                  title: 'Pickedup',
+                                  subTitle: homeController
+                                              .isCustomerDashboard.value ==
+                                          Status.loading
+                                      ? '...' // This part works
+                                      : homeController
+                                              .customerDashboardDataModel
+                                              .value
+                                              ?.pickedupCount
+                                              ?.toString() ??
+                                          '0' // This results in ',
+                                  );
+                            }),
+                          ),
+                        ],
+                      );
                     }
                   },
                 ),

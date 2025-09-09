@@ -86,6 +86,22 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> getCustomerDashboardData(
+    String custID,
+
+    // String zipcode,
+    String token,
+  ) async {
+    final body = {
+      'customer_id': custID,
+    };
+    return _api.post(
+      customerDashboardDataPoint,
+      body,
+      token: token,
+    );
+  }
+
   Future<APIResponse> getCustomersList(
     String userID,
     String branchID,

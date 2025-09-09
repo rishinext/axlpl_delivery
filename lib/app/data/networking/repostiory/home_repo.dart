@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/contract_view_model.dart';
+import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
+import 'package:axlpl_delivery/app/data/models/customer_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
@@ -59,6 +61,48 @@ class HomeRepository {
     }
 
     return null;
+  }
+
+  Future<DashboardData?> customerDashboardDataRepo() async {
+    final userData = await LocalStorage().getUserLocalData();
+    final custID = userData?.customerdetail?.id.toString();
+    final token = userData?.customerdetail?.token;
+    if (custID != null && custID.isNotEmpty) {
+      final response = await _apiServices.getCustomerDashboardData(
+        custID,
+        token.toString(),
+      );
+
+      return response.when(
+        success: (body) {
+          Utils()
+              .logInfo('RAW OF CUSTOMER DASHBOARD DATA JSON RESPONSE: $body');
+
+          if (body is List && body.isNotEmpty) {
+            final Map<String, dynamic> dataMap = body[0];
+
+            final data = CustomerDashboardDataModel.fromJson(dataMap);
+
+            if (data.type == 'success') {
+              return data.dashboardData;
+            } else {
+              Utils().logInfo('API call successful but type is not "success"');
+            }
+          } else {
+            Utils().logError('API response is not a valid list or is empty.');
+          }
+          return null;
+        },
+        error: (error) {
+          Utils().logError(
+              "Customer Dashboard Data Fetch Failed: ${error.toString()}");
+          return null;
+        },
+      );
+    } else {
+      Utils().logError("Customer ID is null or empty");
+      return null;
+    }
   }
 
   Future<ContractViewModel?> contractViewRepo() async {

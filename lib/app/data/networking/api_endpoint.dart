@@ -3,6 +3,7 @@ const String logoutPoint = 'logout';
 const String deliveryHistoryPoint = 'getDeliveryHistory';
 const String historyPickupPoint = 'getPickupHistory';
 const String dashboardDataPoint = 'getDashoboardData';
+const String customerDashboardDataPoint = 'customerdashboard';
 const String getCustomersListPoint = 'getCustomers';
 const String getCategoryListPoint = 'getCategory';
 const String getCommodityListPoint = 'getCommodity';
