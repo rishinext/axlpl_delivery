@@ -7,12 +7,14 @@ class HomeContainer extends StatelessWidget {
   String? title;
   String? subTitle;
   final VoidCallback? onTap;
+  bool isIcon;
   HomeContainer({
     super.key,
     this.color,
     this.title,
     this.subTitle,
     this.onTap,
+    this.isIcon = true,
   });
 
   @override
@@ -37,11 +39,13 @@ class HomeContainer extends StatelessWidget {
                   Text(subTitle ?? 'N/A',
                       style: themes.fontSize18_600.copyWith(
                           fontSize: 40.sp, fontWeight: FontWeight.w700)),
-                  CircleAvatar(
-                    backgroundColor: themes.whiteColor,
-                    radius: 15,
-                    child: Icon(Icons.arrow_forward),
-                  )
+                  isIcon
+                      ? CircleAvatar(
+                          backgroundColor: themes.whiteColor,
+                          radius: 15,
+                          child: Icon(Icons.arrow_forward),
+                        )
+                      : Container()
                 ],
               )
             ],

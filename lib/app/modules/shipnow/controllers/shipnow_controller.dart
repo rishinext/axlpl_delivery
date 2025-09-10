@@ -16,6 +16,18 @@ import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
 
 class ShipnowController extends GetxController {
+  // Status filter options
+  final RxString selectedStatusFilter = ''.obs;
+  final List<String> statusFilters = [
+    '', // All
+    'Out for Delivery',
+    'Waiting for Pickup',
+    'Picked Up',
+    'Approved',
+    'Pending',
+    'Cancelled',
+    // Add more statuses as needed
+  ];
   final themes = Themes();
   final isDownloadingLabel = false.obs;
   //TODO: Implement ShipnowController
@@ -54,7 +66,18 @@ class ShipnowController extends GetxController {
       }
 
       final data = await shipNowRepo.customerListRepo(
-          nextID, '', '', '', '', '', '', '', '', '', '');
+        nextID,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      );
 
       final newItems = data ?? [];
 
@@ -276,13 +299,23 @@ class ShipnowController extends GetxController {
   }
 
   void filterShipmentData(String query) {
-    if (query.isEmpty) {
-      filteredShipmentData.value = allShipmentData;
-    } else {
-      filteredShipmentData.value = allShipmentData.where((data) {
-        return data.shipmentId!.toLowerCase().contains(query.toLowerCase()) ||
-            data.origin!.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    }
+    filteredShipmentData.value = allShipmentData.where((data) {
+      final matchesQuery = query.isEmpty ||
+          (data.shipmentId?.toLowerCase().contains(query.toLowerCase()) ??
+              false) ||
+          (data.origin?.toLowerCase().contains(query.toLowerCase()) ?? false);
+
+      final matchesStatus = selectedStatusFilter.value.isEmpty ||
+          (data.shipmentStatus?.toLowerCase() ==
+              selectedStatusFilter.value.toLowerCase());
+
+      return matchesQuery && matchesStatus;
+    }).toList();
+  }
+
+  // Call this when user selects a status filter from the filter list button
+  void setStatusFilter(String status) {
+    selectedStatusFilter.value = status;
+    filterShipmentData(shipmentIDController.text);
   }
 }

@@ -15,7 +15,8 @@ class HomeController extends GetxController {
 
   TextEditingController searchController = TextEditingController();
   Rxn<DashboardDataModel> dashboardDataModel = Rxn<DashboardDataModel>();
-  Rxn<DashboardData> customerDashboardDataModel = Rxn<DashboardData>();
+  Rxn<CustomerDashboardDataModel> customerDashboardDataModel =
+      Rxn<CustomerDashboardDataModel>();
 
   Rxn<RattingDataModel> rattingDataModel = Rxn<RattingDataModel>();
 
@@ -74,7 +75,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> contractView() async {
-    isLoading.value = true;
+    isContractLoading.value = Status.loading;
     try {
       Utils().logInfo("Fetching contract data...");
       final data = await homeRepo.contractViewRepo();
@@ -82,6 +83,7 @@ class HomeController extends GetxController {
       if (data != null) {
         Utils().logInfo("Contract data received: ${data.toString()}");
         contractDataModel.value = data;
+        isContractLoading.value = Status.success;
       } else {
         Utils().logError(
             "Contract data is null - check repository logs for details");
@@ -91,7 +93,7 @@ class HomeController extends GetxController {
         'Error getting contract: $error',
       );
     } finally {
-      isLoading.value = false;
+      isContractLoading.value = Status.success;
     }
   }
 

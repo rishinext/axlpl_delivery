@@ -2,7 +2,8 @@ import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget infoCard(String label, String value) {
+Widget infoCard(String label, String value,
+    {final containerColor, final textColor}) {
   return Column(
     spacing: 8,
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -17,7 +18,7 @@ Widget infoCard(String label, String value) {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey.shade300),
-            color: Colors.white,
+            color: containerColor ?? themes.whiteColor,
           ),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -25,7 +26,8 @@ Widget infoCard(String label, String value) {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               value,
-              style: themes.fontSize14_500.copyWith(fontSize: 12.sp),
+              style: themes.fontSize14_500.copyWith(
+                  fontSize: 12.sp, color: textColor ?? themes.blackColor),
             ),
           )),
     ],

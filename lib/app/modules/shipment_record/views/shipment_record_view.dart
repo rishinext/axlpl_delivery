@@ -1,14 +1,24 @@
+import 'dart:io';
+
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
+import 'package:axlpl_delivery/app/modules/pickdup_delivery_details/controllers/running_delivery_details_controller.dart';
+import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
+import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
+import 'package:axlpl_delivery/common_widget/shipment_label_widget.dart';
 import 'package:axlpl_delivery/common_widget/tracking_info_widget.dart';
+import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:enhance_stepper/enhance_stepper.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/shipment_record_controller.dart';
 
@@ -16,602 +26,649 @@ class ShipmentRecordView extends GetView<ShipmentRecordController> {
   const ShipmentRecordView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Shipment Tracking Details'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: SingleChildScrollView(child: Obx(
-          () {
-            final record = controller.shipmentRecord.value;
-            if (controller.isShipmentRecord.value == Status.loading) {
-              return Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            } else if (controller.isShipmentRecord.value == Status.error) {
-              return Center(
-                child: Text('No Tracking Data Found'),
-              );
-            } else if (controller.isShipmentRecord.value == Status.success) {
-              // String formattedDate = trackingStatus.isNotEmpty
-              //     ? DateFormat('dd-MM-yyyy HH:mm')
-              //         .format(trackingStatus[0].dateTime)
-              //     : 'No date available';
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Top container with order and status
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: themes.whiteColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        )
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        // CircleAvatar(
-                        //   backgroundColor: themes.blueGray,
-                        //   child: Image.asset(shopingIcon, width: 20.w),
-                        // ),
-                        // SizedBox(width: 12),
-                        RichText(
-                            text: TextSpan(
-                          text: 'Shipment ID: ',
-                          style:
-                              themes.fontSize14_500.copyWith(fontSize: 12.sp),
-                          children: [
-                            TextSpan(
-                              text: record?.sId.toString() ?? 'N/A',
-                            ),
-                          ],
-                        )),
+    final shipnowController = Get.put(ShipnowController());
+    final runningController = Get.put(RunningDeliveryDetailsController());
+    final shipmentController = Get.put(ShipnowController());
+    final theme = Themes();
+    final ScrollController scrollController = ScrollController();
 
-                        IconButton(
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(
-                                  text: record?.sId.toString() ?? 'N/A'));
-                            },
-                            icon: Icon(
-                              Icons.copy,
-                              size: 18,
-                            )),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: themes.blueGray,
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Text(
-                            record?.shipmentStatus.toString() ?? 'N/A',
-                            style: themes.fontSize14_500
-                                .copyWith(color: themes.darkCyanBlue),
-                          ),
-                        ),
-                      ],
+    // Infinite scroll listener
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 200 &&
+          shipnowController.hasMoreData &&
+          !shipnowController.isLoadingMore.value &&
+          !shipnowController.isLoadingShipNow.value) {
+        shipnowController.loadMoreData();
+      }
+    });
+    return CommonScaffold(
+        appBar: commonAppbar('My Shipments'),
+        body: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            spacing: 10,
+            children: [
+              Platform.isIOS
+                  ? SizedBox(
+                      height: 2.h,
+                    )
+                  : SizedBox.shrink(),
+              ContainerTextfiled(
+                controller: shipnowController.shipmentIDController,
+                hintText: 'Search Here',
+                onChanged: (value) {
+                  // shipnowController.filterByQuery(value!);
+                  return null;
+                },
+                suffixIcon: Icon(CupertinoIcons.search),
+                prefixIcon: InkWell(
+                  onTap: () async {
+                    var scannedValue = await Utils().scanAndPlaySound(context);
+                    if (scannedValue != null && scannedValue != '-1') {
+                      shipnowController.shipmentIDController.text =
+                          scannedValue;
+                      Get.dialog(
+                        const Center(
+                            child: CircularProgressIndicator.adaptive()),
+                        barrierDismissible: false,
+                      );
+                      await runningController.fetchTrackingData(scannedValue);
+                      Get.back(); // Close the dialog
+                      Get.toNamed(
+                        Routes.RUNNING_DELIVERY_DETAILS,
+                        arguments: {
+                          'shipmentID': scannedValue,
+                        },
+                      );
+                    }
+                  },
+                  child: Icon(CupertinoIcons.qrcode_viewfinder),
+                ),
+              ),
+
+              // Sort by Filter Button
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  icon: Icon(
+                    Icons.filter_list,
+                    color: theme.whiteColor,
+                  ),
+                  label: Obx(() => Text(
+                        shipnowController.selectedStatusFilter.value.isEmpty
+                            ? 'Sort by Status'
+                            : shipnowController.selectedStatusFilter.value,
+                        style: theme.fontSize14_500,
+                      )),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.darkCyanBlue,
+                    foregroundColor: theme.whiteColor,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
                   ),
+                  onPressed: () {
+                    if (Platform.isIOS) {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (ctx) => CupertinoActionSheet(
+                          title: Text('Select Status Filter'),
+                          actions:
+                              shipnowController.statusFilters.map((status) {
+                            return CupertinoActionSheetAction(
+                              onPressed: () {
+                                shipnowController.setStatusFilter(status);
+                                Navigator.of(ctx).pop();
+                              },
+                              child: Text(status.isEmpty ? 'All' : status),
+                            );
+                          }).toList(),
+                          cancelButton: CupertinoActionSheetAction(
+                            onPressed: () => Navigator.of(ctx).pop(),
+                            child: Text('Cancel'),
+                          ),
+                        ),
+                      );
+                    } else {
+                      showModalBottomSheet(
+                        context: context,
+                        builder: (ctx) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text('Select Status Filter',
+                                  style: theme.fontSize14_500),
+                            ),
+                            ...shipnowController.statusFilters.map((status) =>
+                                ListTile(
+                                  title: Text(status.isEmpty ? 'All' : status),
+                                  onTap: () {
+                                    shipnowController.setStatusFilter(status);
+                                    Navigator.of(ctx).pop();
+                                  },
+                                ))
+                          ],
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ),
+              Obx(() {
+                if (shipnowController.isLoadingShipNow.value) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
 
-                  // Sender & Receiver Section
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: themes.whiteColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        )
-                      ],
+                if (shipnowController.filteredShipmentData.isNotEmpty) {
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: shipnowController.refreshData,
+                      child: ListView.builder(
+                        controller: scrollController,
+                        shrinkWrap: true,
+                        itemCount:
+                            shipnowController.filteredShipmentData.length +
+                                (shipnowController.hasMoreData ? 1 : 0),
+                        padding: const EdgeInsets.all(8),
+                        itemBuilder: (context, index) {
+                          // Show loading indicator at the end
+                          if (index ==
+                              shipnowController.filteredShipmentData.length) {
+                            return Obx(() => Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: shipnowController.isLoadingMore.value
+                                        ? const CircularProgressIndicator
+                                            .adaptive()
+                                        : const SizedBox.shrink(),
+                                  ),
+                                ));
+                          }
+
+                          final shipment =
+                              shipnowController.filteredShipmentData[index];
+                          final status = shipment.shipmentStatus;
+                          return Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 4.w, vertical: 6.h),
+                            decoration: BoxDecoration(
+                              color: theme.whiteColor,
+                              borderRadius: BorderRadius.circular(16.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 12.r,
+                                  offset: Offset(0, 4),
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                runningController.fetchTrackingData(
+                                    shipment.shipmentId.toString());
+                                Get.toNamed(Routes.RUNNING_DELIVERY_DETAILS,
+                                    arguments: {
+                                      'shipmentID': shipment.shipmentId,
+                                    });
+                              },
+                              borderRadius: BorderRadius.circular(16.r),
+                              child: Padding(
+                                padding: EdgeInsets.all(16.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Header Row with Date and Status
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // Date Section
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w, vertical: 6.h),
+                                          decoration: BoxDecoration(
+                                            color: theme.darkCyanBlue
+                                                .withOpacity(0.1),
+                                            borderRadius:
+                                                BorderRadius.circular(20.r),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.calendar_today,
+                                                size: 14.sp,
+                                                color: theme.darkCyanBlue,
+                                              ),
+                                              SizedBox(width: 6.w),
+                                              Text(
+                                                "${shipment.createdDate != null ? DateFormat('dd MMM yy').format(shipment.createdDate!) : 'N/A'}",
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: theme.darkCyanBlue,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        // Status Badge
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 12.w, vertical: 6.h),
+                                          decoration: BoxDecoration(
+                                            color: status == 'Approved'
+                                                ? Colors.green[50]
+                                                : status == 'Pending'
+                                                    ? Colors.orange[50]
+                                                    : Colors.red[50],
+                                            borderRadius:
+                                                BorderRadius.circular(20.r),
+                                            border: Border.all(
+                                              color: status == 'Approved'
+                                                  ? Colors.green[200]!
+                                                  : status == 'Pending'
+                                                      ? Colors.orange[200]!
+                                                      : Colors.red[200]!,
+                                              width: 1.w,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Container(
+                                                width: 6.w,
+                                                height: 6.w,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: status == 'Approved'
+                                                      ? Colors.green[600]
+                                                      : status == 'Pending'
+                                                          ? Colors.orange[600]
+                                                          : Colors.red[600],
+                                                ),
+                                              ),
+                                              SizedBox(width: 6.w),
+                                              Text(
+                                                status ?? 'Unknown',
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: status == 'Approved'
+                                                      ? Colors.green[700]
+                                                      : status == 'Pending'
+                                                          ? Colors.orange[700]
+                                                          : Colors.red[700],
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 16.h),
+
+                                    // Shipment ID Row
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.local_shipping_outlined,
+                                          size: 18.sp,
+                                          color: theme.darkCyanBlue,
+                                        ),
+                                        SizedBox(width: 8.w),
+                                        Text(
+                                          "ID: ",
+                                          style: theme.fontSize14_400.copyWith(
+                                            color: theme.grayColor,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${shipment.shipmentId ?? 'N/A'}",
+                                            style:
+                                                theme.fontSize14_500.copyWith(
+                                              color: theme.blackColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 12.h),
+
+                                    // Company Names Section
+                                    Container(
+                                      padding: EdgeInsets.all(12.w),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[50],
+                                        borderRadius:
+                                            BorderRadius.circular(12.r),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          // Sender
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue[100],
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.business,
+                                                  size: 14.sp,
+                                                  color: Colors.blue[700],
+                                                ),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "From",
+                                                      style: theme
+                                                          .fontSize14_400
+                                                          .copyWith(
+                                                        color: theme.grayColor,
+                                                        fontSize: 12.sp,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "${shipment.senderCompanyName ?? 'N/A'}",
+                                                      style: theme
+                                                          .fontSize14_500
+                                                          .copyWith(
+                                                        color: theme.blackColor,
+                                                      ),
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    if (shipment.senderAreaname
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                      Text(
+                                                        "${shipment.senderAreaname}",
+                                                        style: theme
+                                                            .fontSize14_400
+                                                            .copyWith(
+                                                          color:
+                                                              theme.grayColor,
+                                                          fontSize: 12.sp,
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 12.h),
+                                          // Arrow Divider
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  child: Divider(
+                                                      color: Colors.grey[300])),
+                                              Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 8.w),
+                                                child: Icon(
+                                                  Icons.arrow_downward,
+                                                  size: 16.sp,
+                                                  color: theme.darkCyanBlue,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                  child: Divider(
+                                                      color: Colors.grey[300])),
+                                            ],
+                                          ),
+                                          SizedBox(height: 12.h),
+                                          // Receiver
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green[100],
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.location_on,
+                                                  size: 14.sp,
+                                                  color: Colors.green[700],
+                                                ),
+                                              ),
+                                              SizedBox(width: 12.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "To",
+                                                      style: theme
+                                                          .fontSize14_400
+                                                          .copyWith(
+                                                        color: theme.grayColor,
+                                                        fontSize: 12.sp,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "${shipment.receiverCompanyName ?? 'N/A'}",
+                                                      style: theme
+                                                          .fontSize14_500
+                                                          .copyWith(
+                                                        color: theme.blackColor,
+                                                      ),
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    if (shipment
+                                                            .receiverAreaname
+                                                            ?.isNotEmpty ==
+                                                        true)
+                                                      Text(
+                                                        "${shipment.receiverAreaname}",
+                                                        style: theme
+                                                            .fontSize14_400
+                                                            .copyWith(
+                                                          color:
+                                                              theme.grayColor,
+                                                          fontSize: 12.sp,
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+
+                                    // Route Information
+                                    if (shipment.origin?.isNotEmpty == true ||
+                                        shipment.destination?.isNotEmpty ==
+                                            true)
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 12.w, vertical: 8.h),
+                                        decoration: BoxDecoration(
+                                          color: theme.darkCyanBlue
+                                              .withOpacity(0.05),
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                          border: Border.all(
+                                            color: theme.darkCyanBlue
+                                                .withOpacity(0.1),
+                                            width: 1.w,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.route,
+                                              size: 16.sp,
+                                              color: theme.darkCyanBlue,
+                                            ),
+                                            SizedBox(width: 8.w),
+                                            Expanded(
+                                              child: Text(
+                                                "${shipment.origin ?? ''} ${shipment.origin?.isNotEmpty == true && shipment.destination?.isNotEmpty == true ? '→' : ''} ${shipment.destination ?? ''}",
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: theme.darkCyanBlue,
+                                                  fontSize: 13.sp,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                    // QR Code Button for Approved Status
+                                    // if (status == 'Approved')
+                                    //   Column(
+                                    //     children: [
+                                    //       SizedBox(height: 12.h),
+                                    //       Container(
+                                    //         width: double.infinity,
+                                    //         child: ElevatedButton.icon(
+                                    //           onPressed: () {
+                                    //             showDialog(
+                                    //               context: context,
+                                    //               builder: (context) {
+                                    //                 final labelController =
+                                    //                     shipnowController
+                                    //                         .getLableController(
+                                    //                             shipment
+                                    //                                 .shipmentId
+                                    //                                 .toString());
+                                    //                 return ShipmentLabelDialog(
+                                    //                   labelCountController:
+                                    //                       labelController,
+                                    //                   onPrint: () {
+                                    //                     final shipmentId =
+                                    //                         shipment.shipmentId;
+                                    //                     final labelCount =
+                                    //                         labelController.text
+                                    //                                 .isNotEmpty
+                                    //                             ? labelController
+                                    //                                 .text
+                                    //                             : '1';
+                                    //                     final url =
+                                    //                         'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
+                                    //                     shipnowController
+                                    //                         .downloadShipmentLable(
+                                    //                             url,
+                                    //                             shipmentId
+                                    //                                 .toString());
+                                    //                     Get.back();
+                                    //                   },
+                                    //                 );
+                                    //               },
+                                    //             );
+                                    //           },
+                                    //           icon: Icon(
+                                    //             Icons.qr_code,
+                                    //             size: 18.sp,
+                                    //             color: theme.whiteColor,
+                                    //           ),
+                                    //           label: Text(
+                                    //             'Generate Label',
+                                    //             style: theme.fontSize14_500
+                                    //                 .copyWith(
+                                    //               color: theme.whiteColor,
+                                    //             ),
+                                    //           ),
+                                    //           style: ElevatedButton.styleFrom(
+                                    //             backgroundColor:
+                                    //                 theme.darkCyanBlue,
+                                    //             foregroundColor:
+                                    //                 theme.whiteColor,
+                                    //             padding: EdgeInsets.symmetric(
+                                    //                 vertical: 12.h),
+                                    //             shape: RoundedRectangleBorder(
+                                    //               borderRadius:
+                                    //                   BorderRadius.circular(
+                                    //                       10.r),
+                                    //             ),
+                                    //             elevation: 2,
+                                    //           ),
+                                    //         ),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Sender
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(Icons.my_location, color: themes.darkCyanBlue),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    record?.senderName.toString() ?? 'N/A',
-                                    style: themes.fontSize16_400.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.sp),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    record?.senderAddress1.toString() ?? 'N/A',
-                                    style: themes.fontSize14_400.copyWith(
-                                        color: themes.grayColor,
-                                        fontSize: 13.sp),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16.h),
-                        // Receiver
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(Icons.location_on_outlined,
-                                color: themes.darkCyanBlue),
-                            SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    record?.receiverName.toString() ?? 'N/A',
-                                    style: themes.fontSize16_400.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.sp),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    record?.receiverAddress1.toString() ??
-                                        'N/A',
-                                    style: themes.fontSize14_400.copyWith(
-                                        color: themes.grayColor,
-                                        fontSize: 13.sp),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    record?.receiverMobile ?? 'N/A',
-                                    style: themes.fontSize14_400.copyWith(
-                                        color: themes.grayColor,
-                                        fontSize: 13.sp),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                  );
+                } else {
+                  return Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'No Shipment Data Found!',
+                      style: theme.fontReboto16_600,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+              }),
+
+              /*   Expanded(
+                child: ListView.builder(
+                  itemCount: 10,
+                  // padding: EdgeInsets.all(8),
+                  itemBuilder: (context, index) => Card(
+                    elevation: 4,
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      // onTap: () => showDetailsDialog(shipment),
+                      title: Text(
+                        "Shipment ID: ${['shipmentId']}",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 5),
+                          Text("Date: ${['createdDate']}"),
+                          Text("Sender: ${['senderCompany']}"),
+                          Text("Receiver: ${['receiverCompany']}"),
+                          Text("Route: ${['origin']} to ${['destination']}"),
+                        ],
+                      ),
                     ),
                   ),
-
-                  // Parcel & Weight + Payment Mode Cards
-                  // Container(
-                  //   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  //   padding: EdgeInsets.all(16),
-                  //   decoration: BoxDecoration(
-                  //     color: themes.whiteColor,
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.black12,
-                  //         blurRadius: 6,
-                  //         offset: Offset(0, 2),
-                  //       )
-                  //     ],
-                  //   ),
-                  //   child: Column(
-                  //     children: [
-                  //       Row(
-                  //         children: [
-                  //           Expanded(
-                  //               child: infoCard('Parcel Details',
-                  //                   details?.parcelDetail ?? 'N/A')),
-                  //           SizedBox(width: 12),
-                  //           Expanded(
-                  //               child: infoCard('Net Weight',
-                  //                   '${details?.netWeight ?? "N/A"}g')),
-                  //         ],
-                  //       ),
-                  //       SizedBox(height: 12),
-                  //       Row(
-                  //         children: [
-                  //           Expanded(
-                  //               child: infoCard('Gross Weight',
-                  //                   '${details?.grossWeight ?? "N/A"}g')),
-                  //           SizedBox(width: 12),
-                  //           Expanded(
-                  //               child: infoCard('Payment Mode',
-                  //                   details?.paymentMode ?? 'N/A')),
-                  //         ],
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-
-                  // Insurance Details Section
-                  // Container(
-                  //   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  //   padding: EdgeInsets.all(16),
-                  //   decoration: BoxDecoration(
-                  //     color: themes.whiteColor,
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.black12,
-                  //         blurRadius: 6,
-                  //         offset: Offset(0, 2),
-                  //       )
-                  //     ],
-                  //   ),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Text('Insurance Details',
-                  //           style: themes.fontSize16_400
-                  //               .copyWith(fontWeight: FontWeight.bold)),
-                  //       infoRow('Insurance Value',
-                  //           details?.insuranceValue?.toString() ?? 'N/A'),
-                  //       Divider(),
-                  //       SizedBox(height: 8),
-                  //       infoRow('Insurance Charges',
-                  //           details?.insuranceCharges?.toString() ?? 'N/A'),
-                  //       // Divider(),
-                  //       // SizedBox(height: 8),
-                  //       // infoRow('Total Charges',
-                  //       //     details?.totalCharges?.toString() ?? 'N/A'),
-                  //       Divider(),
-                  //       SizedBox(height: 12),
-                  //       infoRow(
-                  //         'Insurance Type',
-                  //         details?.axlplInsurance == '1'
-                  //             ? 'Yes Axlpl Insurance'
-                  //             : 'No Axlpl Insurance',
-                  //       ),
-                  //       Divider(),
-                  //       SizedBox(height: 8),
-                  //       infoRow(
-                  //         'Policy Details',
-                  //         details?.policyNo?.isEmpty == true
-                  //             ? 'No Policy'
-                  //             : details!.policyNo!,
-                  //       ),
-                  //       // SizedBox(height: 15.h),
-                  //       // Divider(),
-                  //     ],
-                  //   ),
-                  // ),
-                  // Container(
-                  //   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  //   padding: EdgeInsets.all(16),
-                  //   decoration: BoxDecoration(
-                  //     color: themes.whiteColor,
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     boxShadow: [
-                  //       BoxShadow(
-                  //         color: Colors.black12,
-                  //         blurRadius: 6,
-                  //         offset: Offset(0, 2),
-                  //       )
-                  //     ],
-                  //   ),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Text('Charges Details',
-                  //           style: themes.fontSize16_400
-                  //               .copyWith(fontWeight: FontWeight.bold)),
-                  //       SizedBox(
-                  //         height: 10.h,
-                  //       ),
-                  //       infoRow('Gst ',
-                  //           details?.insuranceValue?.toString() ?? 'N/A'),
-                  //       Divider(),
-                  //       SizedBox(height: 8),
-                  //       infoRow('Total Charges',
-                  //           details?.insuranceCharges?.toString() ?? 'N/A'),
-                  //       // Divider(),
-                  //       // SizedBox(height: 8),
-                  //       // infoRow('Total Charges',
-                  //       //     details?.totalCharges?.toString() ?? 'N/A'),
-                  //       Divider(),
-
-                  //       // SizedBox(height: 15.h),
-                  //       // Divider(),
-                  //     ],
-                  //   ),
-                  // ),
-                  // isShowInvoice == true
-                  //     ? Container(
-                  //         margin:
-                  //             EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  //         padding: EdgeInsets.all(16),
-                  //         decoration: BoxDecoration(
-                  //           color: themes.whiteColor,
-                  //           borderRadius: BorderRadius.circular(12),
-                  //           boxShadow: [
-                  //             BoxShadow(
-                  //               color: Colors.black12,
-                  //               blurRadius: 6,
-                  //               offset: Offset(0, 2),
-                  //             )
-                  //           ],
-                  //         ),
-                  //         child: Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.start,
-                  //           children: [
-                  //             Text('Invoice Details',
-                  //                 style: themes.fontSize16_400
-                  //                     .copyWith(fontWeight: FontWeight.bold)),
-                  //             infoRow('Invoice Value',
-                  //                 details?.invoiceValue?.toString() ?? 'N/A'),
-                  //             Divider(),
-                  //             SizedBox(height: 8),
-                  //             infoRow(
-                  //                 'Invoice Number',
-                  //                 details?.invoiceCharges?.toString() == ''
-                  //                     ? 'N/A'
-                  //                     : '' ?? 'N/A'),
-                  //             Divider(),
-                  //             invoicePath != null || invoicePath != ''
-                  //                 ? Image.network(
-                  //                     invoicePath.toString(),
-                  //                     fit: BoxFit.cover,
-                  //                     height: 120,
-                  //                     width: 120,
-                  //                   )
-                  //                 : Column(
-                  //                     crossAxisAlignment:
-                  //                         CrossAxisAlignment.start,
-                  //                     children: [
-                  //                       Row(
-                  //                         mainAxisAlignment:
-                  //                             MainAxisAlignment.spaceBetween,
-                  //                         children: [
-                  //                           OutlinedButton(
-                  //                             onPressed: () {
-                  //                               controller.pickImage(
-                  //                                   ImageSource.gallery,
-                  //                                   (file) {
-                  //                                 controller.setImage(
-                  //                                     shipmentID.toString(),
-                  //                                     file);
-                  //                               });
-                  //                             },
-                  //                             style: OutlinedButton.styleFrom(
-                  //                               side: BorderSide(
-                  //                                   color: themes.grayColor,
-                  //                                   width: 1.w),
-                  //                               shape: RoundedRectangleBorder(
-                  //                                 borderRadius:
-                  //                                     BorderRadius.circular(
-                  //                                         10.r),
-                  //                               ),
-                  //                               padding: EdgeInsets.symmetric(
-                  //                                   horizontal: 20.w,
-                  //                                   vertical: 8.h),
-                  //                             ),
-                  //                             child: Text(
-                  //                               'Choose',
-                  //                               style: themes.fontSize14_500
-                  //                                   .copyWith(
-                  //                                       color: themes
-                  //                                           .darkCyanBlue),
-                  //                             ),
-                  //                           ),
-                  //                           ElevatedButton(
-                  //                             style: ElevatedButton.styleFrom(
-                  //                               backgroundColor:
-                  //                                   themes.darkCyanBlue,
-                  //                               foregroundColor:
-                  //                                   themes.whiteColor,
-                  //                             ),
-                  //                             onPressed: () {
-                  //                               final file =
-                  //                                   controller.getImage(
-                  //                                       shipmentID.toString());
-                  //                               if (file != null) {
-                  //                                 controller.uploadInvoice(
-                  //                                     shipmentID:
-                  //                                         shipmentID.toString(),
-                  //                                     file: file);
-                  //                               }
-                  //                             },
-                  //                             child: Text('UPLOAD'),
-                  //                           ),
-                  //                         ],
-                  //                       ),
-                  //                       SizedBox(height: 12.h),
-                  //                       Obx(() {
-                  //                         final file = controller
-                  //                             .getImage(shipmentID.toString());
-                  //                         if (file == null) return SizedBox();
-
-                  //                         return Stack(
-                  //                           children: [
-                  //                             ClipRRect(
-                  //                               borderRadius:
-                  //                                   BorderRadius.circular(8),
-                  //                               child: Image.file(file,
-                  //                                   width: 120,
-                  //                                   height: 120,
-                  //                                   fit: BoxFit.cover),
-                  //                             ),
-                  //                             Positioned(
-                  //                               top: 4,
-                  //                               right: 4,
-                  //                               child: GestureDetector(
-                  //                                 onTap: () => controller
-                  //                                     .removeImage(shipmentID
-                  //                                         .toString()),
-                  //                                 child: Container(
-                  //                                   decoration: BoxDecoration(
-                  //                                       color: Colors.black54,
-                  //                                       shape: BoxShape.circle),
-                  //                                   child: Icon(Icons.close,
-                  //                                       size: 20,
-                  //                                       color: Colors.white),
-                  //                                 ),
-                  //                               ),
-                  //                             ),
-                  //                           ],
-                  //                         );
-                  //                       }),
-                  //                     ],
-                  //                   ),
-                  //           ],
-                  //         ),
-                  //       )
-                  //     : SizedBox(),
-
-                  // Container(
-                  //     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  //     decoration: BoxDecoration(
-                  //       color: themes.whiteColor,
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //           color: Colors.black12,
-                  //           blurRadius: 6,
-                  //           offset: Offset(0, 2),
-                  //         )
-                  //       ],
-                  //     ),
-                  //     child: EnhanceStepper(
-                  //       physics: ClampingScrollPhysics(),
-                  //       stepIconSize: 40, // Adjust size if needed
-                  //       stepIconBuilder: (stepIndex, stepState) => Container(
-                  //         decoration: BoxDecoration(
-                  //           shape: BoxShape.circle,
-                  //           color: stepState == StepState.complete
-                  //               ? themes
-                  //                   .blueGray // ✅ Change completed step color
-                  //               : Colors
-                  //                   .grey[300], // ✅ Change pending step color
-                  //         ),
-                  //         padding: EdgeInsets.all(
-                  //             10), // Adjust spacing inside circle
-                  //         child: Icon(
-                  //           Icons.gps_fixed,
-                  //           color: themes.darkCyanBlue,
-                  //           size: 20,
-                  //         ),
-                  //       ),
-                  //       type: StepperType.vertical,
-                  //       currentStep: controller.currentStep.value,
-                  //       // onStepTapped: (index) =>
-                  //       //     controller.currentStep.value = index,
-                  //       steps: controller.trackingStatus.map((step) {
-                  //         return EnhanceStep(
-                  //           isActive: true,
-                  //           state: StepState.complete,
-                  //           title: Row(
-                  //             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //             children: [
-                  //               Expanded(
-                  //                 child: Text(
-                  //                   step.status,
-                  //                   style:
-                  //                       TextStyle(fontWeight: FontWeight.bold),
-                  //                 ),
-                  //               ),
-                  //               Text(
-                  //                 formattedDate,
-                  //                 style: TextStyle(
-                  //                     fontSize: 12, color: Colors.grey),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //           content: Column(
-                  //             crossAxisAlignment: CrossAxisAlignment.start,
-                  //             children: [
-                  //               // Text(
-                  //               //   trackingStatus[0].status,
-                  //               //   style: TextStyle(color: Colors.grey),
-                  //               // ),
-                  //               SizedBox(height: 8),
-                  //               Row(
-                  //                 children: [
-                  //                   // CircleAvatar(
-                  //                   //   // backgroundImage:
-                  //                   //   //     AssetImage(step["driverImage"]),
-                  //                   //   radius: 20,
-                  //                   // ),
-                  //                   SizedBox(width: 8),
-                  //                   // Column(
-                  //                   //   crossAxisAlignment:
-                  //                   //       CrossAxisAlignment.start,
-                  //                   //   children: [
-                  //                   //     Text(
-                  //                   //       "Driver",
-                  //                   //       style: TextStyle(color: Colors.grey),
-                  //                   //     ),
-                  //                   //     Text(
-                  //                   //       'driver name',
-                  //                   //       style: TextStyle(
-                  //                   //           fontWeight: FontWeight.bold),
-                  //                   //     ),
-                  //                   //   ],
-                  //                   // ),
-                  //                   Spacer(),
-                  //                   // InkWell(
-                  //                   //   onTap: () {
-                  //                   //     // controller.makingPhoneCall();
-                  //                   //   },
-                  //                   //   child: Container(
-                  //                   //     padding: EdgeInsets.symmetric(
-                  //                   //         horizontal: 12.w, vertical: 5.h),
-                  //                   //     decoration: BoxDecoration(
-                  //                   //       color: Colors.blue[100],
-                  //                   //       borderRadius:
-                  //                   //           BorderRadius.circular(20),
-                  //                   //     ),
-                  //                   //     child: Row(
-                  //                   //       children: [
-                  //                   //         Image.asset(
-                  //                   //           phoneIcon,
-                  //                   //           width: 15.w,
-                  //                   //         ),
-                  //                   //         SizedBox(width: 5),
-                  //                   //         Text('driver number',
-                  //                   //             style: themes.fontSize14_500
-                  //                   //                 .copyWith(
-                  //                   //                     fontSize: 14.sp,
-                  //                   //                     color: themes
-                  //                   //                         .darkCyanBlue)),
-                  //                   //       ],
-                  //                   //     ),
-                  //                   //   ),
-                  //                   // ),
-                  //                 ],
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         );
-                  //       }).toList(),
-                  //       controlsBuilder: (context, details) =>
-                  //           SizedBox(), // Hide buttons
-                  //     )
-
-                  //     // Hide buttons
-                  //     ),
-
-                  // SizedBox(height: 20),
-                ],
-              );
-            } else {
-              return Center(
-                child: Text('No Track Data Found!'),
-              );
-            }
-          },
-        )),
-      ),
-    );
+                ),
+              ),*/
+            ],
+          ),
+        ));
   }
 }

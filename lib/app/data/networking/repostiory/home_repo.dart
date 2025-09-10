@@ -63,46 +63,47 @@ class HomeRepository {
     return null;
   }
 
-  Future<DashboardData?> customerDashboardDataRepo() async {
-    final userData = await LocalStorage().getUserLocalData();
-    final custID = userData?.customerdetail?.id.toString();
-    final token = userData?.customerdetail?.token;
-    if (custID != null && custID.isNotEmpty) {
-      final response = await _apiServices.getCustomerDashboardData(
-        custID,
-        token.toString(),
-      );
+  Future<CustomerDashboardDataModel?> customerDashboardDataRepo() async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.customerdetail?.id.toString();
 
-      return response.when(
-        success: (body) {
-          Utils()
-              .logInfo('RAW OF CUSTOMER DASHBOARD DATA JSON RESPONSE: $body');
+      final token =
+          userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
 
-          if (body is List && body.isNotEmpty) {
-            final Map<String, dynamic> dataMap = body[0];
+      if (userID != null && userID.isNotEmpty) {
+        final response = await _apiServices.getCustomerDashboardData(
+          userID,
+          token ?? "",
+        );
 
-            final data = CustomerDashboardDataModel.fromJson(dataMap);
+        CustomerDashboardDataModel? result;
 
-            if (data.type == 'success') {
-              return data.dashboardData;
+        response.when(
+          success: (data) {
+            final customerDashboardData =
+                CustomerDashboardDataModel.fromJson(data);
+            if (customerDashboardData.status == "success") {
+              result = customerDashboardData;
             } else {
-              Utils().logInfo('API call successful but type is not "success"');
+              Utils().logInfo(
+                  'API call successful but status is not "success" : ${customerDashboardData.status}');
             }
-          } else {
-            Utils().logError('API response is not a valid list or is empty.');
-          }
-          return null;
-        },
-        error: (error) {
-          Utils().logError(
-              "Customer Dashboard Data Fetch Failed: ${error.toString()}");
-          return null;
-        },
-      );
-    } else {
-      Utils().logError("Customer ID is null or empty");
-      return null;
+          },
+          error: (error) {
+            Utils().logError("API error: ${error.toString()}");
+          },
+        );
+
+        return result;
+      } else {
+        Utils().logError("userID is null or empty");
+      }
+    } catch (e) {
+      Utils().logError("customerDashboardDataRepo error: $e");
     }
+
+    return null;
   }
 
   Future<ContractViewModel?> contractViewRepo() async {

@@ -251,16 +251,22 @@ class HomeView extends GetView<HomeController> {
                         ],
                       );
                     } else {
-                      return Row(
+                      return Column(
+                        spacing: 10,
                         children: [
-                          Expanded(
-                            child: Obx(() {
-                              return HomeContainer(
-                                onTap: () {},
-                                color: themes.blueGray,
-                                title: 'Out for Delivery',
-                                subTitle:
-                                    homeController.isCustomerDashboard.value ==
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Obx(() {
+                                  return HomeContainer(
+                                    isIcon: false,
+                                    onTap: () {
+                                      Get.toNamed(Routes.SHIPMENT_RECORD);
+                                    },
+                                    color: themes.blueGray,
+                                    title: 'Out for Delivery',
+                                    subTitle: homeController
+                                                .isCustomerDashboard.value ==
                                             Status.loading
                                         ? '...'
                                         : homeController
@@ -269,30 +275,86 @@ class HomeView extends GetView<HomeController> {
                                                 ?.outForDeliveryCount
                                                 ?.toString() ??
                                             '0',
-                              );
-                            }),
-                          ),
-                          SizedBox(
-                            width: 10.w,
-                          ),
-                          Expanded(
-                            child: Obx(() {
-                              return HomeContainer(
-                                  onTap: () {},
-                                  color: themes.lightCream,
-                                  title: 'Pickedup',
-                                  subTitle: homeController
-                                              .isCustomerDashboard.value ==
-                                          Status.loading
-                                      ? '...' // This part works
-                                      : homeController
-                                              .customerDashboardDataModel
-                                              .value
-                                              ?.pickedupCount
-                                              ?.toString() ??
-                                          '0' // This results in ',
                                   );
-                            }),
+                                }),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Expanded(
+                                child: Obx(() {
+                                  return HomeContainer(
+                                      isIcon: false,
+                                      onTap: () {
+                                        Get.toNamed(Routes.SHIPMENT_RECORD);
+                                      },
+                                      color: themes.blueGray,
+                                      title: 'Pickedup',
+                                      subTitle: homeController
+                                                  .isCustomerDashboard.value ==
+                                              Status.loading
+                                          ? '...' // This part works
+                                          : homeController
+                                                  .customerDashboardDataModel
+                                                  .value
+                                                  ?.pickedupCount
+                                                  ?.toString() ??
+                                              '0' // This results in ',
+                                      );
+                                }),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Obx(() {
+                                  return HomeContainer(
+                                    isIcon: false,
+                                    onTap: () {
+                                      Get.toNamed(Routes.SHIPMENT_RECORD);
+                                    },
+                                    color: themes.blueGray,
+                                    title: 'Wating for Pickup',
+                                    subTitle: homeController
+                                                .isCustomerDashboard.value ==
+                                            Status.loading
+                                        ? '...'
+                                        : homeController
+                                                .customerDashboardDataModel
+                                                .value
+                                                ?.outForDeliveryCount
+                                                ?.toString() ??
+                                            '0',
+                                  );
+                                }),
+                              ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Expanded(
+                                child: Obx(() {
+                                  return HomeContainer(
+                                    isIcon: false,
+                                    onTap: () {
+                                      Get.toNamed(Routes.SHIPMENT_RECORD);
+                                    },
+                                    color: themes.blueGray,
+                                    title: 'shipped',
+                                    subTitle: homeController
+                                                .isCustomerDashboard.value ==
+                                            Status.loading
+                                        ? '...'
+                                        : homeController
+                                                .customerDashboardDataModel
+                                                .value
+                                                ?.outForDeliveryCount
+                                                ?.toString() ??
+                                            '0',
+                                  );
+                                }),
+                              ),
+                            ],
                           ),
                         ],
                       );
@@ -306,43 +368,48 @@ class HomeView extends GetView<HomeController> {
                     );
                   }
                   if (bottomController.userData.value?.role == 'messanger') {
-                    return Row(
+                    return Column(
                       children: [
-                        Expanded(
-                            child: HomeIconContainer(
-                                title: 'Pickups',
-                                Img: truckIcon,
-                                OnTap: () {
-                                  pickupController.getPickupData();
-                                  pickupController.fetchPaymentModes();
-                                  pickupController.getMessangerData(user
-                                          ?.messangerdetail?.routeId
-                                          .toString() ??
-                                      '0');
-                                  Get.toNamed(Routes.PICKUP);
-                                })),
-                        SizedBox(
-                          width: 10.w,
+                        Row(
+                          children: [
+                            Expanded(
+                                child: HomeIconContainer(
+                                    title: 'Pickups',
+                                    Img: truckIcon,
+                                    OnTap: () {
+                                      pickupController.getPickupData();
+                                      pickupController.fetchPaymentModes();
+                                      pickupController.getMessangerData(user
+                                              ?.messangerdetail?.routeId
+                                              .toString() ??
+                                          '0');
+                                      Get.toNamed(Routes.PICKUP);
+                                    })),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Expanded(
+                                child: HomeIconContainer(
+                                    title: 'Delivery',
+                                    Img: deliveryIcon,
+                                    OnTap: () {
+                                      deliveryController.getDeliveryData();
+                                      deliveryController.fetchPaymentModes();
+                                      historyController.getDeliveryHistory();
+                                      Get.toNamed(Routes.DELIVERY,
+                                          arguments: '');
+                                    })),
+                            SizedBox(
+                              width: 10.w,
+                            ),
+                            Expanded(
+                                child: HomeIconContainer(
+                              title: 'POD',
+                              Img: folderIcon,
+                              OnTap: () => Get.toNamed(Routes.POD),
+                            )),
+                          ],
                         ),
-                        Expanded(
-                            child: HomeIconContainer(
-                                title: 'Delivery',
-                                Img: deliveryIcon,
-                                OnTap: () {
-                                  deliveryController.getDeliveryData();
-                                  deliveryController.fetchPaymentModes();
-                                  historyController.getDeliveryHistory();
-                                  Get.toNamed(Routes.DELIVERY, arguments: '');
-                                })),
-                        SizedBox(
-                          width: 10.w,
-                        ),
-                        Expanded(
-                            child: HomeIconContainer(
-                          title: 'POD',
-                          Img: folderIcon,
-                          OnTap: () => Get.toNamed(Routes.POD),
-                        )),
                       ],
                     );
                   } else {
