@@ -5,14 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a34695b8-f86e-4fe4-82b5-decc75c7aeb4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/models/customer_dashboard_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/models/customer_dashboard_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/repostiory/home_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/repostiory/home_repo.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/home/controllers/home_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/home/controllers/home_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app/modules/home/views/home_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/modules/home/views/home_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/common_widget/home_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/common_widget/home_container.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/common_widget/pdf_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/common_widget/pdf_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/common_widget/tracking_info_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/common_widget/tracking_info_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/app/data/networking/repostiory/auth_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app/data/networking/repostiory/auth_repo.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

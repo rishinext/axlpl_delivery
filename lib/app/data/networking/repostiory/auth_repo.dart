@@ -48,7 +48,7 @@ class AuthRepo {
           _utils.logInfo(fcmToken.toString());
           log('device id ${deviceId.toString()}');
           if (loginData.status != "success") {
-            throw Exception(loginData.message ?? "Login Failed: Unknown Error");
+            throw loginData.message ?? "Login Failed: Unknown Error";
           }
 
           // Utils().logInfo("repo login data : ${loginData.toJson()}");
