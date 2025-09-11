@@ -259,7 +259,6 @@ class HomeView extends GetView<HomeController> {
                               Expanded(
                                 child: Obx(() {
                                   return HomeContainer(
-                                    isIcon: false,
                                     onTap: () {
                                       Get.toNamed(Routes.SHIPMENT_RECORD);
                                     },
@@ -284,7 +283,6 @@ class HomeView extends GetView<HomeController> {
                               Expanded(
                                 child: Obx(() {
                                   return HomeContainer(
-                                      isIcon: false,
                                       onTap: () {
                                         Get.toNamed(Routes.SHIPMENT_RECORD);
                                       },
@@ -310,7 +308,6 @@ class HomeView extends GetView<HomeController> {
                               Expanded(
                                 child: Obx(() {
                                   return HomeContainer(
-                                    isIcon: false,
                                     onTap: () {
                                       Get.toNamed(Routes.SHIPMENT_RECORD);
                                     },
@@ -335,7 +332,6 @@ class HomeView extends GetView<HomeController> {
                               Expanded(
                                 child: Obx(() {
                                   return HomeContainer(
-                                    isIcon: false,
                                     onTap: () {
                                       Get.toNamed(Routes.SHIPMENT_RECORD);
                                     },

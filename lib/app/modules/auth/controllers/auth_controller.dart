@@ -56,7 +56,7 @@ class AuthController extends GetxController {
     } catch (e) {
       errorMessage.value = e.toString();
       log(errorMessage.value);
-      Get.snackbar('Error', errorMessage.value,
+      Get.snackbar('', errorMessage.value,
           colorText: themes.whiteColor,
           backgroundColor: themes.redColor,
           snackPosition: SnackPosition.BOTTOM);
@@ -75,7 +75,7 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       errorMessage.value = e.toString();
-      Get.snackbar('Error', errorMessage.value,
+      Get.snackbar('', errorMessage.value,
           colorText: themes.whiteColor,
           backgroundColor: themes.redColor,
           snackPosition: SnackPosition.BOTTOM);

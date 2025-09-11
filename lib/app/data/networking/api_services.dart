@@ -363,12 +363,14 @@ class ApiServices {
     String latitude,
     String longitude,
     final token,
+    final deviceId,
   ) {
     final body = {
       'm_id': userID,
       'role': role,
       'latitude': latitude,
       'longitude': longitude,
+      'device_id': deviceId,
     };
     return _api.post(
       logoutPoint,

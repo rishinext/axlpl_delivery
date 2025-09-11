@@ -23,7 +23,9 @@ class HomeContainer extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-            color: color, borderRadius: BorderRadius.circular(5.r)),
+          color: color,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(

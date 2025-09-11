@@ -35,18 +35,18 @@ class AuthRepo {
 
     try {
       final response = await _apiServices.loginUserService(
-        mobile,
-        password,
-        fcmToken.toString(),
-        appVersion,
-        deviceId.toString(),
-        location.latitude.toString(),
-        location.longitude.toString(),
-      );
+          mobile,
+          password,
+          fcmToken.toString(),
+          appVersion,
+          location.latitude.toString(),
+          location.longitude.toString(),
+          deviceId.toString());
       return response.when(
         success: (body) async {
           final loginData = LoginModel.fromJson(body);
           _utils.logInfo(fcmToken.toString());
+          log('device id ${deviceId.toString()}');
           if (loginData.status != "success") {
             throw Exception(loginData.message ?? "Login Failed: Unknown Error");
           }
@@ -80,6 +80,9 @@ class AuthRepo {
 
   Future<bool> logoutRepo() async {
     final userData = await LocalStorage().getUserLocalData();
+
+    final deviceId = await _utils.getDeviceId();
+
     if (userData == null) return false;
     final String? role = userData.role;
     final String? mId = userData.messangerdetail?.id?.toString();
@@ -101,9 +104,11 @@ class AuthRepo {
         location.latitude.toString(),
         location.longitude.toString(),
         token,
+        deviceId,
       );
       response.when(success: (success) async {
         // _localStorage.clearAll();
+        log('logout device id ${deviceId.toString()}');
 
         await _localStorage.deleteRole();
         String? role = await storage.read(key: _localStorage.userRole);
