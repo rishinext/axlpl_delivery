@@ -42,65 +42,72 @@ class ContractsDeatilsModel {
 
 class Contract {
   String? id;
-  String? customerId;
-  DateTime? startDate;
-  DateTime? endDate;
-  String? billingCycle;
+  String? startDate;
+  String? endDate;
   String? categoryId;
+  String? categoryName;
   String? ratePerGram;
-  String? weight;
+  String? assignedWeight;
+  String? usedWeight;
+  String? remainingWeight;
+  String? assignedValue;
+  String? usedValue;
+  String? remainingValue;
+  String? billingCycle;
   String? active;
-  DateTime? createdDate;
-  DateTime? modifiedDate;
+  String? viewLink;
 
   Contract({
     this.id,
-    this.customerId,
     this.startDate,
     this.endDate,
-    this.billingCycle,
     this.categoryId,
+    this.categoryName,
     this.ratePerGram,
-    this.weight,
+    this.assignedWeight,
+    this.usedWeight,
+    this.remainingWeight,
+    this.assignedValue,
+    this.usedValue,
+    this.remainingValue,
+    this.billingCycle,
     this.active,
-    this.createdDate,
-    this.modifiedDate,
+    this.viewLink,
   });
 
   factory Contract.fromJson(Map<String, dynamic> json) => Contract(
         id: json["id"],
-        customerId: json["customer_id"],
-        startDate: json["start_date"] == null
-            ? null
-            : DateTime.parse(json["start_date"]),
-        endDate:
-            json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
-        billingCycle: json["billing_cycle"],
+        startDate: json["start_date"],
+        endDate: json["end_date"],
         categoryId: json["category_id"],
+        categoryName: json["category_name"],
         ratePerGram: json["rate_per_gram"],
-        weight: json["weight"],
+        assignedWeight: json["assigned_weight"],
+        usedWeight: json["used_weight"],
+        remainingWeight: json["remaining_weight"],
+        assignedValue: json["assigned_value"],
+        usedValue: json["used_value"],
+        remainingValue: json["remaining_value"],
+        billingCycle: json["billing_cycle"],
         active: json["active"],
-        createdDate: json["created_date"] == null
-            ? null
-            : DateTime.parse(json["created_date"]),
-        modifiedDate: json["modified_date"] == null
-            ? null
-            : DateTime.parse(json["modified_date"]),
+        viewLink: json["view_link"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "customer_id": customerId,
-        "start_date":
-            "${startDate!.year.toString().padLeft(4, '0')}-${startDate!.month.toString().padLeft(2, '0')}-${startDate!.day.toString().padLeft(2, '0')}",
-        "end_date":
-            "${endDate!.year.toString().padLeft(4, '0')}-${endDate!.month.toString().padLeft(2, '0')}-${endDate!.day.toString().padLeft(2, '0')}",
-        "billing_cycle": billingCycle,
+        "start_date": startDate,
+        "end_date": endDate,
         "category_id": categoryId,
+        "category_name": categoryName,
         "rate_per_gram": ratePerGram,
-        "weight": weight,
+        "assigned_weight": assignedWeight,
+        "used_weight": usedWeight,
+        "remaining_weight": remainingWeight,
+        "assigned_value": assignedValue,
+        "used_value": usedValue,
+        "remaining_value": remainingValue,
+        "billing_cycle": billingCycle,
         "active": active,
-        "created_date": createdDate?.toIso8601String(),
-        "modified_date": modifiedDate?.toIso8601String(),
+        "view_link": viewLink,
       };
 }

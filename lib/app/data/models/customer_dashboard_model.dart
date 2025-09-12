@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:axlpl_delivery/app/data/models/contract_details_model.dart';
+
 CustomerDashboardDataModel customerDashboardDataModelFromJson(String str) =>
     CustomerDashboardDataModel.fromJson(json.decode(str));
 
@@ -20,6 +22,8 @@ class CustomerDashboardDataModel {
   String? approvedCount;
   String? archivedCount;
 
+  List<Contract>? contracts;
+
   CustomerDashboardDataModel({
     this.status,
     this.message,
@@ -29,6 +33,7 @@ class CustomerDashboardDataModel {
     this.shippedCount,
     this.approvedCount,
     this.archivedCount,
+    this.contracts,
   });
 
   factory CustomerDashboardDataModel.fromJson(Map<String, dynamic> json) =>

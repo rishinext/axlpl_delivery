@@ -95,6 +95,10 @@ class _PdfScreenState extends State<PdfScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
+                              child: infoCard('Remaning Amount',
+                                  details?.ratePerGram.toString() ?? 'N/A')),
+                          SizedBox(width: 12),
+                          Expanded(
                               child: infoCard(
                                   containerColor: Colors.green.shade100,
                                   'Status',
@@ -102,24 +106,26 @@ class _PdfScreenState extends State<PdfScreen> {
                                       ? Colors.green.shade800
                                       : themes.redColor,
                                   '${details?.active.toString() ?? "N/A"}')),
-                          SizedBox(width: 12),
-                          SizedBox(
-                              width: 150.w,
-                              child: CommonButton(
-                                title: 'View PDF',
-                                backgroundColor: themes.darkCyanBlue,
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PdfViewerPage(
-                                          pdfUrl: details?.viewLink ?? ''),
-                                    ),
-                                  );
-                                },
-                              ))
                         ],
                       ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      SizedBox(
+                          width: double.infinity,
+                          child: CommonButton(
+                            title: 'View PDF',
+                            backgroundColor: themes.darkCyanBlue,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PdfViewerPage(
+                                      pdfUrl: details?.viewLink ?? ''),
+                                ),
+                              );
+                            },
+                          ))
                     ],
                   ),
                 ),

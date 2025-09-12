@@ -16,7 +16,7 @@ import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
-import 'package:axlpl_delivery/common_widget/pdf_screen.dart';
+import 'package:axlpl_delivery/common_widget/contract_screen.dart';
 import 'package:axlpl_delivery/common_widget/pdf_view.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
@@ -199,6 +199,65 @@ class HomeView extends GetView<HomeController> {
                       child: Icon(CupertinoIcons.qrcode_viewfinder)),
                   hintText: 'Enter Your Package Number',
                   controller: shipmentRecordController.shipmentController,
+                ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        themes.darkCyanBlue,
+                        themes.darkCyanBlue.withOpacity(0.8)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: themes.darkCyanBlue.withOpacity(0.2),
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  margin: EdgeInsets.only(top: 0.h, bottom: 15.h),
+                  child: Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                    child: Row(
+                      children: [
+                        // Icon(
+                        //   Icons.account_balance_wallet,
+                        //   color: themes.whiteColor,
+                        //   size: 40.w,
+                        // ),
+                        SizedBox(width: 12.w),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Total Contract Amount',
+                                style: themes.fontReboto16_600.copyWith(
+                                  color: themes.whiteColor,
+                                  fontSize: 14.sp,
+                                ),
+                              ),
+                              SizedBox(height: 2.h),
+                              Text(
+                                '\u{20B9}${2222.toStringAsFixed(2)}',
+                                style: themes.fontReboto16_600.copyWith(
+                                  color: themes.whiteColor,
+                                  fontSize: 30.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Obx(
                   () {
