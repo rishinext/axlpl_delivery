@@ -95,9 +95,24 @@ class _PdfScreenState extends State<PdfScreen> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Expanded(
-                              child: infoCard('Remaning Amount',
-                                  details?.ratePerGram.toString() ?? 'N/A')),
+                              child: infoCard(
+                                  'Used Amount',
+                                  "\u{20B9}${details?.usedValue.toString()}" ??
+                                      'N/A')),
                           SizedBox(width: 12),
+                          Expanded(
+                              child: infoCard(
+                                  'Total Amount',
+                                  "\u{20B9}${details?.assignedValue.toString()}" ??
+                                      'N/A')),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
                           Expanded(
                               child: infoCard(
                                   containerColor: Colors.green.shade100,
@@ -106,26 +121,27 @@ class _PdfScreenState extends State<PdfScreen> {
                                       ? Colors.green.shade800
                                       : themes.redColor,
                                   '${details?.active.toString() ?? "N/A"}')),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: themes.darkCyanBlue,
+                                foregroundColor: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PdfViewerPage(
+                                        pdfUrl: details?.viewLink ?? ''),
+                                  ),
+                                );
+                              },
+                              child: Text('View PDF'),
+                            ),
+                          ),
                         ],
-                      ),
-                      SizedBox(
-                        height: 20.h,
-                      ),
-                      SizedBox(
-                          width: double.infinity,
-                          child: CommonButton(
-                            title: 'View PDF',
-                            backgroundColor: themes.darkCyanBlue,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PdfViewerPage(
-                                      pdfUrl: details?.viewLink ?? ''),
-                                ),
-                              );
-                            },
-                          ))
+                      )
                     ],
                   ),
                 ),

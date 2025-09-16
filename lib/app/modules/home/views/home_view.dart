@@ -244,13 +244,18 @@ class HomeView extends GetView<HomeController> {
                                 ),
                               ),
                               SizedBox(height: 2.h),
-                              Text(
-                                '\u{20B9}${2222.toStringAsFixed(2)}',
-                                style: themes.fontReboto16_600.copyWith(
-                                  color: themes.whiteColor,
-                                  fontSize: 30.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              Obx(
+                                () => controller.isCustomerDashboard.value ==
+                                        Status.loading
+                                    ? Text('...')
+                                    : Text(
+                                        '\u{20B9}${homeController.customerDashboardDataModel.value?.contracts?.first.assignedValue ?? '0'}',
+                                        style: themes.fontReboto16_600.copyWith(
+                                          color: themes.whiteColor,
+                                          fontSize: 30.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ],
                           ),
@@ -379,7 +384,7 @@ class HomeView extends GetView<HomeController> {
                                         : homeController
                                                 .customerDashboardDataModel
                                                 .value
-                                                ?.outForDeliveryCount
+                                                ?.waitingForPickupCount
                                                 ?.toString() ??
                                             '0',
                                   );
@@ -403,7 +408,7 @@ class HomeView extends GetView<HomeController> {
                                         : homeController
                                                 .customerDashboardDataModel
                                                 .value
-                                                ?.outForDeliveryCount
+                                                ?.shippedCount
                                                 ?.toString() ??
                                             '0',
                                   );

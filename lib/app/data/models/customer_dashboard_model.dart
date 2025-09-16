@@ -46,6 +46,10 @@ class CustomerDashboardDataModel {
         shippedCount: json["shipped_count"],
         approvedCount: json["approved_count"],
         archivedCount: json["archived_count"],
+        contracts: json["contracts"] == null
+            ? []
+            : List<Contract>.from(
+                json["contracts"]!.map((x) => Contract.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,5 +61,8 @@ class CustomerDashboardDataModel {
         "shipped_count": shippedCount,
         "approved_count": approvedCount,
         "archived_count": archivedCount,
+        "contracts": contracts == null
+            ? []
+            : List<dynamic>.from(contracts!.map((x) => x.toJson())),
       };
 }

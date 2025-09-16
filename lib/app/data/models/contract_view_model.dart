@@ -14,12 +14,18 @@ class ContractViewModel {
   String? status;
   String? message;
   String? customerId;
+  String? assignedValueSum;
+  String? usedValueSum;
+  String? remainingValueSum;
   List<Contract>? contracts;
 
   ContractViewModel({
     this.status,
     this.message,
     this.customerId,
+    this.assignedValueSum,
+    this.usedValueSum,
+    this.remainingValueSum,
     this.contracts,
   });
 
@@ -28,6 +34,9 @@ class ContractViewModel {
         status: json["status"],
         message: json["message"],
         customerId: json["customer_id"],
+        assignedValueSum: json["assigned_value_sum"],
+        usedValueSum: json["used_value_sum"],
+        remainingValueSum: json["remaining_value_sum"],
         contracts: json["contracts"] == null
             ? []
             : List<Contract>.from(
@@ -38,6 +47,9 @@ class ContractViewModel {
         "status": status,
         "message": message,
         "customer_id": customerId,
+        "assigned_value_sum": assignedValueSum,
+        "used_value_sum": usedValueSum,
+        "remaining_value_sum": remainingValueSum,
         "contracts": contracts == null
             ? []
             : List<dynamic>.from(contracts!.map((x) => x.toJson())),
@@ -54,6 +66,9 @@ class Contract {
   String? weight;
   String? billingCycle;
   String? active;
+  String? assignedValue;
+  String? usedValue;
+  String? remainingValue;
   String? viewLink;
 
   Contract({
@@ -66,6 +81,9 @@ class Contract {
     this.weight,
     this.billingCycle,
     this.active,
+    this.assignedValue,
+    this.usedValue,
+    this.remainingValue,
     this.viewLink,
   });
 
@@ -79,6 +97,9 @@ class Contract {
         weight: json["weight"],
         billingCycle: json["billing_cycle"],
         active: json["active"],
+        assignedValue: json["assigned_value"],
+        usedValue: json["used_value"],
+        remainingValue: json["remaining_value"],
         viewLink: json["view_link"],
       );
 
@@ -92,6 +113,9 @@ class Contract {
         "weight": weight,
         "billing_cycle": billingCycle,
         "active": active,
+        "assigned_value": assignedValue,
+        "used_value": usedValue,
+        "remaining_value": remainingValue,
         "view_link": viewLink,
       };
 }
