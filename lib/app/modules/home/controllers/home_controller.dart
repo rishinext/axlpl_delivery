@@ -1,11 +1,11 @@
 import 'package:axlpl_delivery/app/data/models/contract_view_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
-import 'package:axlpl_delivery/app/data/models/customer_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/home_repo.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
+import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,6 +29,7 @@ class HomeController extends GetxController {
 
   var scannedCode = ''.obs;
   final profileController = Get.put(ProfileController());
+  final shipController = Get.put(ShipnowController());
 
   Future<void> getDashborad() async {
     isLoading.value = true;
@@ -127,6 +128,7 @@ class HomeController extends GetxController {
     getCustomerDashborad();
     getRattingData();
     contractView();
+    shipController.fetchShipmentData('0');
     super.onInit();
   }
 }

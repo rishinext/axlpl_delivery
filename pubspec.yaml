@@ -41,7 +41,7 @@ dependencies:
   dotted_border: ^2.1.0
   easy_stepper: ^0.8.5+1
   enhance_stepper: ^1.0.1
-  percent_indicator: ^4.2.4
+  percent_indicator: ^4.2.5
   image_picker: ^1.1.2
   flutter_secure_storage: ^9.2.4
   dio: ^5.8.0+1

@@ -12,17 +12,22 @@ import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.
 import 'package:axlpl_delivery/app/modules/pod/controllers/pod_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/modules/shipment_record/controllers/shipment_record_controller.dart';
+import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
+import 'package:axlpl_delivery/common_widget/contract_home_screen_widget.dart';
+import 'package:axlpl_delivery/common_widget/contract_list.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
-import 'package:axlpl_delivery/common_widget/contract_screen.dart';
+import 'package:axlpl_delivery/common_widget/contract_details_screen.dart';
 import 'package:axlpl_delivery/common_widget/pdf_view.dart';
+import 'package:axlpl_delivery/common_widget/used_contract_shipment.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
@@ -43,6 +48,7 @@ class HomeView extends GetView<HomeController> {
     final shipmentRecordController = Get.put(ShipmentRecordController());
     final podController = Get.put(PodController());
     final historyController = Get.put(HistoryController());
+    final shipnowController = Get.put(ShipnowController());
 
     final user = bottomController.userData.value;
     return Scaffold(
@@ -157,7 +163,7 @@ class HomeView extends GetView<HomeController> {
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 20,
+              spacing: 0,
               children: [
                 ContainerTextfiled(
                   prefixIcon: Icon(
@@ -200,69 +206,34 @@ class HomeView extends GetView<HomeController> {
                   hintText: 'Enter Your Package Number',
                   controller: shipmentRecordController.shipmentController,
                 ),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        themes.darkCyanBlue,
-                        themes.darkCyanBlue.withOpacity(0.8)
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: themes.darkCyanBlue.withOpacity(0.2),
-                        blurRadius: 6,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  margin: EdgeInsets.only(top: 0.h, bottom: 15.h),
-                  child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-                    child: Row(
-                      children: [
-                        // Icon(
-                        //   Icons.account_balance_wallet,
-                        //   color: themes.whiteColor,
-                        //   size: 40.w,
-                        // ),
-                        SizedBox(width: 12.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Total Contract Amount',
-                                style: themes.fontReboto16_600.copyWith(
-                                  color: themes.whiteColor,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              Obx(
-                                () => controller.isCustomerDashboard.value ==
-                                        Status.loading
-                                    ? Text('...')
-                                    : Text(
-                                        '\u{20B9}${homeController.customerDashboardDataModel.value?.contracts?.first.assignedValue ?? '0'}',
-                                        style: themes.fontReboto16_600.copyWith(
-                                          color: themes.whiteColor,
-                                          fontSize: 30.sp,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                SizedBox(
+                  height: 15.h,
+                ),
+                Obx(() {
+                  var contracts = homeController
+                      .customerDashboardDataModel.value?.contracts;
+                  var data = (contracts != null && contracts.isNotEmpty)
+                      ? contracts.first
+                      : null;
+
+                  return bottomController.userData.value?.role != 'messanger'
+                      ? ContractCard(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UsedContractShipment(),
+                                ));
+                          },
+                          title: data?.categoryName ?? 'N/A',
+                          used: double.tryParse(data?.usedValue ?? '0') ?? 0,
+                          total:
+                              double.tryParse(data?.assignedValue ?? '0') ?? 0,
+                        )
+                      : SizedBox();
+                }),
+                SizedBox(
+                  height: 15.h,
                 ),
                 Obx(
                   () {
@@ -476,6 +447,9 @@ class HomeView extends GetView<HomeController> {
                     return Container();
                   }
                 }),
+                SizedBox(
+                  height: 15.h,
+                ),
                 Obx(() {
                   if (bottomController.isLoading.value) {
                     return Center(
@@ -531,14 +505,15 @@ class HomeView extends GetView<HomeController> {
                                 : SizedBox(
                                     width: 100.w,
                                     child: HomeIconContainer(
-                                      title: 'My Contract',
+                                      title: 'My Contracts',
                                       Img: containerIcon,
                                       OnTap: () {
                                         // homeController.contractView();
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) => PdfScreen()
+                                              builder: (context) =>
+                                                  ContractListWidget()
                                               // PdfViewerPage(
                                               //   pdfUrl: homeController
                                               //           .contractDataModel
@@ -723,6 +698,98 @@ class HomeView extends GetView<HomeController> {
                   } else {
                     return SizedBox.shrink();
                   }
+                }),
+                SizedBox(
+                  height: 20.h,
+                ),
+                Obx(() {
+                  if (shipnowController.isLoadingShipNow.value) {
+                    return const Center(
+                        child: CircularProgressIndicator.adaptive());
+                  }
+
+                  // Parse today's shipments
+                  final allShipments = shipnowController.allShipmentData;
+                  final today = DateTime.now();
+                  final todayShipments = allShipments.where((shipment) {
+                    final created = shipment.createdDate;
+                    if (created == null) return false;
+
+                    // Normalize (compare only year, month, day)
+                    return created.year == today.year &&
+                        created.month == today.month &&
+                        created.day == today.day;
+                  }).toList();
+
+                  if (todayShipments.isNotEmpty) {
+                    return ListView.separated(
+                      physics: const ScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: todayShipments.length,
+                      separatorBuilder: (context, index) =>
+                          SizedBox(height: 15.h),
+                      itemBuilder: (context, index) {
+                        final shipment = todayShipments[index];
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: themes.whiteColor,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                '${shipment.shipmentId}',
+                                style: themes.fontSize14_500.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12.sp,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  Clipboard.setData(
+                                    ClipboardData(
+                                        text: shipment.shipmentId.toString()),
+                                  );
+                                },
+                                icon: const Icon(Icons.copy, size: 18),
+                              ),
+                              const Spacer(),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: themes.blueGray,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Text(
+                                  shipment.shipmentStatus.toString(),
+                                  style: themes.fontSize14_500.copyWith(
+                                    color: themes.darkCyanBlue,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return Center(
+                      child: Text(
+                    "No shipments created today",
+                    style: themes.fontSize14_500,
+                  ));
                 }),
               ],
             ),

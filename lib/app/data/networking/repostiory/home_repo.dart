@@ -157,7 +157,7 @@ class HomeRepository {
         response.when(
           success: (body) {
             log("Raw response body: ${jsonEncode(body)}");
-            result = RattingDataModel.fromJson(body); // ✅ parse directly
+            result = RattingDataModel.fromJson(body); // ✅
           },
           error: (error) {
             Utils().logError("Ratting error: $error");

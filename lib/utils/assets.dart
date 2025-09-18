@@ -27,3 +27,4 @@ final axlplLogo = 'assets/axlplLogo.png';
 final appoved = 'assets/approve.png';
 final hold = 'assets/hold.png';
 final cancle = 'assets/cancelled.png';
+final contractLogo = 'assets/contracticon.png';
