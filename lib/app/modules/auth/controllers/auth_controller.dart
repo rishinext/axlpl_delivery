@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -16,6 +17,8 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+enum OtpStep { idle, readyToSend, codeSent }
+
 class AuthController extends GetxController {
   //TODO: Implement AuthController
   final AuthRepo _authRepo = AuthRepo();
@@ -31,7 +34,17 @@ class AuthController extends GetxController {
 
   TextEditingController mobileController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final otpController = TextEditingController();
+
   final profileController = Get.put(ProfileController());
+
+  final isOtpMode = false.obs; // toggles password vs OTP UI
+  final otpStep = OtpStep.idle.obs; // idle -> readyToSend -> codeSent
+  final isSendingOtp = false.obs;
+  final isVerifyingOtp = false.obs;
+
+  final secondsLeft = 0.obs;
+  Timer? _timer;
 
   Future<void> loginAuth(
     String mobile,
@@ -62,6 +75,52 @@ class AuthController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> sendOtp() async {
+    final phone = mobileController.text.trim();
+    if (phone.isEmpty) {
+      Get.snackbar('Phone required', 'Please enter your phone number');
+      return;
+    }
+    isSendingOtp.value = true;
+    try {
+      // TODO: call your API to send OTP here
+      // final resp = await authApi.sendOtp(phone);
+      // if (!resp.ok) throw 'Failed to send OTP';
+
+      // Move to code entry state and start a resend cooldown
+      otpStep.value = OtpStep.codeSent;
+      _startTimer(30); // e.g., 30 seconds lock before resend
+      Get.snackbar('OTP sent', 'Check your phone for the verification code');
+    } catch (e) {
+      Get.snackbar('Failed', e.toString());
+    } finally {
+      isSendingOtp.value = false;
+    }
+  }
+
+  Future<void> verifyOtp() async {
+    final code = otpController.text.trim();
+    final phone = mobileController.text.trim();
+    if (code.length < 4) {
+      Get.snackbar('Invalid code', 'Please enter the full OTP');
+      return;
+    }
+    isVerifyingOtp.value = true;
+    try {
+      // TODO: call your API to verify OTP here
+      // final ok = await authApi.verifyOtp(phone, code);
+      // if (!ok) throw 'Invalid OTP';
+
+      // On success: continue login session (e.g., save token, navigate, etc.)
+      Get.snackbar('Verified', 'Login successful');
+      // Example: Get.offAllNamed(Routes.HOME);
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    } finally {
+      isVerifyingOtp.value = false;
     }
   }
 
@@ -143,8 +202,62 @@ class AuthController extends GetxController {
   @override
   void dispose() {
     // TODO: implement dispose
+
+    mobileController.addListener(() {
+      if (!isOtpMode.value) {
+        final hasPhone = mobileController.text.trim().isNotEmpty;
+        otpStep.value = hasPhone ? OtpStep.readyToSend : OtpStep.idle;
+      }
+    });
+    super.dispose();
+  }
+
+  @override
+  void onClose() {
+    _cancelTimer();
     mobileController.dispose();
     passwordController.dispose();
-    super.dispose();
+    otpController.dispose();
+    super.onClose();
+  }
+
+  onPhoneChanged(String? _) {
+    if (!isOtpMode.value) {
+      otpStep.value = mobileController.text.trim().isNotEmpty
+          ? OtpStep.readyToSend
+          : OtpStep.idle;
+    }
+  }
+
+  /// Switch from password to OTP mode and show "Send OTP".
+  void enterOtpMode() {
+    isOtpMode.value = true;
+    otpStep.value = OtpStep.readyToSend;
+  }
+
+  /// Go back to password login.
+  void backToPassword() {
+    isOtpMode.value = false;
+    otpStep.value = OtpStep.idle;
+    otpController.clear();
+    _cancelTimer();
+  }
+
+  void _startTimer(int seconds) {
+    secondsLeft.value = seconds;
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (secondsLeft.value <= 1) {
+        t.cancel();
+        secondsLeft.value = 0;
+      } else {
+        secondsLeft.value -= 1;
+      }
+    });
+  }
+
+  void _cancelTimer() {
+    _timer?.cancel();
+    secondsLeft.value = 0;
   }
 }
