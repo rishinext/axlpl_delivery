@@ -26,7 +26,7 @@ class _PdfScreenState extends State<PdfScreen> {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.put(HomeController());
-    final details = homeController.contractDataModel.value?.contracts?[0];
+
     log(widget.Contract.id.toString());
     return CommonScaffold(
       appBar: commonAppbar('Contracts Details'),

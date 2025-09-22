@@ -66,7 +66,8 @@ class DefaultFirebaseOptions {
     projectId: 'myjainshasan-240a2',
     databaseURL: 'https://myjainshasan-240a2.firebaseio.com',
     storageBucket: 'myjainshasan-240a2.firebasestorage.app',
-    androidClientId: '778652530713-hgljomi7pe5shi761kr5ve6rpuval36e.apps.googleusercontent.com',
+    androidClientId:
+        '778652530713-hgljomi7pe5shi761kr5ve6rpuval36e.apps.googleusercontent.com',
     iosBundleId: 'com.example.axlplDelivery',
   );
 
@@ -77,7 +78,8 @@ class DefaultFirebaseOptions {
     projectId: 'myjainshasan-240a2',
     databaseURL: 'https://myjainshasan-240a2.firebaseio.com',
     storageBucket: 'myjainshasan-240a2.firebasestorage.app',
-    androidClientId: '778652530713-hgljomi7pe5shi761kr5ve6rpuval36e.apps.googleusercontent.com',
+    androidClientId:
+        '778652530713-hgljomi7pe5shi761kr5ve6rpuval36e.apps.googleusercontent.com',
     iosBundleId: 'com.example.axlplDelivery',
   );
 

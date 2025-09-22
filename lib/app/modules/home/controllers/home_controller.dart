@@ -1,5 +1,6 @@
 import 'package:axlpl_delivery/app/data/models/contract_view_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
+import 'package:axlpl_delivery/app/data/models/customer_invoice_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
@@ -22,9 +23,12 @@ class HomeController extends GetxController {
 
   Rxn<ContractViewModel> contractDataModel = Rxn<ContractViewModel>();
 
+  var invoiceListDataModel = Rxn<List<CustomerInvoiceModel?>>();
+
   RxBool isLoading = false.obs;
   var isCustomerDashboard = Status.initial.obs;
   var isContractLoading = Status.initial.obs;
+  var isInvoiceLoading = Status.initial.obs;
   var isRattingData = Status.initial.obs;
 
   var scannedCode = ''.obs;
@@ -98,6 +102,34 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<void> invoiceList() async {
+    isInvoiceLoading.value = Status.loading;
+    try {
+      Utils().logInfo("Fetching invoice data...");
+      final data = await homeRepo.myInvoiceRepo();
+
+      if (data.isNotEmpty) {
+        Utils().logInfo("Invoice data received successfully");
+        invoiceListDataModel.value = data;
+        isInvoiceLoading.value = Status.success;
+      } else {
+        Utils().logInfo("No invoice data found");
+        invoiceListDataModel.value = [];
+        isInvoiceLoading.value = Status.success;
+      }
+    } catch (error) {
+      Utils().logError('Error fetching invoices: $error');
+      isInvoiceLoading.value = Status.error;
+      Get.snackbar(
+        'Error',
+        'Failed to load invoices. Please try again.',
+        colorText: Colors.white,
+        backgroundColor: Colors.red,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
   Future<void> getRattingData() async {
     isRattingData.value = Status.loading;
 
@@ -128,6 +160,7 @@ class HomeController extends GetxController {
     getCustomerDashborad();
     getRattingData();
     contractView();
+    invoiceList();
     shipController.fetchShipmentData('0');
     super.onInit();
   }

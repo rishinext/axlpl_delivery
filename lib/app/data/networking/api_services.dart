@@ -9,8 +9,45 @@ import 'package:dio/dio.dart';
 import "dart:async";
 import 'api_response.dart';
 
+const _sendOtpEndpoint = 'user/send-otp';
+const _verifyOtpEndpoint = 'user/verify-otp';
+
 class ApiServices {
   static final ApiClient _api = ApiClient();
+
+  Future<APIResponse> sendOtpService(String mobile) async {
+    final data = {'mobile': mobile};
+    return _api.post(
+      _sendOtpEndpoint,
+      data,
+      contentType: ContentType.json,
+    );
+  }
+
+  Future<APIResponse> verifyOtpService(
+    String mobile,
+    String otp,
+    String fcmToken,
+    String appVersion,
+    String latitude,
+    String longitude,
+    String deviceId,
+  ) async {
+    final data = {
+      'mobile': mobile,
+      'otp': otp,
+      'fcm_token': fcmToken,
+      'app_version': appVersion,
+      'latitude': latitude,
+      'longitude': longitude,
+      'device_id': deviceId,
+    };
+    return _api.post(
+      _verifyOtpEndpoint,
+      data,
+      contentType: ContentType.json,
+    );
+  }
 
   Future<APIResponse> getConsignment(
     String consigenmentID,
@@ -355,6 +392,21 @@ class ApiServices {
     };
 
     return _api.post(loginPoint, body);
+  }
+
+  Future<APIResponse> verifyLoginOtpService(
+    String mobile,
+    // final email,
+    String otp,
+
+    // String token
+  ) {
+    final Map<String, dynamic> body = {
+      'mobile': mobile,
+      'otp': otp,
+    };
+
+    return _api.post(verifyLoginOtpPoint, body);
   }
 
   Future<APIResponse> logout(

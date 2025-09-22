@@ -27,299 +27,355 @@ class AuthView extends GetView<AuthController> {
     Themes themes = Themes();
     final Utils utils = Utils();
     final authController = controller;
+
     return Scaffold(
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: Container(
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage(loginIMG),
+              image: DecorationImage(
+            fit: BoxFit.cover,
+            image: AssetImage(
+              loginIMG,
             ),
-          ),
+          )),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Form(
-              key: authController.formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 20,
-                children: [
-                  SizedBox(height: 40.h),
-                  Center(
-                    child: Image.asset(
-                      authLogo,
-                      width: 100.w,
+                key: authController.formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  // spacing: 20,
+                  children: [
+                    SizedBox(height: 40.h),
+                    Center(
+                      child: Image.asset(
+                        authLogo,
+                        width: 100.w,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'Log into your Account',
-                    style: themes.fontSize18_600
-                        .copyWith(color: themes.darkCyanBlue),
-                  ),
-
-                  // PHONE FIELD
-                  CommonTextfiled(
-                    controller: authController.mobileController,
-                    hintTxt: 'Phone number Or Email',
-                    textInputAction: TextInputAction.next,
-                    validator: utils.validateText,
-                    onChanged: (value) =>
-                        authController.onPhoneChanged(value ?? ''),
-                  ),
-
-                  // PASSWORD vs OTP FLOW
-                  Obx(() {
-                    if (!authController.isOtpMode.value) {
-                      final hasPhone = authController.mobileController.text
-                          .trim()
-                          .isNotEmpty;
-                      if (hasPhone &&
-                          authController.otpStep.value == OtpStep.readyToSend) {
-                        return GestureDetector(
-                          onTap: authController.enterOtpMode,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              "Login with OTP",
-                              style: TextStyle(
-                                color: themes.darkCyanBlue,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-                      return CommonTextfiled(
-                        obscureText: authController.isObsecureText.value,
-                        controller: authController.passwordController,
-                        textInputAction: TextInputAction.done,
-                        hintTxt: 'Enter your password',
-                        validator: utils.validatePassword,
-                        onSubmit: (value) => FocusScope.of(context).unfocus(),
-                        sufixIcon: InkWell(
-                          onTap: () => authController.isObsecureText.value =
-                              !authController.isObsecureText.value,
-                          child: Icon(
-                            authController.isObsecureText.value
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                        ),
-                      );
-                    }
-
-                    // In OTP mode
-                    if (authController.otpStep.value == OtpStep.readyToSend) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CommonButton(
-                            title: 'Send OTP',
-                            isLoading: authController.isSendingOtp.value,
-                            // onPressed: () {},
-                            onPressed: authController.isSendingOtp.value
-                                ? null
-                                : authController.sendOtp,
-                            backgroundColor: themes.darkCyanBlue,
-                          ),
-                          const SizedBox(height: 8),
-                          GestureDetector(
-                            onTap: authController.backToPassword,
-                            child: Text(
-                              'Use password instead',
-                              style: TextStyle(
-                                color: themes.darkCyanBlue,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-
-                    // Code sent → show Pinput + Verify
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 8),
-                        Text(
-                          'Enter the 4-digit code sent to your phone',
-                          style: themes.fontSize14_500,
-                        ),
-                        const SizedBox(height: 8),
-                        Center(
-                          child: Pinput(
-                            length: 4,
-                            controller: authController.otpController,
-                            autofocus: true,
-                            keyboardType: TextInputType.number,
-                            onCompleted: (_) =>
-                                FocusScope.of(context).unfocus(),
-                          ),
-                        ),
-                        SizedBox(height: 12.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CommonButton(
-                                title: 'Verify OTP',
-                                isLoading: authController.isVerifyingOtp.value,
-                                onPressed: authController.isVerifyingOtp.value
-                                    ? null
-                                    : authController.verifyOtp,
-                                backgroundColor: themes.darkCyanBlue,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Obx(() {
-                          final left = authController.secondsLeft.value;
-                          final canResend = left == 0;
-                          return Row(
-                            children: [
-                              if (!canResend)
-                                Text('Resend in ${left}s',
-                                    style: themes.fontSize14_500),
-                              if (canResend)
-                                TextButton(
-                                  onPressed: authController.sendOtp,
-                                  child: const Text('Resend OTP'),
+                    Text(
+                      'Log into your Account',
+                      style: themes.fontSize18_600
+                          .copyWith(color: themes.darkCyanBlue),
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    // Mobile field
+                    CommonTextfiled(
+                      controller: authController.mobileController,
+                      hintTxt: 'Phone number Or Email',
+                      textInputAction: TextInputAction.next,
+                      validator: utils.validateText,
+                      onChanged: (value) {
+                        // This will trigger UI rebuild when mobile field changes
+                        authController.mobileController.notifyListeners();
+                      },
+                    ),
+                    SizedBox(
+                      height: 18.h,
+                    ),
+                    // Password field (only show when NOT in OTP mode)
+                    Obx(
+                      () => !authController.isOtpMode.value
+                          ? CommonTextfiled(
+                              obscureText: authController.isObsecureText.value,
+                              controller: authController.passwordController,
+                              textInputAction: TextInputAction.done,
+                              hintTxt: 'Enter your password',
+                              validator: utils.validatePassword,
+                              onSubmit: (value) =>
+                                  FocusScope.of(context).unfocus(),
+                              sufixIcon: InkWell(
+                                onTap: () {
+                                  authController.isObsecureText.value =
+                                      !authController.isObsecureText.value;
+                                },
+                                child: Icon(
+                                  authController.isObsecureText.value
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
                                 ),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: authController.backToPassword,
+                              ),
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                    // SizedBox(
+                    //   height: 18.h,
+                    // ),
+                    // "Login with OTP" text (only show when mobile is not empty AND not in OTP mode)
+                    Obx(
+                      () => !authController.isOtpMode.value &&
+                              authController.mobileController.text
+                                  .trim()
+                                  .isNotEmpty
+                          ? GestureDetector(
+                              onTap: () {
+                                authController.isOtpMode.value = true;
+                                // Optionally send OTP here
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.h),
                                 child: Text(
-                                  'Use password instead',
+                                  "Login with OTP",
                                   style: TextStyle(
                                     color: themes.darkCyanBlue,
+                                    fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),
                               ),
-                            ],
-                          );
-                        }),
-                      ],
-                    );
-                  }),
-
-                  // Terms Checkbox
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Obx(() => Checkbox(
-                            value: authController.isTermsAccepted.value,
-                            onChanged: (value) {
-                              authController.isTermsAccepted.value =
-                                  value ?? false;
-                            },
-                            activeColor: themes.darkCyanBlue,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                          )),
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            style: themes.fontSize14_500
-                                .copyWith(color: themes.blackColor),
-                            children: [
-                              const TextSpan(text: 'I agree to the '),
-                              WidgetSpan(
-                                child: GestureDetector(
-                                  onTap: () => authController.urlLauncher(
-                                    'https://axlpl.com/terms.html',
+                            )
+                          : SizedBox.shrink(),
+                    ),
+                    // SizedBox(
+                    //   height: 5.h,
+                    // ),
+                    // OTP input section (only show when in OTP mode)
+                    Obx(() => authController.isOtpMode.value
+                        ? Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                authController.loginAuth(
+                                    authController.mobileController.text, '');
+                              },
+                              child: Text(
+                                "Send OTP",
+                                style: TextStyle(
+                                  color: themes.darkCyanBlue,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          )
+                        : SizedBox()),
+                    Obx(
+                      () => authController.isOtpMode.value
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Enter the OTP sent to your phone',
+                                  style: themes.fontSize14_500
+                                      .copyWith(color: Colors.grey),
+                                ),
+                                SizedBox(height: 10.h),
+                                Pinput(
+                                  controller: authController.otpController,
+                                  length: 6,
+                                  defaultPinTheme: PinTheme(
+                                    width: 40.w,
+                                    height: 50.h,
+                                    textStyle: themes.fontSize18_600
+                                        .copyWith(fontSize: 20.sp),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: themes.grayColor, width: 1),
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
                                   ),
-                                  child: Text(
-                                    'Terms & Conditions',
-                                    style: themes.fontSize14_500.copyWith(
-                                      color: themes.darkCyanBlue,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: themes.darkCyanBlue,
+                                  focusedPinTheme: PinTheme(
+                                    width: 40.w,
+                                    height: 50.h,
+                                    textStyle: themes.fontSize18_600
+                                        .copyWith(fontSize: 20.sp),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: themes.darkCyanBlue, width: 2),
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                  ),
+                                  submittedPinTheme: PinTheme(
+                                    width: 40.w,
+                                    height: 50.h,
+                                    textStyle: themes.fontSize18_600
+                                        .copyWith(fontSize: 20.sp),
+                                    decoration: BoxDecoration(
+                                      color: themes.grayColor.withOpacity(0.3),
+                                      border: Border.all(
+                                          color: themes.darkCyanBlue, width: 1),
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                  ),
+                                  showCursor: true,
+                                  onCompleted: (pin) {
+                                    FocusScope.of(context).unfocus();
+                                    // Optionally auto-verify OTP
+                                    // authController.verifyOTP(pin);
+                                  },
+                                ),
+                                SizedBox(height: 10.h),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      authController.isOtpMode.value = false;
+                                      authController.otpController
+                                          .clear(); // Clear OTP when switching back
+                                    },
+                                    child: Text(
+                                      "Use Password Instead",
+                                      style: TextStyle(
+                                        color: themes.darkCyanBlue,
+                                        fontWeight: FontWeight.bold,
+                                        decoration: TextDecoration.underline,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  // Main Login button only for password flow
-                  Obx(() {
-                    final showMainLogin = !authController.isOtpMode.value;
-                    if (!showMainLogin) return const SizedBox.shrink();
-
-                    return CommonButton(
-                      title: login,
-                      isLoading: authController.isLoading.value,
-                      backgroundColor: authController.isTermsAccepted.value
-                          ? themes.darkCyanBlue
-                          : themes.grayColor,
-                      onPressed: authController.isTermsAccepted.value
-                          ? () async {
-                              FocusScope.of(context).unfocus();
-                              if (authController.formKey.currentState
-                                      ?.validate() ==
-                                  true) {
-                                authController.loginAuth(
-                                  authController.mobileController.text,
-                                  authController.passwordController.text,
-                                );
-                              }
-                            }
-                          : () {
-                              Get.snackbar(
-                                'Terms & Conditions Required',
-                                'Please accept the Terms & Conditions to continue',
-                                backgroundColor: themes.redColor,
-                                colorText: themes.whiteColor,
-                                duration: const Duration(seconds: 3),
-                                snackPosition: SnackPosition.BOTTOM,
-                                margin: const EdgeInsets.all(16),
-                                icon: Icon(Icons.warning_amber_rounded,
-                                    color: themes.whiteColor),
-                              );
-                            },
-                    );
-                  }),
-
-                  Center(
-                    child: Text(
-                      'New to AMBEX Express.?',
-                      style: themes.fontReboto16_600.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w400),
+                              ],
+                            )
+                          : SizedBox.shrink(),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Center(
-                        child: CupertinoButton(
-                          color: themes.orangeColor,
-                          focusColor: themes.whiteColor,
-                          borderRadius: BorderRadius.circular(5.r),
-                          child: Text(
-                            registerNow,
-                            style: themes.fontReboto16_600
-                                .copyWith(color: themes.whiteColor),
+
+                    // Rest of your widgets (Terms & Conditions, Login Button, etc.)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Obx(() => Checkbox(
+                              value: authController.isTermsAccepted.value,
+                              onChanged: (value) {
+                                authController.isTermsAccepted.value =
+                                    value ?? false;
+                              },
+                              activeColor: themes.darkCyanBlue,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                            )),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: themes.fontSize14_500.copyWith(
+                                color: themes.blackColor,
+                              ),
+                              children: [
+                                const TextSpan(text: 'I agree to the '),
+                                WidgetSpan(
+                                  child: GestureDetector(
+                                    onTap: () => authController.urlLauncher(
+                                      'https://axlpl.com/terms.html',
+                                    ),
+                                    child: Text(
+                                      'Terms & Conditions',
+                                      style: themes.fontSize14_500.copyWith(
+                                        color: themes.darkCyanBlue,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: themes.darkCyanBlue,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          onPressed: () {
-                            Get.toNamed(Routes.REGISTER);
-                          },
                         ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 18.h,
+                    ),
+                    // Login Button with dynamic title
+                    Obx(() => CommonButton(
+                          title: authController.isOtpMode.value
+                              ? 'Verify OTP'
+                              : 'Login',
+                          isLoading: authController.isOtpMode.value
+                              ? controller.isVerifyingOtp.value
+                              : controller.isLoading.value,
+                          backgroundColor: authController.isTermsAccepted.value
+                              ? themes.darkCyanBlue
+                              : themes.grayColor,
+                          onPressed: authController.isTermsAccepted.value
+                              ? () async {
+                                  FocusScope.of(context).unfocus();
+                                  if (authController.formKey.currentState
+                                          ?.validate() ==
+                                      true) {
+                                    if (authController.isOtpMode.value) {
+                                      // Handle OTP verification
+
+                                      if (authController
+                                              .otpController.text.length ==
+                                          6) {
+                                        ///// veridfy itp
+                                        authController.verifyLoginOtp(
+                                            authController
+                                                .mobileController.text,
+                                            authController.otpController.text);
+                                      } else {
+                                        Get.snackbar(
+                                          'Invalid OTP',
+                                          'Please enter a valid 6-digit OTP',
+                                          backgroundColor: themes.redColor,
+                                          colorText: themes.whiteColor,
+                                        );
+                                      }
+                                    } else {
+                                      // Handle password login
+                                      authController.loginAuth(
+                                        controller.mobileController.text,
+                                        controller.passwordController.text,
+                                      );
+                                    }
+                                  }
+                                }
+                              : () {
+                                  Get.snackbar(
+                                    'Terms & Conditions Required',
+                                    'Please accept the Terms & Conditions to continue',
+                                    backgroundColor: themes.redColor,
+                                    colorText: themes.whiteColor,
+                                    duration: const Duration(seconds: 3),
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    margin: const EdgeInsets.all(16),
+                                    icon: Icon(
+                                      Icons.warning_amber_rounded,
+                                      color: themes.whiteColor,
+                                    ),
+                                  );
+                                },
+                        )),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    // Rest of your widgets...
+                    Center(
+                      child: Text(
+                        'New to AMBEX Express.?',
+                        style: themes.fontReboto16_600.copyWith(
+                            fontSize: 14.sp, fontWeight: FontWeight.w400),
                       ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+                    ),
+                    SizedBox(
+                      height: 18.h,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(child: Divider()),
+                        Center(
+                          child: CupertinoButton(
+                            color: themes.orangeColor,
+                            focusColor: themes.whiteColor,
+                            borderRadius: BorderRadius.circular(5.r),
+                            child: Text(
+                              registerNow,
+                              style: themes.fontReboto16_600
+                                  .copyWith(color: themes.whiteColor),
+                            ),
+                            onPressed: () {
+                              Get.toNamed(Routes.REGISTER);
+                            },
+                          ),
+                        ),
+                        Expanded(child: Divider()),
+                      ],
+                    ),
+                  ],
+                )),
           ),
         ),
       ),

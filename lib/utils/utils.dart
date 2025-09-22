@@ -8,8 +8,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:logger/logger.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Themes themes = Themes();
 final player = AudioPlayer();
@@ -217,6 +220,102 @@ class Utils {
     } else {
       log('Scan cancelled or invalid');
       return null; // <<<< or return null if invalid
+    }
+  }
+
+  Future<void> urlLauncher(final urlLink) async {
+    if (urlLink == null || urlLink.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Invalid URL',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    try {
+      // Clean and encode the URL
+      String cleanUrl = urlLink.trim();
+      if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+        cleanUrl = 'https://$cleanUrl';
+      }
+
+      final encodedUrl = Uri.encodeFull(cleanUrl);
+      final url = Uri.parse(encodedUrl);
+
+      print('Launching URL: $url'); // For debugging
+
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Could not open link',
+          backgroundColor: Themes().redColor,
+          colorText: Themes().whiteColor,
+          duration: const Duration(seconds: 3),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print('URL Launch Error: $e'); // For debugging
+      Get.snackbar(
+        'Error',
+        'Unable to open link',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> launchInvoiceUrl(String? invoiceLink) async {
+    if (invoiceLink == null || invoiceLink.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Invoice link not available',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    try {
+      // Clean and prepare the URL
+      String baseUrl = 'new.axlpl.com';
+      String path = '/admin/customer/invoice_view/';
+      String invoiceId = invoiceLink.split('/').last;
+
+      // Construct the URL properly
+      final uri = Uri.https(baseUrl, '$path$invoiceId');
+
+      print('Launching Invoice URL: $uri'); // For debugging
+
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(
+          uri,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        throw 'Could not launch $uri';
+      }
+    } catch (e) {
+      print('Invoice URL Error: $e'); // For debugging
+      Get.snackbar(
+        'Error',
+        'Unable to open invoice. Please try again later.',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 }

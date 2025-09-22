@@ -30,6 +30,9 @@ class AuthController extends GetxController {
   RxBool isObsecureText = true.obs;
   RxBool isTermsAccepted = false.obs;
   var isLoading = false.obs;
+  final isSendingOtp = false.obs;
+  final isVerifyingOtp = false.obs;
+
   var errorMessage = ''.obs;
 
   TextEditingController mobileController = TextEditingController();
@@ -40,8 +43,6 @@ class AuthController extends GetxController {
 
   final isOtpMode = false.obs; // toggles password vs OTP UI
   final otpStep = OtpStep.idle.obs; // idle -> readyToSend -> codeSent
-  final isSendingOtp = false.obs;
-  final isVerifyingOtp = false.obs;
 
   final secondsLeft = 0.obs;
   Timer? _timer;
@@ -78,47 +79,61 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> sendOtp() async {
-    final phone = mobileController.text.trim();
-    if (phone.isEmpty) {
-      Get.snackbar('Phone required', 'Please enter your phone number');
-      return;
-    }
+  Future<void> sendOtp(
+    String mobile,
+    String password,
+  ) async {
     isSendingOtp.value = true;
     try {
-      // TODO: call your API to send OTP here
-      // final resp = await authApi.sendOtp(phone);
-      // if (!resp.ok) throw 'Failed to send OTP';
-
-      // Move to code entry state and start a resend cooldown
-      otpStep.value = OtpStep.codeSent;
-      _startTimer(30); // e.g., 30 seconds lock before resend
-      Get.snackbar('OTP sent', 'Check your phone for the verification code');
+      await _authRepo.loginRepo(
+        mobile,
+        password,
+      );
+      final role = await storage.read(key: localStorage.userRole);
+      if (role == 'messanger') {
+        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+      } else if (role == 'customer') {
+        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+      }
     } catch (e) {
-      Get.snackbar('Failed', e.toString());
+      errorMessage.value = e.toString();
+      log(errorMessage.value);
+      Get.snackbar('', errorMessage.value,
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+          snackPosition: SnackPosition.BOTTOM);
     } finally {
       isSendingOtp.value = false;
     }
   }
 
-  Future<void> verifyOtp() async {
-    final code = otpController.text.trim();
-    final phone = mobileController.text.trim();
-    if (code.length < 4) {
-      Get.snackbar('Invalid code', 'Please enter the full OTP');
-      return;
-    }
+  Future<void> verifyLoginOtp(
+    String mobile,
+    String password,
+  ) async {
     isVerifyingOtp.value = true;
     try {
-      // TODO: call your API to verify OTP here
-      // final ok = await authApi.verifyOtp(phone, code);
-      // if (!ok) throw 'Invalid OTP';
-
-      // On success: continue login session (e.g., save token, navigate, etc.)
-      Get.snackbar('Verified', 'Login successful');
-      // Example: Get.offAllNamed(Routes.HOME);
+      await _authRepo.verifyLoginOtpRepo(
+        mobile,
+        password,
+      );
+      final role = await storage.read(key: localStorage.userRole);
+      if (role == 'messanger') {
+        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+        Get.offAllNamed(Routes.HOME);
+        profileController.fetchProfileData();
+      } else if (role == 'customer') {
+        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+        Get.offAllNamed(Routes.HOME);
+        profileController.fetchProfileData();
+      }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      errorMessage.value = e.toString();
+      log(errorMessage.value);
+      Get.snackbar('', errorMessage.value,
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+          snackPosition: SnackPosition.BOTTOM);
     } finally {
       isVerifyingOtp.value = false;
     }
@@ -215,9 +230,9 @@ class AuthController extends GetxController {
   @override
   void onClose() {
     _cancelTimer();
-    mobileController.dispose();
-    passwordController.dispose();
-    otpController.dispose();
+    // mobileController.dispose();
+    // passwordController.dispose();
+    // otpController.dispose();
     super.onClose();
   }
 

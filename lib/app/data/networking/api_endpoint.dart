@@ -1,5 +1,6 @@
 const String loginPoint = 'login';
 const String logoutPoint = 'logout';
+const String verifyLoginOtpPoint = 'verify_login_otp';
 const String deliveryHistoryPoint = 'getDeliveryHistory';
 const String historyPickupPoint = 'getPickupHistory';
 const String dashboardDataPoint = 'getDashoboardData';

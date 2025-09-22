@@ -20,6 +20,7 @@ import 'package:axlpl_delivery/common_widget/contract_list.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
 import 'package:axlpl_delivery/common_widget/contract_details_screen.dart';
+import 'package:axlpl_delivery/common_widget/my_invoices_list.dart';
 import 'package:axlpl_delivery/common_widget/pdf_view.dart';
 import 'package:axlpl_delivery/common_widget/used_contract_shipment.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -506,7 +507,7 @@ class HomeView extends GetView<HomeController> {
                                     width: 100.w,
                                     child: HomeIconContainer(
                                       title: 'My Contracts',
-                                      Img: containerIcon,
+                                      Img: contractLogo,
                                       OnTap: () {
                                         // homeController.contractView();
                                         Navigator.push(
@@ -549,6 +550,37 @@ class HomeView extends GetView<HomeController> {
                       return SizedBox.shrink();
                     }
                   },
+                ),
+                SizedBox(
+                  height: 15.h,
+                ),
+                Obx(
+                  () => bottomController.userData.value?.role == 'messanger'
+                      ? SizedBox.shrink()
+                      : SizedBox(
+                          width: 100.w,
+                          child: HomeIconContainer(
+                            title: 'My Invoices',
+                            Img: invoiceLogo,
+                            OnTap: () {
+                              homeController.invoiceList();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyInvoicesList()
+                                    // PdfViewerPage(
+                                    //   pdfUrl: homeController
+                                    //           .contractDataModel
+                                    //           .value
+                                    //           ?.contracts?[0]
+                                    //           .viewLink ??
+                                    //       '',
+                                    // ),
+                                    ),
+                              );
+                            },
+                          ),
+                        ),
                 ),
                 Obx(() {
                   final imageUrl = () {

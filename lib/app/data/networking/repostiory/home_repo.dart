@@ -5,9 +5,11 @@ import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/contract_view_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_details_model.dart';
+import 'package:axlpl_delivery/app/data/models/customer_invoice_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
+import 'package:axlpl_delivery/common_widget/my_invoices_list.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 
@@ -109,7 +111,7 @@ class HomeRepository {
   Future<ContractViewModel?> contractViewRepo() async {
     try {
       final userData = await LocalStorage().getUserLocalData();
-      final userID = userData?.messangerdetail?.id?.toString() ??
+      final userID = userData?.customerdetail?.id?.toString() ??
           userData?.customerdetail?.id.toString();
       final response = await _apiServices.contractView(userID);
 
@@ -134,6 +136,45 @@ class HomeRepository {
         "$e",
       );
       return null;
+    }
+  }
+
+  Future<List<CustomerInvoiceModel?>> myInvoiceRepo() async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.customerdetail?.id?.toString();
+
+      final response = await _apiServices.getCustomerInvoice(userID);
+
+      return response.when(
+        success: (body) {
+          try {
+            if (body is List) {
+              // If response is directly a list
+              return List<CustomerInvoiceModel>.from(body.map((x) =>
+                  CustomerInvoiceModel.fromJson(x as Map<String, dynamic>)));
+            } else if (body is Map<String, dynamic>) {
+              // If response is wrapped in an object
+              final data = CustomerInvoiceListModel.fromJson(body);
+              if (data.status == 'success') {
+                return data.data ?? [];
+              }
+            }
+            Utils().logInfo('Unexpected response format: $body');
+            return [];
+          } catch (e) {
+            Utils().logError('Error parsing invoice data: $e');
+            return [];
+          }
+        },
+        error: (error) {
+          Utils().logError("Invoice Failed: ${error.toString()}");
+          return [];
+        },
+      );
+    } catch (e) {
+      Utils().logError("$e");
+      return [];
     }
   }
 

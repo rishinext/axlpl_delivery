@@ -78,6 +78,62 @@ class AuthRepo {
     }
   }
 
+  Future<bool> verifyLoginOtpRepo(
+    String mobile,
+    String otp,
+  ) async {
+    String? fcmToken = await storage.read(key: _localStorage.fcmToken);
+    log("fcmToken ${fcmToken.toString()}");
+    final packageInfo = await PackageInfo.fromPlatform();
+    final appVersion = "${packageInfo.version}-${packageInfo.buildNumber}";
+    // final deviceId = await MobileDeviceIdentifier().getDeviceId();
+    // log("device id : ===> $deviceId");
+    final deviceId = await _utils.getDeviceId();
+    UserLocation location = await _utils.getUserLocation();
+
+    print("Lat: ${location.latitude}");
+    print("Lng: ${location.longitude}");
+    print("Address: ${location.address}");
+
+    try {
+      final response = await _apiServices.verifyLoginOtpService(mobile, otp);
+      return response.when(
+        success: (body) async {
+          final loginData = LoginModel.fromJson(body);
+          _utils.logInfo(fcmToken.toString());
+          log('device id ${deviceId.toString()}');
+          if (loginData.status != "success") {
+            throw loginData.message ?? "Login Failed: Unknown Error";
+          }
+
+          // Utils().logInfo("repo login data : ${loginData.toJson()}");
+          await storage.write(
+              key: _localStorage.userRole, value: loginData.role.toString());
+
+          if (loginData.role == "messanger") {
+            await storage.write(
+              key: _localStorage.adminDataKey,
+              value: json.encode(loginData.messangerdetail?.toJson()),
+            );
+          } else if (loginData.role == "customer") {
+            await storage.write(
+              key: _localStorage.customerDataKey,
+              value: json.encode(loginData.customerdetail?.toJson()),
+            );
+            log('login via otp');
+          }
+
+          return true;
+        },
+        error: (error) {
+          throw Exception("Login Failed: ${error.toString()}");
+        },
+      );
+    } catch (e) {
+      throw Exception("Login Failed: ${e.toString()}");
+    }
+  }
+
   Future<bool> logoutRepo() async {
     final userData = await LocalStorage().getUserLocalData();
 

@@ -1,30 +1,42 @@
+// To parse this JSON data, do
+//
+//     final customerInvoiceListModel = customerInvoiceListModelFromJson(jsonString);
+
+import 'dart:convert';
+
+CustomerInvoiceListModel customerInvoiceListModelFromJson(String str) =>
+    CustomerInvoiceListModel.fromJson(json.decode(str));
+
+String customerInvoiceListModelToJson(CustomerInvoiceListModel data) =>
+    json.encode(data.toJson());
+
 class CustomerInvoiceListModel {
   String? status;
-  List<Data>? invoiceList;
+  List<CustomerInvoiceModel>? data;
 
-  CustomerInvoiceListModel({this.status, this.invoiceList});
+  CustomerInvoiceListModel({
+    this.status,
+    this.data,
+  });
 
-  CustomerInvoiceListModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    if (json['data'] != null) {
-      invoiceList = <Data>[];
-      json['data'].forEach((v) {
-        invoiceList!.add(new Data.fromJson(v));
-      });
-    }
-  }
+  factory CustomerInvoiceListModel.fromJson(Map<String, dynamic> json) =>
+      CustomerInvoiceListModel(
+        status: json["status"],
+        data: json["data"] == null
+            ? []
+            : List<CustomerInvoiceModel>.from(
+                json["data"]!.map((x) => CustomerInvoiceModel.fromJson(x))),
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    if (this.invoiceList != null) {
-      data['data'] = this.invoiceList!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "data": data == null
+            ? []
+            : List<dynamic>.from(data!.map((x) => x.toJson())),
+      };
 }
 
-class Data {
+class CustomerInvoiceModel {
   String? id;
   String? billTo;
   String? shipmentIds;
@@ -37,11 +49,11 @@ class Data {
   String? invoicePrefix;
   String? invoiceNoPrefix;
   String? paymentMode;
-  String? invoiceDate;
+  DateTime? invoiceDate;
   String? invoiceDateStr;
-  String? dueDate;
+  DateTime? dueDate;
   String? invoiceDueDateStr;
-  String? invoicePaidDate;
+  DateTime? invoicePaidDate;
   String? invoicePaidStr;
   String? totalAmt;
   String? customerReceiverName;
@@ -49,82 +61,87 @@ class Data {
   String? paymentStatus;
   String? invoiceLink;
 
-  Data(
-      {this.id,
-      this.billTo,
-      this.shipmentIds,
-      this.shipmentInvoiceId,
-      this.customerName,
-      this.branchId,
-      this.custCompanyName,
-      this.invoiceNo,
-      this.invoiceType,
-      this.invoicePrefix,
-      this.invoiceNoPrefix,
-      this.paymentMode,
-      this.invoiceDate,
-      this.invoiceDateStr,
-      this.dueDate,
-      this.invoiceDueDateStr,
-      this.invoicePaidDate,
-      this.invoicePaidStr,
-      this.totalAmt,
-      this.customerReceiverName,
-      this.receiverCompanyName,
-      this.paymentStatus,
-      this.invoiceLink});
+  CustomerInvoiceModel({
+    this.id,
+    this.billTo,
+    this.shipmentIds,
+    this.shipmentInvoiceId,
+    this.customerName,
+    this.branchId,
+    this.custCompanyName,
+    this.invoiceNo,
+    this.invoiceType,
+    this.invoicePrefix,
+    this.invoiceNoPrefix,
+    this.paymentMode,
+    this.invoiceDate,
+    this.invoiceDateStr,
+    this.dueDate,
+    this.invoiceDueDateStr,
+    this.invoicePaidDate,
+    this.invoicePaidStr,
+    this.totalAmt,
+    this.customerReceiverName,
+    this.receiverCompanyName,
+    this.paymentStatus,
+    this.invoiceLink,
+  });
 
-  Data.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    billTo = json['bill_to'];
-    shipmentIds = json['shipment_ids'];
-    shipmentInvoiceId = json['shipment_invoice_id'];
-    customerName = json['customer_name'];
-    branchId = json['branch_id'];
-    custCompanyName = json['cust_company_name'];
-    invoiceNo = json['invoice_no'];
-    invoiceType = json['invoice_type'];
-    invoicePrefix = json['invoice_prefix'];
-    invoiceNoPrefix = json['invoice_no_prefix'];
-    paymentMode = json['payment_mode'];
-    invoiceDate = json['invoice_date'];
-    invoiceDateStr = json['invoice_date_str'];
-    dueDate = json['due_date'];
-    invoiceDueDateStr = json['invoice_due_date_str'];
-    invoicePaidDate = json['invoice_paid_date'];
-    invoicePaidStr = json['invoice_paid_str'];
-    totalAmt = json['total_amt'];
-    customerReceiverName = json['customer_receiver_name'];
-    receiverCompanyName = json['receiver_company_name'];
-    paymentStatus = json['payment_status'];
-    invoiceLink = json['invoice_link'];
-  }
+  factory CustomerInvoiceModel.fromJson(Map<String, dynamic> json) =>
+      CustomerInvoiceModel(
+        id: json["id"],
+        billTo: json["bill_to"],
+        shipmentIds: json["shipment_ids"],
+        shipmentInvoiceId: json["shipment_invoice_id"],
+        customerName: json["customer_name"],
+        branchId: json["branch_id"],
+        custCompanyName: json["cust_company_name"],
+        invoiceNo: json["invoice_no"],
+        invoiceType: json["invoice_type"],
+        invoicePrefix: json["invoice_prefix"],
+        invoiceNoPrefix: json["invoice_no_prefix"],
+        paymentMode: json["payment_mode"],
+        invoiceDate: json["invoice_date"] == null
+            ? null
+            : DateTime.parse(json["invoice_date"]),
+        invoiceDateStr: json["invoice_date_str"],
+        dueDate:
+            json["due_date"] == null ? null : DateTime.parse(json["due_date"]),
+        invoiceDueDateStr: json["invoice_due_date_str"],
+        invoicePaidDate: json["invoice_paid_date"] == null
+            ? null
+            : DateTime.parse(json["invoice_paid_date"]),
+        invoicePaidStr: json["invoice_paid_str"],
+        totalAmt: json["total_amt"],
+        customerReceiverName: json["customer_receiver_name"],
+        receiverCompanyName: json["receiver_company_name"],
+        paymentStatus: json["payment_status"],
+        invoiceLink: json["invoice_link"],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['bill_to'] = this.billTo;
-    data['shipment_ids'] = this.shipmentIds;
-    data['shipment_invoice_id'] = this.shipmentInvoiceId;
-    data['customer_name'] = this.customerName;
-    data['branch_id'] = this.branchId;
-    data['cust_company_name'] = this.custCompanyName;
-    data['invoice_no'] = this.invoiceNo;
-    data['invoice_type'] = this.invoiceType;
-    data['invoice_prefix'] = this.invoicePrefix;
-    data['invoice_no_prefix'] = this.invoiceNoPrefix;
-    data['payment_mode'] = this.paymentMode;
-    data['invoice_date'] = this.invoiceDate;
-    data['invoice_date_str'] = this.invoiceDateStr;
-    data['due_date'] = this.dueDate;
-    data['invoice_due_date_str'] = this.invoiceDueDateStr;
-    data['invoice_paid_date'] = this.invoicePaidDate;
-    data['invoice_paid_str'] = this.invoicePaidStr;
-    data['total_amt'] = this.totalAmt;
-    data['customer_receiver_name'] = this.customerReceiverName;
-    data['receiver_company_name'] = this.receiverCompanyName;
-    data['payment_status'] = this.paymentStatus;
-    data['invoice_link'] = this.invoiceLink;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "bill_to": billTo,
+        "shipment_ids": shipmentIds,
+        "shipment_invoice_id": shipmentInvoiceId,
+        "customer_name": customerName,
+        "branch_id": branchId,
+        "cust_company_name": custCompanyName,
+        "invoice_no": invoiceNo,
+        "invoice_type": invoiceType,
+        "invoice_prefix": invoicePrefix,
+        "invoice_no_prefix": invoiceNoPrefix,
+        "payment_mode": paymentMode,
+        "invoice_date": invoiceDate?.toIso8601String(),
+        "invoice_date_str": invoiceDateStr,
+        "due_date": dueDate?.toIso8601String(),
+        "invoice_due_date_str": invoiceDueDateStr,
+        "invoice_paid_date": invoicePaidDate?.toIso8601String(),
+        "invoice_paid_str": invoicePaidStr,
+        "total_amt": totalAmt,
+        "customer_receiver_name": customerReceiverName,
+        "receiver_company_name": receiverCompanyName,
+        "payment_status": paymentStatus,
+        "invoice_link": invoiceLink,
+      };
 }
