@@ -8,6 +8,7 @@ import 'package:axlpl_delivery/app/data/models/customer_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_invoice_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
+import 'package:axlpl_delivery/app/data/models/used_contract_model.dart';
 import 'package:axlpl_delivery/app/data/networking/api_services.dart';
 import 'package:axlpl_delivery/common_widget/my_invoices_list.dart';
 import 'package:axlpl_delivery/const/const.dart';
@@ -118,6 +119,40 @@ class HomeRepository {
       return response.when(
         success: (body) {
           final data = ContractViewModel.fromJson(body);
+          if (data.status == 'success') {
+            return data;
+          } else {
+            Utils().logInfo(
+                'API call successful but status is not "success" : ${data.status}');
+          }
+          return null;
+        },
+        error: (error) {
+          Utils().logError("Contract View Failed: ${error.toString()}");
+          return null;
+        },
+      );
+    } catch (e) {
+      Utils().logError(
+        "$e",
+      );
+      return null;
+    }
+  }
+
+  Future<UsedContractModel?> usedContractRepo(final contractID) async {
+    try {
+      final userData = await LocalStorage().getUserLocalData();
+      final userID = userData?.customerdetail?.id?.toString() ??
+          userData?.customerdetail?.id.toString();
+      final response = await _apiServices.usedContract(
+        userID,
+        contractID,
+      );
+
+      return response.when(
+        success: (body) {
+          final data = UsedContractModel.fromJson(body);
           if (data.status == 'success') {
             return data;
           } else {

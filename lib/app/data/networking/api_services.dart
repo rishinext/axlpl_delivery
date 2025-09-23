@@ -575,6 +575,17 @@ class ApiServices {
     );
   }
 
+  Future<APIResponse> usedContract(final custID, final contractID) async {
+    final body = {
+      'customer_id': custID,
+      'contract_id': contractID,
+    };
+    return _api.post(
+      getUsedContractPoint,
+      body,
+    );
+  }
+
   Future<APIResponse> uploadPickup(
     shipmentID,
     shipmentStatus,

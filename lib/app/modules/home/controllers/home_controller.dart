@@ -3,6 +3,7 @@ import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_invoice_model.dart';
 import 'package:axlpl_delivery/app/data/models/dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/models/get_ratting_model.dart';
+import 'package:axlpl_delivery/app/data/models/used_contract_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/home_repo.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
@@ -22,12 +23,14 @@ class HomeController extends GetxController {
   Rxn<RattingDataModel> rattingDataModel = Rxn<RattingDataModel>();
 
   Rxn<ContractViewModel> contractDataModel = Rxn<ContractViewModel>();
+  Rxn<UsedContractModel> usedContractModel = Rxn<UsedContractModel>();
 
   var invoiceListDataModel = Rxn<List<CustomerInvoiceModel?>>();
 
   RxBool isLoading = false.obs;
   var isCustomerDashboard = Status.initial.obs;
   var isContractLoading = Status.initial.obs;
+  var isUsedContractLoading = Status.initial.obs;
   var isInvoiceLoading = Status.initial.obs;
   var isRattingData = Status.initial.obs;
 
@@ -99,6 +102,29 @@ class HomeController extends GetxController {
       );
     } finally {
       isContractLoading.value = Status.success;
+    }
+  }
+
+  Future<void> usedContract(final contractID) async {
+    isUsedContractLoading.value = Status.loading;
+    try {
+      Utils().logInfo("Fetching usedContract data...");
+      final data = await homeRepo.usedContractRepo(contractID);
+
+      if (data != null) {
+        Utils().logInfo("Contract data received: ${data.toString()}");
+        usedContractModel.value = data;
+        isUsedContractLoading.value = Status.success;
+      } else {
+        Utils().logError(
+            "usedContract data is null - check repository logs for details");
+      }
+    } catch (error) {
+      Utils().logError(
+        'Error getting usedContract: $error',
+      );
+    } finally {
+      isUsedContractLoading.value = Status.success;
     }
   }
 

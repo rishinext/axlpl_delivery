@@ -41,6 +41,7 @@ const String getShipmentCalclulationPoint = 'getShipmentPaymentInformation';
 const String getCashCollectionLogPoint = 'getCashCollectionLog';
 const String getContractDetailsPoint = 'get_contract_by_category';
 const String getCustomerInvoicePoint = 'get_invoice_list_by_customer';
+const String getUsedContractPoint = 'usedContract';
 const String customerRegisterPoint = 'customer_registration';
 const String getCustomerCategoryPoint = 'get_categories';
 const String getNatureOfBusinessPoint = 'get_nature_of_business';

@@ -220,6 +220,7 @@ class HomeView extends GetView<HomeController> {
                   return bottomController.userData.value?.role != 'messanger'
                       ? ContractCard(
                           onTap: () {
+                            // homeController.usedContract(data.)
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

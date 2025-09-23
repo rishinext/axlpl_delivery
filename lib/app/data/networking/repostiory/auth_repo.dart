@@ -15,11 +15,17 @@ class AuthRepo {
   final Utils _utils = Utils();
   final LocalStorage _localStorage = LocalStorage();
   final FlutterSecureStorage storage = FlutterSecureStorage();
+  String? apiMessage;
+
+  String? getApiErrorMessage() {
+    return apiMessage;
+  }
 
   Future<bool> loginRepo(
     String mobile,
     String password,
   ) async {
+    apiMessage = null;
     String? fcmToken = await storage.read(key: _localStorage.fcmToken);
     log("fcmToken ${fcmToken.toString()}");
     final packageInfo = await PackageInfo.fromPlatform();
@@ -44,26 +50,28 @@ class AuthRepo {
           deviceId.toString());
       return response.when(
         success: (body) async {
-          final loginData = LoginModel.fromJson(body);
+          final apiStatus = LoginModel.fromJson(body);
           _utils.logInfo(fcmToken.toString());
           log('device id ${deviceId.toString()}');
-          if (loginData.status != "success") {
-            throw loginData.message ?? "Login Failed: Unknown Error";
+          if (apiStatus.status != "success") {
+            throw apiStatus.message ?? "Login Failed: Unknown Error";
+          } else {
+            apiMessage = apiStatus.message;
           }
 
           // Utils().logInfo("repo login data : ${loginData.toJson()}");
           await storage.write(
-              key: _localStorage.userRole, value: loginData.role.toString());
+              key: _localStorage.userRole, value: apiStatus.role.toString());
 
-          if (loginData.role == "messanger") {
+          if (apiStatus.role == "messanger") {
             await storage.write(
               key: _localStorage.adminDataKey,
-              value: json.encode(loginData.messangerdetail?.toJson()),
+              value: json.encode(apiStatus.messangerdetail?.toJson()),
             );
-          } else if (loginData.role == "customer") {
+          } else if (apiStatus.role == "customer") {
             await storage.write(
               key: _localStorage.customerDataKey,
-              value: json.encode(loginData.customerdetail?.toJson()),
+              value: json.encode(apiStatus.customerdetail?.toJson()),
             );
           }
 
@@ -74,7 +82,9 @@ class AuthRepo {
         },
       );
     } catch (e) {
-      throw Exception("Login Failed: ${e.toString()}");
+      final errorMessage = "Unexpected Error: $e";
+      Utils.instance.log(errorMessage);
+      return false;
     }
   }
 
@@ -82,6 +92,7 @@ class AuthRepo {
     String mobile,
     String otp,
   ) async {
+    apiMessage = null;
     String? fcmToken = await storage.read(key: _localStorage.fcmToken);
     log("fcmToken ${fcmToken.toString()}");
     final packageInfo = await PackageInfo.fromPlatform();
@@ -102,10 +113,10 @@ class AuthRepo {
           final loginData = LoginModel.fromJson(body);
           _utils.logInfo(fcmToken.toString());
           log('device id ${deviceId.toString()}');
+          apiMessage = loginData.message; // Store message regardless of status
           if (loginData.status != "success") {
-            throw loginData.message ?? "Login Failed: Unknown Error";
+            throw loginData.status ?? "Error in Verify";
           }
-
           // Utils().logInfo("repo login data : ${loginData.toJson()}");
           await storage.write(
               key: _localStorage.userRole, value: loginData.role.toString());
@@ -126,11 +137,20 @@ class AuthRepo {
           return true;
         },
         error: (error) {
-          throw Exception("Login Failed: ${error.toString()}");
+          throw "Login Failed: ${error.toString()}";
         },
       );
     } catch (e) {
-      throw Exception("Login Failed: ${e.toString()}");
+      if (e is String) {
+        apiMessage = e; // If it's already a string message
+      } else if (e.toString().contains('AppException')) {
+        // Extract the actual error message from AppException
+        apiMessage = e.toString().split('AppException:').last.trim();
+      } else {
+        apiMessage = "Unexpected error occurred";
+      }
+      Utils.instance.log("Error in verifyLoginOtpRepo: $apiMessage");
+      throw apiMessage ?? "Verification failed";
     }
   }
 

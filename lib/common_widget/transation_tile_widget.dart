@@ -5,8 +5,10 @@ class TransactionTile extends StatelessWidget {
   final String fromAccount;
   final String toAccount;
   final String currency;
-  final String maskedAccount;
-  final double amount;
+  final String shipmentID;
+  final amount;
+  final String day;
+  final String month;
 
   const TransactionTile({
     super.key,
@@ -14,16 +16,14 @@ class TransactionTile extends StatelessWidget {
     required this.fromAccount,
     required this.toAccount,
     required this.currency,
-    required this.maskedAccount,
+    required this.shipmentID,
     required this.amount,
+    required this.day,
+    required this.month,
   });
 
   @override
   Widget build(BuildContext context) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = _monthShort(date.month);
-    final isCredit = amount >= 0;
-
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.all(12),
@@ -45,7 +45,7 @@ class TransactionTile extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: isCredit ? Colors.green.shade100 : Colors.red.shade100,
+              color: Colors.red.shade100,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(
@@ -56,16 +56,14 @@ class TransactionTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color:
-                        isCredit ? Colors.green.shade800 : Colors.red.shade800,
+                    color: Colors.red.shade800,
                   ),
                 ),
                 Text(
                   month,
                   style: TextStyle(
                     fontSize: 12,
-                    color:
-                        isCredit ? Colors.green.shade800 : Colors.red.shade800,
+                    color: Colors.red.shade800,
                   ),
                 ),
               ],
@@ -77,24 +75,21 @@ class TransactionTile extends StatelessWidget {
           // Middle content
           Expanded(
             child: Column(
+              spacing: 5,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Text(fromAccount,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14)),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.arrow_right_alt, size: 18),
-                    const SizedBox(width: 4),
-                    Text(toAccount,
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14)),
-                  ],
-                ),
+                Text(fromAccount,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 14)),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_downward, size: 18),
+                const SizedBox(width: 4),
+                Text(toAccount,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 14)),
                 const SizedBox(height: 4),
                 Text(
-                  "$currency   $maskedAccount",
+                  "$shipmentID",
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
               ],
@@ -103,33 +98,12 @@ class TransactionTile extends StatelessWidget {
 
           // Amount
           Text(
-            "${isCredit ? '+' : '-'}$currency ${amount.abs().toStringAsFixed(0)}",
+            "${'-'}$currency ${amount}",
             style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: isCredit ? Colors.green : Colors.red,
-            ),
+                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
           ),
         ],
       ),
     );
-  }
-
-  String _monthShort(int month) {
-    const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec"
-    ];
-    return months[month - 1];
   }
 }

@@ -5,11 +5,13 @@ import 'dart:io';
 
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
+import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/data/networking/repostiory/auth_repo.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/modules/pickup/controllers/pickup_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
+import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/theme.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -27,11 +29,14 @@ class AuthController extends GetxController {
 
   LocalStorage localStorage = LocalStorage();
 
+  final verifyOtpmessage = ''.obs;
+
   RxBool isObsecureText = true.obs;
   RxBool isTermsAccepted = false.obs;
   var isLoading = false.obs;
   final isSendingOtp = false.obs;
-  final isVerifyingOtp = false.obs;
+  final secondsLeft = 0.obs;
+  final isVerifyingOtp = Status.initial.obs;
 
   var errorMessage = ''.obs;
 
@@ -44,7 +49,6 @@ class AuthController extends GetxController {
   final isOtpMode = false.obs; // toggles password vs OTP UI
   final otpStep = OtpStep.idle.obs; // idle -> readyToSend -> codeSent
 
-  final secondsLeft = 0.obs;
   Timer? _timer;
 
   Future<void> loginAuth(
@@ -81,19 +85,26 @@ class AuthController extends GetxController {
 
   Future<void> sendOtp(
     String mobile,
-    String password,
+    String otp,
   ) async {
     isSendingOtp.value = true;
+    // Start timer immediately when OTP is sent
+    _startTimer(30);
     try {
-      await _authRepo.loginRepo(
+      final sendingOtp = await _authRepo.loginRepo(
         mobile,
-        password,
+        otp,
       );
-      final role = await storage.read(key: localStorage.userRole);
-      if (role == 'messanger') {
-        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
-      } else if (role == 'customer') {
-        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+      if (sendingOtp) {
+        otpStep.value = OtpStep.codeSent;
+      } else {
+        errorMessage.value = _authRepo.apiMessage ?? 'Sending OTP failed';
+        Get.snackbar(
+          '',
+          errorMessage.value,
+          colorText: themes.whiteColor,
+          backgroundColor: themes.redColor,
+        );
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -107,35 +118,59 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> resendOtp() async {
+    if (secondsLeft.value != 0) return;
+    await sendOtp(
+      mobileController.text,
+      otpController.text,
+    ); // reuses the same flow + restarts timer
+  }
+
   Future<void> verifyLoginOtp(
     String mobile,
-    String password,
+    String otp,
   ) async {
-    isVerifyingOtp.value = true;
+    isVerifyingOtp.value = Status.loading;
+    verifyOtpmessage.value = '';
     try {
       await _authRepo.verifyLoginOtpRepo(
         mobile,
-        password,
+        otp,
       );
       final role = await storage.read(key: localStorage.userRole);
       if (role == 'messanger') {
-        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+        isVerifyingOtp.value = Status.success;
         Get.offAllNamed(Routes.HOME);
         profileController.fetchProfileData();
       } else if (role == 'customer') {
-        // Get.offAllNamed(Routes.BOTTOMBAR, arguments: '');
+        isVerifyingOtp.value = Status.success;
         Get.offAllNamed(Routes.HOME);
         profileController.fetchProfileData();
-      }
-    } catch (e) {
-      errorMessage.value = e.toString();
-      log(errorMessage.value);
-      Get.snackbar('', errorMessage.value,
+      } else {
+        isVerifyingOtp.value = Status.error;
+        verifyOtpmessage.value = _authRepo.apiMessage ?? 'Verification failed';
+        Get.snackbar(
+          'Error',
+          verifyOtpmessage.value,
           colorText: themes.whiteColor,
           backgroundColor: themes.redColor,
-          snackPosition: SnackPosition.BOTTOM);
-    } finally {
-      isVerifyingOtp.value = false;
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 3),
+        );
+      }
+    } catch (e) {
+      isVerifyingOtp.value = Status.error;
+      // Get the clean error message from repository
+      verifyOtpmessage.value = _authRepo.apiMessage ?? "Verification failed";
+      log('OTP Verification Error: ${verifyOtpmessage.value}');
+      Get.snackbar(
+        'Error',
+        verifyOtpmessage.value,
+        colorText: themes.whiteColor,
+        backgroundColor: themes.redColor,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
     }
   }
 
