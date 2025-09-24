@@ -21,6 +21,7 @@ class CustomerDashboardDataModel {
   String? shippedCount;
   String? approvedCount;
   String? archivedCount;
+  String? contractID;
 
   List<Contract>? contracts;
 
@@ -34,6 +35,7 @@ class CustomerDashboardDataModel {
     this.approvedCount,
     this.archivedCount,
     this.contracts,
+    this.contractID,
   });
 
   factory CustomerDashboardDataModel.fromJson(Map<String, dynamic> json) =>
@@ -46,6 +48,7 @@ class CustomerDashboardDataModel {
         shippedCount: json["shipped_count"],
         approvedCount: json["approved_count"],
         archivedCount: json["archived_count"],
+        contractID: json["active_contract_id"],
         contracts: json["contracts"] == null
             ? []
             : List<Contract>.from(
@@ -61,6 +64,7 @@ class CustomerDashboardDataModel {
         "shipped_count": shippedCount,
         "approved_count": approvedCount,
         "archived_count": archivedCount,
+        'active_contract_id': contractID,
         "contracts": contracts == null
             ? []
             : List<dynamic>.from(contracts!.map((x) => x.toJson())),

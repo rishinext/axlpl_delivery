@@ -220,12 +220,19 @@ class HomeView extends GetView<HomeController> {
                   return bottomController.userData.value?.role != 'messanger'
                       ? ContractCard(
                           onTap: () {
-                            // homeController.usedContract(data.)
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UsedContractShipment(),
-                                ));
+                            homeController
+                                .usedContract(homeController
+                                    .customerDashboardDataModel
+                                    .value
+                                    ?.contractID)
+                                .then(
+                                  (value) => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UsedContractShipment(),
+                                      )),
+                                );
                           },
                           title: data?.categoryName ?? 'N/A',
                           used: double.tryParse(data?.usedValue ?? '0') ?? 0,
@@ -394,6 +401,9 @@ class HomeView extends GetView<HomeController> {
                     }
                   },
                 ),
+                SizedBox(
+                  height: 15.h,
+                ),
                 Obx(() {
                   if (bottomController.isLoading.value) {
                     return Center(
@@ -533,6 +543,9 @@ class HomeView extends GetView<HomeController> {
                     ],
                   );
                 }),
+                SizedBox(
+                  height: 15.h,
+                ),
                 Obx(
                   () {
                     if (bottomController.userData.value?.role == 'messanger') {
@@ -736,6 +749,9 @@ class HomeView extends GetView<HomeController> {
                   height: 20.h,
                 ),
                 Obx(() {
+                  if (bottomController.userData.value?.role == 'messanger') {
+                    return SizedBox.shrink();
+                  }
                   if (shipnowController.isLoadingShipNow.value) {
                     return const Center(
                         child: CircularProgressIndicator.adaptive());

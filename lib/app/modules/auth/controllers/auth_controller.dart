@@ -36,7 +36,7 @@ class AuthController extends GetxController {
   var isLoading = false.obs;
   final isSendingOtp = false.obs;
   final secondsLeft = 0.obs;
-  final isVerifyingOtp = Status.initial.obs;
+  final isVerifyingOtp = false.obs;
 
   var errorMessage = ''.obs;
 
@@ -130,8 +130,8 @@ class AuthController extends GetxController {
     String mobile,
     String otp,
   ) async {
-    isVerifyingOtp.value = Status.loading;
-    verifyOtpmessage.value = '';
+    isVerifyingOtp.value = true;
+
     try {
       await _authRepo.verifyLoginOtpRepo(
         mobile,
@@ -139,30 +139,15 @@ class AuthController extends GetxController {
       );
       final role = await storage.read(key: localStorage.userRole);
       if (role == 'messanger') {
-        isVerifyingOtp.value = Status.success;
         Get.offAllNamed(Routes.HOME);
         profileController.fetchProfileData();
       } else if (role == 'customer') {
-        isVerifyingOtp.value = Status.success;
         Get.offAllNamed(Routes.HOME);
         profileController.fetchProfileData();
-      } else {
-        isVerifyingOtp.value = Status.error;
-        verifyOtpmessage.value = _authRepo.apiMessage ?? 'Verification failed';
-        Get.snackbar(
-          'Error',
-          verifyOtpmessage.value,
-          colorText: themes.whiteColor,
-          backgroundColor: themes.redColor,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 3),
-        );
       }
     } catch (e) {
-      isVerifyingOtp.value = Status.error;
-      // Get the clean error message from repository
-      verifyOtpmessage.value = _authRepo.apiMessage ?? "Verification failed";
-      log('OTP Verification Error: ${verifyOtpmessage.value}');
+      verifyOtpmessage.value = e.toString();
+
       Get.snackbar(
         'Error',
         verifyOtpmessage.value,
@@ -171,6 +156,8 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 3),
       );
+    } finally {
+      isVerifyingOtp.value = false;
     }
   }
 

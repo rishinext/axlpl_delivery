@@ -183,7 +183,7 @@ class AuthView extends GetView<AuthController> {
                                 controller: authController.otpController,
                                 length: 6,
                                 defaultPinTheme: PinTheme(
-                                  width: 40.w,
+                                  width: 50.w,
                                   height: 50.h,
                                   textStyle: themes.fontSize18_600
                                       .copyWith(fontSize: 20.sp),
@@ -194,7 +194,7 @@ class AuthView extends GetView<AuthController> {
                                   ),
                                 ),
                                 focusedPinTheme: PinTheme(
-                                  width: 40.w,
+                                  width: 50.w,
                                   height: 50.h,
                                   textStyle: themes.fontSize18_600
                                       .copyWith(fontSize: 20.sp),
@@ -205,7 +205,7 @@ class AuthView extends GetView<AuthController> {
                                   ),
                                 ),
                                 submittedPinTheme: PinTheme(
-                                  width: 40.w,
+                                  width: 50.w,
                                   height: 50.h,
                                   textStyle: themes.fontSize18_600
                                       .copyWith(fontSize: 20.sp),
@@ -297,8 +297,7 @@ class AuthView extends GetView<AuthController> {
                   Obx(() => authController.isOtpMode.value
                       ? CommonButton(
                           title: 'Verify OTP',
-                          isLoading: authController.isVerifyingOtp.value ==
-                              Status.loading,
+                          isLoading: authController.isVerifyingOtp.value,
                           backgroundColor: authController.isTermsAccepted.value
                               ? themes.darkCyanBlue
                               : themes.grayColor,

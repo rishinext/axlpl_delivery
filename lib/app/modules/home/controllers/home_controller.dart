@@ -16,6 +16,8 @@ class HomeController extends GetxController {
   final homeRepo = HomeRepository();
 
   TextEditingController searchController = TextEditingController();
+  TextEditingController invoiceSearchController = TextEditingController();
+
   Rxn<DashboardDataModel> dashboardDataModel = Rxn<DashboardDataModel>();
   Rxn<CustomerDashboardDataModel> customerDashboardDataModel =
       Rxn<CustomerDashboardDataModel>();
@@ -25,7 +27,10 @@ class HomeController extends GetxController {
   Rxn<ContractViewModel> contractDataModel = Rxn<ContractViewModel>();
   Rxn<UsedContractModel> usedContractModel = Rxn<UsedContractModel>();
 
-  var invoiceListDataModel = Rxn<List<CustomerInvoiceModel?>>();
+  // full list
+  final invoiceListDataModel = <CustomerInvoiceModel?>[].obs;
+  final filteredInvoiceList = <CustomerInvoiceModel?>[].obs;
+  var selectedFilterDate = Rxn<DateTime>();
 
   RxBool isLoading = false.obs;
   var isCustomerDashboard = Status.initial.obs;
@@ -132,15 +137,17 @@ class HomeController extends GetxController {
     isInvoiceLoading.value = Status.loading;
     try {
       Utils().logInfo("Fetching invoice data...");
-      final data = await homeRepo.myInvoiceRepo();
+      final data =
+          await homeRepo.myInvoiceRepo(); // returns List<CustomerInvoiceModel>
 
       if (data.isNotEmpty) {
         Utils().logInfo("Invoice data received successfully");
-        invoiceListDataModel.value = data;
+        invoiceListDataModel.assignAll(data);
+        filteredInvoiceList.assignAll(data); // copy for UI
         isInvoiceLoading.value = Status.success;
       } else {
-        Utils().logInfo("No invoice data found");
-        invoiceListDataModel.value = [];
+        invoiceListDataModel.clear();
+        filteredInvoiceList.clear();
         isInvoiceLoading.value = Status.success;
       }
     } catch (error) {
@@ -153,6 +160,69 @@ class HomeController extends GetxController {
         backgroundColor: Colors.red,
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+  void filterInvoices(String query) {
+    if (query.isEmpty) {
+      filteredInvoiceList.assignAll(invoiceListDataModel);
+    } else {
+      final lower = query.toLowerCase();
+
+      filteredInvoiceList.assignAll(
+        invoiceListDataModel.where((invoice) {
+          final invoiceNo = invoice?.invoiceNo ?? '';
+          final customerName = invoice?.customerName ?? '';
+          final paymentStatus = invoice?.paymentStatus ?? '';
+          final date = invoice?.invoiceDate ?? '';
+
+          return invoiceNo.toLowerCase().contains(lower) ||
+              customerName.toLowerCase().contains(lower) ||
+              date.toString().toLowerCase().contains(lower) ||
+              paymentStatus.toLowerCase().contains(lower);
+        }).toList(),
+      );
+    }
+  }
+
+  Future<void> showDatePickerDialog(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedFilterDate.value ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: themes.darkCyanBlue,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      selectedFilterDate.value = picked;
+      filteredInvoiceList.assignAll(
+        invoiceListDataModel.where((invoice) {
+          if (invoice?.invoiceDate == null) return false;
+          final invoiceDate =
+              DateTime.tryParse(invoice!.invoiceDate.toString());
+          if (invoiceDate == null) return false;
+          return invoiceDate.year == picked.year &&
+              invoiceDate.month == picked.month &&
+              invoiceDate.day == picked.day;
+        }).toList(),
+      );
+    } else {
+      // If user cancels, show all
+      filteredInvoiceList.assignAll(invoiceListDataModel);
+      selectedFilterDate.value = null;
     }
   }
 

@@ -56,6 +56,7 @@ class Transactions {
   String? credit;
   String? debit;
   String? balance;
+  String? shipmentID;
 
   Transactions({this.date, this.detail, this.credit, this.debit, this.balance});
 
@@ -65,6 +66,7 @@ class Transactions {
     credit = json['credit'];
     debit = json['debit'];
     balance = json['balance'];
+    shipmentID = json['shipment_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -74,6 +76,7 @@ class Transactions {
     data['credit'] = this.credit;
     data['debit'] = this.debit;
     data['balance'] = this.balance;
+    data['shipment_id'] = this.shipmentID;
     return data;
   }
 }

@@ -9,6 +9,7 @@ class TransactionTile extends StatelessWidget {
   final amount;
   final String day;
   final String month;
+  final String year;
 
   const TransactionTile({
     super.key,
@@ -20,6 +21,7 @@ class TransactionTile extends StatelessWidget {
     required this.amount,
     required this.day,
     required this.month,
+    required this.year,
   });
 
   @override
@@ -43,7 +45,7 @@ class TransactionTile extends StatelessWidget {
         children: [
           // Date badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.red.shade100,
               borderRadius: BorderRadius.circular(8),
@@ -66,6 +68,13 @@ class TransactionTile extends StatelessWidget {
                     color: Colors.red.shade800,
                   ),
                 ),
+                Text(
+                  year,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.red.shade800,
+                  ),
+                ),
               ],
             ),
           ),
@@ -75,14 +84,14 @@ class TransactionTile extends StatelessWidget {
           // Middle content
           Expanded(
             child: Column(
-              spacing: 5,
+              spacing: 3,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(fromAccount,
                     style: const TextStyle(
                         fontWeight: FontWeight.w600, fontSize: 14)),
                 const SizedBox(width: 4),
-                Icon(Icons.arrow_downward, size: 18),
+                // Icon(Icons.arrow_downward, size: 18),
                 const SizedBox(width: 4),
                 Text(toAccount,
                     style: const TextStyle(

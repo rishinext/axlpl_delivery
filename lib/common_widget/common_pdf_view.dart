@@ -9,7 +9,7 @@ class CommonPdfView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: commonAppbar('Invoice View'),
+        appBar: commonAppbar('Invoice PDF'),
         body: Container(child: SfPdfViewer.network(link)));
   }
 }
