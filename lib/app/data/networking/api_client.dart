@@ -12,7 +12,7 @@ import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 
 class ApiClient {
   late Dio _dio;
-  final String baseUrl = 'https://new.axlpl.com/messenger/services_v6/';
+  final String baseUrl = 'https://my.axlpl.com/messenger/services_v7/';
 
   ApiClient() {
     _dio = Dio();
@@ -41,6 +41,7 @@ class ApiClient {
           printErrorData: true,
         ),
       )
+
           // PrettyDioLogger(
           //   requestHeader: true,
           //   requestBody: true,
