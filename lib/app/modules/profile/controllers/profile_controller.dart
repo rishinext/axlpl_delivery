@@ -191,7 +191,7 @@ class ProfileController extends GetxController {
     if (result) {
       successMessage.value = 'Password changed successfully';
       Get.back();
-      Get.snackbar(result.toString(), 'Password changed successfully',
+      Get.snackbar('Success', 'Password changed successfully',
           backgroundColor: themes.darkCyanBlue, colorText: themes.whiteColor);
     } else {
       errorMessage.value = 'Failed to change password';
