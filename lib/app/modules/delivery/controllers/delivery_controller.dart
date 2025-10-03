@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:axlpl_delivery/app/data/localstorage/local_storage.dart';
 import 'package:axlpl_delivery/app/data/models/payment_mode_model.dart';
 import 'package:axlpl_delivery/app/data/models/pickup_model.dart';
@@ -21,8 +23,13 @@ class DeliveryController extends GetxController {
   //TODO: Implement DeliveryController
   var isDeliveryLoading = Status.initial.obs;
   var isUploadDelivery = Status.initial.obs;
+  var isOtpLoading = Status.initial.obs;
   final currentUserId = ''.obs;
   RxInt isSelected = 0.obs;
+  final secondsLeft = 0.obs; // 0 means no active timer
+  final canResend = true.obs; // allowed when no timer running
+  Timer? _resendTimer;
+  static const int _cooldownSecs = 30;
 
   final deliveryList = <RunningDelivery>[].obs;
   final RxList<RunningDelivery> filteredDeliveryList = <RunningDelivery>[].obs;
@@ -113,6 +120,58 @@ class DeliveryController extends GetxController {
       filteredDeliveryList.value = [];
       isDeliveryLoading.value = Status.error;
     }
+  }
+
+  Future<void> getOtp(final shipmentID) async {
+    // prevent spamming while loading or within cooldown
+
+    if (isOtpLoading.value == Status.loading || !canResend.value) return;
+
+    isOtpLoading.value = Status.loading;
+    try {
+      final success = await pickupRepo.getOtpRepo(shipmentID);
+
+      if (success == true) {
+        // start cooldown timer
+        _startResendCooldown();
+        Get.snackbar('OTP', 'OTP sent successfully!');
+        isOtpLoading.value = Status.success;
+      } else {
+        Get.snackbar('Error', 'Failed to send OTP');
+        isOtpLoading.value = Status.error;
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to send OTP: $e');
+      isOtpLoading.value = Status.error;
+    } finally {
+      // ALWAYS stop the loader in finally to avoid stuck spinner
+      if (isOtpLoading.value == Status.loading) {
+        isOtpLoading.value = Status.initial;
+      }
+    }
+  }
+
+  void _startResendCooldown() {
+    _resendTimer?.cancel();
+    secondsLeft.value = _cooldownSecs;
+    canResend.value = false;
+
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      final next = secondsLeft.value - 1;
+      if (next <= 0) {
+        t.cancel();
+        secondsLeft.value = 0;
+        canResend.value = true;
+      } else {
+        secondsLeft.value = next;
+      }
+    });
+  }
+
+  @override
+  void onClose() {
+    _resendTimer?.cancel();
+    super.onClose();
   }
 
   Future<void> uploadDelivery(

@@ -389,7 +389,7 @@ class AuthView extends GetView<AuthController> {
                   // Rest of your widgets...
                   Center(
                     child: Text(
-                      'New to AMBEX Express.?',
+                      'New to AMBE Xpress Logistics?',
                       style: themes.fontReboto16_600.copyWith(
                           fontSize: 14.sp, fontWeight: FontWeight.w400),
                     ),

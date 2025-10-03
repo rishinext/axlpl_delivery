@@ -295,7 +295,7 @@ class PickupWidget extends StatelessWidget {
                           backgroundColor: themes.blueGray,
                           radius: 14.r,
                           child: Icon(toPayIcon ?? Icons.payment,
-                              size: 16.sp, color: Colors.indigo),
+                              size: 16.sp, color: themes.darkCyanBlue),
                         ),
                         SizedBox(width: 4.w),
                         Text(paymentType ?? 'N/A',

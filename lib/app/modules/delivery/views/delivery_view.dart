@@ -367,8 +367,9 @@ class DeliveryView extends GetView<DeliveryController> {
                                                   );
                                                 },
                                                 onSendOtpCallback: () async {
-                                                  await pickupController.getOtp(
-                                                      deliveryData.shipmentId
+                                                  await deliveryController
+                                                      .getOtp(deliveryData
+                                                          .shipmentId
                                                           .toString());
                                                 },
                                               ),
@@ -399,7 +400,7 @@ class DeliveryView extends GetView<DeliveryController> {
                                                 }
                                               },
                                               () async {
-                                                await pickupController.getOtp(
+                                                await deliveryController.getOtp(
                                                     deliveryData.shipmentId
                                                         .toString());
                                               },

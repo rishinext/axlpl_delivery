@@ -196,17 +196,36 @@ class DeliveryDialog extends StatelessWidget {
                 children: [
                   Text('Enter OTP'),
                   Obx(() {
-                    return pickupController.isOtpLoading.value == Status.loading
-                        ? Center(child: CircularProgressIndicator.adaptive())
-                        : TextButton(
-                            onPressed: onSendOtpCallback,
-                            child: Text(
-                              'Send OTP',
-                              style: themes.fontSize14_500
-                                  .copyWith(color: themes.darkCyanBlue),
-                            ),
-                          );
-                  }),
+                    final loading =
+                        deliveryController.isOtpLoading.value == Status.loading;
+                    final canResend = deliveryController.canResend.value;
+                    final secs = deliveryController.secondsLeft.value;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 44,
+                          child: loading
+                              ? const Center(
+                                  child: CircularProgressIndicator.adaptive())
+                              : TextButton(
+                                  onPressed: canResend
+                                      ? () =>
+                                          deliveryController.getOtp(shipmentID)
+                                      : null, // disabled during cooldown
+                                  child: Text(
+                                    canResend
+                                        ? 'Send OTP'
+                                        : 'Resend in ${secs}s',
+                                    style: themes.fontSize14_500
+                                        .copyWith(color: themes.darkCyanBlue),
+                                  ),
+                                ),
+                        ),
+                      ],
+                    );
+                  })
                 ],
               ),
               SizedBox(
