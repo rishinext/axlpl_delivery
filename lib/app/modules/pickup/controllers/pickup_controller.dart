@@ -262,17 +262,23 @@ class PickupController extends GetxController {
       if (success == true) {
         // start cooldown timer
         _startResendCooldown();
-        Get.snackbar('OTP', 'OTP sent successfully!');
+        Get.snackbar(
+          'OTP',
+          'OTP sent successfully!',
+          backgroundColor: themes.darkCyanBlue,
+          colorText: themes.whiteColor,
+        );
         isOtpLoading.value = Status.success;
       } else {
-        Get.snackbar('Error', 'Failed to send OTP');
+        Get.snackbar('Error', 'Failed to send OTP',
+            backgroundColor: themes.redColor, colorText: themes.whiteColor);
         isOtpLoading.value = Status.error;
       }
     } catch (e) {
-      Get.snackbar('Error', 'Failed to send OTP: $e');
+      Get.snackbar('Error', 'Failed to send OTP',
+          backgroundColor: themes.redColor, colorText: themes.whiteColor);
       isOtpLoading.value = Status.error;
     } finally {
-      // ALWAYS stop the loader in finally to avoid stuck spinner
       if (isOtpLoading.value == Status.loading) {
         isOtpLoading.value = Status.initial;
       }

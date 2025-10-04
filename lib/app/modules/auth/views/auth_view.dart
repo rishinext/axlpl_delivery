@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/bottombar/controllers/bottombar_controller.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
@@ -13,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:get/get.dart';
 
@@ -411,7 +407,9 @@ class AuthView extends GetView<AuthController> {
                                 .copyWith(color: themes.whiteColor),
                           ),
                           onPressed: () {
-                            Get.toNamed(Routes.REGISTER);
+                            Get.toNamed(
+                              Routes.REGISTER,
+                            );
                           },
                         ),
                       ),
