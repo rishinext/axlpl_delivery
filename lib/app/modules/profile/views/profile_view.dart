@@ -680,7 +680,7 @@ class ProfileView extends GetView<ProfileController> {
                   child: ListTile(
                       onTap: () {
                         authController.urlLauncher(
-                          'https://axlpl.com/privacy.html',
+                          'https://www.axlpl.com/privacy-policy/',
                         );
                       },
                       tileColor: themes.whiteColor,

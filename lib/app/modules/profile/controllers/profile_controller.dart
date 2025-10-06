@@ -377,9 +377,9 @@ class ProfileController extends GetxController {
 
   @override
   void onClose() {
-    oldPasswordController.dispose();
-    newPasswordController.dispose();
-    confirmPasswordController.dispose();
+    // oldPasswordController.dispose();
+    // newPasswordController.dispose();
+    // confirmPasswordController.dispose();
     super.onClose();
   }
 

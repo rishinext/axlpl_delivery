@@ -15,9 +15,9 @@ void showChangePasswordDialog() {
   final confirmPasswordController = TextEditingController();
 
   void disposeControllers() {
-    oldPasswordController.dispose();
-    newPasswordController.dispose();
-    confirmPasswordController.dispose();
+    // oldPasswordController.dispose();
+    // newPasswordController.dispose();
+    // confirmPasswordController.dispose();
   }
 
   if (Platform.isIOS) {

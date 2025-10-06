@@ -268,7 +268,7 @@ class AuthView extends GetView<AuthController> {
                               WidgetSpan(
                                 child: GestureDetector(
                                   onTap: () => authController.urlLauncher(
-                                    'https://axlpl.com/terms.html',
+                                    'https://axlpl.com/terms',
                                   ),
                                   child: Text(
                                     'Terms & Conditions',
