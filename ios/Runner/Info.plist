@@ -36,12 +36,6 @@
 	<string>Camera permission is required for barcode scanning and QR code scanning.</string>
 	<key>NSLocalNotificationUsageDescription</key>
 	<string>This app uses notifications to keep you informed.</string>
-	<!-- <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs location access to track deliveries, show your current position, and continue tracking even when the app is in background.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs location access to track deliveries even when the app is in background.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs location access to track deliveries and show your current position.</string> -->
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Microphone access may be needed for barcode scanning functionality.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
