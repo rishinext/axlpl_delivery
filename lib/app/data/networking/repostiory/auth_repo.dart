@@ -33,21 +33,11 @@ class AuthRepo {
     // final deviceId = await MobileDeviceIdentifier().getDeviceId();
     // log("device id : ===> $deviceId");
     final deviceId = await _utils.getDeviceId();
-    UserLocation location = await _utils.getUserLocation();
-
-    print("Lat: ${location.latitude}");
-    print("Lng: ${location.longitude}");
-    print("Address: ${location.address}");
+    // UserLocation location = await _utils.getUserLocation();
 
     try {
-      final response = await _apiServices.loginUserService(
-          mobile,
-          password,
-          fcmToken.toString(),
-          appVersion,
-          location.latitude.toString(),
-          location.longitude.toString(),
-          deviceId.toString());
+      final response = await _apiServices.loginUserService(mobile, password,
+          fcmToken.toString(), appVersion, '0', '0', deviceId.toString());
       return response.when(
         success: (body) async {
           final apiStatus = LoginModel.fromJson(body);
@@ -100,11 +90,7 @@ class AuthRepo {
     // final deviceId = await MobileDeviceIdentifier().getDeviceId();
     // log("device id : ===> $deviceId");
     final deviceId = await _utils.getDeviceId();
-    UserLocation location = await _utils.getUserLocation();
-
-    print("Lat: ${location.latitude}");
-    print("Lng: ${location.longitude}");
-    print("Address: ${location.address}");
+    // UserLocation location = await _utils.getUserLocation();
 
     try {
       final response = await _apiServices.verifyLoginOtpService(mobile, otp);
@@ -160,7 +146,7 @@ class AuthRepo {
     final String? token = userData.messangerdetail?.token.toString() ??
         userData.customerdetail?.token.toString();
     _utils.logInfo(userData.messangerdetail?.id.toString() ?? custID);
-    UserLocation location = await _utils.getUserLocation();
+    // UserLocation location = await _utils.getUserLocation();
     final String? userID = mId ?? custID;
     if (userID == null || role == null || token == null) {
       Utils().logInfo('Logout skipped - user data incomplete');
@@ -171,8 +157,8 @@ class AuthRepo {
       final response = await _apiServices.logout(
         mId ?? custID.toString(),
         role.toString(),
-        location.latitude.toString(),
-        location.longitude.toString(),
+        '0',
+        '0',
         token,
         deviceId,
       );

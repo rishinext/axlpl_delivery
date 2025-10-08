@@ -116,15 +116,15 @@ class DeliveryRepo {
         return false;
       }
 
-      UserLocation location = await Utils().getUserLocation();
+      // UserLocation location = await Utils().getUserLocation();
 
       final response = await _apiServices.uploadDelivery(
         shipmentID,
         shipmentStatus,
         id,
         date,
-        location.latitude,
-        location.longitude,
+        '0',
+        '0',
         amtPaid,
         cashAmount,
         paymentMode,

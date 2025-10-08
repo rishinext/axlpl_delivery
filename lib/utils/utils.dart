@@ -141,49 +141,49 @@ class Utils {
     return null;
   }
 
-  Future<Position> determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<Position> determinePosition() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location services are disabled.');
+  //   }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permissions are denied');
+  //     }
+  //   }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-  }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error(
+  //         'Location permissions are permanently denied, we cannot request permissions.');
+  //   }
+  //   return await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  // }
 
-  Future<UserLocation> getUserLocation() async {
-    final position = await determinePosition();
-    final latitude = position.latitude;
-    final longitude = position.longitude;
+  // Future<UserLocation> getUserLocation() async {
+  //   final position = await determinePosition();
+  //   final latitude = position.latitude;
+  //   final longitude = position.longitude;
 
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(latitude, longitude);
-    Placemark place = placemarks.first;
+  //   List<Placemark> placemarks =
+  //       await placemarkFromCoordinates(latitude, longitude);
+  //   Placemark place = placemarks.first;
 
-    final address =
-        "${place.name}, ${place.street}, ${place.postalCode}, ${place.locality}, ${place.country}";
+  //   final address =
+  //       "${place.name}, ${place.street}, ${place.postalCode}, ${place.locality}, ${place.country}";
 
-    return UserLocation(
-      latitude: latitude,
-      longitude: longitude,
-      address: address,
-    );
-  }
+  //   return UserLocation(
+  //     latitude: latitude,
+  //     longitude: longitude,
+  //     address: address,
+  //   );
+  // }
 
   Future<String?> getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();

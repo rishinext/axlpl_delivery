@@ -313,7 +313,9 @@ class AuthView extends GetView<AuthController> {
 
                                     if (otp.length == 6) {
                                       await authController.verifyLoginOtp(
-                                          mobile, otp);
+                                        mobile,
+                                        otp,
+                                      );
                                     } else {
                                       Get.snackbar(
                                         'Invalid OTP',

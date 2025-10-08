@@ -132,14 +132,13 @@ class PickupRepo {
 
       final token =
           userData?.messangerdetail?.token ?? userData?.customerdetail?.token;
-      UserLocation location = await Utils().getUserLocation();
 
       if (userID?.isNotEmpty == true || userID != null) {
         final response = await _apiServices.getAllMessanger(
           userID.toString(),
           routeID,
-          location.latitude,
-          location.longitude,
+          '0',
+          '0',
           nextID,
           token,
         );
@@ -196,15 +195,15 @@ class PickupRepo {
         return false;
       }
 
-      UserLocation location = await Utils().getUserLocation();
+      // UserLocation location = await Utils().getUserLocation();
 
       final response = await _apiServices.uploadPickup(
         shipmentID,
         shipmentStatus,
         userID,
         date,
-        location.latitude,
-        location.longitude,
+        '0',
+        '0',
         cashAmount,
         paymentMode,
         subpaymentMode,
