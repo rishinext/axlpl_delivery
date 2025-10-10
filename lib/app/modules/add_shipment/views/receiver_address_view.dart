@@ -250,7 +250,7 @@ class ReceiverAddressView extends GetView {
                             CommonTextfiled(
                               hintTxt: 'GST No',
                               textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
+                              validator: utils.validateGST,
                               controller: addshipController
                                   .receiverExistingGstNoController,
                             ),
@@ -396,7 +396,7 @@ class ReceiverAddressView extends GetView {
                             CommonTextfiled(
                               hintTxt: 'GST No',
                               textInputAction: TextInputAction.next,
-                              validator: utils.validateText,
+                              validator: utils.validateGST,
                               controller:
                                   addshipController.receiverInfoGstNoController,
                             ),
