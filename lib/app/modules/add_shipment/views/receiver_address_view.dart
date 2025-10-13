@@ -102,7 +102,6 @@ class ReceiverAddressView extends GetView {
                                 if (customer != null) {
                                   addshipController.selectedReceiverCustomer
                                       .value = customer.id;
-
                                   addshipController
                                           .selectedExistingReceiverStateId
                                           .value =

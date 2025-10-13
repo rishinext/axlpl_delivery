@@ -267,29 +267,13 @@ class HistoryView extends GetView<HistoryController> {
                       child: CircularProgressIndicator.adaptive());
                 }
 
-                // Debug info
                 if (historyController.cashCollList.isEmpty) {
                   return Center(
-                      child: Column(
-                    children: [
-                      Text(
-                        'No Cash Collection Data Found!',
-                        style: themes.fontReboto16_600,
-                      ),
-                      SizedBox(height: 10.h),
-                      ElevatedButton(
-                        onPressed: () {
-                          historyController.getCashCollectionHistory();
-                        },
-                        child: Text('Retry Loading Data'),
-                      ),
-                      SizedBox(height: 10.h),
-                      Text(
-                        'Status: ${historyController.isCashCollLoading.value.name}',
-                        style: TextStyle(fontSize: 12.sp, color: Colors.grey),
-                      ),
-                    ],
-                  ));
+                    child: Text(
+                      'No Cash Collection Data Found!',
+                      style: themes.fontReboto16_600,
+                    ),
+                  );
                 }
 
                 if (historyController.filteredCashCollList.isEmpty) {

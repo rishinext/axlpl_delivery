@@ -36,7 +36,9 @@ class ContractCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Contract :$title",
-                        style: Theme.of(context).textTheme.bodyLarge),
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            )),
                     // Text(
                     //   title,
                     //   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -46,7 +48,10 @@ class ContractCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       "Used",
-                      style: TextStyle(color: themes.grayColor),
+                      style: TextStyle(
+                        color: themes.grayColor,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       "₹${used.toStringAsFixed(2)} ",
@@ -58,7 +63,10 @@ class ContractCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       "Total ",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       "₹${total.toStringAsFixed(2)}",

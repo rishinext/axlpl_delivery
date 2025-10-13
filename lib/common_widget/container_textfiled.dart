@@ -8,6 +8,9 @@ class ContainerTextfiled extends StatelessWidget {
   final prefixIcon;
   final suffixIcon;
   final String? Function(String?)? onChanged;
+  final String? Function(String?)? onSubmit;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
   ContainerTextfiled({
     this.hintText,
     super.key,
@@ -15,6 +18,9 @@ class ContainerTextfiled extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.onChanged,
+    this.keyboardType,
+    this.textInputAction,
+    this.onSubmit,
   });
 
   @override
@@ -26,8 +32,11 @@ class ContainerTextfiled extends StatelessWidget {
       ),
       // padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: TextFormField(
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
         controller: controller,
         onChanged: onChanged,
+        onFieldSubmitted: onSubmit,
         cursorWidth: 2,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),

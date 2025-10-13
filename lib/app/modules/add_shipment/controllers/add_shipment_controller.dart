@@ -1112,6 +1112,6 @@ class AddShipmentController extends GetxController {
     // TODO: implement onClose
 
     super.onClose();
-    pageController.dispose();
+    // pageController.dispose();
   }
 }

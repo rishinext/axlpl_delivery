@@ -132,7 +132,7 @@ class ShipnowController extends GetxController {
     if (Platform.isAndroid) {
       IsolateNameServer.removePortNameMapping('downloader_send_port');
     }
-    shipmentIDController.dispose();
+    // shipmentIDController.dispose();
     super.onClose();
   }
 

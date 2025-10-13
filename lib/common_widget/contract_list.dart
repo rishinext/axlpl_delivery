@@ -1,7 +1,9 @@
 import 'package:axlpl_delivery/app/modules/home/controllers/home_controller.dart';
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/contract_details_screen.dart';
+import 'package:axlpl_delivery/common_widget/contract_home_screen_widget.dart';
 import 'package:axlpl_delivery/common_widget/tracking_info_widget.dart';
+import 'package:axlpl_delivery/common_widget/used_contract_shipment.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -37,13 +39,27 @@ class ContractListWidget extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.r)),
                       onTap: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PdfScreen(
-                                Contract: details,
-                              ),
-                            ));
+                        homeController
+                            .usedContract(homeController
+                                .customerDashboardDataModel.value?.contractID)
+                            .then(
+                              (value) => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UsedContractShipment(
+                                      totalValue:
+                                          details?.assignedValue.toString(),
+                                      usedValue: details?.usedValue.toString(),
+                                    ),
+                                  )),
+                            );
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => PdfScreen(
+                        //         Contract: details,
+                        //       ),
+                        //     ));
                       },
                       tileColor: themes.whiteColor,
                       dense: false,

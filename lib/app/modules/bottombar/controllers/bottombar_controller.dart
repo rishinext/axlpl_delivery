@@ -1,6 +1,6 @@
 import 'package:axlpl_delivery/app/data/models/login_model.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
-import 'package:axlpl_delivery/app/modules/history/views/history_view.dart';
+import 'package:axlpl_delivery/app/modules/history/views/cash_collection_view.dart';
 import 'package:axlpl_delivery/app/modules/home/views/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

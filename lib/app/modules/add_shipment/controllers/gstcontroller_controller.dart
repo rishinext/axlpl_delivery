@@ -26,7 +26,7 @@ class GstcontrollerController extends GetxController {
 
   @override
   void onClose() {
-    amountController.dispose();
+    // amountController.dispose();
     super.onClose();
   }
 }

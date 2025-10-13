@@ -13,6 +13,7 @@ import 'package:axlpl_delivery/app/modules/pod/controllers/pod_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/modules/shipment_record/controllers/shipment_record_controller.dart';
 import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
+import 'package:axlpl_delivery/app/modules/shipnow/views/shipnow_view.dart';
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/contract_home_screen_widget.dart';
@@ -167,11 +168,53 @@ class HomeView extends GetView<HomeController> {
               spacing: 0,
               children: [
                 ContainerTextfiled(
-                  prefixIcon: Icon(
-                    CupertinoIcons.search,
-                    color: themes.grayColor,
-                  ),
-                  suffixIcon: InkWell(
+                  textInputAction: TextInputAction.search,
+                  onSubmit: (val) {
+                    runningPickupDetailsController.fetchTrackingData(
+                        val ?? homeController.searchController.text.trim());
+                    Get.back(); // Close the dialog
+                    Get.toNamed(
+                      Routes.RUNNING_DELIVERY_DETAILS,
+                      arguments: {
+                        'shipmentID':
+                            val ?? homeController.searchController.text.trim(),
+                        // 'status': data.status.toString(),
+                        // 'invoicePath': data.invoicePath,
+                        // 'invoicePhoto': data.invoiceFile,
+                        // 'paymentMode': data.paymentMode,
+                        // 'date': data.date,
+                        // 'cashAmt': data.totalCharges
+                      },
+                    );
+                    return null;
+                  },
+                  suffixIcon: IconButton(
+                      onPressed: () async {
+                        await runningPickupDetailsController.fetchTrackingData(
+                            homeController.searchController.text.trim());
+                        Get.back(); // Close the dialog
+                        Get.toNamed(
+                          Routes.RUNNING_DELIVERY_DETAILS,
+                          arguments: {
+                            'shipmentID':
+                                homeController.searchController.text.trim(),
+                            // 'status': data.status.toString(),
+                            // 'invoicePath': data.invoicePath,
+                            // 'invoicePhoto': data.invoiceFile,
+                            // 'paymentMode': data.paymentMode,
+                            // 'date': data.date,
+                            // 'cashAmt': data.totalCharges
+                          },
+                        );
+                      },
+                      icon: Icon(
+                        CupertinoIcons.search,
+                        color: themes.grayColor,
+                      )),
+                  onChanged: (val) {
+                    return null;
+                  },
+                  prefixIcon: InkWell(
                       onTap: () async {
                         var scannedValue =
                             await Utils().scanAndPlaySound(context);
@@ -205,7 +248,7 @@ class HomeView extends GetView<HomeController> {
                       },
                       child: Icon(CupertinoIcons.qrcode_viewfinder)),
                   hintText: 'Enter Your Package Number',
-                  controller: shipmentRecordController.shipmentController,
+                  controller: homeController.searchController,
                 ),
                 SizedBox(
                   height: 15.h,
@@ -230,7 +273,11 @@ class HomeView extends GetView<HomeController> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            UsedContractShipment(),
+                                            UsedContractShipment(
+                                          totalValue:
+                                              data?.assignedValue.toString(),
+                                          usedValue: data?.usedValue.toString(),
+                                        ),
                                       )),
                                 );
                           },
@@ -490,7 +537,13 @@ class HomeView extends GetView<HomeController> {
                               child: HomeIconContainer(
                               title: 'My Shipment',
                               Img: containerIcon,
-                              OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                              OnTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ShipnowView(),
+                                    ));
+                              },
                             )),
                       SizedBox(
                         width: 10.w,

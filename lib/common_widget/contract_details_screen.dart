@@ -5,6 +5,7 @@ import 'package:axlpl_delivery/app/modules/home/controllers/home_controller.dart
 import 'package:axlpl_delivery/common_widget/common_appbar.dart';
 import 'package:axlpl_delivery/common_widget/common_button.dart';
 import 'package:axlpl_delivery/common_widget/common_scaffold.dart';
+import 'package:axlpl_delivery/common_widget/contract_home_screen_widget.dart';
 import 'package:axlpl_delivery/common_widget/pdf_view.dart';
 import 'package:axlpl_delivery/common_widget/tracking_info_widget.dart';
 import 'package:axlpl_delivery/utils/utils.dart';
@@ -153,6 +154,7 @@ class _PdfScreenState extends State<PdfScreen> {
                   ],
                 ),
               ),
+              ContractCard(title: '1', used: 'a', total: 'ss')
             ],
           ),
         ),
