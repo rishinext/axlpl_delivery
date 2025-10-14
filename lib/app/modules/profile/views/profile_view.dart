@@ -39,42 +39,45 @@ class ProfileView extends GetView<ProfileController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8.h,
               children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Obx(() {
-                    return controller.isEdit.value
-                        ? TextButton.icon(
-                            style: TextButton.styleFrom(
-                                foregroundColor: themes.whiteColor,
-                                backgroundColor: themes.darkCyanBlue),
-                            icon: Icon(
-                              Icons.save,
-                              color: themes.whiteColor,
-                            ),
-                            onPressed: () {
-                              controller.updateProfile();
-                              controller.editProfile();
-                            },
-                            label: Text(
-                              'Save',
-                              style: themes.fontSize14_500.copyWith(
-                                fontSize: 16.sp,
+                Padding(
+                  padding: EdgeInsets.only(right: 15.w),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Obx(() {
+                      return controller.isEdit.value
+                          ? TextButton.icon(
+                              style: TextButton.styleFrom(
+                                  foregroundColor: themes.whiteColor,
+                                  backgroundColor: themes.darkCyanBlue),
+                              icon: Icon(
+                                Icons.save,
+                                color: themes.whiteColor,
                               ),
-                            ))
-                        : TextButton.icon(
-                            icon: Icon(
-                              CupertinoIcons.square_pencil_fill,
-                              color: themes.grayColor,
-                            ),
-                            onPressed: controller.editProfile,
-                            label: Text(
-                              'Edit',
-                              style: themes.fontSize14_500.copyWith(
-                                fontSize: 16.sp,
+                              onPressed: () {
+                                controller.updateProfile();
+                                controller.editProfile();
+                              },
+                              label: Text(
+                                'Save',
+                                style: themes.fontSize14_500.copyWith(
+                                  fontSize: 16.sp,
+                                ),
+                              ))
+                          : TextButton.icon(
+                              icon: Icon(
+                                CupertinoIcons.square_pencil_fill,
                                 color: themes.grayColor,
                               ),
-                            ));
-                  }),
+                              onPressed: controller.editProfile,
+                              label: Text(
+                                'Edit',
+                                style: themes.fontSize14_500.copyWith(
+                                  fontSize: 16.sp,
+                                  color: themes.grayColor,
+                                ),
+                              ));
+                    }),
+                  ),
                 ),
                 Stack(
                   alignment: Alignment.center,

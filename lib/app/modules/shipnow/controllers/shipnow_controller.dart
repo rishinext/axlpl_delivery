@@ -66,7 +66,18 @@ class ShipnowController extends GetxController {
       }
 
       final data = await shipNowRepo.customerListRepo(
-          nextID, '', '', '', '', '', '', '', '', '', '');
+        nextID,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+      );
 
       final newItems = data ?? [];
 

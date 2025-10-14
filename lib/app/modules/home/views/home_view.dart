@@ -276,37 +276,50 @@ class HomeView extends GetView<HomeController> {
                                   ? contracts[index]
                                   : null;
 
-                              return SizedBox(
-                                width: 260.w,
-                                child: ContractCard(
-                                  onTap: () {
-                                    // use the selected contract's id if available
-                                    homeController.usedContract(item?.id).then(
-                                          (value) => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    UsedContractShipment(
-                                                  totalValue: item
-                                                      ?.assignedValue
-                                                      .toString(),
-                                                  usedValue: item?.usedValue
-                                                      .toString(),
-                                                  details: item,
-                                                  usedWeight: item?.usedWeight
-                                                      .toString(),
-                                                ),
-                                              )),
-                                        );
-                                  },
-                                  title: item?.categoryName ?? 'N/A',
-                                  used:
-                                      double.tryParse(item?.usedValue ?? '0') ??
+                              return LayoutBuilder(
+                                builder: (context, constraints) {
+                                  // Use up to 300.w but adapt to available width on small screens
+                                  final maxCard = 330.w;
+                                  final calculated = constraints.maxWidth * 0.8;
+                                  final cardWidth = calculated < maxCard
+                                      ? calculated
+                                      : maxCard;
+
+                                  return SizedBox(
+                                    width: cardWidth,
+                                    child: ContractCard(
+                                      onTap: () {
+                                        // use the selected contract's id if available
+                                        homeController
+                                            .usedContract(item?.id)
+                                            .then((value) => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UsedContractShipment(
+                                                      totalValue: item
+                                                          ?.assignedValue
+                                                          .toString(),
+                                                      usedValue: item?.usedValue
+                                                          .toString(),
+                                                      details: item,
+                                                      usedWeight: item
+                                                          ?.usedWeight
+                                                          .toString(),
+                                                    ),
+                                                  ),
+                                                ));
+                                      },
+                                      title: item?.categoryName ?? 'N/A',
+                                      used: double.tryParse(
+                                              item?.usedValue ?? '0') ??
                                           0,
-                                  total: double.tryParse(
-                                          item?.assignedValue ?? '0') ??
-                                      0,
-                                ),
+                                      total: double.tryParse(
+                                              item?.assignedValue ?? '0') ??
+                                          0,
+                                    ),
+                                  );
+                                },
                               );
                             },
                           ),
