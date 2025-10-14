@@ -160,10 +160,11 @@ class HomeView extends GetView<HomeController> {
                 ))
           ],
         ),
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-          child: SingleChildScrollView(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
             child: Column(
+              // mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 0,
               children: [
@@ -254,37 +255,61 @@ class HomeView extends GetView<HomeController> {
                   height: 15.h,
                 ),
                 Obx(() {
-                  var contracts = homeController
-                      .customerDashboardDataModel.value?.contracts;
-                  var data = (contracts != null && contracts.isNotEmpty)
-                      ? contracts.first
-                      : null;
-
                   return bottomController.userData.value?.role != 'messanger'
-                      ? ContractCard(
-                          onTap: () {
-                            homeController
-                                .usedContract(homeController
-                                    .customerDashboardDataModel
-                                    .value
-                                    ?.contractID)
-                                .then(
-                                  (value) => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UsedContractShipment(
-                                          totalValue:
-                                              data?.assignedValue.toString(),
-                                          usedValue: data?.usedValue.toString(),
-                                        ),
-                                      )),
-                                );
-                          },
-                          title: data?.categoryName ?? 'N/A',
-                          used: double.tryParse(data?.usedValue ?? '0') ?? 0,
-                          total:
-                              double.tryParse(data?.assignedValue ?? '0') ?? 0,
+                      ? SizedBox(
+                          height: 145.h,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            physics: AlwaysScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: EdgeInsets.only(left: 0, right: 0),
+                            separatorBuilder: (context, index) =>
+                                SizedBox(width: 15.w),
+                            itemCount: homeController.customerDashboardDataModel
+                                    .value?.contracts?.length ??
+                                0,
+                            itemBuilder: (context, index) {
+                              final contracts = homeController
+                                  .customerDashboardDataModel.value?.contracts;
+                              final item = (contracts != null &&
+                                      contracts.length > index)
+                                  ? contracts[index]
+                                  : null;
+
+                              return SizedBox(
+                                width: 260.w,
+                                child: ContractCard(
+                                  onTap: () {
+                                    // use the selected contract's id if available
+                                    homeController.usedContract(item?.id).then(
+                                          (value) => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    UsedContractShipment(
+                                                  totalValue: item
+                                                      ?.assignedValue
+                                                      .toString(),
+                                                  usedValue: item?.usedValue
+                                                      .toString(),
+                                                  details: item,
+                                                  usedWeight: item?.usedWeight
+                                                      .toString(),
+                                                ),
+                                              )),
+                                        );
+                                  },
+                                  title: item?.categoryName ?? 'N/A',
+                                  used:
+                                      double.tryParse(item?.usedValue ?? '0') ??
+                                          0,
+                                  total: double.tryParse(
+                                          item?.assignedValue ?? '0') ??
+                                      0,
+                                ),
+                              );
+                            },
+                          ),
                         )
                       : SizedBox();
                 }),

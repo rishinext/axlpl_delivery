@@ -50,6 +50,7 @@ class ContractListWidget extends StatelessWidget {
                                       totalValue:
                                           details?.assignedValue.toString(),
                                       usedValue: details?.usedValue.toString(),
+                                      details: details,
                                     ),
                                   )),
                             );

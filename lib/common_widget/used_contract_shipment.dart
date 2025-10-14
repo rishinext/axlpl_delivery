@@ -17,7 +17,14 @@ import '../app/data/models/contract_view_model.dart';
 class UsedContractShipment extends StatefulWidget {
   final totalValue;
   final usedValue;
-  UsedContractShipment({super.key, this.usedValue, this.totalValue});
+  final details;
+  final usedWeight;
+  UsedContractShipment(
+      {super.key,
+      this.usedValue,
+      this.totalValue,
+      this.details,
+      this.usedWeight});
 
   @override
   State<UsedContractShipment> createState() => _UsedContractShipmentState();
@@ -33,127 +40,123 @@ class _UsedContractShipmentState extends State<UsedContractShipment> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ListView.builder(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount:
-                    homeController.contractDataModel.value?.contracts?.length ??
-                        0,
-                itemBuilder: (context, index) {
-                  final details =
-                      homeController.contractDataModel.value?.contracts?[index];
-                  return Container(
-                    // height: 320.h,
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: themes.whiteColor,
-                      borderRadius: BorderRadius.circular(12).r,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 6,
-                          offset: Offset(0, 2),
-                        )
+              Container(
+                // height: 320.h,
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: themes.whiteColor,
+                  borderRadius: BorderRadius.circular(12).r,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    )
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                            child: infoCard('Start Date',
+                                widget.details.startDate ?? 'N/A')),
+                        SizedBox(width: 12),
+                        Expanded(
+                            child: infoCard('End Date',
+                                widget.details?.endDate.toString() ?? 'N/A')),
                       ],
                     ),
-                    child: Column(
+                    SizedBox(height: 12),
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: infoCard('Start Date',
-                                    details?.startDate.toString() ?? 'N/A')),
-                            SizedBox(width: 12),
-                            Expanded(
-                                child: infoCard('End Date',
-                                    '${details?.endDate.toString() ?? "N/A"}')),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: infoCard('Category',
-                                    '${details?.categoryName.toString() ?? "N/A"}')),
-                            SizedBox(width: 12),
-                            Expanded(
-                                child: infoCard('Rate',
-                                    details?.ratePerGram.toString() ?? 'N/A')),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: infoCard('Weight',
-                                    '${details?.weight.toString() ?? "N/A"}')),
-                            SizedBox(width: 12),
-                            Expanded(
-                                child: infoCard('Billing Cycle',
-                                    details?.ratePerGram.toString() ?? 'N/A')),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                                child: infoCard(
-                                    'Used Amount',
-                                    "\u{20B9}${details?.usedValue.toString()}" ??
-                                        'N/A')),
-                            SizedBox(width: 12),
-                            Expanded(
-                                child: infoCard(
-                                    'Total Amount',
-                                    "\u{20B9}${details?.assignedValue.toString()}" ??
-                                        'N/A')),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                                child: infoCard(
-                                    containerColor: details?.active == "Active"
+                        Expanded(
+                            child: infoCard('Category',
+                                '${widget.details?.categoryName.toString() ?? "N/A"}')),
+                        SizedBox(width: 12),
+                        Expanded(
+                            child: infoCard(
+                                'Rate',
+                                widget.details?.ratePerGram.toString() ??
+                                    'N/A')),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: infoCard(
+                                'Used Weight',
+                                "${widget.usedWeight != null ? widget.usedWeight : widget.details.weight}" ??
+                                    'N/A')),
+                        SizedBox(width: 12),
+                        Expanded(
+                            child: infoCard(
+                                'Billing Cycle',
+                                widget.details?.ratePerGram.toString() ??
+                                    'N/A')),
+                      ],
+                    ),
+                    SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                            child: infoCard(
+                                'Used Amount',
+                                "\u{20B9}${widget.details?.usedValue.toString()}" ??
+                                    'N/A')),
+                        SizedBox(width: 12),
+                        Expanded(
+                            child: infoCard(
+                                'Total Amount',
+                                "\u{20B9}${widget.details?.assignedValue.toString()}" ??
+                                    'N/A')),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Expanded(
+                            child: infoCard(
+                                containerColor:
+                                    widget.details?.active == "Active"
                                         ? Colors.green.shade100
                                         : Colors.red.shade100,
-                                    'Status',
-                                    textColor: details?.active == "Active"
-                                        ? Colors.green.shade800
-                                        : themes.redColor,
-                                    '${details?.active.toString() ?? "N/A"}')),
-                            SizedBox(width: 12),
-                            Expanded(
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8)),
-                                  backgroundColor: themes.darkCyanBlue,
-                                  foregroundColor: Colors.white,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PdfViewerPage(
-                                          pdfUrl: details?.viewLink ?? ''),
-                                    ),
-                                  );
-                                },
-                                child: Text('View PDF'),
-                              ),
+                                'Status',
+                                textColor: widget.details?.active == "Active"
+                                    ? Colors.green.shade800
+                                    : themes.redColor,
+                                '${widget.details?.active.toString() ?? "N/A"}')),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                              backgroundColor: themes.darkCyanBlue,
+                              foregroundColor: Colors.white,
                             ),
-                          ],
-                        )
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PdfViewerPage(
+                                      pdfUrl: widget.details?.viewLink ?? ''),
+                                ),
+                              );
+                            },
+                            child: Text('View PDF'),
+                          ),
+                        ),
                       ],
-                    ),
-                  );
-                },
+                    )
+                  ],
+                ),
               ),
               // Padding(
               //   padding: EdgeInsets.only(left: 16),
@@ -202,8 +205,8 @@ class _UsedContractShipmentState extends State<UsedContractShipment> {
                       .usedContractModel.value?.transactions?[index];
                   DateTime txnDate;
                   try {
-                    txnDate =
-                        DateFormat('dd-MM-yyyy').parse(details?.date ?? '');
+                    txnDate = DateFormat('dd-MM-yyyy')
+                        .parse(widget.details?.date ?? '');
                   } catch (e) {
                     txnDate = DateTime.now(); // fallback if invalid
                   }
