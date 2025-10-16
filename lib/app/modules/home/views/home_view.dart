@@ -1,6 +1,4 @@
-import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
 import 'package:axlpl_delivery/app/modules/add_shipment/views/pageview_view.dart';
@@ -13,16 +11,14 @@ import 'package:axlpl_delivery/app/modules/pod/controllers/pod_controller.dart';
 import 'package:axlpl_delivery/app/modules/profile/controllers/profile_controller.dart';
 import 'package:axlpl_delivery/app/modules/shipment_record/controllers/shipment_record_controller.dart';
 import 'package:axlpl_delivery/app/modules/shipnow/controllers/shipnow_controller.dart';
-import 'package:axlpl_delivery/app/modules/shipnow/views/shipnow_view.dart';
+// removed unused import
 import 'package:axlpl_delivery/app/routes/app_pages.dart';
 import 'package:axlpl_delivery/common_widget/container_textfiled.dart';
 import 'package:axlpl_delivery/common_widget/contract_home_screen_widget.dart';
 import 'package:axlpl_delivery/common_widget/contract_list.dart';
 import 'package:axlpl_delivery/common_widget/home_container.dart';
 import 'package:axlpl_delivery/common_widget/home_icon_container.dart';
-import 'package:axlpl_delivery/common_widget/contract_details_screen.dart';
 import 'package:axlpl_delivery/common_widget/my_invoices_list.dart';
-import 'package:axlpl_delivery/common_widget/pdf_view.dart';
 import 'package:axlpl_delivery/common_widget/used_contract_shipment.dart';
 import 'package:axlpl_delivery/const/const.dart';
 import 'package:axlpl_delivery/utils/assets.dart';
@@ -47,8 +43,8 @@ class HomeView extends GetView<HomeController> {
     final runningPickupDetailsController =
         Get.put(RunningDeliveryDetailsController());
     final profileController = Get.put(ProfileController());
-    final shipmentRecordController = Get.put(ShipmentRecordController());
-    final podController = Get.put(PodController());
+    Get.put(ShipmentRecordController());
+    Get.put(PodController());
     final historyController = Get.put(HistoryController());
     final shipnowController = Get.put(ShipnowController());
 
@@ -389,6 +385,8 @@ class HomeView extends GetView<HomeController> {
                                 child: Obx(() {
                                   return HomeContainer(
                                     onTap: () {
+                                      shipnowController
+                                          .setStatusFilter('Out for Delivery');
                                       Get.toNamed(Routes.SHIPMENT_RECORD);
                                     },
                                     color: themes.blueGray,
@@ -413,6 +411,8 @@ class HomeView extends GetView<HomeController> {
                                 child: Obx(() {
                                   return HomeContainer(
                                       onTap: () {
+                                        shipnowController
+                                            .setStatusFilter('Picked Up');
                                         Get.toNamed(Routes.SHIPMENT_RECORD);
                                       },
                                       color: themes.blueGray,
@@ -438,6 +438,9 @@ class HomeView extends GetView<HomeController> {
                                 child: Obx(() {
                                   return HomeContainer(
                                     onTap: () {
+                                      // Ensure correct filter is applied
+                                      shipnowController.setStatusFilter(
+                                          'Waiting for Pickup');
                                       Get.toNamed(Routes.SHIPMENT_RECORD);
                                     },
                                     color: themes.blueGray,
@@ -462,6 +465,9 @@ class HomeView extends GetView<HomeController> {
                                 child: Obx(() {
                                   return HomeContainer(
                                     onTap: () {
+                                      // Clear any previous status filter before opening
+                                      shipnowController
+                                          .setStatusFilter('Shipped');
                                       Get.toNamed(Routes.SHIPMENT_RECORD);
                                     },
                                     color: themes.blueGray,
@@ -576,7 +582,8 @@ class HomeView extends GetView<HomeController> {
                               title: 'My Shipment',
                               Img: containerIcon,
                               OnTap: () {
-                                Get.toNamed(Routes.SHIPNOW);
+                                shipnowController.setStatusFilter('');
+                                Get.toNamed(Routes.SHIPMENT_RECORD);
                               },
                             )),
                       SizedBox(
@@ -591,7 +598,10 @@ class HomeView extends GetView<HomeController> {
                                   child: HomeIconContainer(
                                     title: 'My Shipment',
                                     Img: containerIcon,
-                                    OnTap: () => Get.toNamed(Routes.SHIPNOW),
+                                    OnTap: () {
+                                      shipnowController.setStatusFilter('');
+                                      Get.toNamed(Routes.SHIPMENT_RECORD);
+                                    },
                                   ),
                                 )
                               : SizedBox.shrink();

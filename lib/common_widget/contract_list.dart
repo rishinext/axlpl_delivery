@@ -133,6 +133,9 @@ class ContractListWidget extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                Text('Period: ',
+                                    style: themes.fontSize14_400
+                                        .copyWith(fontSize: 13.sp)),
                                 Text(
                                   formatDate(details?.startDate),
                                   style: themes.fontSize14_400

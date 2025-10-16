@@ -55,7 +55,7 @@ class ShipnowController extends GetxController {
   static const int pageSize = 10;
 
   Future<void> fetchShipmentData(String nextID,
-      {bool isRefresh = false}) async {
+      {bool isRefresh = false, final shipmentSatus}) async {
     try {
       if (isRefresh) {
         isLoadingShipNow(true);
@@ -66,7 +66,7 @@ class ShipnowController extends GetxController {
       }
 
       final data = await shipNowRepo.customerListRepo(
-          nextID, '', '', '', '', '', '', '', '', '', '');
+          nextID, shipmentSatus, '', '', '', '', '', '', '', '', '');
 
       final newItems = data ?? [];
 
