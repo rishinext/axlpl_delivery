@@ -337,7 +337,7 @@ class AddShipmentController extends GetxController {
         isLoadingMoreCustomers(true);
       }
 
-      final data = await addShipmentRepo.customerListRepo('version', nextID);
+      final data = await addShipmentRepo.customerListRepo('', nextID);
 
       if (data != null && data.isNotEmpty) {
         if (nextID == '0' || nextID.isEmpty) {
@@ -393,7 +393,7 @@ class AddShipmentController extends GetxController {
         isLoadingMoreReceiverCustomers(true);
       }
 
-      final data = await addShipmentRepo.customerListRepo('version', nextID);
+      final data = await addShipmentRepo.customerListRepo('', nextID);
 
       if (data != null && data.isNotEmpty) {
         if (nextID == '0' || nextID.isEmpty) {

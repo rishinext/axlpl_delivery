@@ -138,7 +138,9 @@ class ContractListWidget extends StatelessWidget {
                                   style: themes.fontSize14_400
                                       .copyWith(fontSize: 13.sp),
                                 ),
-                                Text(' to '),
+                                Text('  to  ',
+                                    style: themes.fontSize14_400
+                                        .copyWith(fontSize: 13.sp)),
                                 Text(
                                   formatDate(details?.endDate),
                                   overflow: TextOverflow.ellipsis,

@@ -257,7 +257,7 @@ class HomeController extends GetxController {
     getRattingData();
     contractView();
     invoiceList();
-    shipController.fetchShipmentData('0');
+    // shipController.fetchShipmentData('0');
     super.onInit();
   }
 }

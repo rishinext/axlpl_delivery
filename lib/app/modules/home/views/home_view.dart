@@ -576,11 +576,7 @@ class HomeView extends GetView<HomeController> {
                               title: 'My Shipment',
                               Img: containerIcon,
                               OnTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ShipnowView(),
-                                    ));
+                                Get.toNamed(Routes.SHIPNOW);
                               },
                             )),
                       SizedBox(

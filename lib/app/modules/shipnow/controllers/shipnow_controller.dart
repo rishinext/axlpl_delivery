@@ -66,18 +66,7 @@ class ShipnowController extends GetxController {
       }
 
       final data = await shipNowRepo.customerListRepo(
-        nextID,
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-      );
+          nextID, '', '', '', '', '', '', '', '', '', '');
 
       final newItems = data ?? [];
 
@@ -111,7 +100,7 @@ class ShipnowController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
+    fetchShipmentData('0', isRefresh: true);
     // Only setup flutter_downloader for Android
     if (Platform.isAndroid) {
       IsolateNameServer.registerPortWithName(
@@ -133,8 +122,6 @@ class ShipnowController extends GetxController {
     shipmentIDController.addListener(() {
       filterShipmentData(shipmentIDController.text);
     });
-
-    fetchShipmentData('0', isRefresh: true);
   }
 
   @override
