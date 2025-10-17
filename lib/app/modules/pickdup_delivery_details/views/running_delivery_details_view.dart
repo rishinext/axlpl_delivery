@@ -322,7 +322,7 @@ class RunningDeliveryDetailsView
                           'Policy Details',
                           details?.policyNo?.isEmpty == true
                               ? 'No Policy'
-                              : details!.policyNo!,
+                              : details?.policyNo ?? '',
                         ),
                         // SizedBox(height: 15.h),
                         // Divider(),

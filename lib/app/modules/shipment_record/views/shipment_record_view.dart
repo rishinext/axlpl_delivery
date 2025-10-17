@@ -547,78 +547,78 @@ class ShipmentRecordView extends GetView<ShipmentRecordController> {
                                       ),
 
                                     // QR Code Button for Approved Status
-                                    // if (status == 'Approved')
-                                    //   Column(
-                                    //     children: [
-                                    //       SizedBox(height: 12.h),
-                                    //       Container(
-                                    //         width: double.infinity,
-                                    //         child: ElevatedButton.icon(
-                                    //           onPressed: () {
-                                    //             showDialog(
-                                    //               context: context,
-                                    //               builder: (context) {
-                                    //                 final labelController =
-                                    //                     shipnowController
-                                    //                         .getLableController(
-                                    //                             shipment
-                                    //                                 .shipmentId
-                                    //                                 .toString());
-                                    //                 return ShipmentLabelDialog(
-                                    //                   labelCountController:
-                                    //                       labelController,
-                                    //                   onPrint: () {
-                                    //                     final shipmentId =
-                                    //                         shipment.shipmentId;
-                                    //                     final labelCount =
-                                    //                         labelController.text
-                                    //                                 .isNotEmpty
-                                    //                             ? labelController
-                                    //                                 .text
-                                    //                             : '1';
-                                    //                     final url =
-                                    //                         'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
-                                    //                     shipnowController
-                                    //                         .downloadShipmentLable(
-                                    //                             url,
-                                    //                             shipmentId
-                                    //                                 .toString());
-                                    //                     Get.back();
-                                    //                   },
-                                    //                 );
-                                    //               },
-                                    //             );
-                                    //           },
-                                    //           icon: Icon(
-                                    //             Icons.qr_code,
-                                    //             size: 18.sp,
-                                    //             color: theme.whiteColor,
-                                    //           ),
-                                    //           label: Text(
-                                    //             'Generate Label',
-                                    //             style: theme.fontSize14_500
-                                    //                 .copyWith(
-                                    //               color: theme.whiteColor,
-                                    //             ),
-                                    //           ),
-                                    //           style: ElevatedButton.styleFrom(
-                                    //             backgroundColor:
-                                    //                 theme.darkCyanBlue,
-                                    //             foregroundColor:
-                                    //                 theme.whiteColor,
-                                    //             padding: EdgeInsets.symmetric(
-                                    //                 vertical: 12.h),
-                                    //             shape: RoundedRectangleBorder(
-                                    //               borderRadius:
-                                    //                   BorderRadius.circular(
-                                    //                       10.r),
-                                    //             ),
-                                    //             elevation: 2,
-                                    //           ),
-                                    //         ),
-                                    //       ),
-                                    //     ],
-                                    //   ),
+                                    if (status == 'Approved')
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 12.h),
+                                          Container(
+                                            width: double.infinity,
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    final labelController =
+                                                        shipnowController
+                                                            .getLableController(
+                                                                shipment
+                                                                    .shipmentId
+                                                                    .toString());
+                                                    return ShipmentLabelDialog(
+                                                      labelCountController:
+                                                          labelController,
+                                                      onPrint: () {
+                                                        final shipmentId =
+                                                            shipment.shipmentId;
+                                                        final labelCount =
+                                                            labelController.text
+                                                                    .isNotEmpty
+                                                                ? labelController
+                                                                    .text
+                                                                : '1';
+                                                        final url =
+                                                            'https://new.axlpl.com/admin/shipment/shipment_manifest_pdf/$shipmentId/$labelCount';
+                                                        shipnowController
+                                                            .downloadShipmentLable(
+                                                                url,
+                                                                shipmentId
+                                                                    .toString());
+                                                        Get.back();
+                                                      },
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.qr_code,
+                                                size: 18.sp,
+                                                color: theme.whiteColor,
+                                              ),
+                                              label: Text(
+                                                'Generate Label',
+                                                style: theme.fontSize14_500
+                                                    .copyWith(
+                                                  color: theme.whiteColor,
+                                                ),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    theme.darkCyanBlue,
+                                                foregroundColor:
+                                                    theme.whiteColor,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 12.h),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.r),
+                                                ),
+                                                elevation: 2,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                   ],
                                 ),
                               ),
