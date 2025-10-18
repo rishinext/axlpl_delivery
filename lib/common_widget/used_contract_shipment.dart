@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:axlpl_delivery/app/data/models/contract_details_model.dart';
 import 'package:axlpl_delivery/app/data/models/customer_dashboard_model.dart';
 import 'package:axlpl_delivery/app/data/networking/data_state.dart';
@@ -206,10 +208,11 @@ class _UsedContractShipmentState extends State<UsedContractShipment> {
                   DateTime txnDate;
                   try {
                     txnDate = DateFormat('dd-MM-yyyy')
-                        .parse(widget.details?.date ?? '');
+                        .parse(details?.date.toString() ?? '');
                   } catch (e) {
                     txnDate = DateTime.now(); // fallback if invalid
                   }
+                  log(details?.date.toString() ?? 'No Date');
 
                   final formattedDay = DateFormat('dd').format(txnDate); // "18"
                   final formattedMonth = DateFormat('MMM').format(txnDate);

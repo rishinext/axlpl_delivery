@@ -347,10 +347,10 @@ class AddShipmentView extends GetView<AddShipmentController> {
                                   'contract',
                                   controller.selectedCategory.value.toString(),
                                   homeController.contractDataModel.value
-                                      ?.contracts?[0].active
+                                      ?.contracts?[0].weight
                                       .toString(),
                                   homeController.contractDataModel.value
-                                      ?.contracts?[0].weight
+                                      ?.contracts?[0].ratePerGram
                                       .toString(),
                                 );
                                 return null;
